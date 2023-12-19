@@ -1,44 +1,20 @@
-import { Table, TableBody, TableRow } from '@mui/material';
-import React from 'react';
-import { Character } from '../../models';
-import { makeStyles } from '@mui/styles';
+import { Table, TableBody, TableRow, makeStyles } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
+import { Character } from '@/_models';
 
 interface CharacterInfoDisplayProps {
 	character: Character;
 }
 
-const useStyles = makeStyles((theme) => ({
-	table: {},
-	tableRow: {
-		border: 'none',
-	},
-	tableCell: {},
-	cellRoot: {
-		padding: '0 .5rem 0 0',
-	},
-	displayCard: {
-		padding: '.5rem',
-	},
-	tableContainer: {
-		width: '75%',
-	},
-	tableRowRoot: {
-		borderBottom: 'none',
-	},
-}));
-
-export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
+export const CharacterInfoDisplay = ({
 	character,
-}) => {
-	const classes = useStyles();
+} : CharacterInfoDisplayProps) => {
 	return (
-		<div className={classes.tableContainer}>
-			<Table className={classes.table}>
+		<div style={{width: '75%'}}>
+			<Table>
 				<TableBody>
 					<TableRow
-						classes={{ root: classes.tableRowRoot }}
-						className={classes.tableRow}
+						sx={{border: 'none'}}
 					>
 						<DisplayCell
 							variant='h6'

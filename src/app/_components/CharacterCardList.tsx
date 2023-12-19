@@ -6,10 +6,13 @@ import { CharacterCard } from './CharacterCard';
 import PersonAddAlt from '@mui/icons-material/PersonAddAlt';
 import { useRouter } from 'next/navigation';
 
-export const CharacterCardList: React.FC<{ characters: Character[] }> = ({
+interface CharacterCardListProps {
+	characters: Character[]
+};
+
+export const CharacterCardList = ({
 	characters,
-	...props
-}) => {
+}: CharacterCardListProps) => {
 	const router = useRouter();
 	return (
 		<Grid

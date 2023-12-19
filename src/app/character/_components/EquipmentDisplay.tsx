@@ -7,27 +7,26 @@ import {
 	TableRow,
 	Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import React from 'react';
-import { Armor, Character, Weapon } from '../../models';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { Armor, Character, Equipment, Modifier, Weapon } from '@/_models';
 
-const useStyles = makeStyles(() => ({
-	equipmentDisplayCard: {
-		margin: '1rem',
-	},
-}));
-export const EquipmentDisplay: React.FC<{ character: Character }> = ({
+interface EquipmentDisplayProps {
+	character: Character;
+};
+
+export const EquipmentDisplay = ({
 	character,
-}) => {
-	const classes = useStyles();
-	const weapons = character.equipment.filter((eq) => !!(eq as Weapon).damage);
+} :  EquipmentDisplayProps) => {
+	const weapons = character.equipment.filter((eq: Equipment) => !!(eq as Weapon).damage);
 	const armor = character.equipment.filter(
-		(eq) => !!(eq as Armor).modifiers.some((mod) => !!mod.defense)
+		(eq: Equipment) => !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense)
 	);
+	const eqDisplayCardStyle = {
+		margin: '1rem',
+	};
 	return (
 		<>
-			<Card className={classes.equipmentDisplayCard}>
+			<Card sx={eqDisplayCardStyle}>
 				<CardContent>
 					<Typography variant='h6'>Weapons</Typography>
 				</CardContent>
@@ -57,7 +56,7 @@ export const EquipmentDisplay: React.FC<{ character: Character }> = ({
 					</TableBody>
 				</Table>
 			</Card>
-			<Card className={classes.equipmentDisplayCard}>
+			<Card sx={eqDisplayCardStyle}>
 				<CardContent>
 					<Typography variant='h6'>Armor</Typography>
 				</CardContent>

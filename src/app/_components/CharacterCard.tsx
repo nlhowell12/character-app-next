@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { Character } from '../../_models/character';
-import { useRouter } from 'next/navigation';
 
-export const CharacterCard: React.FC<{ character: Character }> = ({
-	character,
-}) => {
-	const router = useRouter();
+interface CharacterCardProps {
+	character: Character
+};
+export const CharacterCard = ({
+	character
+}: CharacterCardProps) => {
 	const openCharacterTab = () => {
-		window.open(`/characters/${character.name}`);
+		window.open(`/character/${character.name}`);
 	};
 	return (
 		<Grid item key={character.name}>

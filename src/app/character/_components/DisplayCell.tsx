@@ -1,3 +1,4 @@
+import { useOutsideAlerter } from '@/_utils/outsideMouseClick';
 import {
 	Card,
 	TableCell,
@@ -6,29 +7,7 @@ import {
 	Typography,
 	TypographyVariant,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import React, { useRef, useState } from 'react';
-import { useOutsideAlerter } from '../../utils/outsideMouseClick';
-
-const useStyles = makeStyles((theme) => ({
-	table: {},
-	tableRow: {
-		border: 'none',
-	},
-	tableCell: {},
-	cellRoot: {
-		padding: '0 .5rem 0 0',
-	},
-	displayCard: {
-		padding: '.5rem',
-	},
-	tableContainer: {
-		marginLeft: '1rem',
-	},
-	tableRowRoot: {
-		borderBottom: 'none',
-	},
-}));
+import { useRef, useState } from 'react';
 
 interface DisplayCellProps {
 	variant?: TypographyVariant;
@@ -52,7 +31,7 @@ interface DisplayCellProps {
 		| 'top-start'
 		| undefined;
 }
-export const DisplayCell: React.FC<DisplayCellProps> = ({
+export const DisplayCell = ({
 	variant = 'body1',
 	onChange,
 	editable = false,
@@ -60,8 +39,7 @@ export const DisplayCell: React.FC<DisplayCellProps> = ({
 	value,
 	tooltip,
 	tooltipPlacement,
-}) => {
-	const classes = useStyles();
+} : DisplayCellProps) => {
 	const [openEdit, setOpenEdit] = useState(false);
 	const cellRef = useRef(null);
 
@@ -89,7 +67,6 @@ export const DisplayCell: React.FC<DisplayCellProps> = ({
 				<Card
 					onClick={() => setOpenEdit(true)}
 					onKeyDown={(e) => e.key === 'Enter' && setOpenEdit(false)}
-					className={classes.displayCard}
 					variant='outlined'
 					ref={cellRef}
 					sx={cardStylingObject}
@@ -111,7 +88,6 @@ export const DisplayCell: React.FC<DisplayCellProps> = ({
 			<Card
 				onClick={() => setOpenEdit(true)}
 				onKeyDown={(e) => e.key === 'Enter' && setOpenEdit(false)}
-				className={classes.displayCard}
 				variant='outlined'
 				ref={cellRef}
 				sx={cardStylingObject}

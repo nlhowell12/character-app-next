@@ -1,3 +1,5 @@
+import { Character, RankedSkill } from '@/_models';
+import { getSkillSynergies, getSkillModifiers, getArmorCheckPenalties, getTotalSkillValue } from '@/_utils/skillIUtils';
 import {
     Card,
     Table,
@@ -7,37 +9,31 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import React from 'react';
-import { Character, RankedSkill } from '../../models';
-import {
-    getArmorCheckPenalties,
-    getSkillModifiers,
-    getSkillSynergies,
-    getTotalSkillValue,
-} from '../../utils/skillIUtils';
-
 interface SkillDisplayProps {
     character: Character;
-}
+};
 
-const useStyles = makeStyles(() => ({
-    skillDisplay: {
-        width: 'fit-content',
-    },
-}));
+interface SkillCellProps {
+    children: React.ReactNode;
+};
+interface SkillsTooltipProps {
+    skill: RankedSkill; 
+    character: Character
+};
 
-const SkillCell: React.FC = (props) => {
+const SkillCell = ({children}: SkillCellProps) => {
     return (
         <TableCell size='small' align='center'>
-            {props.children}
+            {children}
         </TableCell>
     );
 };
-const SkillsTooltip: React.FC<{ skill: RankedSkill; character: Character }> = ({
-    skill,
-    character,
-}) => {
+const SkillsTooltip = (
+    {
+        skill,
+        character
+    }: SkillsTooltipProps
+) => {
     const synergy = getSkillSynergies(skill, character);
     const miscMods = getSkillModifiers(skill, character);
     return (
@@ -74,12 +70,10 @@ const SkillsTooltip: React.FC<{ skill: RankedSkill; character: Character }> = ({
     );
 };
 
-export const SkillDisplay: React.FC<SkillDisplayProps> = ({ character }) => {
-    const classes = useStyles();
+export const SkillDisplay = ({ character }: SkillDisplayProps) => {
     return (
         <Card
-            className={classes.skillDisplay}
-            sx={{ overflow: 'scroll', maxHeight: '100%' }}
+            sx={{ overflow: 'scroll', maxHeight: '100%', width: 'fit-content' }}
         >
             <Table>
                 <TableBody>

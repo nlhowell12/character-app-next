@@ -1,50 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
-import { AttributeNames, Character } from '../../models';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableRow,
-	Typography,
-} from '@mui/material';
+import { AttributeNames, Character } from '@/_models';
+import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
+import { BonusObject, getTotalDefense, getDefenseBonuses, getResistances } from '@/_utils/defenseUtils';
+import { Table, TableBody, TableRow, TableCell, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { DisplayCell } from './DisplayCell';
-import {
-	BonusObject,
-	getDefenseBonuses,
-	getResistances,
-	getTotalDefense,
-} from '../../utils/defenseUtils';
-import { getTotalAttributeModifier } from '../../utils/attributeUtils';
-
-const useStyles = makeStyles((theme) => ({
-	table: {},
-	tableRow: {
-		border: 'none',
-	},
-	tableCell: {},
-	cellRoot: {
-		padding: '0 .5rem 0 0',
-	},
-	displayCard: {
-		padding: '.5rem',
-	},
-	tableContainer: {
-		marginLeft: '1rem',
-	},
-	tableRowRoot: {
-		borderBottom: 'none',
-	},
-}));
-
 interface CombatInfoDisplayProps {
 	character: Character;
 }
 
-const AcTooltip: React.FC<{ acBonuses: BonusObject; character: Character }> = ({
+interface AcTooltipProps {
+	acBonuses: BonusObject;
+	character: Character;
+};
+
+const AcTooltip = ({
 	acBonuses,
 	character,
-}) => {
+} : AcTooltipProps) => {
 	return (
 		<Table>
 			<TableBody>
@@ -70,10 +42,9 @@ const AcTooltip: React.FC<{ acBonuses: BonusObject; character: Character }> = ({
 	);
 };
 
-export const CombatInfoDisplay: React.FC<CombatInfoDisplayProps> = ({
+export const CombatInfoDisplay = ({
 	character,
-}) => {
-	const classes = useStyles();
+} : CombatInfoDisplayProps) => {
 	const [currentHitPoints, setCurrentHitPoints] = useState<number>(0);
 	const [nonLethalDamage, setNonLethalDamage] = useState<number>(0);
 	const [tempHP, setTempHP] = useState<number>(0);
@@ -87,12 +58,11 @@ export const CombatInfoDisplay: React.FC<CombatInfoDisplayProps> = ({
 	const defenses = getTotalDefense(character);
 
 	return (
-		<div className={classes.tableContainer}>
-			<Table className={classes.table}>
+		<div style={{marginLeft: '1rem'}}>
+			<Table>
 				<TableBody>
 					<TableRow
-						classes={{ root: classes.tableRowRoot }}
-						className={classes.tableRow}
+						sx={{border: 'none'}}
 					>
 						<DisplayCell
 							variant='h6'
@@ -122,8 +92,7 @@ export const CombatInfoDisplay: React.FC<CombatInfoDisplayProps> = ({
 						/>
 					</TableRow>
 					<TableRow
-						classes={{ root: classes.tableRowRoot }}
-						className={classes.tableRow}
+						sx={{border: 'none'}}
 					>
 						<DisplayCell
 							variant='h6'

@@ -1,3 +1,6 @@
+import { BonusTypes, Modifier, Character, CharacterAttributes, AttributeNames } from '@/_models';
+import { totalAttributeValue, getBaseAttributeScore, getTotalAttributeModifier, getAttributeBonuses } from '@/_utils/attributeUtils';
+import { getTotalSaveBonus, isProficientSave } from '@/_utils/defenseUtils';
 import { CheckCircle } from '@mui/icons-material';
 import {
 	Card,
@@ -8,53 +11,6 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import React from 'react';
-import {
-	AttributeNames,
-	BonusTypes,
-	Character,
-	CharacterAttributes,
-	Modifier,
-} from '../../models';
-import {
-	getAttributeBonuses,
-	getBaseAttributeScore,
-	getTotalAttributeModifier,
-	totalAttributeValue,
-} from '../../utils/attributeUtils';
-import { getTotalSaveBonus, isProficientSave } from '../../utils/defenseUtils';
-
-const useStyles = makeStyles((theme) => ({
-	attributeDisplay: {
-		width: 'fit-content',
-		height: 'fit-content',
-		minWidth: '37rem',
-	},
-	cardContent: {
-		width: '100%',
-		border: '1px solid gray',
-	},
-	attrRow: {
-		height: '3rem',
-		alignItems: 'center',
-		display: 'flex',
-		width: '100%',
-	},
-	attrTitle: {
-		padding: '0 1rem',
-		display: 'flex',
-		flexGrow: 1,
-	},
-	displayBox: {
-		textAlign: 'center',
-	},
-	displayTitle: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-}));
 
 enum CardTitles {
 	Total = 'Total',
@@ -64,10 +20,12 @@ enum CardTitles {
 }
 
 type CardTitlesType = BonusTypes | CardTitles;
-
-const AttributeTooltip: React.FC<{ modifiers: Modifier[] }> = ({
+interface AttributeTooltipProps {
+	modifiers: Modifier[]
+}
+const AttributeTooltip = ({
 	modifiers,
-}) => {
+}: AttributeTooltipProps) => {
 	return (
 		<Table>
 			<TableBody>
@@ -96,26 +54,33 @@ interface AttributeDisplayProps {
 	icon?: any;
 }
 
-const DisplayBox: React.FC<AttributeDisplayProps> = ({
+const DisplayBox = ({
 	modifiers,
 	displayTitle,
 	displayValue,
 	icon,
-}) => {
-	const classes = useStyles();
+}: AttributeDisplayProps) => {
 	return !!modifiers?.length && displayTitle === CardTitles.Total ? (
 		<Tooltip
 			title={<AttributeTooltip modifiers={modifiers} />}
 			placement='right'
 		>
-			<div className={classes.displayBox}>
+			<div style={{
+				textAlign: 'center',
+			}}>
 				<Typography variant='caption'>{displayTitle}</Typography>
 				<Typography variant='h4'>{displayValue}</Typography>
 			</div>
 		</Tooltip>
 	) : (
-		<div className={classes.displayBox}>
-			<div className={classes.displayTitle}>
+		<div style={{
+			textAlign: 'center',
+		}}>
+			<div style={{
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+			}}>
 				<Typography variant='caption'>{displayTitle}</Typography>
 				{icon}
 			</div>
@@ -124,18 +89,27 @@ const DisplayBox: React.FC<AttributeDisplayProps> = ({
 	);
 };
 
-const AttributeRow: React.FC<{
+interface AttributeRowProps
+{
 	character: Character;
-	attributes: CharacterAttributes;
 	attribute: AttributeNames;
 	modifiers: Modifier[];
-}> = ({ character, attribute, modifiers }) => {
-	const classes = useStyles();
+}
+const AttributeRow = ({ character, attribute, modifiers } : AttributeRowProps) => {
 	const totalValue = totalAttributeValue(character, attribute);
 	return (
-		<TableRow className={classes.attrRow}>
+		<TableRow sx={{
+			height: '3rem',
+			alignItems: 'center',
+			display: 'flex',
+			width: '100%',
+		}}>
 			<TableCell>
-				<Typography className={classes.attrTitle} variant='h5'>
+				<Typography sx={{
+					padding: '0 1rem',
+					display: 'flex',
+					flexGrow: 1,
+				}} variant='h5'>
 					{attribute}
 				</Typography>
 			</TableCell>
@@ -180,14 +154,23 @@ const AttributeRow: React.FC<{
 	);
 };
 
-export const AttributeDisplay: React.FC<{ character: Character }> = ({
+interface AttributeDisplay {
+	character: Character
+}
+export const AttributeDisplay = ({
 	character,
-}) => {
-	const classes = useStyles();
+} : AttributeDisplay) => {
 	const { attributes } = character;
 	return (
-		<Card className={classes.attributeDisplay}>
-			<Table className={classes.cardContent}>
+		<Card sx={{
+			width: 'fit-content',
+			height: 'fit-content',
+			minWidth: '37rem',
+		}}>
+			<Table sx={{
+				width: '100%',
+				border: '1px solid gray',
+			}}>
 				<TableBody>
 					{Object.keys(attributes).map((attribute) => {
 						const typedAtt = attribute as AttributeNames;
@@ -197,7 +180,6 @@ export const AttributeDisplay: React.FC<{ character: Character }> = ({
 								key={typedAtt}
 								character={character}
 								attribute={typedAtt}
-								attributes={attributes}
 								modifiers={getAttributeBonuses(typedAtt, modifiers)}
 							></AttributeRow>
 						);
