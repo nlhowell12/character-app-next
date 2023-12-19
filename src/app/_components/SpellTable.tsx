@@ -1,6 +1,4 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
-import { getAllSpells, SpellObject } from '../services/spellServices';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,7 +7,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { AnyMagickType, ClassNames } from '../models';
 import {
 	MenuItem,
 	Select,
@@ -18,7 +15,8 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { camelToTitle } from '../utils/stringUtils';
+import { ClassNames, AnyMagickType, Spell, Maneuver, Mystery, Power, Prayer } from '@/_models';
+import { camelToTitle } from '@/_utils/stringUtils';
 
 const SpellTooltip: React.FC<{
 	description: string;
@@ -27,6 +25,17 @@ const SpellTooltip: React.FC<{
 }> = ({ description }) => {
 	return <Typography>{description}</Typography>;
 };
+
+export interface SpellObject {
+	[ClassNames.Cleric]: Prayer[];
+	[ClassNames.Hexblade]: Spell[];
+	[ClassNames.Oathsworn]: Prayer[];
+	[ClassNames.Fighter]: Maneuver[];
+	[ClassNames.PsychicWarrior]: Power[];
+	[ClassNames.Psion]: Power[];
+	[ClassNames.Shadowcaster]: Mystery[];
+	[ClassNames.SorcWiz]: Spell[];
+}
 
 export const SpellTable: React.FC = () => {
 	const [selectedClass, setSelectedClass] = useState<ClassNames>(
@@ -38,7 +47,7 @@ export const SpellTable: React.FC = () => {
 	const [filteredRows, setFilteredRows] = useState<AnyMagickType[]>([]);
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-	const { data: spells } = useQuery('spells', getAllSpells);
+	const spells: SpellObject = {} as SpellObject; //implement database call here
 
 	const filterData = (col: string) => {
 		const filteredColumns: string[] = [
