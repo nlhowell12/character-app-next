@@ -76,7 +76,7 @@ export const getDefenseBonuses = (character: Character): BonusObject => {
 };
 
 export type ResistObject = {
-	[key in EnergyTypes]: number | 'Immune';
+	[key in EnergyTypes]: number;
 };
 
 export const getResistances = (character: Character): ResistObject => {
@@ -91,9 +91,7 @@ export const getResistances = (character: Character): ResistObject => {
 			if (!resistances[mod.energyType]) {
 				resistances[mod.energyType] = 0;
 			}
-			if (!!mod.immunity) {
-				resistances[mod.energyType] = 'Immune';
-			} else if (!!mod.value && mod.value > resistances[mod.energyType]) {
+			if (!!mod.value && mod.value > resistances[mod.energyType]) {
 				resistances[mod.energyType] = mod.value;
 			}
 		}

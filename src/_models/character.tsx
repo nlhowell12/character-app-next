@@ -80,6 +80,7 @@ export enum CharacterClassNames {
 	Wizard = 'Wizard',
 	SorcWiz = 'Sorcerer - Wizard',
 }
+
 export type Attribute = {
 	value: number;
 	modifiers: Modifier[];

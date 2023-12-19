@@ -10,8 +10,8 @@ import { CombatInfoDisplay } from "../_components/CombatInfoDisplay";
 import { EquipmentDisplay } from "../_components/EquipmentDisplay";
 import { SkillDisplay } from "../_components/SkillDisplay";
 
-export default () => {
-	const [character, setCharacter] = useState<Character>();
+export default function CharacterPage() {
+	const [character, setCharacter] = useState<Character>({} as Character);
 	const params = useParams<{ character: string }>();
 	const mockQueriedCharacter = mockCharacters.find(
 		(character: Character) => character.name === params.character
