@@ -73,7 +73,7 @@ const SkillsTooltip = (
 export const SkillDisplay = ({ character }: SkillDisplayProps) => {
     return (
         <Card
-            sx={{ overflow: 'scroll', maxHeight: '100%', width: 'fit-content' }}
+            sx={{ overflow: 'scroll', maxHeight: '65vh', width: 'fit-content' }}
         >
             <Table>
                 <TableBody>

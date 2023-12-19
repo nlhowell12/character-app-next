@@ -24,7 +24,7 @@ export default () => {
 	}, [mockQueriedCharacter]);
 
 	return !!character && (
-		<div>
+		<div style={{height: '100vh'}}>
 			<div style={{
                 borderBottom: `1px solid grey`,
                 paddingBottom: '.5rem',
@@ -35,7 +35,6 @@ export default () => {
 			</div>
 			<div style={{
                 display: 'flex',
-                height: '65vh',
             }}>
 				<AttributeDisplay character={character} />
 				<div>
