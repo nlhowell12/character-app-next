@@ -180,7 +180,7 @@ export default function Header() {
 				maxWidth='lg'
 				keepMounted
 			>
-				{/* <SpellTable /> */}
+				<SpellTable />
 			</Dialog>
 			<Dialog
 				open={!!warning}

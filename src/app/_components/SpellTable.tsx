@@ -15,8 +15,9 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { ClassNames, AnyMagickType, Spell, Maneuver, Mystery, Power, Prayer } from '@/_models';
+import { CharacterClassNames, AnyMagickType, Spell, Maneuver, Mystery, Power, Prayer, SpellObject } from '@/_models';
 import { camelToTitle } from '@/_utils/stringUtils';
+import useSpellService from '../api/_services/useSpellService';
 
 const SpellTooltip: React.FC<{
 	description: string;
@@ -26,20 +27,9 @@ const SpellTooltip: React.FC<{
 	return <Typography>{description}</Typography>;
 };
 
-export interface SpellObject {
-	[ClassNames.Cleric]: Prayer[];
-	[ClassNames.Hexblade]: Spell[];
-	[ClassNames.Oathsworn]: Prayer[];
-	[ClassNames.Fighter]: Maneuver[];
-	[ClassNames.PsychicWarrior]: Power[];
-	[ClassNames.Psion]: Power[];
-	[ClassNames.Shadowcaster]: Mystery[];
-	[ClassNames.SorcWiz]: Spell[];
-}
-
 export const SpellTable: React.FC = () => {
-	const [selectedClass, setSelectedClass] = useState<ClassNames>(
-		ClassNames.Cleric
+	const [selectedClass, setSelectedClass] = useState<CharacterClassNames>(
+		CharacterClassNames.Cleric
 	);
 	const [columns, setColumns] = useState<string[]>([]);
 	const [rows, setRows] = useState<AnyMagickType[]>([]);
@@ -47,8 +37,8 @@ export const SpellTable: React.FC = () => {
 	const [filteredRows, setFilteredRows] = useState<AnyMagickType[]>([]);
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-	const spells: SpellObject = {} as SpellObject; //implement database call here
-
+	const { spells } = useSpellService();
+	
 	const filterData = (col: string) => {
 		const filteredColumns: string[] = [
 			'_id',
@@ -62,7 +52,9 @@ export const SpellTable: React.FC = () => {
 	};
 	useEffect(() => {
 		if (!!spells) {
+			console.log(spells)
 			const filterClass = selectedClass as keyof SpellObject;
+			console.log(filterClass)
 			const columns = Object.keys(spells[filterClass][0]).filter((x) =>
 				filterData(x)
 			);
@@ -83,7 +75,7 @@ export const SpellTable: React.FC = () => {
 	};
 
 	const handleClassChange = (event: SelectChangeEvent) => {
-		setSelectedClass(event.target.value as ClassNames);
+		setSelectedClass(event.target.value as CharacterClassNames);
 	};
 
 	const handleSearchChange = (
@@ -104,7 +96,7 @@ export const SpellTable: React.FC = () => {
 			<Select
 				onChange={handleClassChange}
 				value={selectedClass}
-				children={Object.keys(ClassNames).map((x) => {
+				children={Object.keys(CharacterClassNames).map((x) => {
 					return (
 						<MenuItem value={x} key={x}>
 							{x}

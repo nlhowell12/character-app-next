@@ -1,4 +1,4 @@
-import { ClassNames, SkillTypes } from './character';
+import { CharacterClassNames, SkillTypes } from './character';
 
 export enum Descriptors {
 	Shadow = 'Shadow',
@@ -109,14 +109,23 @@ export interface Magick {
 	description: string;
 	descriptors?: string;
 	category: MagickCategory;
-	class: ClassNames;
+	class: Omit<CharacterClassNames, "Barbarian">;
 	level: number;
 	damageType?: string;
 	savingThrow?: string;
 	action: string;
 	bonusType?: string;
 }
-
+export interface SpellObject {
+	[CharacterClassNames.Cleric]: Prayer[];
+	[CharacterClassNames.Hexblade]: Spell[];
+	[CharacterClassNames.Oathsworn]: Prayer[];
+	[CharacterClassNames.Fighter]: Maneuver[];
+	[CharacterClassNames.PsychicWarrior]: Power[];
+	[CharacterClassNames.Psion]: Power[];
+	[CharacterClassNames.Shadowcaster]: Mystery[];
+	[CharacterClassNames.SorcWiz]: Spell[];
+}
 export interface Spell extends Magick {
 	school: ArcaneSchool;
 }
@@ -146,7 +155,7 @@ export interface Maneuver {
 	action: string;
 	description: string;
 	category: MagickCategory;
-	class: ClassNames;
+	class: Omit<CharacterClassNames, "Barbarian">;
 	skill: SkillTypes;
 	school: string;
 	weapon: string;

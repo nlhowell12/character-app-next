@@ -64,7 +64,7 @@ export enum Languages {
 	Xephin = 'Xephin',
 }
 
-export enum ClassNames {
+export enum CharacterClassNames {
 	Barbarian = 'Barbarian',
 	Bard = 'Bard',
 	Cleric = 'Cleric',
@@ -188,7 +188,7 @@ export interface Modifier {
 	damage?: boolean;
 	defense?: boolean;
 	type: BonusTypes;
-	source?: ClassNames | RaceNames | Feat;
+	source?: CharacterClassNames | RaceNames | Feat;
 	abilityType?: AbilityTypes;
 	bonusFeat?: Feat;
 	resistance?: boolean;
