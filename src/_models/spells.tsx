@@ -109,7 +109,7 @@ export interface Magick {
 	description: string;
 	descriptors?: string;
 	category: MagickCategory;
-	class: Omit<CharacterClassNames, "Barbarian">;
+	class: CharacterClassNames;
 	level: number;
 	damageType?: string;
 	savingThrow?: string;
@@ -155,7 +155,7 @@ export interface Maneuver {
 	action: string;
 	description: string;
 	category: MagickCategory;
-	class: Omit<CharacterClassNames, "Barbarian">;
+	class: CharacterClassNames;
 	skill: SkillTypes;
 	school: string;
 	weapon: string;
