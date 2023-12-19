@@ -23,7 +23,7 @@ export default () => {
 		}
 	}, [mockQueriedCharacter]);
 
-	return !!character ? (
+	return !!character && (
 		<div>
 			<div style={{
                 borderBottom: `1px solid grey`,
@@ -45,7 +45,5 @@ export default () => {
 				<SkillDisplay character={character} />
 			</div>
 		</div>
-	) : (
-		<div>Character not available :(</div>
-	);
+	)
 };

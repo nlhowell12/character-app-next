@@ -101,7 +101,6 @@ const AttributeRow = ({ character, attribute, modifiers } : AttributeRowProps) =
 		<TableRow sx={{
 			height: '3rem',
 			alignItems: 'center',
-			display: 'flex',
 			width: '100%',
 		}}>
 			<TableCell>
