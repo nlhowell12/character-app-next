@@ -27,6 +27,7 @@ export default function RootLayout({
               sx={{
                   marginLeft: "6rem",
                   marginTop: "5rem",
+                  height: '100vh'
                 }}
             >
               <Header />
