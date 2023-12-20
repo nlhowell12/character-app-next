@@ -1,5 +1,6 @@
 import {
     AttributeNames,
+    CharacterClass,
     CharacterClassNames,
     ClassAbility,
     SkillTypes,
@@ -74,10 +75,11 @@ const AddClassAbility = ({ handleClose, addAbility }: AddClassAbilityProps) => {
 
 interface AddClassCardProps {
     onClose: (event: any, reason: any) => void;
+    onSubmit: (cls: CharacterClass) => void;
 }
 
-export const AddClassCard = ({ onClose }: AddClassCardProps) => {
-    const [className, setClassName] = useState<CharacterClassNames>();
+export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
+    const [className, setClassName] = useState<CharacterClassNames>(CharacterClassNames.Barbarian);
     const [level, setLevel] = useState<number>(1);
     const [primarySave, setPrimarySave] = useState<AttributeNames>(
         AttributeNames.Strength
@@ -94,6 +96,19 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
     };
     const open = Boolean(anchorEl);
 
+    const handleSubmitClick = () => {
+        const cls: CharacterClass = {
+            name: className,
+            level,
+            primarySave,
+            secondarySave,
+            classAbilities,
+            classSkills: classSkills.map(x => {return x as SkillTypes})
+        }
+        onSubmit(cls);
+        onClose({}, 'buttonClose')
+    };
+
     const handleAddAbility = (ability: ClassAbility) => {
         setClassAbilities([...classAbilities, ability]);
         setAnchorEl(null);
@@ -105,7 +120,6 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
         const {
             target: { value },
         } = event;
-        console.log(value);
         setClassSkills(typeof value === 'string' ? value.split(',') : value);
     };
 
@@ -287,7 +301,7 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                     <CancelRounded />
                 </Button>
                 <Button>
-                    <CheckCircle />
+                    <CheckCircle onClick={() => handleSubmitClick()}/>
                 </Button>
             </CardActions>
         </Card>

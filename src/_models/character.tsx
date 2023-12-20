@@ -173,7 +173,6 @@ export interface CharacterClass {
 	classSkills: SkillTypes[];
 	classAbilities: ClassAbility[];
 	level: number;
-	firstClass: boolean;
 	secondarySave: AttributeNames;
 }
 
