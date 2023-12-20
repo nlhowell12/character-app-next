@@ -23,11 +23,11 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 interface AddClassAbilityProps {
     addAbility: (ability: ClassAbility) => void;
-    handleClose: (event: any, reason: any) => void;
+    handleClose: Dispatch<SetStateAction<HTMLButtonElement | null | undefined>>;
 }
 
 const textFieldStyling = { marginTop: '.5rem' };
@@ -59,7 +59,7 @@ const AddClassAbility = ({ handleClose, addAbility }: AddClassAbilityProps) => {
                 />
             </CardContent>
             <CardActions sx={{ justifyContent: 'right' }}>
-                <Button onClick={(e) => handleClose(e, 'buttonClick')}>
+                <Button onClick={(e) => handleClose(null)}>
                     <CancelRounded />
                 </Button>
                 <Button
@@ -132,13 +132,20 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                                     )
                                 }
                             >
-                                {Object.keys(CharacterClassNames).map((cls) => {
-                                    return (
-                                        <MenuItem key={cls} value={cls}>
-                                            {cls}
-                                        </MenuItem>
-                                    );
-                                })}
+                                {Object.keys(CharacterClassNames)
+                                    .filter(
+                                        (x) =>
+                                            /* @ts-ignore */
+                                            CharacterClassNames[x] !==
+                                            CharacterClassNames.SorcWiz
+                                    )
+                                    .map((cls) => {
+                                        return (
+                                            <MenuItem key={cls} value={cls}>
+                                                {cls}
+                                            </MenuItem>
+                                        );
+                                    })}
                             </Select>
                         </FormControl>
                         <TextField
@@ -174,7 +181,10 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                                 })}
                             </Select>
                         </FormControl>
-                        <FormControl fullWidth sx={{...formControlStyling, marginTop: '.5rem'}}>
+                        <FormControl
+                            fullWidth
+                            sx={{ ...formControlStyling, marginTop: '.5rem' }}
+                        >
                             <InputLabel id='secondary-save-label'>
                                 Secondary Save
                             </InputLabel>
@@ -254,7 +264,7 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                 {classAbilities.map((abl) => {
                     return !!abl.description ? (
                         <Tooltip title={abl.description}>
-                            <Card>
+                            <Card sx={{padding: '0 0 0 .5rem'}}>
                                 <Typography
                                     variant='caption'
                                     align='right'
@@ -263,7 +273,7 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                             </Card>
                         </Tooltip>
                     ) : (
-                        <Card>
+                        <Card sx={{padding: '0 0 0.5rem'}}>
                             <Typography variant='caption' align='right'>
                                 {abl.level}
                             </Typography>
