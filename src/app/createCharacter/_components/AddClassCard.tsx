@@ -1,4 +1,4 @@
-import { AttributeNames, ClassAbility } from '@/_models';
+import { AttributeNames, ClassAbility, SkillTypes } from '@/_models';
 import { Add, CancelRounded, CheckCircle } from '@mui/icons-material';
 import {
     Button,
@@ -6,11 +6,14 @@ import {
     CardActions,
     CardContent,
     CardHeader,
+    Checkbox,
     FormControl,
     InputLabel,
+    ListItemText,
     MenuItem,
     Popover,
     Select,
+    SelectChangeEvent,
     TextField,
     Tooltip,
     Typography,
@@ -25,10 +28,7 @@ interface AddClassAbilityProps {
 const textFieldStyling = { marginTop: '.5rem' };
 const formControlStyling = { marginTop: '.5rem', marginLeft: '.5rem' };
 
-const AddClassAbility = ({
-    handleClose,
-    addAbility,
-} : AddClassAbilityProps) => {
+const AddClassAbility = ({ handleClose, addAbility }: AddClassAbilityProps) => {
     const [name, setName] = useState('');
     const [level, setLevel] = useState(1);
     const [description, setDescription] = useState('');
@@ -71,7 +71,7 @@ interface AddClassCardProps {
     onClose: (event: any, reason: any) => void;
 }
 
-export const AddClassCard = ({ onClose } : AddClassCardProps) => {
+export const AddClassCard = ({ onClose }: AddClassCardProps) => {
     const [className, setClassName] = useState('');
     const [level, setLevel] = useState<number>(1);
     const [primarySave, setPrimarySave] = useState<AttributeNames>(
@@ -81,6 +81,7 @@ export const AddClassCard = ({ onClose } : AddClassCardProps) => {
         AttributeNames.Strength
     );
     const [classAbilities, setClassAbilities] = useState<ClassAbility[]>([]);
+    const [classSkills, setClassSkills] = useState<string[]>([]);
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -91,6 +92,16 @@ export const AddClassCard = ({ onClose } : AddClassCardProps) => {
     const handleAddAbility = (ability: ClassAbility) => {
         setClassAbilities([...classAbilities, ability]);
         setAnchorEl(null);
+    };
+
+    const handleChangeClassSkill = (
+        event: SelectChangeEvent<typeof classSkills>
+    ) => {
+        const {
+            target: { value },
+        } = event;
+        console.log(value);
+        setClassSkills(typeof value === 'string' ? value.split(',') : value);
     };
 
     return (
@@ -136,7 +147,9 @@ export const AddClassCard = ({ onClose } : AddClassCardProps) => {
                             >
                                 {Object.keys(AttributeNames).map((att) => {
                                     return (
-                                        <MenuItem value={att}>{att}</MenuItem>
+                                        <MenuItem key={att} value={att}>
+                                            {att}
+                                        </MenuItem>
                                     );
                                 })}
                             </Select>
@@ -158,13 +171,40 @@ export const AddClassCard = ({ onClose } : AddClassCardProps) => {
                             >
                                 {Object.keys(AttributeNames).map((att) => {
                                     return (
-                                        <MenuItem value={att}>{att}</MenuItem>
+                                        <MenuItem key={att} value={att}>
+                                            {att}
+                                        </MenuItem>
                                     );
                                 })}
                             </Select>
                         </FormControl>
                     </div>
                 </div>
+                <Select
+                    multiple
+                    value={classSkills}
+                    onChange={handleChangeClassSkill}
+                    renderValue={(selected) =>
+                        selected
+                            .map((skill) => {
+                                {/* @ts-ignore */}
+                                return SkillTypes[skill];
+                            })
+                            .join(', ')
+                    }
+                >
+                    {Object.keys(SkillTypes).map((skill) => {
+                        return (
+                            <MenuItem key={skill} value={skill}>
+                                <Checkbox
+                                    checked={classSkills.indexOf(skill) > -1}
+                                />
+                                {/* @ts-ignore */}
+                                <ListItemText primary={SkillTypes[skill]} />
+                            </MenuItem>
+                        );
+                    })}
+                </Select>
                 <Button sx={{ margin: '.5rem 0' }} onClick={handleClick}>
                     <Typography>Add Class Ability</Typography>
                     <Add />
