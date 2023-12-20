@@ -1,10 +1,12 @@
-import React, { useReducer } from 'react';
-import { AttributeDisplay } from './AttributeDisplay';
-import { CharacterInfoDisplay } from './CharacterInfoDisplay';
-import { characterReducer, initialCharacterState } from '../../../_reducer/characterReducer';
-import { ClassSelector } from './ClassSelector';
+'use client'
 
-export const CreateCharacter = () => {
+import { useReducer } from 'react';
+import { AttributeDisplay } from './_components/AttributeDisplay';
+import { CharacterInfoDisplay } from './_components/CharacterInfoDisplay';
+import { characterReducer, initialCharacterState } from '../../_reducer/characterReducer';
+import { ClassSelector } from './_components/ClassSelector';
+
+export default function CreateCharacter() {
     const [character, dispatch] = useReducer(
         characterReducer,
         initialCharacterState

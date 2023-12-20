@@ -19,7 +19,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 
 interface AddClassAbilityProps {
     addAbility: (ability: ClassAbility) => void;
-    handleClose: Dispatch<SetStateAction<HTMLButtonElement | null | undefined>>;
+    handleClose: (event: any, reason: any) => void;
 }
 
 const textFieldStyling = { marginTop: '.5rem' };
@@ -54,7 +54,7 @@ const AddClassAbility = ({
                 />
             </CardContent>
             <CardActions sx={{ justifyContent: 'right' }}>
-                <Button onClick={() => handleClose(null)}>
+                <Button onClick={(e) => handleClose(e, 'buttonClick')}>
                     <CancelRounded />
                 </Button>
                 <Button
@@ -68,7 +68,7 @@ const AddClassAbility = ({
 };
 
 interface AddClassCardProps {
-    onClose: Dispatch<SetStateAction<HTMLButtonElement | null | undefined>>;
+    onClose: (event: any, reason: any) => void;
 }
 
 export const AddClassCard = ({ onClose } : AddClassCardProps) => {
@@ -205,7 +205,7 @@ export const AddClassCard = ({ onClose } : AddClassCardProps) => {
                 })}
             </CardContent>
             <CardActions sx={{ justifyContent: 'right' }}>
-                <Button onClick={() => onClose(null)}>
+                <Button onClick={(e) => onClose(e, 'buttonClose')}>
                     <CancelRounded />
                 </Button>
                 <Button>

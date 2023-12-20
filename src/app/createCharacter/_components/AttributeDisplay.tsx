@@ -128,7 +128,6 @@ const AttributeRow = ({ character, attribute, modifiers, dispatch } : AttributeR
             sx={{
                 height: '3rem',
                 alignItems: 'center',
-                display: 'flex',
                 width: '100%',
             }}
         >

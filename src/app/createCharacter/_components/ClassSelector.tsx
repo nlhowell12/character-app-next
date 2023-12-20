@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material';
-import { Button, Popover, Typography } from '@mui/material';
+import { Button, Dialog, Popover, Typography } from '@mui/material';
 import React, { Dispatch, useState } from 'react';
 import { CharacterAction } from '../../../_reducer/characterReducer';
 import { AddClassCard } from './AddClassCard';
@@ -14,12 +14,13 @@ export const ClassSelector = ({
     character,
     dispatch,
 } : ClassSelectorProps) => {
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>();
+    const [open, setOpen] = useState<boolean>(false);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const open = Boolean(anchorEl);
+    const handleClose = (event: any, reason: any) => {
+        if (reason !== 'backdropClick') {
+          setOpen(!open)
+        }
+      }
 
     return (
         <div
@@ -28,21 +29,16 @@ export const ClassSelector = ({
                 width: '20rem',
             }}
         >
-            <Button variant='outlined' onClick={handleClick}>
+            <Button variant='outlined' onClick={() => setOpen(true)}>
                 <Typography>Add Class</Typography>
                 <Add />
             </Button>
-            <Popover
+            <Dialog
                 open={open}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
+                onClose={handleClose}
             >
-                <AddClassCard onClose={setAnchorEl} />
-            </Popover>
+                <AddClassCard onClose={handleClose} />
+            </Dialog>
         </div>
     );
 };

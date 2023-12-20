@@ -37,7 +37,7 @@ export const CharacterCardList = ({
 						margin: '1rem 1rem 0',
 						'&:hover': { opacity: '.6', cursor: 'pointer' },
 					}}
-					onClick={() => router.push('/newCharacter')}
+					onClick={() => router.push('/createCharacter')}
 				>
 					<Typography variant='h5' align='center'>
 						New Character
