@@ -11,7 +11,7 @@ import {
     ListItemText,
     Typography,
 } from '@mui/material';
-import React, { Dispatch, useState } from 'react';
+import { Dispatch, useState } from 'react';
 import {
     CharacterAction,
     updateAction,
@@ -55,10 +55,18 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
             <Dialog open={open} onClose={handleClose}>
                 <AddClassCard onClose={handleClose} onSubmit={handleSubmit} />
             </Dialog>
-            <Grid  direction='row' display='flex' sx={{marginTop: '.5rem'}} container>
+            <Grid
+                direction='row'
+                display='flex'
+                sx={{ marginTop: '.5rem' }}
+                container
+            >
                 {character.classes.map((cls) => {
                     return (
-                        <Card sx={{ margin: '0 .25rem', width: '20rem' }} key={cls.name}>
+                        <Card
+                            sx={{ margin: '0 .25rem', width: '20rem' }}
+                            key={cls.name}
+                        >
                             <CardHeader title={cls.name} />
                             <CardContent>
                                 <Typography>Level: {cls.level}</Typography>
@@ -74,20 +82,22 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                                         );
                                     })}
                                 </List>
-                                <List subheader={'Class Abilities:'}>
-                                    {cls.classAbilities.map((abl) => {
-                                        return (
-                                            <ListItem key={abl.name}>
-                                                <ListItemText
-                                                    primary={`Level ${abl.level}`}
-                                                />
-                                                <ListItemText
-                                                    primary={abl.name}
-                                                />
-                                            </ListItem>
-                                        );
-                                    })}
-                                </List>
+                                {!!cls.classAbilities.length && (
+                                    <List subheader={'Class Abilities:'}>
+                                        {cls.classAbilities.map((abl) => {
+                                            return (
+                                                <ListItem key={abl.name}>
+                                                    <ListItemText
+                                                        primary={`Level ${abl.level}`}
+                                                    />
+                                                    <ListItemText
+                                                        primary={abl.name}
+                                                    />
+                                                </ListItem>
+                                            );
+                                        })}
+                                    </List>
+                                )}
                             </CardContent>
                         </Card>
                     );

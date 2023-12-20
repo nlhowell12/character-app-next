@@ -82,7 +82,6 @@ export const mockCharacters: Character[] = [
 					{ name: 'Quick to Act +1', description: '', level: 1 },
 					{ name: 'Sneak Attack +1d6', description: '', level: 1 },
 				],
-				firstClass: true,
 			},
 		],
 		maxHitPoints: 8,

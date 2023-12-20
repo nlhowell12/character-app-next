@@ -1,10 +1,10 @@
-import { AttributeNames, SkillTypes } from '../_models';
+import { SkillTypes, AttributeNames } from "@/_models";
 
-export const MockSkills = {
+export default {
 	[SkillTypes.Acrobatics]: {
 		name: SkillTypes.Acrobatics,
 		linkedAttribute: AttributeNames.Dexterity,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.Athletics]: {
 		name: SkillTypes.Athletics,
@@ -14,17 +14,17 @@ export const MockSkills = {
 	[SkillTypes.Bluff]: {
 		name: SkillTypes.Bluff,
 		linkedAttribute: AttributeNames.Charisma,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.Diplomacy]: {
 		name: SkillTypes.Diplomacy,
 		linkedAttribute: AttributeNames.Charisma,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.Disguise]: {
 		name: SkillTypes.Disguise,
 		linkedAttribute: AttributeNames.Charisma,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.Concentration]: {
 		name: SkillTypes.Concentration,
@@ -34,7 +34,7 @@ export const MockSkills = {
 	[SkillTypes.EscapeArtist]: {
 		name: SkillTypes.EscapeArtist,
 		linkedAttribute: AttributeNames.Dexterity,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.Heal]: {
 		name: SkillTypes.Heal,
@@ -64,7 +64,7 @@ export const MockSkills = {
 	[SkillTypes.KnowledgeLocal]: {
 		name: SkillTypes.KnowledgeLocal,
 		linkedAttribute: AttributeNames.Intelligence,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.KnowledgeNature]: {
 		name: SkillTypes.KnowledgeNature,
@@ -89,7 +89,7 @@ export const MockSkills = {
 	[SkillTypes.Perception]: {
 		name: SkillTypes.Perception,
 		linkedAttribute: AttributeNames.Wisdom,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.Perform]: {
 		name: SkillTypes.Perform,
@@ -104,12 +104,12 @@ export const MockSkills = {
 	[SkillTypes.SenseMotive]: {
 		name: SkillTypes.SenseMotive,
 		linkedAttribute: AttributeNames.Wisdom,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.SleightOfHand]: {
 		name: SkillTypes.SleightOfHand,
 		linkedAttribute: AttributeNames.Dexterity,
-		ranks: 4,
+		ranks: 0,
 	},
 	[SkillTypes.SpeakLanguage]: {
 		name: SkillTypes.SpeakLanguage,
@@ -119,6 +119,6 @@ export const MockSkills = {
 	[SkillTypes.Stealth]: {
 		name: SkillTypes.Stealth,
 		linkedAttribute: AttributeNames.Dexterity,
-		ranks: 4,
+		ranks: 0,
 	},
 };

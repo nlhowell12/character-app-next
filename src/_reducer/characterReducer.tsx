@@ -1,4 +1,5 @@
 import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject } from "@/_models";
+import initialSkillsState from "./initialSkillsState";
 
 export enum CharacterReducerActions {
 	UPDATE = 'UPDATE',
@@ -112,7 +113,7 @@ export const initialCharacterState: Character = {
 	eyeColor: '',
 	hairColor: '',
 	languages: [],
-	skills: {} as SkillObject,
+	skills: initialSkillsState,
 	equipment: [],
 	miscModifiers: [],
 	playerName: '',
