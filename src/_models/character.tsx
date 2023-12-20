@@ -17,7 +17,7 @@ export enum SkillTypes {
 	Concentration = 'Concentration',
 	Diplomacy = 'Diplomacy',
 	Disguise = 'Disguise',
-	EscapeArtist = 'EscapeArtist',
+	EscapeArtist = 'Escape Artist',
 	Heal = 'Heal',
 	Intimidate = 'Intimidate',
 	KnowledgeArcana = 'Knowledge: Arcana',

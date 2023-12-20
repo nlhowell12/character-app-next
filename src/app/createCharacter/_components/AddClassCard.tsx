@@ -1,4 +1,9 @@
-import { AttributeNames, ClassAbility, SkillTypes } from '@/_models';
+import {
+    AttributeNames,
+    CharacterClassNames,
+    ClassAbility,
+    SkillTypes,
+} from '@/_models';
 import { Add, CancelRounded, CheckCircle } from '@mui/icons-material';
 import {
     Button,
@@ -26,7 +31,7 @@ interface AddClassAbilityProps {
 }
 
 const textFieldStyling = { marginTop: '.5rem' };
-const formControlStyling = { marginTop: '.5rem', marginLeft: '.5rem' };
+const formControlStyling = { marginLeft: '.5rem' };
 
 const AddClassAbility = ({ handleClose, addAbility }: AddClassAbilityProps) => {
     const [name, setName] = useState('');
@@ -72,7 +77,7 @@ interface AddClassCardProps {
 }
 
 export const AddClassCard = ({ onClose }: AddClassCardProps) => {
-    const [className, setClassName] = useState('');
+    const [className, setClassName] = useState<CharacterClassNames>();
     const [level, setLevel] = useState<number>(1);
     const [primarySave, setPrimarySave] = useState<AttributeNames>(
         AttributeNames.Strength
@@ -114,13 +119,28 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                     }}
                 >
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <TextField
-                            sx={textFieldStyling}
-                            variant='outlined'
-                            label='Class Name'
-                            value={className}
-                            onChange={(e) => setClassName(e.target.value)}
-                        />
+                        <FormControl fullWidth>
+                            <InputLabel id='class-label'>Class</InputLabel>
+                            <Select
+                                labelId='class-label'
+                                id='class-select'
+                                label='Class'
+                                value={className}
+                                onChange={(e) =>
+                                    setClassName(
+                                        e.target.value as CharacterClassNames
+                                    )
+                                }
+                            >
+                                {Object.keys(CharacterClassNames).map((cls) => {
+                                    return (
+                                        <MenuItem key={cls} value={cls}>
+                                            {cls}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
                         <TextField
                             sx={textFieldStyling}
                             variant='outlined'
@@ -136,7 +156,7 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                             </InputLabel>
                             <Select
                                 labelId='primary-save-label'
-                                id='demo-simple-select'
+                                id='primary-save-select'
                                 value={primarySave}
                                 label='Primary Save'
                                 onChange={(e) =>
@@ -154,7 +174,7 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                                 })}
                             </Select>
                         </FormControl>
-                        <FormControl fullWidth sx={formControlStyling}>
+                        <FormControl fullWidth sx={{...formControlStyling, marginTop: '.5rem'}}>
                             <InputLabel id='secondary-save-label'>
                                 Secondary Save
                             </InputLabel>
@@ -180,31 +200,39 @@ export const AddClassCard = ({ onClose }: AddClassCardProps) => {
                         </FormControl>
                     </div>
                 </div>
-                <Select
-                    multiple
-                    value={classSkills}
-                    onChange={handleChangeClassSkill}
-                    renderValue={(selected) =>
-                        selected
-                            .map((skill) => {
-                                {/* @ts-ignore */}
-                                return SkillTypes[skill];
-                            })
-                            .join(', ')
-                    }
-                >
-                    {Object.keys(SkillTypes).map((skill) => {
-                        return (
-                            <MenuItem key={skill} value={skill}>
-                                <Checkbox
-                                    checked={classSkills.indexOf(skill) > -1}
-                                />
-                                {/* @ts-ignore */}
-                                <ListItemText primary={SkillTypes[skill]} />
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
+                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                    <InputLabel id='class-skill-label'>Class Skills</InputLabel>
+                    <Select
+                        labelId='class-skill-label'
+                        id='class-skills'
+                        label='Class Skills'
+                        multiple
+                        value={classSkills}
+                        onChange={handleChangeClassSkill}
+                        renderValue={(selected) =>
+                            selected
+                                .map((skill) => {
+                                    /* @ts-ignore */
+                                    return SkillTypes[skill];
+                                })
+                                .join(', ')
+                        }
+                    >
+                        {Object.keys(SkillTypes).map((skill) => {
+                            return (
+                                <MenuItem key={skill} value={skill}>
+                                    <Checkbox
+                                        checked={
+                                            classSkills.indexOf(skill) > -1
+                                        }
+                                    />
+                                    {/* @ts-ignore */}
+                                    <ListItemText primary={SkillTypes[skill]} />
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
                 <Button sx={{ margin: '.5rem 0' }} onClick={handleClick}>
                     <Typography>Add Class Ability</Typography>
                     <Add />
