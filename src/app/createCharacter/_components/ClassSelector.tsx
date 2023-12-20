@@ -10,10 +10,10 @@ interface ClassSelectorProps {
     dispatch: Dispatch<CharacterAction>;
 }
 
-export const ClassSelector: React.FC<ClassSelectorProps> = ({
+export const ClassSelector = ({
     character,
     dispatch,
-}) => {
+} : ClassSelectorProps) => {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

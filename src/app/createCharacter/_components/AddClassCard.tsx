@@ -25,10 +25,10 @@ interface AddClassAbilityProps {
 const textFieldStyling = { marginTop: '.5rem' };
 const formControlStyling = { marginTop: '.5rem', marginLeft: '.5rem' };
 
-const AddClassAbility: React.FC<AddClassAbilityProps> = ({
+const AddClassAbility = ({
     handleClose,
     addAbility,
-}) => {
+} : AddClassAbilityProps) => {
     const [name, setName] = useState('');
     const [level, setLevel] = useState(1);
     const [description, setDescription] = useState('');
@@ -71,7 +71,7 @@ interface AddClassCardProps {
     onClose: Dispatch<SetStateAction<HTMLButtonElement | null | undefined>>;
 }
 
-export const AddClassCard: React.FC<AddClassCardProps> = ({ onClose }) => {
+export const AddClassCard = ({ onClose } : AddClassCardProps) => {
     const [className, setClassName] = useState('');
     const [level, setLevel] = useState<number>(1);
     const [primarySave, setPrimarySave] = useState<AttributeNames>(

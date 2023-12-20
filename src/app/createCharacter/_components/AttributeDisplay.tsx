@@ -29,9 +29,13 @@ enum CardTitles {
 
 type CardTitlesType = BonusTypes | CardTitles;
 
-const AttributeTooltip: React.FC<{ modifiers: Modifier[] }> = ({
+interface AttributeTooltipProps {
+    modifiers: Modifier[]
+};
+
+const AttributeTooltip = ({
     modifiers,
-}) => {
+} : AttributeTooltipProps) => {
     return (
         <Table>
             <TableBody>
@@ -53,7 +57,7 @@ const AttributeTooltip: React.FC<{ modifiers: Modifier[] }> = ({
     );
 };
 
-interface AttributeDisplayProps {
+interface AttributeDisplayBoxProps {
     displayTitle: CardTitlesType;
     displayValue: number;
     modifiers?: Modifier[];
@@ -64,13 +68,13 @@ interface AttributeDisplayProps {
     ) => void;
 }
 
-const DisplayBox: React.FC<AttributeDisplayProps> = ({
+const DisplayBox = ({
     modifiers,
     displayTitle,
     displayValue,
     editable,
     onChange,
-}) => {
+} : AttributeDisplayBoxProps) => {
     return !!modifiers?.length && displayTitle === CardTitles.Total ? (
         <Tooltip
             title={<AttributeTooltip modifiers={modifiers} />}
@@ -111,12 +115,13 @@ const DisplayBox: React.FC<AttributeDisplayProps> = ({
     );
 };
 
-const AttributeRow: React.FC<{
+interface AttributeRowProps {
     character: Character;
     attribute: AttributeNames;
     modifiers: Modifier[];
     dispatch?: Dispatch<CharacterAction>;
-}> = ({ character, attribute, modifiers, dispatch }) => {
+}
+const AttributeRow = ({ character, attribute, modifiers, dispatch } : AttributeRowProps) => {
     const totalValue = totalAttributeValue(character, attribute);
     return (
         <TableRow
@@ -188,10 +193,12 @@ const AttributeRow: React.FC<{
     );
 };
 
-export const AttributeDisplay: React.FC<{
+interface AttributeDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
-}> = ({ character, dispatch }) => {
+};
+
+export const AttributeDisplay = ({ character, dispatch } : AttributeDisplayProps) => {
     const { attributes } = character;
     return (
         <Card

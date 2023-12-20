@@ -4,7 +4,7 @@ import { CharacterInfoDisplay } from './CharacterInfoDisplay';
 import { characterReducer, initialCharacterState } from '../../../_reducer/characterReducer';
 import { ClassSelector } from './ClassSelector';
 
-export const CreateCharacter: React.FC<{}> = () => {
+export const CreateCharacter = () => {
     const [character, dispatch] = useReducer(
         characterReducer,
         initialCharacterState

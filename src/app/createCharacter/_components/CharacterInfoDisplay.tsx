@@ -33,12 +33,12 @@ const cellStylingObject = {
     padding: '.5rem',
 };
 
-const DisplayCell: React.FC<DisplayCellProps> = ({
+const DisplayCell = ({
     label,
     value,
     onChange,
     disabled,
-}) => {
+} : DisplayCellProps) => {
     return (
         <TableCell sx={cellStylingObject}>
             <TextField
