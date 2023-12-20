@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 
 export enum CharacterReducerActions {
@@ -35,7 +35,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | CharacterClass[];
+type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[];
 
 export type CharacterAction = {
 	type: CharacterReducerActions;

@@ -1,4 +1,4 @@
-import { BonusTypes, EnergyTypes, Sizes } from '../_models';
+import { BonusTypes, Damage, EnergyType, Sizes } from '../_models';
 import {
 	AttributeNames,
 	Character,
@@ -120,7 +120,7 @@ export const mockCharacters: Character[] = [
 			{
 				value: 5,
 				resistance: true,
-				energyType: EnergyTypes.Cold,
+				damageType: Damage.Cold,
 				type: BonusTypes.Racial,
 			},
 		],

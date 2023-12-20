@@ -1,5 +1,5 @@
 import { Equipment } from './equipment';
-import { AbilityTypes, BonusTypes, EnergyTypes, Sizes } from './gameMechanics';
+import { AbilityTypes, BonusTypes, Damage, Sizes } from './gameMechanics';
 
 export enum AttributeNames {
 	Strength = 'Strength',
@@ -188,12 +188,10 @@ export interface Modifier {
 	damage?: boolean;
 	defense?: boolean;
 	type: BonusTypes;
-	source?: CharacterClassNames | RaceNames | Feat;
 	abilityType?: AbilityTypes;
-	bonusFeat?: Feat;
 	resistance?: boolean;
 	immunity?: boolean;
-	energyType?: EnergyTypes;
+	damageType?: Damage;
 }
 export interface Feat {
 	prerequisites?: Feat[] | string[];

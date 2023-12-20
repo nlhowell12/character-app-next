@@ -28,13 +28,34 @@ export enum Dice {
     d100 = 'd100',
 }
 
-export enum EnergyTypes {
+export enum EnergyType {
     Fire = 'Fire',
     Cold = 'Cold',
     Electricity = 'Electricity',
     Sonic = 'Sonic',
     Acid = 'Acid',
 }
+
+export enum ExtraordinaryDamage {
+    Force = 'Force',
+    Mystic = 'Mystic',
+    Necrotic = 'Necrotic',
+    Psychic = 'Psychic',
+    Radiant = 'Radiant',
+    Untyped = 'Untyped',
+    Venom = 'Venom',
+    Vile = 'Vile',
+}
+
+export enum PhysicalDamage {
+    Bludgeoning = 'Bludgeoning',
+    Piercing = 'Piercing',
+    NonLethal = 'Non Lethal',
+    Slashing = 'Slashing',
+}
+
+export const Damage = {...EnergyType, ...ExtraordinaryDamage, ...PhysicalDamage};
+export type Damage = EnergyType | ExtraordinaryDamage | PhysicalDamage;
 
 export enum Sizes {
     Fine = 'Fine',

@@ -9,10 +9,18 @@ import {
     InputLabel,
     MenuItem,
     SelectChangeEvent,
+    Button,
+    Typography,
+    Dialog,
 } from '@mui/material';
-import React, { Dispatch } from 'react';
-import { CharacterAction, updateAction } from '../../../_reducer/characterReducer';
+import { Dispatch, useState } from 'react';
+import {
+    CharacterAction,
+    updateAction,
+} from '../../../_reducer/characterReducer';
 import { Character, CharacterKeys, Sizes } from '@/_models';
+import { Add } from '@mui/icons-material';
+import { ModifierDialog } from './ModifierDialog';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -38,7 +46,7 @@ const DisplayCell = ({
     value,
     onChange,
     disabled,
-} : DisplayCellProps) => {
+}: DisplayCellProps) => {
     return (
         <TableCell sx={cellStylingObject}>
             <TextField
@@ -52,11 +60,14 @@ const DisplayCell = ({
     );
 };
 
+
+
 export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
     character,
     dispatch,
 }) => {
     const playerName = 'Hater';
+    const [openModifiers, setOpenModifers] = useState<boolean>(false);
 
     const handleSizeChange = (e: SelectChangeEvent<string>) => {
         const {
@@ -95,6 +106,21 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                             value={playerName}
                             disabled
                         />
+                        <TableCell sx={cellStylingObject}>
+                            <Button
+                                variant='outlined'
+                                onClick={() => setOpenModifers(true)}
+                            >
+                                <Typography>Add Modifier</Typography>
+                                <Add />
+                            </Button>
+                            <Dialog
+                                open={openModifiers}
+                                onClose={() => setOpenModifers(false)}
+                            >
+                                <ModifierDialog character={character} dispatch={dispatch}/>
+                            </Dialog>
+                        </TableCell>
                     </TableRow>
                     <TableRow>
                         <DisplayCell
