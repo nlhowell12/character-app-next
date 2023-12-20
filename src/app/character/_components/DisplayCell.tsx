@@ -54,7 +54,9 @@ export const DisplayCell = ({
 			borderColor: !!editable ? '#666666' : undefined,
 		},
 	};
-
+	const textFieldStylingObject = {
+		padding: '0 .5rem 0 .5rem'
+	}
 	useOutsideAlerter(cellRef, setOpenEdit);
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +80,7 @@ export const DisplayCell = ({
 							autoFocus
 						></TextField>
 					) : (
-						<Typography variant={variant}>{`${cellTitle} ${value}`}</Typography>
+						<Typography sx={textFieldStylingObject} variant={variant}>{`${cellTitle} ${value}`}</Typography>
 					)}
 				</Card>
 			</TableCell>
@@ -100,7 +102,7 @@ export const DisplayCell = ({
 						onFocus={(e) => e.target.select()}
 					></TextField>
 				) : (
-					<Typography variant={variant}>{`${cellTitle} ${value}`}</Typography>
+					<Typography sx={textFieldStylingObject} variant={variant}>{`${cellTitle} ${value}`}</Typography>
 				)}
 			</Card>
 		</TableCell>

@@ -11,7 +11,7 @@ import { EquipmentDisplay } from "../_components/EquipmentDisplay";
 import { SkillDisplay } from "../_components/SkillDisplay";
 
 export default function CharacterPage() {
-	const [character, setCharacter] = useState<Character>({} as Character);
+	const [character, setCharacter] = useState<Character>();
 	const params = useParams<{ character: string }>();
 	const mockQueriedCharacter = mockCharacters.find(
 		(character: Character) => character.name === params.character
@@ -22,7 +22,6 @@ export default function CharacterPage() {
 			document.title = mockQueriedCharacter.name;
 		}
 	}, [mockQueriedCharacter]);
-
 	return !!character && (
 		<div style={{height: '100vh'}}>
 			<div style={{

@@ -42,7 +42,6 @@ export const SpellTable = () => {
 	const hybridClasses: CharacterClassNames[] = [CharacterClassNames.Hexblade, CharacterClassNames.Oathsworn, CharacterClassNames.PsychicWarrior];
 
     const filterData = (col: string) => {
-		console.log(selectedSubtype === MagickCategory.Maneuver)
         const filteredColumns: string[] = [
             '_id',
             'category',
