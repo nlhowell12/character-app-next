@@ -64,12 +64,13 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                 {character.classes.map((cls) => {
                     return (
                         <Card
-                            sx={{ margin: '0 .25rem', width: '20rem' }}
+                            sx={{ margin: '0 .25rem .5rem', width: '20rem' }}
                             key={cls.name}
                         >
                             <CardHeader title={cls.name} />
                             <CardContent>
                                 <Typography>Level: {cls.level}</Typography>
+                                <Typography>{`Saves: ${cls.primarySave}, ${cls.secondarySave}`}</Typography>
                                 <List subheader={'Class Skills:'}>
                                     {cls.classSkills.map((skill) => {
                                         return (
