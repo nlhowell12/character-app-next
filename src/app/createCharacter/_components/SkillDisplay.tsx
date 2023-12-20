@@ -1,12 +1,18 @@
 import { Character, RankedSkill } from '@/_models';
-import { CharacterAction } from '@/_reducer/characterReducer';
-import { getSkillSynergies, getSkillModifiers, getArmorCheckPenalties, getTotalSkillValue } from '@/_utils/skillIUtils';
+import { CharacterAction, updateSkillAction } from '@/_reducer/characterReducer';
+import {
+    getSkillSynergies,
+    getSkillModifiers,
+    getArmorCheckPenalties,
+    getTotalSkillValue,
+} from '@/_utils/skillIUtils';
 import {
     Card,
     Table,
     TableBody,
     TableCell,
     TableRow,
+    TextField,
     Tooltip,
     Typography,
 } from '@mui/material';
@@ -14,29 +20,24 @@ import { Dispatch } from 'react';
 interface SkillDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
-};
+}
 
 interface SkillCellProps {
     children: React.ReactNode;
-};
+}
 interface SkillsTooltipProps {
-    skill: RankedSkill; 
-    character: Character
-};
+    skill: RankedSkill;
+    character: Character;
+}
 
-const SkillCell = ({children}: SkillCellProps) => {
+const SkillCell = ({ children }: SkillCellProps) => {
     return (
         <TableCell size='small' align='center'>
             {children}
         </TableCell>
     );
 };
-const SkillsTooltip = (
-    {
-        skill,
-        character
-    }: SkillsTooltipProps
-) => {
+const SkillsTooltip = ({ skill, character }: SkillsTooltipProps) => {
     const synergy = getSkillSynergies(skill, character);
     const miscMods = getSkillModifiers(skill, character);
     return (
@@ -107,6 +108,29 @@ export const SkillDisplay = ({ character, dispatch }: SkillDisplayProps) => {
                                                     3
                                                 )}
                                             </Typography>
+                                        </SkillCell>
+                                        <SkillCell>
+                                            <div
+                                                style={{
+                                                    textAlign: 'center',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                }}
+                                            >
+                                                <Typography variant='caption'>
+                                                    Ranks
+                                                </Typography>
+                                                    <TextField
+                                                        sx={{
+                                                            maxWidth: '4rem',
+                                                        }}
+                                                        value={skill.ranks}
+                                                        onChange={(e) =>
+                                                            /* @ts-ignore */    
+                                                            dispatch(updateSkillAction(skillName, Number(e.target.value)))
+                                                        }
+                                                    />
+                                            </div>
                                         </SkillCell>
                                         <SkillCell>
                                             <Typography variant='caption'>
