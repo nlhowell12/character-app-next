@@ -73,13 +73,29 @@ const AddClassAbility = ({ handleClose, addAbility }: AddClassAbilityProps) => {
     );
 };
 
+interface ClassAbilityCardProps {
+    abl: ClassAbility
+};
+const ClassAbilityCard = ({abl}: ClassAbilityCardProps) => {
+    return (
+        <Card sx={{ padding: '0 0 0 .5rem', margin: '0 0 .25rem 0' }}>
+            <Typography
+                variant='caption'
+                align='right'
+            >{`Level: ${abl.level}`}</Typography>
+            <Typography>{abl.name}</Typography>
+        </Card>
+    )
+}
 interface AddClassCardProps {
     onClose: (event: any, reason: any) => void;
     onSubmit: (cls: CharacterClass) => void;
 }
 
 export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
-    const [className, setClassName] = useState<CharacterClassNames>(CharacterClassNames.Barbarian);
+    const [className, setClassName] = useState<CharacterClassNames>(
+        CharacterClassNames.Barbarian
+    );
     const [level, setLevel] = useState<number>(1);
     const [primarySave, setPrimarySave] = useState<AttributeNames>(
         AttributeNames.Strength
@@ -103,10 +119,12 @@ export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
             primarySave,
             secondarySave,
             classAbilities,
-            classSkills: classSkills.map(x => {return x as SkillTypes})
-        }
+            classSkills: classSkills.map((x) => {
+                return x as SkillTypes;
+            }),
+        };
         onSubmit(cls);
-        onClose({}, 'buttonClose')
+        onClose({}, 'buttonClose');
     };
 
     const handleAddAbility = (ability: ClassAbility) => {
@@ -275,24 +293,13 @@ export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
                         handleClose={setAnchorEl}
                     />
                 </Popover>
-                {classAbilities.map((abl) => {
+                {classAbilities.map((abl: ClassAbility) => {
                     return !!abl.description ? (
-                        <Tooltip title={abl.description}>
-                            <Card sx={{padding: '0 0 0 .5rem'}}>
-                                <Typography
-                                    variant='caption'
-                                    align='right'
-                                >{`Level: ${abl.level}`}</Typography>
-                                <Typography>{abl.name}</Typography>
-                            </Card>
+                        <Tooltip title={abl.description} key={abl.name}>
+                            <ClassAbilityCard abl={abl}/>
                         </Tooltip>
                     ) : (
-                        <Card sx={{padding: '0 0 0.5rem'}}>
-                            <Typography variant='caption' align='right'>
-                                {abl.level}
-                            </Typography>
-                            <Typography>{abl.name}</Typography>
-                        </Card>
+                        <ClassAbilityCard abl={abl} key={abl.name}/>
                     );
                 })}
             </CardContent>
@@ -301,7 +308,7 @@ export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
                     <CancelRounded />
                 </Button>
                 <Button>
-                    <CheckCircle onClick={() => handleSubmitClick()}/>
+                    <CheckCircle onClick={() => handleSubmitClick()} />
                 </Button>
             </CardActions>
         </Card>

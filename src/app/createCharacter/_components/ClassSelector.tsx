@@ -55,21 +55,34 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
             <Dialog open={open} onClose={handleClose}>
                 <AddClassCard onClose={handleClose} onSubmit={handleSubmit} />
             </Dialog>
-            <Grid  direction='row' display='flex' sx={{marginTop: '.5rem'}}>
+            <Grid  direction='row' display='flex' sx={{marginTop: '.5rem'}} container>
                 {character.classes.map((cls) => {
                     return (
                         <Card sx={{ margin: '0 .25rem', width: '20rem' }} key={cls.name}>
                             <CardHeader title={cls.name} />
                             <CardContent>
                                 <Typography>Level: {cls.level}</Typography>
-                                <List subheader={'Class Skills'}>
+                                <List subheader={'Class Skills:'}>
                                     {cls.classSkills.map((skill) => {
                                         return (
                                             <ListItem key={skill}>
                                                 <ListItemText
-                                                    id='switch-list-label-wifi'
                                                     /* @ts-ignore */
                                                     primary={SkillTypes[skill]}
+                                                />
+                                            </ListItem>
+                                        );
+                                    })}
+                                </List>
+                                <List subheader={'Class Abilities:'}>
+                                    {cls.classAbilities.map((abl) => {
+                                        return (
+                                            <ListItem key={abl.name}>
+                                                <ListItemText
+                                                    primary={`Level ${abl.level}`}
+                                                />
+                                                <ListItemText
+                                                    primary={abl.name}
                                                 />
                                             </ListItem>
                                         );
