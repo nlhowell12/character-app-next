@@ -1,4 +1,5 @@
 import {
+	Button,
 	Card,
 	CardContent,
 	Table,
@@ -27,8 +28,12 @@ export const EquipmentDisplay = ({
 	return (
 		<>
 			<Card sx={eqDisplayCardStyle}>
-				<CardContent>
+				<CardContent sx={{display: 'flex', justifyContent: 'space-between'}}>
 					<Typography variant='h6'>Weapons</Typography>
+					<div>
+						<Button>Add</Button>
+						<Button>Remove</Button>
+					</div>
 				</CardContent>
 				<Table>
 					<TableBody>
