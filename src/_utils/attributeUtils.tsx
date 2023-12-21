@@ -8,9 +8,7 @@ export const getAttributeBonuses = (
 	attributeName: keyof typeof AttributeNames,
 	modifiers: Modifier[]
 ): Modifier[] => {
-	return !!modifiers
-		? modifiers.filter((mod) => mod.attribute === attributeName)
-		: [];
+	return modifiers.filter((mod) => mod.attribute === attributeName)
 };
 
 export const getAllAttributeModifiers = (
