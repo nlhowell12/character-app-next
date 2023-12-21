@@ -1,6 +1,6 @@
 'use client'
 
-import { mockCharacters } from "@/_mockData/characters";
+// import { mockCharacters } from "@/_mockData/characters";
 import { Character } from "@/_models";
 import { useParams } from "next/navigation";
 import { useEffect, useReducer } from "react";
@@ -10,10 +10,12 @@ import { CombatInfoDisplay } from "../_components/CombatInfoDisplay";
 import { EquipmentDisplay } from "../_components/EquipmentDisplay";
 import { SkillDisplay } from "../_components/SkillDisplay";
 import { characterReducer, initialCharacterState, setCharacterAction } from "@/_reducer/characterReducer";
+import useCharacterService from "@/app/api/_services/useCharacterService";
 
 export default function CharacterPage() {
 	const params = useParams<{ character: string }>();
-	const mockQueriedCharacter = mockCharacters.find(
+	const {characters} = useCharacterService();
+	const pageCharacter = characters?.find(
 		(character: Character) => character.name === params.character
 	);
 	const [character, dispatch] = useReducer(
@@ -21,11 +23,11 @@ export default function CharacterPage() {
         initialCharacterState
     );
 	useEffect(() => {
-		if (!!mockQueriedCharacter) {
-			dispatch(setCharacterAction(mockQueriedCharacter));
-			document.title = mockQueriedCharacter.name;
+		if (!!pageCharacter) {
+			dispatch(setCharacterAction(pageCharacter));
+			document.title = pageCharacter.name;
 		}
-	}, [mockQueriedCharacter]);
+	}, [pageCharacter]);
 	return !!character && (
 		<div style={{height: '100vh'}}>
 			<div style={{
