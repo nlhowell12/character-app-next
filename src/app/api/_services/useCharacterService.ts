@@ -16,5 +16,16 @@ export default () => {
             setCharacters(characters);
         }
     }
-    return { characters }
+
+    const postCharacter = async (character: Character) => {
+        const res = await fetch('/api/characters', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(character)
+        })
+    }
+
+    return { characters, postCharacter }
 }

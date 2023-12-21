@@ -1,9 +1,9 @@
 'use client'
 
 import { mockCharacters } from "@/_mockData/characters";
-import { Character, CharacterKeys } from "@/_models";
+import { Character } from "@/_models";
 import { useParams } from "next/navigation";
-import React, { useState, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { AttributeDisplay } from "../_components/AttributeDisplay";
 import { CharacterInfoDisplay } from "../_components/CharacterInfoDisplay";
 import { CombatInfoDisplay } from "../_components/CombatInfoDisplay";

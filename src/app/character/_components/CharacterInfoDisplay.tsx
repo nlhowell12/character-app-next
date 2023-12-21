@@ -7,6 +7,7 @@ import { Dispatch, useState } from 'react';
 import * as R from 'ramda';
 import { ModifierDialog } from '@/app/_components/ModifierDialog';
 import { Add } from '@mui/icons-material';
+import useCharacterService from '@/app/api/_services/useCharacterService';
 interface CharacterInfoDisplayProps {
 	character: Character;
 	dispatch: Dispatch<CharacterAction>;
@@ -23,6 +24,7 @@ export const CharacterInfoDisplay = ({
 } : CharacterInfoDisplayProps) => {
 	const notASI = (x: Modifier) => x.definition !== ModifierSource.attributeScoreIncrease;
 	const [openModifiers, setOpenModifers] = useState<boolean>(false);
+	const { postCharacter } = useCharacterService();
 	return (
 		<Grid container>
 			<Grid item xs={6}>
@@ -58,6 +60,15 @@ export const CharacterInfoDisplay = ({
                                         dispatch={dispatch}
                                     />
                                 </Dialog>
+                            </TableCell>
+						 <TableCell sx={cellStylingObject}>
+                                <Button
+                                    variant='outlined'
+                                    onClick={() => postCharacter(character)}
+                                >
+                                    <Typography>Save Character</Typography>
+                                    <Add />
+                                </Button>
                             </TableCell>
 					</TableRow>
 					<TableRow>
