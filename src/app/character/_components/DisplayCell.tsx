@@ -59,10 +59,6 @@ export const DisplayCell = ({
 	}
 	useOutsideAlerter(cellRef, setOpenEdit);
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		!!onChange && onChange(event.target.value);
-	};
-
 	return !!tooltip ? (
 		<Tooltip title={tooltip} placement={tooltipPlacement} followCursor>
 			<TableCell sx={cellStylingObject} size='small'>
