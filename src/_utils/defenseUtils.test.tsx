@@ -23,7 +23,7 @@ describe('Defense Utilities', () => {
 	});
 	test('getTotalDefense', () => {
 		expect(defenseUtils.getTotalDefense(mock0)).toStrictEqual({
-			dsBonus: 14,
+			dsBonus: 15,
 			drBonus: 3,
 		});
 	});

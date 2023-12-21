@@ -18,7 +18,7 @@ export const getAllAttributeModifiers = (
 	attributeName: AttributeNames
 ): Modifier[] => {
 	const miscAttributeMods: Modifier[] =
-		character.miscModifiers?.filter((mod) => mod.attribute === attributeName) ||
+		character.miscModifiers?.filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease) ||
 		[];
 	const attributeModifiers =
 		character.attributes[attributeName].modifiers || [];
@@ -30,18 +30,15 @@ export const getBaseAttributeScore = (
 	attributeName: keyof typeof AttributeNames
 ): number => {
 	const base = character.attributes[attributeName].value;
-	const ASIIncreaseModifiers = character.miscModifiers
-		? character.miscModifiers.filter(
+	const ASIIncreaseModifiers = character.miscModifiers.filter(
 				(mod) =>
 					mod.definition === ModifierSource.attributeScoreIncrease &&
 					mod.attribute === attributeName
-		  )
-		: 0;
+					)
 	const totalASI = Object.entries(ASIIncreaseModifiers).reduce(
 		(total, modifier) => {
-			// eslint-disable-next-line
 			const [_, value] = modifier;
-			return total + value.value;
+			return total + (!!value.value ? value.value : 0);
 		},
 		0
 	);

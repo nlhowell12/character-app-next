@@ -1,7 +1,8 @@
-import { BonusTypes, Damage, EnergyType, Sizes } from '../_models';
+import { BonusTypes, Damage, Sizes } from '../_models';
 import {
 	AttributeNames,
 	Character,
+	ModifierSource,
 	MovementTypes,
 	SkillTypes,
 } from '../_models/character';
@@ -123,6 +124,7 @@ export const mockCharacters: Character[] = [
 				damageType: Damage.Cold,
 				type: BonusTypes.Racial,
 			},
+			{definition: ModifierSource.attributeScoreIncrease, attribute: AttributeNames.Dexterity, type: BonusTypes.Untyped, value: 1}
 		],
 	},
 ];

@@ -1,5 +1,6 @@
 import { CharacterKeys, AttributeNames, SkillTypes } from '@/_models';
 import {
+	CharacterReducerActions,
 	characterReducer,
 	initialCharacterState,
 	resetAction,
@@ -63,4 +64,12 @@ describe('characterReducer', () => {
 		const finalState = characterReducer(update2State, resetAction());
 		expect(finalState).toStrictEqual(initialCharacterState);
 	});
+	it('should return state if not covered by switch', () => {
+		expect(characterReducer(initialCharacterState, {
+			type: CharacterReducerActions.DEFAULT,
+			payload: {
+				key: CharacterKeys.age,
+				value: ''
+			}})).toStrictEqual(initialCharacterState);
+	})
 });

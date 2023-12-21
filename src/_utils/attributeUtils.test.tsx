@@ -1,5 +1,5 @@
 
-import { AttributeNames, BonusTypes, Modifier } from '@/_models';
+import { AttributeNames, BonusTypes, Modifier, ModifierSource } from '@/_models';
 import * as abilityUtils from './attributeUtils';
 import { mockCharacters } from '@/_mockData/characters';
 
@@ -44,20 +44,27 @@ describe('Attribute utils', () => {
 			abilityUtils.getAllAttributeModifiers(mock0, AttributeNames.Strength)
 				.length
 		).toBe(1);
+		expect(
+			abilityUtils.getAllAttributeModifiers(mock0, AttributeNames.Dexterity)
+				.length
+		).toBe(1);
 	});
 	test('getBaseAttributeScore', () => {
 		expect(
 			abilityUtils.getBaseAttributeScore(mock0, AttributeNames.Dexterity)
+		).toBe(18);
+		expect(
+			abilityUtils.getBaseAttributeScore({...mock0, miscModifiers: [{definition: ModifierSource.attributeScoreIncrease, attribute: AttributeNames.Strength, type: BonusTypes.Racial}]}, AttributeNames.Dexterity)
 		).toBe(17);
 	});
 	test('totalAttributeValue', () => {
 		expect(
 			abilityUtils.totalAttributeValue(mock0, AttributeNames.Dexterity)
-		).toBe(19);
+		).toBe(20);
 	});
 	test('getTotalAttributeModifier', () => {
 		expect(
 			abilityUtils.getTotalAttributeModifier(mock0, AttributeNames.Dexterity)
-		).toBe(4);
+		).toBe(5);
 	});
 });

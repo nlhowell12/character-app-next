@@ -6,6 +6,7 @@ export enum CharacterReducerActions {
 	UPDATEATTRIBUTE = 'UPDATEATTRIBUTE',
 	UPDATESKILL = 'UPDATESKILL',
 	RESET = 'RESET',
+	DEFAULT = 'DEFAULT'
 }
 
 const initialAttributes: CharacterAttributes = {
@@ -136,7 +137,6 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 					},
 				};
 			}
-			throw new Error('No attribute provided to update.');
 		case CharacterReducerActions.UPDATESKILL:
 			if (!!payload.skill) {
 				return {
@@ -150,7 +150,6 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 					},
 				};
 			}
-			throw new Error('No skill provided to update.');
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;
 		default:
