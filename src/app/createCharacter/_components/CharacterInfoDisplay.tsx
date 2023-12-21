@@ -47,7 +47,7 @@ interface DisplayCellProps {
 
 const cellStylingObject = {
     borderBottom: 'none',
-    padding: '.5rem',
+    padding: '0 .5rem .5rem 0',
 };
 
 const DisplayCell = ({

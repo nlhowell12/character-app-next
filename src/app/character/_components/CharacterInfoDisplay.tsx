@@ -1,20 +1,28 @@
-import { Grid, Stack, Table, TableBody, TableRow, makeStyles } from '@mui/material';
+import { Button, Dialog, Grid, Stack, Table, TableBody, TableCell, TableRow, Typography, makeStyles } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
 import { BonusTypes, Character, Modifier, ModifierSource } from '@/_models';
 import { CharacterAction, deleteModAction } from '@/_reducer/characterReducer';
 import { ModChip } from '@/app/_components/ModChip';
-import { Dispatch } from 'react';
+import { Dispatch, useState } from 'react';
 import * as R from 'ramda';
+import { ModifierDialog } from '@/app/_components/ModifierDialog';
+import { Add } from '@mui/icons-material';
 interface CharacterInfoDisplayProps {
 	character: Character;
 	dispatch: Dispatch<CharacterAction>;
 }
+
+const cellStylingObject = {
+	borderBottom: 'none',
+	padding: '0 .5rem .5rem 0',
+};
 
 export const CharacterInfoDisplay = ({
 	character,
 	dispatch
 } : CharacterInfoDisplayProps) => {
 	const notASI = (x: Modifier) => x.definition !== ModifierSource.attributeScoreIncrease;
+	const [openModifiers, setOpenModifers] = useState<boolean>(false);
 	return (
 		<Grid container>
 			<Grid item xs={6}>
@@ -33,6 +41,24 @@ export const CharacterInfoDisplay = ({
 							cellTitle='Player:'
 							value={character.playerName || 'N/A'}
 						/>
+						 <TableCell sx={cellStylingObject}>
+                                <Button
+                                    variant='outlined'
+                                    onClick={() => setOpenModifers(true)}
+                                >
+                                    <Typography>Add Modifier</Typography>
+                                    <Add />
+                                </Button>
+                                <Dialog
+                                    open={openModifiers}
+                                    onClose={() => setOpenModifers(false)}
+                                >
+                                    <ModifierDialog
+                                        character={character}
+                                        dispatch={dispatch}
+                                    />
+                                </Dialog>
+                            </TableCell>
 					</TableRow>
 					<TableRow>
 						<DisplayCell
