@@ -36,7 +36,8 @@ const modifierString = (key: keyof Modifier, value: any) => {
 }
 
 export const ModChip = ({ mod, onDelete }: ModCardProps) => {
-    const modValue = !!mod.value ? `+${mod.value}` : '';
+    const positive = !!mod.value && mod.value >= 0 ? '+' : ''
+    const modValue = !!mod.value ? `${positive}${mod.value}` : '';
     const modDefinition = !!mod.definition ? ` (${mod.definition})` : ''
     let assignmentString = '';
     Object.entries(mod).forEach(([key, value]) => {

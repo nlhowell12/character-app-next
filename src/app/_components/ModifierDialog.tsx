@@ -99,7 +99,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
         id: uuidv4()
     };
     const valueOptions = appliedModifier.value || appliedModifier.attribute;
-    const valueAssignments = !!boolResistance || !!boolAttack || !!boolDamage || !!boolDefense || !!boolSkill;
+    const valueAssignments = !!boolResistance || !!boolAttack || !!boolDamage || !!boolDefense || !!boolSkill || !!boolAttribute;
     const noModValue = valueAssignments && !valueOptions;
     const noDamageType = !!boolImmunity && !appliedModifier.damageType
     const noUnassignedValue = !!appliedModifier.value && !valueAssignments;
