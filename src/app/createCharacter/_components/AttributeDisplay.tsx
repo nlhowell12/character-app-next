@@ -17,6 +17,7 @@ import {
     getBaseAttributeScore,
     getTotalAttributeModifier,
     getAttributeBonuses,
+    getAllAttributeModifiers,
 } from '@/_utils/attributeUtils';
 import { getTotalSaveBonus } from '@/_utils/defenseUtils';
 
@@ -215,8 +216,7 @@ export const AttributeDisplay = ({ character, dispatch } : AttributeDisplayProps
                 <TableBody>
                     {Object.keys(attributes).map((attribute) => {
                         const typedAtt = attribute as AttributeNames;
-                        const modifiers =
-                            character.attributes[typedAtt].modifiers;
+                        const modifiers = getAllAttributeModifiers(character, typedAtt);
                         return (
                             <AttributeRow
                                 key={typedAtt}

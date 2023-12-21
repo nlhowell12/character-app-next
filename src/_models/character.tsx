@@ -83,7 +83,6 @@ export enum CharacterClassNames {
 
 export type Attribute = {
 	value: number;
-	modifiers: Modifier[];
 };
 
 export type CharacterAttributes = { [key in AttributeNames]: Attribute };

@@ -1,4 +1,4 @@
-import { Table, TableBody, TableRow, makeStyles } from '@mui/material';
+import { Grid, Table, TableBody, TableRow, makeStyles } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
 import { Character } from '@/_models';
 
@@ -10,7 +10,7 @@ export const CharacterInfoDisplay = ({
 	character,
 } : CharacterInfoDisplayProps) => {
 	return (
-		<div style={{width: '75%'}}>
+		<Grid xs={6}>
 			<Table>
 				<TableBody>
 					<TableRow
@@ -75,6 +75,6 @@ export const CharacterInfoDisplay = ({
 					</TableRow>
 				</TableBody>
 			</Table>
-		</div>
+		</Grid>
 	);
 };

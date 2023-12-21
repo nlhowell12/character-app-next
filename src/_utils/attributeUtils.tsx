@@ -17,9 +17,7 @@ export const getAllAttributeModifiers = (
 ): Modifier[] => {
 	const miscAttributeMods: Modifier[] =
 		character.miscModifiers.filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease);
-	const attributeModifiers =
-		character.attributes[attributeName].modifiers;
-	return [...miscAttributeMods, ...attributeModifiers];
+	return miscAttributeMods;
 };
 
 export const getBaseAttributeScore = (
