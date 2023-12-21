@@ -31,6 +31,7 @@ import {
 import { Add } from '@mui/icons-material';
 import { ModifierDialog } from './ModifierDialog';
 import { camelToTitle } from '@/_utils/stringUtils';
+import { ModChip } from './ModChip';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -67,48 +68,6 @@ const DisplayCell = ({
                 disabled={!!disabled}
             />
         </TableCell>
-    );
-};
-interface ModCardProps {
-    mod: Modifier;
-}
-const modifierString = (key: keyof Modifier, value: any) => {
-    switch(key) {
-        case('skill'):
-            return value;
-        case('attribute'):
-            return value;
-        case('damageType'):
-            return value;
-        case('value'):
-            return ''; 
-        case('damage'):
-            return camelToTitle(key);
-        case('type'):
-            return '';
-        default:
-            return key
-    }
-}
-const ModChip = ({ mod }: ModCardProps) => {
-    const handleDelete = () => {
-        console.info('You clicked the delete icon.');
-    };
-    const modValue = !!mod.value ? `+${mod.value}` : '';
-    let assignmentString = '';
-    Object.entries(mod).forEach(([key, value]) => {
-        if(!!value){
-            assignmentString += modifierString(key as keyof Modifier, value)
-        }
-    })
-    const modAssignment = ``
-    return (
-        <Chip
-            /* @ts-ignore */
-            label={`${modValue} ${BonusTypes[mod.type]} - ${assignmentString}`}
-            variant='outlined'
-            onDelete={handleDelete}
-        />
     );
 };
 
