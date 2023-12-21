@@ -67,21 +67,21 @@ export const CombatInfoDisplay = ({
 							cellTitle='Current Hit Points:'
 							value={character.currentHitPoints}
 							editable={true}
-							onChange={(e) => dispatch(updateAction(CharacterKeys.currentHitPoints, e.target.value))}
+							onChange={(e) => dispatch(updateAction(CharacterKeys.currentHitPoints, Number(e.target.value)))}
 						/>
 						<DisplayCell
 							variant='h6'
 							cellTitle='Non-Lethal Damage:'
 							value={character.nonLethalDamage}
 							editable={true}
-							onChange={(e) => dispatch(updateAction(CharacterKeys.nonLethalDamage, e.target.value))}
+							onChange={(e) => dispatch(updateAction(CharacterKeys.nonLethalDamage, Number(e.target.value)))}
 						/>
 						<DisplayCell
 							variant='h6'
 							cellTitle='Temp HP:'
 							value={character.tempHP}
 							editable={true}
-							onChange={(e) => dispatch(updateAction(CharacterKeys.tempHP, e.target.value))}
+							onChange={(e) => dispatch(updateAction(CharacterKeys.tempHP, Number(e.target.value)))}
 						/>
 					</TableRow>
 					<TableRow
