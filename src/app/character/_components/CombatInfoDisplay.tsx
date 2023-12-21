@@ -1,11 +1,13 @@
-import { AttributeNames, Character } from '@/_models';
+import { AttributeNames, Character, CharacterKeys } from '@/_models';
 import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
 import { BonusObject, getTotalDefense, getDefenseBonuses, getResistances } from '@/_utils/defenseUtils';
 import { Table, TableBody, TableRow, TableCell, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Dispatch, useEffect, useState } from 'react';
 import { DisplayCell } from './DisplayCell';
+import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
 interface CombatInfoDisplayProps {
 	character: Character;
+	dispatch: Dispatch<CharacterAction>;
 }
 
 interface AcTooltipProps {
@@ -44,17 +46,8 @@ const AcTooltip = ({
 
 export const CombatInfoDisplay = ({
 	character,
+	dispatch
 } : CombatInfoDisplayProps) => {
-	const [currentHitPoints, setCurrentHitPoints] = useState<number>(0);
-	const [nonLethalDamage, setNonLethalDamage] = useState<number>(0);
-	const [tempHP, setTempHP] = useState<number>(0);
-	useEffect(() => {
-		if (!!character) {
-			setCurrentHitPoints(character.currentHitPoints);
-			setNonLethalDamage(character.nonLethalDamage);
-			setTempHP(character.tempHP);
-		}
-	}, [character]);
 	const defenses = getTotalDefense(character);
 
 	return (
@@ -72,23 +65,23 @@ export const CombatInfoDisplay = ({
 						<DisplayCell
 							variant='h6'
 							cellTitle='Current Hit Points:'
-							value={currentHitPoints}
+							value={character.currentHitPoints}
 							editable={true}
-							onChange={setCurrentHitPoints}
+							onChange={(e) => dispatch(updateAction(CharacterKeys.currentHitPoints, e.target.value))}
 						/>
 						<DisplayCell
 							variant='h6'
 							cellTitle='Non-Lethal Damage:'
-							value={nonLethalDamage}
+							value={character.nonLethalDamage}
 							editable={true}
-							onChange={setNonLethalDamage}
+							onChange={(e) => dispatch(updateAction(CharacterKeys.nonLethalDamage, e.target.value))}
 						/>
 						<DisplayCell
 							variant='h6'
 							cellTitle='Temp HP:'
-							value={tempHP}
+							value={character.tempHP}
 							editable={true}
-							onChange={setTempHP}
+							onChange={(e) => dispatch(updateAction(CharacterKeys.tempHP, e.target.value))}
 						/>
 					</TableRow>
 					<TableRow

@@ -33,7 +33,7 @@ export default function CharacterPage() {
 			document.title = pageCharacter.name;
 		}
 	}, [pageCharacter]);
-	
+
 	return !!character && (
 		<div style={{height: '100vh'}}>
 			<div style={{
@@ -49,7 +49,7 @@ export default function CharacterPage() {
             }}>
 				<AttributeDisplay character={character} />
 				<div>
-					<CombatInfoDisplay character={character} />
+					<CombatInfoDisplay character={character} dispatch={dispatch}/>
 					<EquipmentDisplay character={character} />
 				</div>
 				<SkillDisplay character={character} />

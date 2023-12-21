@@ -75,7 +75,7 @@ export const DisplayCell = ({
 				>
 					{!!openEdit && !!onChange && !!editable ? (
 						<TextField
-							onChange={handleChange}
+							onChange={onChange}
 							value={value}
 							autoFocus
 						></TextField>
@@ -96,7 +96,7 @@ export const DisplayCell = ({
 			>
 				{!!openEdit && !!onChange && !!editable ? (
 					<TextField
-						onChange={handleChange}
+						onChange={onChange}
 						value={value}
 						autoFocus
 						onFocus={(e) => e.target.select()}
