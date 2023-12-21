@@ -19,6 +19,7 @@ import {
 import { Dispatch, useState } from 'react';
 import {
     CharacterAction,
+    deleteModAction,
     updateAction,
 } from '../../../_reducer/characterReducer';
 import {
@@ -235,7 +236,7 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
             <Grid item>
                 <Stack direction='row' spacing={1}>
                     {character.miscModifiers.map((mod) => {
-                        return <ModChip mod={mod} />;
+                        return <ModChip mod={mod} onDelete={() => dispatch(deleteModAction(mod))}/>;
                     })}
                 </Stack>
             </Grid>

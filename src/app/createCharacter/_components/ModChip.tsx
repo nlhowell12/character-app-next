@@ -4,6 +4,7 @@ import { Chip } from "@mui/material";
 
 interface ModCardProps {
     mod: Modifier;
+    onDelete: () => void;
 }
 const modifierString = (key: keyof Modifier, value: any) => {
     switch(key) {
@@ -30,10 +31,7 @@ const modifierString = (key: keyof Modifier, value: any) => {
     }
 }
 
-export const ModChip = ({ mod }: ModCardProps) => {
-    const handleDelete = () => {
-        console.info('You clicked the delete icon.');
-    };
+export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     const modValue = !!mod.value ? `+${mod.value}` : '';
     let assignmentString = '';
     Object.entries(mod).forEach(([key, value]) => {
@@ -41,13 +39,12 @@ export const ModChip = ({ mod }: ModCardProps) => {
             assignmentString += ` ${modifierString(key as keyof Modifier, value)}`
         }
     })
-    const modAssignment = ``
     return (
         <Chip
             /* @ts-ignore */
             label={`${modValue} ${BonusTypes[mod.type]} - ${assignmentString}`}
             variant='outlined'
-            onDelete={handleDelete}
+            onDelete={onDelete}
         />
     );
 };

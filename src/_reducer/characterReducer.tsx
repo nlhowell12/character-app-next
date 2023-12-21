@@ -1,42 +1,38 @@
 import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
+import * as R from 'ramda';
 
 export enum CharacterReducerActions {
 	UPDATE = 'UPDATE',
 	UPDATEATTRIBUTE = 'UPDATEATTRIBUTE',
 	UPDATESKILL = 'UPDATESKILL',
 	RESET = 'RESET',
+	DELETE_MOD = 'DELETE_MOD',
 	DEFAULT = 'DEFAULT'
 }
 
 const initialAttributes: CharacterAttributes = {
 	[AttributeNames.Strength]: {
 		value: 0,
-		modifiers: [],
 	},
 	[AttributeNames.Dexterity]: {
 		value: 0,
-		modifiers: [],
 	},
 	[AttributeNames.Constitution]: {
 		value: 0,
-		modifiers: [],
 	},
 	[AttributeNames.Intelligence]: {
 		value: 0,
-		modifiers: [],
 	},
 	[AttributeNames.Wisdom]: {
 		value: 0,
-		modifiers: [],
 	},
 	[AttributeNames.Charisma]: {
 		value: 0,
-		modifiers: [],
 	},
 };
 
-type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[];
+type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier;
 
 export type CharacterAction = {
 	type: CharacterReducerActions;
@@ -87,6 +83,18 @@ export const updateSkillAction = (
 			skill,
 		},
 	};
+};
+
+export const deleteModAction = (
+	value: Modifier
+) : CharacterAction => {
+	return {
+		type: CharacterReducerActions.DELETE_MOD,
+		payload: {
+			key: CharacterKeys.miscModifiers,
+			value
+		}
+	}
 };
 
 export const resetAction = () => {
@@ -150,6 +158,14 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 					},
 				};
 			}
+		case CharacterReducerActions.DELETE_MOD:
+				if(payload.value){
+					const value = payload.value as Modifier;
+					return {
+						...state,
+						miscModifiers: state.miscModifiers.filter(x => !R.equals(x, value))
+					}
+				}
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;
 		default:
