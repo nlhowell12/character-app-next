@@ -28,6 +28,8 @@ const modifierString = (key: keyof Modifier, value: any) => {
             return camelToTitle(key);
         case('type'):
             return '';
+        case('id'):
+            return '';
         default:
             return key
     }
