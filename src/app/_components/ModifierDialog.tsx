@@ -18,6 +18,7 @@ import {
     FormHelperText,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 interface ModifierDialogProps {
     character: Character;
@@ -95,6 +96,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
         resistance: boolResistance,
         immunity: boolImmunity,
         damageType: (!!boolResistance || !!boolImmunity) ? damageType : undefined,
+        id: uuidv4()
     };
     const valueOptions = appliedModifier.value || appliedModifier.attribute;
     const valueAssignments = !!boolResistance || !!boolAttack || !!boolDamage || !!boolDefense || !!boolSkill;

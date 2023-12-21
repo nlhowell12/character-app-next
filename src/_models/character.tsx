@@ -191,6 +191,7 @@ export interface Modifier {
 	resistance?: boolean;
 	immunity?: boolean;
 	damageType?: Damage;
+	id?: string;
 }
 export interface Feat {
 	prerequisites?: Feat[] | string[];

@@ -8,6 +8,7 @@ import * as R from 'ramda';
 import { ModifierDialog } from '@/app/_components/ModifierDialog';
 import { Add } from '@mui/icons-material';
 import useCharacterService from '@/app/api/_services/useCharacterService';
+import { v4 as uuidv4 } from 'uuid';
 interface CharacterInfoDisplayProps {
 	character: Character;
 	dispatch: Dispatch<CharacterAction>;
@@ -123,7 +124,7 @@ export const CharacterInfoDisplay = ({
 			<Grid item xs={5}>
                 <Stack direction='row' spacing={1} flexWrap='wrap'>
                     {R.filter(notASI, character.miscModifiers).map((mod) => {
-                        return <ModChip mod={mod} onDelete={() => dispatch(deleteModAction(mod))}/>;
+                        return <ModChip key={`${mod.type}-${mod.id || uuidv4()}`}mod={mod} onDelete={() => dispatch(deleteModAction(mod))}/>;
                     })}
                 </Stack>
             </Grid>		
