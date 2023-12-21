@@ -1,24 +1,28 @@
 'use client'
 
 import { mockCharacters } from "@/_mockData/characters";
-import { Character } from "@/_models";
+import { Character, CharacterKeys } from "@/_models";
 import { useParams } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { AttributeDisplay } from "../_components/AttributeDisplay";
 import { CharacterInfoDisplay } from "../_components/CharacterInfoDisplay";
 import { CombatInfoDisplay } from "../_components/CombatInfoDisplay";
 import { EquipmentDisplay } from "../_components/EquipmentDisplay";
 import { SkillDisplay } from "../_components/SkillDisplay";
+import { characterReducer, initialCharacterState, setCharacterAction } from "@/_reducer/characterReducer";
 
 export default function CharacterPage() {
-	const [character, setCharacter] = useState<Character>();
 	const params = useParams<{ character: string }>();
 	const mockQueriedCharacter = mockCharacters.find(
 		(character: Character) => character.name === params.character
 	);
+	const [character, dispatch] = useReducer(
+        characterReducer,
+        initialCharacterState
+    );
 	useEffect(() => {
 		if (!!mockQueriedCharacter) {
-			setCharacter(mockQueriedCharacter);
+			dispatch(setCharacterAction(mockQueriedCharacter));
 			document.title = mockQueriedCharacter.name;
 		}
 	}, [mockQueriedCharacter]);
@@ -30,7 +34,7 @@ export default function CharacterPage() {
                 marginBottom: '1rem',
                 width: '99%',
             }}>
-				<CharacterInfoDisplay character={character} />
+				<CharacterInfoDisplay character={character} dispatch={dispatch} />
 			</div>
 			<div style={{
                 display: 'flex',

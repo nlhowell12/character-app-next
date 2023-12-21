@@ -3,6 +3,7 @@ import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
 export enum CharacterReducerActions {
+	SET_CHARACTER = 'SET_CHARACTER',
 	UPDATE = 'UPDATE',
 	UPDATEATTRIBUTE = 'UPDATEATTRIBUTE',
 	UPDATESKILL = 'UPDATESKILL',
@@ -32,7 +33,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier;
+type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character;
 
 export type CharacterAction = {
 	type: CharacterReducerActions;
@@ -42,6 +43,18 @@ export type CharacterAction = {
 		skill?: SkillTypes;
 		value: AcceptedUpdateValues;
 	};
+};
+
+export const setCharacterAction = (
+	value: Character
+) => {
+	return {
+		type: CharacterReducerActions.SET_CHARACTER,
+		payload: {
+			key: CharacterKeys.name,
+			value
+		}
+	}
 };
 
 export const updateAction = (
@@ -131,6 +144,9 @@ export const initialCharacterState: Character = {
 export const characterReducer = (state: Character, action: CharacterAction) => {
 	const { payload } = action;
 	switch (action.type) {
+		case CharacterReducerActions.SET_CHARACTER:
+			const value = payload.value as Character; 
+			return value;
 		case CharacterReducerActions.UPDATE:
 			return { ...state, [payload.key]: payload.value };
 		case CharacterReducerActions.UPDATEATTRIBUTE:

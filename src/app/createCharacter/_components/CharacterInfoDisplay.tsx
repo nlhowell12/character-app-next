@@ -13,7 +13,6 @@ import {
     Typography,
     Dialog,
     Grid,
-    Chip,
     Stack,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
@@ -23,16 +22,14 @@ import {
     updateAction,
 } from '../../../_reducer/characterReducer';
 import {
-    BonusTypes,
     Character,
     CharacterKeys,
-    Modifier,
     Sizes,
 } from '@/_models';
 import { Add } from '@mui/icons-material';
-import { ModifierDialog } from './ModifierDialog';
-import { camelToTitle } from '@/_utils/stringUtils';
-import { ModChip } from './ModChip';
+import { ModifierDialog } from '../../_components/ModifierDialog';
+
+import { ModChip } from '../../_components/ModChip';
 
 interface CharacterInfoDisplayProps {
     character: Character;

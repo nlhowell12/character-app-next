@@ -1,16 +1,22 @@
-import { Grid, Table, TableBody, TableRow, makeStyles } from '@mui/material';
+import { Grid, Stack, Table, TableBody, TableRow, makeStyles } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
 import { Character } from '@/_models';
+import { CharacterAction, deleteModAction } from '@/_reducer/characterReducer';
+import { ModChip } from '@/app/_components/ModChip';
+import { Dispatch } from 'react';
 
 interface CharacterInfoDisplayProps {
 	character: Character;
+	dispatch: Dispatch<CharacterAction>;
 }
 
 export const CharacterInfoDisplay = ({
 	character,
+	dispatch
 } : CharacterInfoDisplayProps) => {
 	return (
-		<Grid xs={6}>
+		<Grid container>
+			<Grid item xs={6}>
 			<Table>
 				<TableBody>
 					<TableRow
@@ -75,6 +81,14 @@ export const CharacterInfoDisplay = ({
 					</TableRow>
 				</TableBody>
 			</Table>
-		</Grid>
+			</Grid>
+			<Grid item>
+                <Stack direction='row' spacing={1}>
+                    {character.miscModifiers.map((mod) => {
+                        return <ModChip mod={mod} onDelete={() => dispatch(deleteModAction(mod))}/>;
+                    })}
+                </Stack>
+            </Grid>		
+			</Grid>
 	);
 };

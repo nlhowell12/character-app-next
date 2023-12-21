@@ -1,5 +1,5 @@
 import { BonusTypes, Modifier, Character, CharacterAttributes, AttributeNames } from '@/_models';
-import { totalAttributeValue, getBaseAttributeScore, getTotalAttributeModifier, getAttributeBonuses } from '@/_utils/attributeUtils';
+import { totalAttributeValue, getBaseAttributeScore, getTotalAttributeModifier, getAttributeBonuses, getAllAttributeModifiers } from '@/_utils/attributeUtils';
 import { getTotalSaveBonus, isProficientSave } from '@/_utils/defenseUtils';
 import { CheckCircle } from '@mui/icons-material';
 import {
@@ -173,7 +173,7 @@ export const AttributeDisplay = ({
 				<TableBody>
 					{Object.keys(attributes).map((attribute) => {
 						const typedAtt = attribute as AttributeNames;
-						const modifiers = character.attributes[typedAtt].modifiers;
+                        const modifiers = getAllAttributeModifiers(character, typedAtt);
 						return (
 							<AttributeRow
 								key={typedAtt}
