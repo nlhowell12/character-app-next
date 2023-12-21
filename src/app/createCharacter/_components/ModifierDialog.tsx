@@ -15,6 +15,7 @@ import {
     MenuItem,
     Button,
     TextField,
+    FormHelperText,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 
@@ -68,42 +69,6 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
             [e.target.name]: e.target.checked,
         });
     };
-
-    const handleApply = () => {
-        const noValuesSelected = Object.values(optionalValues).every(value => {
-            if (!value) {
-              return true;
-            }
-            return false;
-          });
-          
-        const appliedModifier: Modifier = {
-            value: !!boolValue ? Number(modValue) : undefined,
-            definition: (!!boolDefinition || !!definition) ? definition : undefined,
-            skill: !!boolSkill ? skill : undefined,
-            attribute: !!boolAttribute ? attribute : undefined,
-            attack: boolAttack,
-            damage: boolDamage,
-            defense: boolDefense,
-            type: bonusType,
-            abilityType: !!boolAbilityType ? abilityType : undefined,
-            resistance: boolResistance,
-            immunity: boolImmunity,
-            damageType: (!!boolResistance || !!boolImmunity) ? damageType : undefined,
-        };
-        if(!noValuesSelected)
-        {
-            // set up on close
-            dispatch(updateAction(CharacterKeys.miscModifiers, [...character.miscModifiers, appliedModifier]))
-        } else {
-            // set up field validation or a warning
-            alert('Not good')
-        }
-    };
-
-    const formControlStyle = {
-        marginBottom: '.5rem',
-    };
     const {
         boolValue,
         boolDefinition,
@@ -116,11 +81,56 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
         boolResistance,
         boolImmunity,
     } = optionalValues;
+
+    const appliedModifier: Modifier = {
+        value: !!boolValue ? Number(modValue) : undefined,
+        definition: (!!boolDefinition || !!definition) ? definition : undefined,
+        skill: !!boolSkill ? skill : undefined,
+        attribute: !!boolAttribute ? attribute : undefined,
+        attack: boolAttack,
+        damage: boolDamage,
+        defense: boolDefense,
+        type: bonusType,
+        abilityType: !!boolAbilityType ? abilityType : undefined,
+        resistance: boolResistance,
+        immunity: boolImmunity,
+        damageType: (!!boolResistance || !!boolImmunity) ? damageType : undefined,
+    };
+    const valueOptions = appliedModifier.value || appliedModifier.attribute;
+    const valueAssignments = !!boolResistance || !!boolAttack || !!boolDamage || !!boolDefense || !!boolSkill;
+    const noModValue = valueAssignments && !valueOptions;
+    const noDamageType = !!boolImmunity && !appliedModifier.damageType
+    const noUnassignedValue = !!appliedModifier.value && !valueAssignments;
+
+    const noValuesSelected = Object.values(optionalValues).every(value => {
+        if (!value) {
+          return true;
+        }
+        return false;
+      });
+
+    const formValidation = !noValuesSelected && !noModValue && !noDamageType && !noUnassignedValue;
+
+    const handleApply = () => {
+        if(formValidation)
+        {
+            // set up on close
+            dispatch(updateAction(CharacterKeys.miscModifiers, [...character.miscModifiers, appliedModifier]))
+        } else {
+            // set up field validation or a warning
+            alert('Not good')
+        }
+    };
+
+    const formControlStyle = {
+        marginBottom: '.5rem',
+    };
+
     return (
         <Card>
             <CardHeader title='Add Modifiers' />
             <CardContent>
-                <FormControl fullWidth sx={formControlStyle}>
+                <FormControl fullWidth sx={formControlStyle} error={!formValidation}>
                     <FormLabel component='legend'>Check applicable:</FormLabel>
                     <FormGroup>
                         <FormControlLabel
@@ -224,6 +234,8 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
                             label='Does this confer immunity to damage?'
                         />
                     </FormGroup>
+                    <FormHelperText>Resistance, Attack, Damage, Defense, and Skills require a Value or Attribute to reference.</FormHelperText>
+                    <FormHelperText>If Value or Attribute are selected, you must select where to apply it.</FormHelperText>
                 </FormControl>
                 <FormControl fullWidth sx={formControlStyle}>
                     <InputLabel id='bonus-type-id'>Bonus Type</InputLabel>
@@ -363,7 +375,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
                     </FormControl>
                 )}
                 <div style={{display: 'flex', justifyContent: 'end'}}>
-                    <Button variant='outlined' onClick={() => handleApply()}>Apply Modifier</Button>
+                    <Button disabled={!formValidation} variant='outlined' onClick={() => handleApply()}>Apply Modifier</Button>
                 </div>
             </CardContent>
         </Card>

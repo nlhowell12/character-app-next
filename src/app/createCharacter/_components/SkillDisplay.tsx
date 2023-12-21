@@ -1,7 +1,7 @@
 import { Character, RankedSkill } from '@/_models';
 import { CharacterAction, updateSkillAction } from '@/_reducer/characterReducer';
 import {
-    getSkillSynergies,
+    // getSkillSynergies,
     getSkillModifiers,
     getArmorCheckPenalties,
     getTotalSkillValue,
@@ -38,7 +38,7 @@ const SkillCell = ({ children }: SkillCellProps) => {
     );
 };
 const SkillsTooltip = ({ skill, character }: SkillsTooltipProps) => {
-    const synergy = getSkillSynergies(skill, character);
+    // const synergy = getSkillSynergies(skill, character);
     const miscMods = getSkillModifiers(skill, character);
     return (
         <Table>
@@ -56,12 +56,12 @@ const SkillsTooltip = ({ skill, character }: SkillsTooltipProps) => {
                             </Typography>
                         </SkillCell>
                     ) : null}
-                    {!!synergy ? (
+                    {/* {!!synergy ? (
                         <SkillCell>
                             <Typography>Synergy</Typography>
                             <Typography>{synergy}</Typography>
                         </SkillCell>
-                    ) : null}
+                    ) : null} */}
                     {!!miscMods ? (
                         <SkillCell>
                             <Typography>Misc</Typography>

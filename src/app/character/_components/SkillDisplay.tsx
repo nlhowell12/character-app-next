@@ -1,5 +1,5 @@
 import { Character, RankedSkill } from '@/_models';
-import { getSkillSynergies, getSkillModifiers, getArmorCheckPenalties, getTotalSkillValue } from '@/_utils/skillIUtils';
+import { getSkillModifiers, getArmorCheckPenalties, getTotalSkillValue } from '@/_utils/skillIUtils';
 import {
     Card,
     Table,
@@ -34,7 +34,7 @@ const SkillsTooltip = (
         character
     }: SkillsTooltipProps
 ) => {
-    const synergy = getSkillSynergies(skill, character);
+    // const synergy = getSkillSynergies(skill, character);
     const miscMods = getSkillModifiers(skill, character);
     return (
         <Table>
@@ -52,12 +52,12 @@ const SkillsTooltip = (
                             </Typography>
                         </SkillCell>
                     ) : null}
-                    {!!synergy ? (
+                    {/* {!!synergy ? (
                         <SkillCell>
                             <Typography>Synergy</Typography>
                             <Typography>{synergy}</Typography>
                         </SkillCell>
-                    ) : null}
+                    ) : null} */}
                     {!!miscMods ? (
                         <SkillCell>
                             <Typography>Misc</Typography>
