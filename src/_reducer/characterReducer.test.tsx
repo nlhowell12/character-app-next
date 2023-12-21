@@ -35,7 +35,7 @@ describe('characterReducer', () => {
 			initialCharacterState,
 			updateSkillAction(SkillTypes.Acrobatics, 12)
 		);
-		expect(newState.skills.Acrobatics).toStrictEqual({ ranks: 12 });
+		expect(newState.skills.Acrobatics).toStrictEqual({ ranks: 12, linkedAttribute: 'Dexterity', name: 'Acrobatics' });
 		expect(initialCharacterState.skills.Perform).toBe(
 			initialCharacterState.skills.Perform
 		);
@@ -58,7 +58,7 @@ describe('characterReducer', () => {
 			updateSkillAction(SkillTypes.Acrobatics, 12)
 		);
 		expect(update2State.attributes.Strength.value).toBe(12);
-		expect(update2State.skills.Acrobatics).toStrictEqual({ ranks: 12 });
+		expect(update2State.skills.Acrobatics).toStrictEqual({ ranks: 12, linkedAttribute: 'Dexterity', name: 'Acrobatics' });
 		expect(update2State.name).toBe(name);
 		const finalState = characterReducer(update2State, resetAction());
 		expect(finalState).toStrictEqual(initialCharacterState);

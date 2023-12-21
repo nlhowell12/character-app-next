@@ -78,7 +78,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
           });
           
         const appliedModifier: Modifier = {
-            value: !!boolValue ? modValue : undefined,
+            value: !!boolValue ? Number(modValue) : undefined,
             definition: (!!boolDefinition || !!definition) ? definition : undefined,
             skill: !!boolSkill ? skill : undefined,
             attribute: !!boolAttribute ? attribute : undefined,

@@ -1,5 +1,5 @@
 
-import { Armor, AttributeNames, BonusTypes, Character, CharacterClass, EnergyTypes, Equipment, Modifier, stackableBonuses } from '@/_models';
+import { Armor, AttributeNames, BonusTypes, Character, CharacterClass, Damage, Equipment, Modifier, stackableBonuses } from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
 
 export interface DefenseObject {
@@ -76,7 +76,7 @@ export const getDefenseBonuses = (character: Character): BonusObject => {
 };
 
 export type ResistObject = {
-	[key in EnergyTypes]: number;
+	[key in Damage]: number;
 };
 
 export const getResistances = (character: Character): ResistObject => {
@@ -87,12 +87,12 @@ export const getResistances = (character: Character): ResistObject => {
 	const resistances: ResistObject = {} as ResistObject;
 
 	[...miscMod].forEach((mod) => {
-		if (!!mod.energyType) {
-			if (!resistances[mod.energyType]) {
-				resistances[mod.energyType] = 0;
+		if (!!mod.damageType) {
+			if (!resistances[mod.damageType]) {
+				resistances[mod.damageType] = 0;
 			}
-			if (!!mod.value && mod.value > resistances[mod.energyType]) {
-				resistances[mod.energyType] = mod.value;
+			if (!!mod.value && mod.value > resistances[mod.damageType]) {
+				resistances[mod.damageType] = mod.value;
 			}
 		}
 	});

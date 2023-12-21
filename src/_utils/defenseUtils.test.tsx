@@ -29,7 +29,7 @@ describe('Defense Utilities', () => {
 	});
 	test('getResistances', () => {
 		expect(defenseUtils.getResistances(mock0)).toStrictEqual({
-			Cold: 5,
+			Cold: 5
 		} as defenseUtils.ResistObject);
 	});
 	test('getProficientSaveBonus', () => {
