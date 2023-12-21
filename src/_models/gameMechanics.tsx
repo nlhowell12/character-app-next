@@ -6,7 +6,6 @@ export enum BonusTypes {
     Enhancement = 'Enhancement',
     Insight = 'Insight',
     Morale = 'Morale',
-    NaturalArmor = 'Natural Armor',
     Paranormal = 'Paranormal',
     Racial = 'Racial',
     Resistance = 'Resistance',

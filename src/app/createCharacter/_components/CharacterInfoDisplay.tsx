@@ -231,7 +231,7 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                 </Table>
             </Grid>
             <Grid item>
-                <Stack direction='row' spacing={1}>
+                <Stack direction='row' spacing={1} flexWrap='wrap'>
                     {character.miscModifiers.map((mod) => {
                         return <ModChip mod={mod} onDelete={() => dispatch(deleteModAction(mod))}/>;
                     })}

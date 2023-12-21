@@ -11,7 +11,7 @@ export const getTotalDefense = (character: Character): DefenseObject => {
 	const drBonusTypes = [
 		BonusTypes.Armor,
 		BonusTypes.Shield,
-		BonusTypes.NaturalArmor,
+		BonusTypes.Racial,
 	];
 	const dexMod = getTotalAttributeModifier(character, AttributeNames.Dexterity);
 	const acBonuses = getDefenseBonuses(character);

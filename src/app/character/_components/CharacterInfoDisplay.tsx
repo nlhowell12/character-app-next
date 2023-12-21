@@ -1,10 +1,10 @@
 import { Grid, Stack, Table, TableBody, TableRow, makeStyles } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
-import { Character } from '@/_models';
+import { BonusTypes, Character, Modifier, ModifierSource } from '@/_models';
 import { CharacterAction, deleteModAction } from '@/_reducer/characterReducer';
 import { ModChip } from '@/app/_components/ModChip';
 import { Dispatch } from 'react';
-
+import * as R from 'ramda';
 interface CharacterInfoDisplayProps {
 	character: Character;
 	dispatch: Dispatch<CharacterAction>;
@@ -14,6 +14,7 @@ export const CharacterInfoDisplay = ({
 	character,
 	dispatch
 } : CharacterInfoDisplayProps) => {
+	const notASI = (x: Modifier) => x.definition !== ModifierSource.attributeScoreIncrease;
 	return (
 		<Grid container>
 			<Grid item xs={6}>
@@ -82,9 +83,9 @@ export const CharacterInfoDisplay = ({
 				</TableBody>
 			</Table>
 			</Grid>
-			<Grid item>
-                <Stack direction='row' spacing={1}>
-                    {character.miscModifiers.map((mod) => {
+			<Grid item xs={5}>
+                <Stack direction='row' spacing={1} flexWrap='wrap'>
+                    {R.filter(notASI, character.miscModifiers).map((mod) => {
                         return <ModChip mod={mod} onDelete={() => dispatch(deleteModAction(mod))}/>;
                     })}
                 </Stack>

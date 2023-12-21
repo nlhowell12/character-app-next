@@ -17,37 +17,21 @@ export const mockCharacters: Character[] = [
         attributes: {
             [AttributeNames.Strength]: {
                 value: 11,
-                modifiers: [
-                    {
-                        value: -4,
-                        type: BonusTypes.Racial,
-                    },
-                ],
             },
             [AttributeNames.Dexterity]: {
                 value: 17,
-                modifiers: [
-                    {
-                        value: 2,
-                        type: BonusTypes.Racial,
-                    },
-                ],
             },
             [AttributeNames.Constitution]: {
                 value: 14,
-                modifiers: [],
             },
             [AttributeNames.Intelligence]: {
                 value: 15,
-                modifiers: [],
             },
             [AttributeNames.Wisdom]: {
                 value: 13,
-                modifiers: [],
             },
             [AttributeNames.Charisma]: {
                 value: 11,
-                modifiers: [],
             },
         },
         movementSpeeds: [
@@ -119,8 +103,9 @@ export const mockCharacters: Character[] = [
         miscModifiers: [
             {
                 value: 1,
-                type: BonusTypes.NaturalArmor,
+                type: BonusTypes.Racial,
                 defense: true,
+                definition: 'Natural Armor'
             },
             {
                 value: 5,

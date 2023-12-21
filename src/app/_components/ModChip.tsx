@@ -12,6 +12,8 @@ const modifierString = (key: keyof Modifier, value: any) => {
             return value;
         case('attribute'):
             return value;
+        case('definition'):
+            return '';
         case('damageType'):
             return value;
         case('value'):
@@ -33,6 +35,7 @@ const modifierString = (key: keyof Modifier, value: any) => {
 
 export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     const modValue = !!mod.value ? `+${mod.value}` : '';
+    const modDefinition = !!mod.definition ? ` (${mod.definition})` : ''
     let assignmentString = '';
     Object.entries(mod).forEach(([key, value]) => {
         if(!!value){
@@ -42,7 +45,7 @@ export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     return (
         <Chip
             /* @ts-ignore */
-            label={`${modValue} ${BonusTypes[mod.type]} - ${assignmentString}`}
+            label={`${modValue} ${mod.type as B} - ${assignmentString}${modDefinition}`}
             variant='outlined'
             onDelete={onDelete}
         />
