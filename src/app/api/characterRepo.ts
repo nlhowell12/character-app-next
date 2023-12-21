@@ -20,7 +20,17 @@ const create = async (params: any) => {
     }
 };
 
+const update = async (params: any) => {
+    try {
+        const character = Character.findOne({name: params.name});
+        await Character.updateOne(character);
+    } catch(e) {
+        throw 'Failed to update character'
+    }
+};
+
 export const characterRepo = {
     getAll,
-    create
+    create,
+    update
 };

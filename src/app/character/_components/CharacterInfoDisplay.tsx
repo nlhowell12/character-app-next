@@ -24,7 +24,7 @@ export const CharacterInfoDisplay = ({
 } : CharacterInfoDisplayProps) => {
 	const notASI = (x: Modifier) => x.definition !== ModifierSource.attributeScoreIncrease;
 	const [openModifiers, setOpenModifers] = useState<boolean>(false);
-	const { postCharacter } = useCharacterService();
+	const { updateCharacter } = useCharacterService();
 	return (
 		<Grid container>
 			<Grid item xs={6}>
@@ -64,7 +64,7 @@ export const CharacterInfoDisplay = ({
 						 <TableCell sx={cellStylingObject}>
                                 <Button
                                     variant='outlined'
-                                    onClick={() => postCharacter(character)}
+                                    onClick={() => updateCharacter(character)}
                                 >
                                     <Typography>Save Character</Typography>
                                     <Add />

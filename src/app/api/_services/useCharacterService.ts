@@ -17,7 +17,7 @@ export default () => {
         }
     }
 
-    const postCharacter = async (character: Character) => {
+    const createCharacter = async (character: Character) => {
         const res = await fetch('/api/characters', {
             method: 'POST',
             headers: {
@@ -27,5 +27,15 @@ export default () => {
         })
     }
 
-    return { characters, postCharacter }
+    const updateCharacter = async (character: Character) => {
+        const res = await fetch('/api/characters', {
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(character)
+        })
+    }
+
+    return { characters, createCharacter, updateCharacter }
 }

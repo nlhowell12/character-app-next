@@ -15,3 +15,13 @@ export async function POST(request: Request) {
         return NextResponse.json(e, {status: 500});
     }
 }
+
+export async function PUT(request: Request) {
+    try{
+        const body = await request.json();
+        await characterRepo.update(body);
+        return NextResponse.json('Success', {status: 200});
+    } catch(e) {
+        return NextResponse.json(e, {status: 500});
+    }
+}
