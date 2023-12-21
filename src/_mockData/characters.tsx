@@ -134,6 +134,11 @@ export const mockCharacters: Character[] = [
                 type: BonusTypes.Untyped,
                 value: 1,
             },
+            { // added to test negative path, otherwise useless
+                definition: ModifierSource.attributeScoreIncrease,
+                attribute: AttributeNames.Dexterity,
+                type: BonusTypes.Untyped,
+            },
 			{
 				value: 1,
 				type: BonusTypes.Untyped,
@@ -143,6 +148,21 @@ export const mockCharacters: Character[] = [
 				value: 1,
 				type: BonusTypes.Untyped,
 				defense: true
+			},
+			{
+				value: 1,
+				type: BonusTypes.Untyped,
+				skill: SkillTypes.Disguise
+			},
+			{
+				value: 1,
+				type: BonusTypes.Untyped,
+				skill: SkillTypes.Disguise
+			},
+			{
+				value: 4,
+				type: BonusTypes.Size,
+				skill: SkillTypes.Stealth
 			},
         ],
     },

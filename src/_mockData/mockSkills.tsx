@@ -1,10 +1,11 @@
-import { AttributeNames, SkillTypes } from '../_models';
+import { AttributeNames, RankedSkill, SkillTypes } from '../_models';
 
-export const MockSkills = {
+export const MockSkills: {[key in SkillTypes]: RankedSkill} = {
 	[SkillTypes.Acrobatics]: {
 		name: SkillTypes.Acrobatics,
 		linkedAttribute: AttributeNames.Dexterity,
 		ranks: 4,
+		armorCheckPenalty: true
 	},
 	[SkillTypes.Athletics]: {
 		name: SkillTypes.Athletics,
