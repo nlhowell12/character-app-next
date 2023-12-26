@@ -27,9 +27,11 @@ import {
     Sizes,
 } from '@/_models';
 import { Add } from '@mui/icons-material';
+import SaveIcon from '@mui/icons-material/Save';
 import { ModifierDialog } from '../../_components/ModifierDialog';
 
 import { ModChip } from '../../_components/ModChip';
+import useCharacterService from '@/app/api/_services/useCharacterService';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -73,8 +75,8 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
     character,
     dispatch,
 }) => {
-    const playerName = 'Hater';
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
+    const { createCharacter } = useCharacterService();
 
     const handleSizeChange = (e: SelectChangeEvent<string>) => {
         const {
@@ -83,6 +85,12 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
         dispatch(updateAction(CharacterKeys.size, value));
     };
 
+    const handleSave = () => {
+        const validateSubmit = true;
+        if(!!validateSubmit){
+            createCharacter(character);
+        }
+    }
     return (
         <Grid container>
             <Grid xs={6} item>
@@ -107,7 +115,7 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                             />
                             <DisplayCell
                                 label='Player Name'
-                                value={playerName}
+                                value={character.playerName}
                                 disabled
                             />
                             <TableCell sx={cellStylingObject}>
@@ -127,6 +135,15 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                                         dispatch={dispatch}
                                     />
                                 </Dialog>
+                            </TableCell>
+                            <TableCell sx={cellStylingObject}>
+                                <Button
+                                    variant='outlined'
+                                    onClick={handleSave}
+                                >
+                                    <Typography>Create Character</Typography>
+                                    <SaveIcon sx={{ marginLeft: '.5rem' }} />
+                                </Button>
                             </TableCell>
                         </TableRow>
                         <TableRow>

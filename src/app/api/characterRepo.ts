@@ -16,6 +16,7 @@ const create = async (params: any) => {
         const newCharacter = new Character(params);
         await Character.create(newCharacter)
     } catch(e) {
+        console.log(e)
         throw 'Failed to create character'
     }
 };
