@@ -15,9 +15,15 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { CharacterClassNames, AnyMagickType, SpellObject, MagickCategory } from '@/_models';
+import {
+    CharacterClassNames,
+    AnyMagickType,
+    SpellObject,
+    MagickCategory,
+} from '@/_models';
 import { camelToTitle } from '@/_utils/stringUtils';
 import useSpellService from '../api/_services/useSpellService';
+import * as R from 'ramda';
 
 const SpellTooltip: React.FC<{
     description: string;
@@ -30,7 +36,9 @@ export const SpellTable = () => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
         CharacterClassNames.Cleric
     );
-	const [selectedSubtype, setSelectedSubtype] = useState<MagickCategory>(MagickCategory.Maneuver);
+    const [selectedSubtype, setSelectedSubtype] = useState<MagickCategory>(
+        MagickCategory.Maneuver
+    );
     const [columns, setColumns] = useState<string[]>([]);
     const [rows, setRows] = useState<AnyMagickType[]>([]);
     const [searchValue, setSearchValue] = useState<string>('');
@@ -39,7 +47,12 @@ export const SpellTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const { spells } = useSpellService();
 
-	const hybridClasses: CharacterClassNames[] = [CharacterClassNames.Hexblade, CharacterClassNames.Oathsworn, CharacterClassNames.PsychicWarrior];
+    const hybridClasses: CharacterClassNames[] = [
+        CharacterClassNames.Hexblade,
+        CharacterClassNames.Oathsworn,
+        CharacterClassNames.PsychicWarrior,
+    ];
+    const isHybridClass = hybridClasses.includes(selectedClass);
 
     const filterData = (col: string) => {
         const filteredColumns: string[] = [
@@ -50,18 +63,31 @@ export const SpellTable = () => {
             'bonusType',
             'damageType',
         ];
-		if(selectedSubtype !== MagickCategory.Maneuver){
-			filteredColumns.push('maneuverType')
-		}
+        if (selectedSubtype !== MagickCategory.Maneuver) {
+            filteredColumns.push('maneuverType');
+        }
         return !filteredColumns.includes(col);
     };
-    useEffect(() => {
-		setSelectedSubtype(MagickCategory.Maneuver);
-        if (!!spells) {
-			const filterClass = selectedClass as keyof SpellObject;
-			let filteredSpells: AnyMagickType[] = spells[filterClass];
+    const filterBySubtype = (spells: AnyMagickType[]) => {
+        const filter = (x: AnyMagickType) => {
+            if (isHybridClass) {
+                return x.category === selectedSubtype;
+            }
+            return true;
+        };
+        return R.filter(filter, spells);
+    };
 
-			const columns = Object.keys(filteredSpells[0]).filter((x) =>
+    const filterClass = selectedClass as keyof SpellObject;
+
+    useEffect(() => {
+        setSelectedSubtype(MagickCategory.Maneuver);
+        if (!!spells) {
+            let filteredSpells: AnyMagickType[] = filterBySubtype(
+                spells[filterClass]
+            );
+
+            const columns = Object.keys(filteredSpells[0]).filter((x) =>
                 filterData(x)
             );
             setRows(filteredSpells);
@@ -69,16 +95,16 @@ export const SpellTable = () => {
         }
     }, [spells, selectedClass]);
 
-	useEffect(() => {
-		if(hybridClasses.includes(selectedClass)){
-			const filteredSpells: AnyMagickType[] = rows.filter(x => x.category === selectedSubtype)
-			const columns = Object.keys(filteredSpells[0]).filter((x) =>
-			filterData(x)
-		);
-			setColumns(columns);
-			setFilteredRows(filteredSpells)
-		}
-	}, [selectedSubtype])
+    useEffect(() => {
+        if(!!rows && isHybridClass && !!spells){
+            const filteredSpells: AnyMagickType[] = filterBySubtype(spells[filterClass]);
+            const columns = Object.keys(filteredSpells[0]).filter((x) =>
+                filterData(x)
+            );
+            setColumns(columns);
+            setRows(filteredSpells);
+        }
+    }, [selectedSubtype]);
 
     useEffect(() => {
         const filteredRows = rows.filter((x: AnyMagickType) =>
@@ -92,7 +118,7 @@ export const SpellTable = () => {
     };
 
     const handleClassChange = (event: SelectChangeEvent) => {
-		setSelectedSubtype(MagickCategory.Maneuver);
+        setSelectedSubtype(MagickCategory.Maneuver);
         setSelectedClass(event.target.value as keyof SpellObject);
     };
 
@@ -124,12 +150,18 @@ export const SpellTable = () => {
         CharacterClassNames.SorcWiz,
     ];
 
-	const spellTypeOptions = [
-		MagickCategory.Maneuver,
-		...selectedClass === CharacterClassNames.Hexblade ? [MagickCategory.Arcane] : [],
-		...selectedClass === CharacterClassNames.Oathsworn ? [MagickCategory.Divine] : [],
-		...selectedClass === CharacterClassNames.PsychicWarrior ? [MagickCategory.Psionic] : [],
-	]
+    const spellTypeOptions = [
+        MagickCategory.Maneuver,
+        ...(selectedClass === CharacterClassNames.Hexblade
+            ? [MagickCategory.Arcane]
+            : []),
+        ...(selectedClass === CharacterClassNames.Oathsworn
+            ? [MagickCategory.Divine]
+            : []),
+        ...(selectedClass === CharacterClassNames.PsychicWarrior
+            ? [MagickCategory.Psionic]
+            : []),
+    ];
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <Select
@@ -145,20 +177,21 @@ export const SpellTable = () => {
                     );
                 })}
             </Select>
-            {hybridClasses.includes(selectedClass) ? 
-			<Select
-                onChange={handleSubtypeChange}
-                value={selectedSubtype}
-                sx={{ marginRight: '1rem' }}
-            >
-                {spellTypeOptions.map((x) => {
-                    return (
-                        <MenuItem value={x} key={x}>
-                            {x}
-                        </MenuItem>
-                    );
-                })}
-            </Select> : null}
+            {hybridClasses.includes(selectedClass) ? (
+                <Select
+                    onChange={handleSubtypeChange}
+                    value={selectedSubtype}
+                    sx={{ marginRight: '1rem' }}
+                >
+                    {spellTypeOptions.map((x) => {
+                        return (
+                            <MenuItem value={x} key={x}>
+                                {x}
+                            </MenuItem>
+                        );
+                    })}
+                </Select>
+            ) : null}
             <TextField
                 onChange={handleSearchChange}
                 value={searchValue}
