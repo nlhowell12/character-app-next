@@ -193,6 +193,18 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                                     </Select>
                                 </FormControl>
                             </TableCell>
+                            <DisplayCell
+                                label='XP:'
+                                value={character.experience}
+                                onChange={(e) =>
+                                    dispatch(
+                                        updateAction(
+                                            CharacterKeys.experience,
+                                            Number(e.target.value)
+                                        )
+                                    )
+                                }
+                            />
                         </TableRow>
                         <TableRow>
                             <DisplayCell
