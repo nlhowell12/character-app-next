@@ -134,6 +134,7 @@ export interface Character {
 	miscModifiers: Modifier[];
 	playerName: string;
 	experience: number;
+	feats: Feat[];
 }
 export type SkillObject = {
 	[key in SkillTypes]: RankedSkill;
