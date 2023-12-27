@@ -8,10 +8,9 @@ import {
     TableCell,
     TableRow,
     Typography,
-    makeStyles,
 } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
-import { BonusTypes, Character, Modifier, ModifierSource } from '@/_models';
+import { Character, Modifier, ModifierSource } from '@/_models';
 import { CharacterAction, deleteModAction } from '@/_reducer/characterReducer';
 import { ModChip } from '@/app/_components/ModChip';
 import { Dispatch, useState } from 'react';
@@ -95,6 +94,11 @@ export const CharacterInfoDisplay = ({
                                 variant='h6'
                                 cellTitle='Race:'
                                 value={character.race}
+                            />
+                            <DisplayCell
+                                variant='h6'
+                                cellTitle='Subrace:'
+                                value={character.subRace}
                             />
                             <DisplayCell
                                 variant='h6'

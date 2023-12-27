@@ -159,6 +159,18 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                                     )
                                 }
                             />
+                            <DisplayCell
+                                label='Subrace'
+                                value={character.subRace}
+                                onChange={(e) =>
+                                    dispatch(
+                                        updateAction(
+                                            CharacterKeys.subRace,
+                                            e.target.value
+                                        )
+                                    )
+                                }
+                            />
                             <TableCell sx={cellStylingObject}>
                                 <FormControl sx={{ width: '100%' }}>
                                     <InputLabel>Size</InputLabel>
