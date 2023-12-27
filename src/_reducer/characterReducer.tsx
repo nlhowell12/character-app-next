@@ -139,6 +139,7 @@ export const initialCharacterState: Character = {
 	equipment: [],
 	miscModifiers: [],
 	playerName: '',
+	experience: 0
 };
 
 export const characterReducer = (state: Character, action: CharacterAction) => {

@@ -108,6 +108,7 @@ export enum CharacterKeys {
 	equipment = 'equipment',
 	miscModifiers = 'miscModifiers',
 	playerName = 'playerName',
+	experience = 'experience'
 }
 
 export interface Character {
@@ -132,6 +133,7 @@ export interface Character {
 	equipment: Equipment[];
 	miscModifiers: Modifier[];
 	playerName: string;
+	experience: number;
 }
 export type SkillObject = {
 	[key in SkillTypes]: RankedSkill;

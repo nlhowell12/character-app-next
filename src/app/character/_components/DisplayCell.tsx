@@ -74,6 +74,18 @@ export const DisplayCell = ({
 							onChange={onChange}
 							value={value}
 							autoFocus
+							size='small'
+							fullWidth
+							InputProps={{
+								sx: {
+									height: '2rem'
+								},
+								inputProps:{
+									style: {
+										height: '0rem'
+									}
+								}
+							}}
 						></TextField>
 					) : (
 						<Typography sx={textFieldStylingObject} variant={variant}>{`${cellTitle} ${value}`}</Typography>
@@ -96,6 +108,18 @@ export const DisplayCell = ({
 						value={value}
 						autoFocus
 						onFocus={(e) => e.target.select()}
+						size='small'
+						fullWidth
+						InputProps={{
+							sx: {
+								height: '2rem'
+							},
+							inputProps:{
+								style: {
+									height: '0rem'
+								}
+							}
+						}}
 					></TextField>
 				) : (
 					<Typography sx={textFieldStylingObject} variant={variant}>{`${cellTitle} ${value}`}</Typography>

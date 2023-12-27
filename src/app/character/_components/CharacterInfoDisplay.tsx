@@ -10,8 +10,8 @@ import {
     Typography,
 } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
-import { Character, Modifier, ModifierSource } from '@/_models';
-import { CharacterAction, deleteModAction } from '@/_reducer/characterReducer';
+import { Character, CharacterKeys, Modifier, ModifierSource } from '@/_models';
+import { CharacterAction, deleteModAction, updateAction } from '@/_reducer/characterReducer';
 import { ModChip } from '@/app/_components/ModChip';
 import { Dispatch, useState } from 'react';
 import * as R from 'ramda';
@@ -105,6 +105,13 @@ export const CharacterInfoDisplay = ({
                                 cellTitle='Size:'
                                 value={character.size}
                             />
+                            <DisplayCell
+                                variant='h6'
+                                cellTitle='XP:'
+                                value={character.experience}
+                                editable={true}
+                                onChange={(e) => dispatch(updateAction(CharacterKeys.experience, Number(e.target.value)))}
+						    />
                         </TableRow>
                         <TableRow>
                             <DisplayCell
