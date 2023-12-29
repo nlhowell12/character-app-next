@@ -85,6 +85,8 @@ export const mockCharacters: Character[] = [
         languages: ['Dromish', 'Ice Caste', 'Thieves Cant', 'Elven', 'Dwarven'],
         playerName: 'Hater',
         skills: MockSkills,
+        experience: 0,
+        feats: [],
         equipment: [
             {
                 name: 'Leather Armor',
