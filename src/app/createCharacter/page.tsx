@@ -8,6 +8,7 @@ import { ClassSelector } from './_components/ClassSelector';
 import { SkillDisplay } from './_components/SkillDisplay';
 import { Grid } from '@mui/material';
 import { CharacterKeys } from '@/_models';
+import { FeatSelector } from './_components/FeatSelector';
 
 export default function CreateCharacter() {
     const [character, dispatch] = useReducer(
@@ -44,9 +45,9 @@ export default function CreateCharacter() {
                 <Grid item xs={'auto'}>
                     <AttributeDisplay character={character} dispatch={dispatch} />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={4} display='flex'>
                     <ClassSelector character={character} dispatch={dispatch} />
-
+                    <FeatSelector character={character} dispatch={dispatch} />
                 </Grid>
                 <Grid item xs={2}>
                     <SkillDisplay character={character} dispatch={dispatch}/>

@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
@@ -33,7 +33,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character;
+type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character | Feat[];
 
 export type CharacterAction = {
 	type: CharacterReducerActions;
