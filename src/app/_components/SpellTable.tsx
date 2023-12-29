@@ -111,6 +111,7 @@ export const SpellTable = () => {
             x.name.toLowerCase().includes(searchValue.toLowerCase())
         );
         setFilteredRows(filteredRows);
+        setRowsPerPage(filteredRows.length)
     }, [searchValue, rows]);
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -252,7 +253,7 @@ export const SpellTable = () => {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component='div'
-                count={rows.length}
+                count={!!filteredRows.length ? filteredRows.length : rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
