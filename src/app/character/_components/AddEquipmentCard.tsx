@@ -112,6 +112,12 @@ export const AddEquipmentCard = ({
                                 })}
                             </Select>
                         </FormControl>
+                        <NumberInput minZero value={(newEq as Weapon).criticalRange} label='Crit Range' onChange={(
+                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                        ) => onChange(e, 'criticalRange')}/>
+                        <NumberInput minZero value={(newEq as Weapon).criticalMultiplier} label='Crit Multiplier' onChange={(
+                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                        ) => onChange(e, 'criticalMultiplier')}/>
                     </>
                 ) : null}
                 {!!isArmor ? (
