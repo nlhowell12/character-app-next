@@ -183,7 +183,7 @@ export enum ModifierSource {
 	attributeScoreIncrease = 'Attribute Score Increase',
 }
 export interface Modifier {
-	value?: number;
+	value: number;
 	definition?: string | ModifierSource;
 	skill?: SkillTypes;
 	attribute?: AttributeNames;

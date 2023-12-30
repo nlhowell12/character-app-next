@@ -1,13 +1,19 @@
-import { Armor, Equipment, Weapon } from '@/_models';
+import { Armor, BonusTypes, Damage, Dice, Equipment, Weapon } from '@/_models';
+import { NumberInput } from '@/app/_components/NumberInput';
 import {
     Button,
     Card,
     CardActions,
     CardContent,
     Checkbox,
+    FormControl,
     FormControlLabel,
     FormGroup,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField,
+    Typography,
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 
@@ -28,6 +34,12 @@ export const AddEquipmentCard = ({
 }: AddEquipmentCardProps) => {
     const [isArmor, setIsArmor] = useState<boolean>(false);
     const [isWeapon, setIsWeapon] = useState<boolean>(false);
+    const textFieldStyling = {
+        marginBottom: '.5rem'
+    }
+    const formControlStyle = {
+        marginBottom: '.5rem',
+    };
     return (
         <Card>
             <CardActions>
@@ -55,22 +67,21 @@ export const AddEquipmentCard = ({
             <CardContent>
                 <TextField
                     value={newEq.name}
+                    sx={textFieldStyling}
                     label='Name'
                     onChange={(
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                     ) => onChange(e, 'name')}
                 />
-                <TextField
-                    value={newEq.weight}
-                    label='Weight'
-                    onChange={(
+                <NumberInput minZero value={newEq.weight} label='Weight' onChange={(
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                    ) => onChange(e, 'weight')}
-                />
+                    ) => onChange(e, 'weight')}/>
                 {!!isWeapon ? (
                     <>
+                    <Typography sx={{margin: '.5rem 0'}}>Weapon Info</Typography>
                         <TextField
                             value={(newEq as Weapon).category}
+                            sx={textFieldStyling}
                             label='Category'
                             onChange={(
                                 e: ChangeEvent<
@@ -78,6 +89,37 @@ export const AddEquipmentCard = ({
                                 >
                             ) => onChange(e, 'category')}
                         />
+                        <NumberInput minZero value={(newEq as Weapon).numberOfDice} label='Number of Dice' onChange={(
+                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                        ) => onChange(e, 'numberOfDice')}/>
+                        <FormControl fullWidth sx={formControlStyle}>
+                            <InputLabel id='damage-id'>Damage Die</InputLabel>
+                            <Select
+                                labelId='damage-id'
+                                id='damage'
+                                label='Damage Die'
+                                name='type'
+                                value={(newEq as Weapon).damage}
+                                onChange={(e: any) => onChange(e, 'damage')}
+                            >
+                                {Object.keys(Dice).map((dam) => {
+                                    return (
+                                        <MenuItem key={dam} value={dam}>
+                                            {/* @ts-ignore */}
+                                            {Dice[dam]}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                    </>
+                ) : null}
+                {!!isArmor ? (
+                    <>
+                    <Typography sx={{margin: '.5rem 0'}}>Armor Info</Typography>
+                    <NumberInput value={(newEq as Armor).armorCheckPenalty} label='Armor Check Penalty' onChange={(
+                        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                    ) => onChange(e, 'armorCheckPenalty')}/>
                     </>
                 ) : null}
             </CardContent>

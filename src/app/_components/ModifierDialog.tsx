@@ -1,5 +1,6 @@
 import { AbilityTypes, AttributeNames, BonusTypes, Character, CharacterKeys, Damage, Modifier, SkillTypes } from '@/_models';
 import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
+import { numberInputStyling } from '@/_utils/theme';
 import {
     Card,
     CardHeader,
@@ -19,6 +20,7 @@ import {
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { NumberInput } from './NumberInput';
 
 interface ModifierDialogProps {
     character: Character;
@@ -84,7 +86,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
     } = optionalValues;
 
     const appliedModifier: Modifier = {
-        value: !!boolValue ? Number(modValue) : undefined,
+        value: !!boolValue ? Number(modValue) : 0,
         definition: (!!boolDefinition || !!definition) ? definition : undefined,
         skill: !!boolSkill ? skill : undefined,
         attribute: !!boolAttribute ? attribute : undefined,
@@ -260,32 +262,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
                     </Select>
                 </FormControl>
                 {!!optionalValues.boolValue && (
-                    <FormControl fullWidth sx={formControlStyle}>
-                        <InputLabel id='value-id'>Value</InputLabel>
-                        <OutlinedInput
-                            type='number'
-                            label='Value'
-                            name='value'
-                            sx={{
-                                maxWidth: '4rem',
-                                '& input[type=number]': {
-                                    '-moz-appearance': 'textfield',
-                                },
-                                '& input[type=number]::-webkit-outer-spin-button':
-                                    {
-                                        '-webkit-appearance': 'none',
-                                        margin: 0,
-                                    },
-                                '& input[type=number]::-webkit-inner-spin-button':
-                                    {
-                                        '-webkit-appearance': 'none',
-                                        margin: 0,
-                                    },
-                            }}
-                            value={modValue}
-                            onChange={modifierValueHandler}
-                        />
-                    </FormControl>
+                    <NumberInput label='Value' value={modValue} onChange={modifierValueHandler}/>
                 )}
                 {!!optionalValues.boolDefinition && (
                     <FormControl fullWidth sx={formControlStyle}>

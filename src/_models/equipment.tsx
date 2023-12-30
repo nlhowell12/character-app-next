@@ -30,6 +30,7 @@ export interface BaseEquipment {
 
 export interface Weapon extends BaseEquipment {
     category: string;
+    numberOfDice: number;
     damage: Dice;
     qualities: string[];
     twoHanded: boolean;

@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Armor, Character, Equipment, Modifier, Weapon } from '@/_models';
+import { Armor, Character, Dice, Equipment, Modifier, Weapon } from '@/_models';
 import {
     CharacterAction,
     toggleEquippedAction,
@@ -45,7 +45,11 @@ export const EquipmentDisplay = ({
 		id: uuidv4(),
 		name: '',
 		weight: 0,
-		modifiers: []
+		modifiers: [],
+        equipped: false,
+        numberOfDice: 0,
+        damage: Dice.None,
+        armorCheckPenalty: 0
 	};
 
 	const [newObject, setNewObject] = useState<Equipment>(initialEquipmentState);
