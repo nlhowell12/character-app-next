@@ -58,6 +58,7 @@ export const EquipmentDisplay = ({
         criticalMultiplier: 2,
         criticalRange: 20,
         category: '',
+        qualities: []
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
