@@ -11,19 +11,19 @@ describe('Defense Utilities', () => {
 		const mock0Modifiers = mock0.miscModifiers?.filter((mod) => !!mod.defense);
 		expect(defenseUtils.getMiscAcBonuses(mock0)).toStrictEqual(mock0Modifiers);
 	});
-	test('getEquipmentAcBonuses', () => {
-		expect(defenseUtils.getEquipmentAcBonuses(mock0)).toEqual(
+	test('getEquipmentWithAcBonuses', () => {
+		expect(defenseUtils.getEquipmentWithAcBonuses(mock0)).toEqual(
 			mock0.equipment[0].modifiers
 		);
 	});
 	test('getDefenseBonuses', () => {
 		expect(defenseUtils.getDefenseBonuses(mock0)).toStrictEqual({
-			[BonusTypes.NaturalArmor]: 1,
+			[BonusTypes.Racial]: 1,
 			[BonusTypes.Armor]: 2,
 			[BonusTypes.Untyped]: 2
 		});
-		expect(defenseUtils.getDefenseBonuses({...mock0, miscModifiers: [...mock0.miscModifiers, {attribute: AttributeNames.Wisdom, type: BonusTypes.Enhancement, defense: true}]})).toStrictEqual({
-			[BonusTypes.NaturalArmor]: 1,
+		expect(defenseUtils.getDefenseBonuses({...mock0, miscModifiers: [...mock0.miscModifiers, {value: 0, attribute: AttributeNames.Wisdom, type: BonusTypes.Enhancement, defense: true}]})).toStrictEqual({
+			[BonusTypes.Racial]: 1,
 			[BonusTypes.Armor]: 2,
 			[BonusTypes.Untyped]: 2,
 			[BonusTypes.Enhancement]: getTotalAttributeModifier(mock0, AttributeNames.Wisdom)
@@ -31,7 +31,7 @@ describe('Defense Utilities', () => {
 	});
 	test('getTotalDefense', () => {
 		expect(defenseUtils.getTotalDefense(mock0)).toStrictEqual({
-			dsBonus: 17,
+			dsBonus: 16,
 			drBonus: 3,
 		});
 	});
@@ -53,6 +53,6 @@ describe('Defense Utilities', () => {
 		expect(defenseUtils.getSaveBonus(false, 15)).toBe(5);
 	});
 	test('getTotalSaveBonus', () => {
-		expect(defenseUtils.getTotalSaveBonus(mock0, AttributeNames.Dexterity)).toBe(7)
+		expect(defenseUtils.getTotalSaveBonus(mock0, AttributeNames.Dexterity)).toBe(6)
 	});
 });

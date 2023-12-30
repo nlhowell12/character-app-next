@@ -38,7 +38,7 @@ export const getMiscAcBonuses = (character: Character): Modifier[] => {
 	return miscMods;
 };
 
-export const getEquipmentAcBonuses = (character: Character): Modifier[] => {
+export const getEquipmentWithAcBonuses = (character: Character): Modifier[] => {
 	const eqWithMods: Equipment[] = character.equipment.filter(
 		(eq) =>
 			!!(eq as Armor).equipped && !!eq.modifiers?.some((mod) => !!mod.defense)
@@ -54,7 +54,7 @@ export type BonusObject = {
 
 export const getDefenseBonuses = (character: Character): BonusObject => {
 	const miscMods = getMiscAcBonuses(character);
-	const equipmentMods = getEquipmentAcBonuses(character);
+	const equipmentMods = getEquipmentWithAcBonuses(character);
 	const mods = [...miscMods, ...equipmentMods];
 	const defenseBonuses: BonusObject = {} as BonusObject;
 	mods.forEach((mod) => {

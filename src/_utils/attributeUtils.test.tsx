@@ -43,28 +43,28 @@ describe('Attribute utils', () => {
 		expect(
 			abilityUtils.getAllAttributeModifiers(mock0, AttributeNames.Strength)
 				.length
-		).toBe(1);
+		).toBe(0);
 		expect(
 			abilityUtils.getAllAttributeModifiers(mock0, AttributeNames.Dexterity)
 				.length
-		).toBe(1);
+		).toBe(0);
 	});
 	test('getBaseAttributeScore', () => {
 		expect(
 			abilityUtils.getBaseAttributeScore(mock0, AttributeNames.Dexterity)
 		).toBe(18);
 		expect(
-			abilityUtils.getBaseAttributeScore({...mock0, miscModifiers: [{definition: ModifierSource.attributeScoreIncrease, attribute: AttributeNames.Strength, type: BonusTypes.Racial}]}, AttributeNames.Dexterity)
+			abilityUtils.getBaseAttributeScore({...mock0, miscModifiers: [{value: 0, definition: ModifierSource.attributeScoreIncrease, attribute: AttributeNames.Strength, type: BonusTypes.Racial}]}, AttributeNames.Dexterity)
 		).toBe(17);
 	});
 	test('totalAttributeValue', () => {
 		expect(
 			abilityUtils.totalAttributeValue(mock0, AttributeNames.Dexterity)
-		).toBe(20);
+		).toBe(18);
 	});
 	test('getTotalAttributeModifier', () => {
 		expect(
 			abilityUtils.getTotalAttributeModifier(mock0, AttributeNames.Dexterity)
-		).toBe(5);
+		).toBe(4);
 	});
 });

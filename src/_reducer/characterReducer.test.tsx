@@ -1,15 +1,26 @@
-import { CharacterKeys, AttributeNames, SkillTypes } from '@/_models';
+import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice } from '@/_models';
 import {
 	CharacterReducerActions,
+	addEquipmentAction,
 	characterReducer,
+	deleteModAction,
 	initialCharacterState,
+	removeEquipmentAction,
 	resetAction,
+	setCharacterAction,
+	toggleEquippedAction,
 	updateAction,
 	updateAttributeAction,
 	updateSkillAction,
 } from './characterReducer';
+import { mockCharacters } from '@/_mockData/characters';
+import * as R from 'ramda';
 
 describe('characterReducer', () => {
+	it('should set state to character', () => {
+		const newState = characterReducer(initialCharacterState, setCharacterAction(mockCharacters[0]));
+		expect(newState).toStrictEqual(mockCharacters[0])
+	});
 	it('should update character keys correctly', () => {
 		const name = 'Kyrin';
 		const newState = characterReducer(
@@ -43,6 +54,45 @@ describe('characterReducer', () => {
 		expect(initialCharacterState.skills.Perception).toBe(
 			initialCharacterState.skills.Perception
 		);
+	});
+	it('should equip/unequip items', () => {
+		const initStateWithArmor = {...initialCharacterState, equipment: [{name: 'Armor', equipped: false} as Armor]}
+		let newState = characterReducer(initStateWithArmor, toggleEquippedAction({name: 'Armor'} as Armor))
+		const eqArmor = newState.equipment[0] as Armor;
+		expect(eqArmor.equipped).toBeTruthy()
+		const nextState = characterReducer(newState, toggleEquippedAction({name: 'Armor'} as Armor))
+		const unEqArmor = nextState.equipment[0] as Armor;
+		expect(unEqArmor.equipped).toBeFalsy()
+
+	});
+	it('should add items to equipment', () => {
+		const newWeapon: Weapon = {
+			id: '12345',
+			name: 'Dagger',
+			category: 'Knives', 
+			damage: Dice.d4,
+			numberOfDice: 1,
+		} as Weapon;
+		const newState = characterReducer(initialCharacterState, addEquipmentAction(newWeapon))
+		expect(R.findIndex(x => x.id === newWeapon.id, newState.equipment)).toBeGreaterThanOrEqual(0)
+	});
+	it('should should remove items from equipment', () => {
+		const newWeapon: Weapon = {
+			id: '12345',
+			name: 'Dagger',
+			category: 'Knives', 
+			damage: Dice.d4,
+			numberOfDice: 1,
+		} as Weapon;
+		const newState = characterReducer({...initialCharacterState, equipment: [newWeapon]}, removeEquipmentAction(newWeapon))
+		expect(R.findIndex(x => x.id === newWeapon.id, newState.equipment)).toBe(-1)
+	});
+	it('should delete mod from character modifiers', () => {
+		const modToDelete = mockCharacters[0].miscModifiers[0];
+		const newState = characterReducer(mockCharacters[0], deleteModAction(modToDelete))
+		expect(newState.miscModifiers.findIndex(x => modToDelete.definition === x.definition)).toBe(-1)
+		expect(newState.miscModifiers.length).toBeGreaterThan(0);
+		expect(newState.miscModifiers.length).toBe(mockCharacters[0].miscModifiers.length - 1);
 	});
 	it('should reset to initial', () => {
 		const name = 'Kyrin';

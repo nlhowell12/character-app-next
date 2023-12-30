@@ -123,6 +123,7 @@ export const mockCharacters: Character[] = [
                 value: 1,
             },
             { // added to test negative path, otherwise useless
+                value: 0,
                 definition: ModifierSource.attributeScoreIncrease,
                 attribute: AttributeNames.Dexterity,
                 type: BonusTypes.Untyped,

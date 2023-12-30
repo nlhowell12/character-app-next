@@ -46,7 +46,7 @@ export const totalAttributeValue = (
 ): number => {
 	let total: number = getBaseAttributeScore(character, attributeName);
 	getAllAttributeModifiers(character, attributeName).forEach((mod) => {
-		!!mod.value && (total += mod.value);
+		total += mod.value;
 	});
 	return total;
 };
