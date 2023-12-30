@@ -18,6 +18,7 @@ export enum BodySlot {
 export type Equipment = BaseEquipment | Weapon | Armor;
 
 export interface BaseEquipment {
+    id: string;
     name: string;
     weight: number;
     magical?: boolean;

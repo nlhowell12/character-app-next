@@ -89,6 +89,7 @@ export const mockCharacters: Character[] = [
         feats: [],
         equipment: [
             {
+                id: '123456',
                 name: 'Leather Armor',
                 armorCheckPenalty: 0,
                 weight: 7,

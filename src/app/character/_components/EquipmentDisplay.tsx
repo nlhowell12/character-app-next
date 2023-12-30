@@ -1,7 +1,10 @@
 import {
     Button,
     Card,
+    CardActions,
     CardContent,
+    CardHeader,
+    Dialog,
     Table,
     TableBody,
     TableCell,
@@ -11,12 +14,13 @@ import {
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Armor, Character, Equipment, Modifier, Weapon } from '@/_models';
-import { Add } from '@mui/icons-material';
 import {
     CharacterAction,
     toggleEquippedAction,
 } from '@/_reducer/characterReducer';
-import { Dispatch } from 'react';
+import React, { Dispatch, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { AddEquipmentCard } from './AddEquipmentCard';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -37,17 +41,46 @@ export const EquipmentDisplay = ({
     const eqDisplayCardStyle = {
         margin: '1rem',
     };
+	const initialEquipmentState: Equipment = {
+		id: uuidv4(),
+		name: '',
+		weight: 0,
+		modifiers: []
+	};
+
+	const [newObject, setNewObject] = useState<Equipment>(initialEquipmentState);
+	const [open, setOpen] = useState<boolean>(false);	
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: keyof Equipment | keyof Weapon | keyof Armor
+		) => {
+			setNewObject({...newObject, [key]: e.target.value})
+	};
+	const handleAdd = () => {
+		setOpen(false);
+	};
+
+	const handleClose = () => {
+		setNewObject(initialEquipmentState);
+		setOpen(false);
+	}
     return (
-        <>
+        <Card>
+			<div style={{
+				display: 'flex',
+				justifyContent: 'space-between'
+			}}>
+				<CardHeader title='Equipment'/>
+				<CardActions>
+					<Button onClick={() => setOpen(true)}>Add</Button>
+				</CardActions>
+			</div>
+			<Dialog open={open}>
+				<AddEquipmentCard onAdd={handleAdd} onChange={handleChange} newEq={newObject} onClose={handleClose}/>
+			</Dialog>
             <Card sx={eqDisplayCardStyle}>
                 <CardContent
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                     <Typography variant='h6'>Weapons</Typography>
-                    <div>
-                        <Button>Add</Button>
-                        <Button>Remove</Button>
-                    </div>
                 </CardContent>
                 <Table>
                     <TableBody>
@@ -139,6 +172,6 @@ export const EquipmentDisplay = ({
                     </TableBody>
                 </Table>
             </Card>
-        </>
+        </Card>
     );
 };
