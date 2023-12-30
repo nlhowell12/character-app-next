@@ -24,20 +24,7 @@ export const getAllAttackModifiers = (character: Character, weapon: Weapon): Mod
 };
 
 export const getTotalModifierBonus = (mods: Modifier[]): number => {
-    const bonuses: BonusObject = {} as BonusObject;
-    mods.forEach(mod => {
-        if (!bonuses[mod.type]) {
-            bonuses[mod.type] = 0;
-        }
-        if (mod.value) {
-            if (stackableBonuses.includes(mod.type)) {
-                bonuses[mod.type] += mod.value;
-            } else if (mod.value > bonuses[mod.type]) {
-                bonuses[mod.type] = mod.value;
-            }
-        }
-    })
-    return Object.entries(bonuses).reduce((x, [_, value]) => x + value, 0);
+    return Object.entries(getEqBonusObject(mods)).reduce((x, [_, value]) => x + value, 0);
 };
 
 export const getEqBonusObject = (mods: Modifier[]): BonusObject => {
