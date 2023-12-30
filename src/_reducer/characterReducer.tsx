@@ -10,6 +10,8 @@ export enum CharacterReducerActions {
 	RESET = 'RESET',
 	DELETE_MOD = 'DELETE_MOD',
 	TOGGLE_EQUIPPED = 'TOGGLE_EQUIPPED',
+	ADD_EQUIPMENT = 'ADD_EQUIPMENT',
+	REMOVE_EQUIPMENT = 'REMOVE_EQUIPMENT',
 	DEFAULT = 'DEFAULT'
 }
 
@@ -123,6 +125,30 @@ export const toggleEquippedAction = (
 	}
 };
 
+export const addEquipmentAction = (
+	value: Equipment
+) : CharacterAction => {
+	return {
+		type: CharacterReducerActions.ADD_EQUIPMENT,
+		payload: {
+			key: CharacterKeys.equipment,
+			value
+		}
+	}
+};
+
+export const removeEquipmentAction = (
+	value: Equipment
+) : CharacterAction => {
+	return {
+		type: CharacterReducerActions.REMOVE_EQUIPMENT,
+		payload: {
+			key: CharacterKeys.equipment,
+			value
+		}
+	}
+};
+
 export const resetAction = () => {
 	return {
 		type: CharacterReducerActions.RESET,
@@ -208,6 +234,23 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 						equipment: R.update(index, updatedEq, state.equipment)
 					}
 				}
+		case CharacterReducerActions.ADD_EQUIPMENT:
+			if(payload.value){
+				const value = payload.value as Equipment;
+				return {
+					...state,
+					equipment: [...state.equipment, value]
+				}
+			}
+		case CharacterReducerActions.REMOVE_EQUIPMENT:
+			if(payload.value){
+				const value = payload.value as Equipment;
+				const filter = (x: Equipment) => x.id !== value.id;
+				return {
+					...state,
+					equipment: R.filter(filter, state.equipment)
+				}
+			}
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;
 		default:

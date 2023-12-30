@@ -18,6 +18,13 @@ export const numberInputStyling = {
       },
 };
 
+export const iconHoverStyling = {
+    '&:hover': {
+        opacity: '.6',
+        cursor: 'pointer',
+    },
+};
+
 export default createTheme({
   palette,
 });

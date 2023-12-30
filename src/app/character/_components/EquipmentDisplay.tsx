@@ -9,18 +9,23 @@ import {
     TableBody,
     TableCell,
     TableRow,
+    Tooltip,
     Typography,
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ClearIcon from '@mui/icons-material/Clear';
 import { Armor, Character, Dice, Equipment, Modifier, Weapon } from '@/_models';
 import {
     CharacterAction,
+    addEquipmentAction,
+    removeEquipmentAction,
     toggleEquippedAction,
 } from '@/_reducer/characterReducer';
 import React, { Dispatch, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { AddEquipmentCard } from './AddEquipmentCard';
+import { iconHoverStyling } from '@/_utils/theme';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -49,7 +54,10 @@ export const EquipmentDisplay = ({
         equipped: false,
         numberOfDice: 0,
         damage: Dice.None,
-        armorCheckPenalty: 0
+        armorCheckPenalty: 0,
+        criticalMultiplier: 2,
+        criticalRange: 20,
+        category: ''
 	};
 
 	const [newObject, setNewObject] = useState<Equipment>(initialEquipmentState);
@@ -59,6 +67,7 @@ export const EquipmentDisplay = ({
 			setNewObject({...newObject, [key]: e.target.value})
 	};
 	const handleAdd = () => {
+        dispatch(addEquipmentAction(newObject))
 		setOpen(false);
 	};
 
@@ -93,6 +102,7 @@ export const EquipmentDisplay = ({
                             <TableCell>Damage</TableCell>
                             <TableCell align='center'>Two-Handed?</TableCell>
                             <TableCell>Critical</TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                         {weapons.map((eq) => {
                             const weapon = eq as Weapon;
@@ -103,13 +113,18 @@ export const EquipmentDisplay = ({
                             return (
                                 <TableRow key={weapon.name}>
                                     <TableCell>{weapon.name}</TableCell>
-                                    <TableCell>{weapon.damage}</TableCell>
+                                    <TableCell>{`${Number(weapon.numberOfDice.toString())}${weapon.damage}`}</TableCell>
                                     <TableCell align='center'>
                                         {!!weapon.twoHanded ? (
                                             <CheckCircleOutlineIcon />
                                         ) : null}
                                     </TableCell>
                                     <TableCell>{`${critRange} / x${weapon.criticalMultiplier}`}</TableCell>
+                                    <TableCell>
+                                        <Tooltip title='Remove Equipment'>
+                                            <ClearIcon sx={iconHoverStyling} onClick={() => dispatch(removeEquipmentAction(eq))}/>
+                                        </Tooltip>
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}
@@ -142,12 +157,7 @@ export const EquipmentDisplay = ({
                                     <TableCell align='center'>
                                         {(eq as Armor).equipped ? (
                                             <CheckCircleOutlineIcon
-                                                sx={{
-                                                    '&:hover': {
-                                                        opacity: '.6',
-                                                        cursor: 'pointer',
-                                                    },
-                                                }}
+                                                sx={iconHoverStyling}
                                                 onClick={() =>
                                                     dispatch(
                                                         toggleEquippedAction(eq)
@@ -156,12 +166,7 @@ export const EquipmentDisplay = ({
                                             />
                                         ) : (
                                             <AddCircleOutlineIcon
-                                                sx={{
-                                                    '&:hover': {
-                                                        opacity: '.6',
-                                                        cursor: 'pointer',
-                                                    },
-                                                }}
+                                                sx={iconHoverStyling}
                                                 onClick={() =>
                                                     dispatch(
                                                         toggleEquippedAction(eq)
