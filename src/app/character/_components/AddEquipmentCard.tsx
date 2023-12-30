@@ -98,7 +98,7 @@ export const AddEquipmentCard = ({
                                 labelId='damage-id'
                                 id='damage'
                                 label='Damage Die'
-                                name='type'
+                                name='damage'
                                 value={(newEq as Weapon).damage}
                                 onChange={(e: any) => onChange(e, 'damage')}
                             >
@@ -107,6 +107,27 @@ export const AddEquipmentCard = ({
                                         <MenuItem key={dam} value={dam}>
                                             {/* @ts-ignore */}
                                             {Dice[dam]}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth sx={formControlStyle}>
+                            <InputLabel id='damage-types-id'>Damage Types</InputLabel>
+                            <Select
+                                labelId='damage-types-id'
+                                id='damage-types'
+                                label='Damage Types'
+                                name='damageTypes'
+                                value={(newEq as Weapon).damageTypes}
+                                multiple
+                                onChange={(e: any) => onChange(e, 'damageTypes')}
+                            >
+                                {Object.keys(Damage).map((dam) => {
+                                    return (
+                                        <MenuItem key={dam} value={dam}>
+                                            {/* @ts-ignore */}
+                                            {Damage[dam]}
                                         </MenuItem>
                                     );
                                 })}

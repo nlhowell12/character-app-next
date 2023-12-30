@@ -153,6 +153,22 @@ export const mockCharacters: Character[] = [
 				type: BonusTypes.Size,
 				skill: SkillTypes.Stealth
 			},
+            {
+                value: 2,
+                type: BonusTypes.Morale,
+                damage: true,
+                attack: true
+            },
+            {
+                value: 1,
+                type: BonusTypes.Untyped,
+                attack: true
+            },
+            {
+                value: 1,
+                type: BonusTypes.Untyped,
+                attack: true
+            },
         ],
     },
 ];

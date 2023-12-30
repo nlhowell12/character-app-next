@@ -15,7 +15,15 @@ import {
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
-import { Armor, Character, Dice, Equipment, Modifier, Weapon } from '@/_models';
+import {
+    Armor,
+    AttributeNames,
+    Character,
+    Dice,
+    Equipment,
+    Modifier,
+    Weapon,
+} from '@/_models';
 import {
     CharacterAction,
     addEquipmentAction,
@@ -26,6 +34,7 @@ import React, { Dispatch, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling } from '@/_utils/theme';
+import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -58,7 +67,7 @@ export const EquipmentDisplay = ({
         criticalMultiplier: 2,
         criticalRange: 20,
         category: '',
-        qualities: []
+        damageTypes: [],
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
@@ -114,9 +123,7 @@ export const EquipmentDisplay = ({
                             <TableCell>Name</TableCell>
                             <TableCell>Damage</TableCell>
                             <TableCell align='center'>Two-Handed?</TableCell>
-                            <TableCell align='center'>
-                                Critical
-                            </TableCell>
+                            <TableCell align='center'>Critical</TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                         {weapons.map((eq) => {
@@ -125,12 +132,34 @@ export const EquipmentDisplay = ({
                                 weapon.criticalRange < 20
                                     ? `${weapon.criticalRange}-20`
                                     : 20;
+                            const attDamageBonus = !weapon.dexBasedDamage
+                                ? getTotalAttributeModifier(
+                                      character,
+                                      AttributeNames.Strength
+                                  )
+                                : getTotalAttributeModifier(
+                                      character,
+                                      AttributeNames.Dexterity
+                                  );
+                            const damagePositive = attDamageBonus >= 0 ? '+' : '-';
                             return (
                                 <TableRow key={weapon.name}>
                                     <TableCell>{weapon.name}</TableCell>
-                                    <TableCell>{`${Number(
-                                        weapon.numberOfDice.toString()
-                                    )}${weapon.damage}`}</TableCell>
+                                    <TableCell>
+                                        <Tooltip
+                                            title={`${weapon.damageTypes.join(
+                                                ', '
+                                            )}`}
+                                        >
+                                            <Typography>
+                                                {`${Number(
+                                                    weapon.numberOfDice.toString()
+                                                )}${
+                                                    weapon.damage
+                                                } ${damagePositive} ${Math.abs(attDamageBonus)}`}
+                                            </Typography>
+                                        </Tooltip>
+                                    </TableCell>
                                     <TableCell align='center'>
                                         {!!weapon.twoHanded ? (
                                             <CheckCircleOutlineIcon />
@@ -138,7 +167,7 @@ export const EquipmentDisplay = ({
                                     </TableCell>
                                     <TableCell align='center'>
                                         {`${critRange} / x${weapon.criticalMultiplier}`}
-                                        </TableCell>
+                                    </TableCell>
                                     <TableCell>
                                         <Tooltip title='Remove Equipment'>
                                             <ClearIcon

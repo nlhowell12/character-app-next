@@ -1,4 +1,4 @@
-import { Dice, Sizes, Modifier } from '.';
+import { Dice, Sizes, Modifier, Damage } from '.';
 
 export enum BodySlot {
     Head = 'Head',
@@ -32,13 +32,19 @@ export interface Weapon extends BaseEquipment {
     category: string;
     numberOfDice: number;
     damage: Dice;
-    qualities: string[];
+    damageTypes: Damage[];
     twoHanded: boolean;
     criticalRange: number;
     criticalMultiplier: number;
+    rangeIncrement?: number;
+    dexBasedAttack?: boolean;
+    dexBasedDamage?: boolean;
 }
 
 export interface Armor extends BaseEquipment {
     armorCheckPenalty: number;
     equipped?: boolean;
+    maxDexBonus: number;
+    spellFailure: number;
+    hardness: number;
 }
