@@ -46,49 +46,60 @@ export const EquipmentDisplay = ({
     const eqDisplayCardStyle = {
         margin: '1rem',
     };
-	const initialEquipmentState: Equipment = {
-		id: uuidv4(),
-		name: '',
-		weight: 0,
-		modifiers: [],
+    const initialEquipmentState: Equipment = {
+        id: uuidv4(),
+        name: '',
+        weight: 0,
+        modifiers: [],
         equipped: false,
         numberOfDice: 0,
         damage: Dice.None,
         armorCheckPenalty: 0,
         criticalMultiplier: 2,
         criticalRange: 20,
-        category: ''
-	};
+        category: '',
+    };
 
-	const [newObject, setNewObject] = useState<Equipment>(initialEquipmentState);
-	const [open, setOpen] = useState<boolean>(false);	
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: keyof Equipment | keyof Weapon | keyof Armor
-		) => {
-			setNewObject({...newObject, [key]: e.target.value})
-	};
-	const handleAdd = () => {
-        dispatch(addEquipmentAction(newObject))
-		setOpen(false);
-	};
+    const [newObject, setNewObject] = useState<Equipment>(
+        initialEquipmentState
+    );
+    const [open, setOpen] = useState<boolean>(false);
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        key: keyof Equipment | keyof Weapon | keyof Armor
+    ) => {
+        setNewObject({ ...newObject, [key]: e.target.value });
+    };
+    const handleAdd = () => {
+        dispatch(addEquipmentAction(newObject));
+        setOpen(false);
+    };
 
-	const handleClose = () => {
-		setNewObject(initialEquipmentState);
-		setOpen(false);
-	}
+    const handleClose = () => {
+        setNewObject(initialEquipmentState);
+        setOpen(false);
+    };
     return (
         <Card>
-			<div style={{
-				display: 'flex',
-				justifyContent: 'space-between'
-			}}>
-				<CardHeader title='Equipment'/>
-				<CardActions>
-					<Button onClick={() => setOpen(true)}>Add</Button>
-				</CardActions>
-			</div>
-			<Dialog open={open}>
-				<AddEquipmentCard onAdd={handleAdd} onChange={handleChange} newEq={newObject} onClose={handleClose}/>
-			</Dialog>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <CardHeader title='Equipment' />
+                <CardActions>
+                    <Button onClick={() => setOpen(true)}>Add</Button>
+                </CardActions>
+            </div>
+            <Dialog open={open}>
+                <AddEquipmentCard
+                    onAdd={handleAdd}
+                    onChange={handleChange}
+                    newEq={newObject}
+                    onClose={handleClose}
+                />
+            </Dialog>
             <Card sx={eqDisplayCardStyle}>
                 <CardContent
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
@@ -113,7 +124,9 @@ export const EquipmentDisplay = ({
                             return (
                                 <TableRow key={weapon.name}>
                                     <TableCell>{weapon.name}</TableCell>
-                                    <TableCell>{`${Number(weapon.numberOfDice.toString())}${weapon.damage}`}</TableCell>
+                                    <TableCell>{`${Number(
+                                        weapon.numberOfDice.toString()
+                                    )}${weapon.damage}`}</TableCell>
                                     <TableCell align='center'>
                                         {!!weapon.twoHanded ? (
                                             <CheckCircleOutlineIcon />
@@ -122,7 +135,16 @@ export const EquipmentDisplay = ({
                                     <TableCell>{`${critRange} / x${weapon.criticalMultiplier}`}</TableCell>
                                     <TableCell>
                                         <Tooltip title='Remove Equipment'>
-                                            <ClearIcon sx={iconHoverStyling} onClick={() => dispatch(removeEquipmentAction(eq))}/>
+                                            <ClearIcon
+                                                sx={iconHoverStyling}
+                                                onClick={() =>
+                                                    dispatch(
+                                                        removeEquipmentAction(
+                                                            eq
+                                                        )
+                                                    )
+                                                }
+                                            />
                                         </Tooltip>
                                     </TableCell>
                                 </TableRow>
@@ -142,6 +164,7 @@ export const EquipmentDisplay = ({
                             <TableCell>Bonus</TableCell>
                             <TableCell>Body Slot</TableCell>
                             <TableCell align='center'>Equipped</TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                         {armor.map((eq) => {
                             const armorMod = (eq as Armor).modifiers.find(
@@ -156,24 +179,46 @@ export const EquipmentDisplay = ({
                                     <TableCell>{eq.bodySlot}</TableCell>
                                     <TableCell align='center'>
                                         {(eq as Armor).equipped ? (
-                                            <CheckCircleOutlineIcon
-                                                sx={iconHoverStyling}
-                                                onClick={() =>
-                                                    dispatch(
-                                                        toggleEquippedAction(eq)
-                                                    )
-                                                }
-                                            />
+                                            <Tooltip title='Unequip Item'>
+                                                <CheckCircleOutlineIcon
+                                                    sx={iconHoverStyling}
+                                                    onClick={() =>
+                                                        dispatch(
+                                                            toggleEquippedAction(
+                                                                eq
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </Tooltip>
                                         ) : (
-                                            <AddCircleOutlineIcon
+                                            <Tooltip title='Equip Item'>
+                                                <AddCircleOutlineIcon
+                                                    sx={iconHoverStyling}
+                                                    onClick={() =>
+                                                        dispatch(
+                                                            toggleEquippedAction(
+                                                                eq
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </Tooltip>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Tooltip title='Remove Equipment'>
+                                            <ClearIcon
                                                 sx={iconHoverStyling}
                                                 onClick={() =>
                                                     dispatch(
-                                                        toggleEquippedAction(eq)
+                                                        removeEquipmentAction(
+                                                            eq
+                                                        )
                                                     )
                                                 }
                                             />
-                                        )}
+                                        </Tooltip>
                                     </TableCell>
                                 </TableRow>
                             );
