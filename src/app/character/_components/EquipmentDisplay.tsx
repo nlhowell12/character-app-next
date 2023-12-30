@@ -73,6 +73,7 @@ export const EquipmentDisplay = ({
     const handleAdd = () => {
         dispatch(addEquipmentAction(newObject));
         setOpen(false);
+        setNewObject(initialEquipmentState);
     };
 
     const handleClose = () => {
