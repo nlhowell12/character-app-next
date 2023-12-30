@@ -114,7 +114,9 @@ export const EquipmentDisplay = ({
                             <TableCell>Name</TableCell>
                             <TableCell>Damage</TableCell>
                             <TableCell align='center'>Two-Handed?</TableCell>
-                            <TableCell>Critical</TableCell>
+                            <TableCell align='center'>
+                                Critical
+                            </TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                         {weapons.map((eq) => {
@@ -134,7 +136,9 @@ export const EquipmentDisplay = ({
                                             <CheckCircleOutlineIcon />
                                         ) : null}
                                     </TableCell>
-                                    <TableCell>{`${critRange} / x${weapon.criticalMultiplier}`}</TableCell>
+                                    <TableCell align='center'>
+                                        {`${critRange} / x${weapon.criticalMultiplier}`}
+                                        </TableCell>
                                     <TableCell>
                                         <Tooltip title='Remove Equipment'>
                                             <ClearIcon
