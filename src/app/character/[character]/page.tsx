@@ -50,7 +50,7 @@ export default function CharacterPage() {
 				<AttributeDisplay character={character} />
 				<div>
 					<CombatInfoDisplay character={character} dispatch={dispatch}/>
-					<EquipmentDisplay character={character} />
+					<EquipmentDisplay character={character} dispatch={dispatch}/>
 				</div>
 				<SkillDisplay character={character} />
 			</div>

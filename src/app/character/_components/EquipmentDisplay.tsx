@@ -9,14 +9,20 @@ import {
 	Typography,
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Armor, Character, Equipment, Modifier, Weapon } from '@/_models';
+import { Add } from '@mui/icons-material';
+import { CharacterAction, toggleEquippedAction } from '@/_reducer/characterReducer';
+import { Dispatch } from 'react';
 
 interface EquipmentDisplayProps {
 	character: Character;
+	dispatch: Dispatch<CharacterAction>;
 };
 
 export const EquipmentDisplay = ({
 	character,
+	dispatch
 } :  EquipmentDisplayProps) => {
 	const weapons = character.equipment.filter((eq: Equipment) => !!(eq as Weapon).damage);
 	const armor = character.equipment.filter(
@@ -52,7 +58,7 @@ export const EquipmentDisplay = ({
 									<TableCell>{weapon.name}</TableCell>
 									<TableCell>{weapon.damage}</TableCell>
 									<TableCell align='center'>
-										{!!weapon.twoHanded ? <CheckCircleOutlineIcon /> : null}
+										{!!weapon.twoHanded ? <CheckCircleOutlineIcon/> : null}
 									</TableCell>
 									<TableCell>{`${critRange} / x${weapon.criticalMultiplier}`}</TableCell>
 								</TableRow>
@@ -85,7 +91,7 @@ export const EquipmentDisplay = ({
 									})`}</TableCell>
 									<TableCell>{eq.bodySlot}</TableCell>
 									<TableCell align='center'>
-										{(eq as Armor).equipped ? <CheckCircleOutlineIcon /> : null}
+										{(eq as Armor).equipped ? <CheckCircleOutlineIcon onClick={() => dispatch(toggleEquippedAction(eq))}/> : <AddCircleOutlineIcon onClick={() => dispatch(toggleEquippedAction(eq))}/>}
 									</TableCell>
 								</TableRow>
 							);

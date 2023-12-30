@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
@@ -9,6 +9,7 @@ export enum CharacterReducerActions {
 	UPDATESKILL = 'UPDATESKILL',
 	RESET = 'RESET',
 	DELETE_MOD = 'DELETE_MOD',
+	TOGGLE_EQUIPPED = 'TOGGLE_EQUIPPED',
 	DEFAULT = 'DEFAULT'
 }
 
@@ -33,7 +34,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character | Feat[];
+type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment;
 
 export type CharacterAction = {
 	type: CharacterReducerActions;
@@ -110,6 +111,18 @@ export const deleteModAction = (
 	}
 };
 
+export const toggleEquippedAction = (
+	value: Equipment
+) : CharacterAction => {
+	return {
+		type: CharacterReducerActions.TOGGLE_EQUIPPED,
+		payload: {
+			key: CharacterKeys.equipment,
+			value
+		}
+	}
+};
+
 export const resetAction = () => {
 	return {
 		type: CharacterReducerActions.RESET,
@@ -140,7 +153,7 @@ export const initialCharacterState: Character = {
 	miscModifiers: [],
 	playerName: '',
 	experience: 0,
-	feats: []
+	feats: [],
 };
 
 export const characterReducer = (state: Character, action: CharacterAction) => {
@@ -182,6 +195,17 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 					return {
 						...state,
 						miscModifiers: state.miscModifiers.filter(x => !R.equals(x, value))
+					}
+				}
+		case CharacterReducerActions.TOGGLE_EQUIPPED:
+				if(payload.value){
+					const value = payload.value as Equipment;
+					const index = R.findIndex(R.propEq(value.name, 'name'))(state.equipment);
+					const eq = state.equipment[index] as Armor;
+					const updatedEq = {...eq, equipped: !eq.equipped}
+					return {
+						...state,
+						equipment: R.update(index, updatedEq, state.equipment)
 					}
 				}
 		case CharacterReducerActions.RESET:
