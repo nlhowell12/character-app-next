@@ -18,7 +18,6 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
     Armor,
-    AttributeNames,
     BodySlot,
     Character,
     Dice,
@@ -44,7 +43,6 @@ import {
     getTotalArmorBonus,
 } from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
-import { NumberInput } from '@/app/_components/NumberInput';
 
 interface EquipmentDisplayProps {
     character: Character;
