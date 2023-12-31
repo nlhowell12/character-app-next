@@ -1,5 +1,5 @@
 import { mockCharacters } from "@/_mockData/characters";
-import { getAllAttackModifiers, getAllDamageModifiers, getAttributeDamageBonus, getEqBonusObject, getTotalModifierBonus } from "./equipmentUtils";
+import { getAllAttackModifiers, getAllDamageModifiers, getAttackBonus, getAttributeAttackBonus, getAttributeDamageBonus, getDamageBonus, getEqBonusObject, getTotalModifierBonus } from "./equipmentUtils";
 import { BonusTypes, Damage, Dice, Weapon } from "@/_models";
 
 const dagger: Weapon = {
@@ -62,9 +62,12 @@ const sword: Weapon = {
 
 describe('Equipment Utils', () => {
     it('should return correct damage based on attribute', () => {
-
         expect(getAttributeDamageBonus(mockCharacters[0], dagger)).toBe(4);
         expect(getAttributeDamageBonus(mockCharacters[0], sword)).toBe(0);
+    })
+    it('should return correct attack mod based on attribute', () => {
+        expect(getAttributeAttackBonus(mockCharacters[0], dagger)).toBe(4);
+        expect(getAttributeAttackBonus(mockCharacters[0], sword)).toBe(0);
     })
     it('should get all damage mods', () => {
         expect(getAllDamageModifiers(mockCharacters[0], dagger).length).toBe(4);
@@ -78,6 +81,14 @@ describe('Equipment Utils', () => {
         expect(getTotalModifierBonus(damageModifiers)).toBe(6);
         expect(getTotalModifierBonus(attackModifiers)).toBe(5);
     });
+    it('should get the damage bonus', () => {
+        expect(getDamageBonus(mockCharacters[0], dagger)).toBe(10);
+        expect(getDamageBonus(mockCharacters[0], sword)).toBe(2);
+    })
+    it('should get the attack bonus', () => {
+        expect(getAttackBonus(mockCharacters[0], sword)).toBe(5);
+        expect(getAttackBonus(mockCharacters[0], dagger)).toBe(8);
+    })
     it('should return an attack bonus object', () => {
         expect(getEqBonusObject(getAllAttackModifiers(mockCharacters[0], sword))).toStrictEqual({
             [BonusTypes.Morale]: 3,

@@ -35,6 +35,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling } from '@/_utils/theme';
 import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
+import { getDamageBonus } from '@/_utils/equipmentUtils';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -156,7 +157,7 @@ export const EquipmentDisplay = ({
                                                     weapon.numberOfDice.toString()
                                                 )}${
                                                     weapon.damage
-                                                } ${damagePositive} ${Math.abs(attDamageBonus)}`}
+                                                } ${damagePositive} ${Math.abs(getDamageBonus(character, weapon))}`}
                                             </Typography>
                                         </Tooltip>
                                     </TableCell>

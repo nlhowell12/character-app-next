@@ -11,6 +11,15 @@ export const getAttributeDamageBonus = (
         : getTotalAttributeModifier(character, AttributeNames.Strength);
 };
 
+export const getAttributeAttackBonus = (
+    character: Character,
+    weapon: Weapon
+): number => {
+    return weapon.dexBasedAttack
+        ? getTotalAttributeModifier(character, AttributeNames.Dexterity)
+        : getTotalAttributeModifier(character, AttributeNames.Strength);
+};
+
 export const getAllDamageModifiers = (character: Character, weapon: Weapon): Modifier[] => {
     const characterMods = character.miscModifiers.filter(x => !!x.damage);
     const weaponMods = weapon.modifiers.filter(x => !!x.damage);
@@ -25,6 +34,18 @@ export const getAllAttackModifiers = (character: Character, weapon: Weapon): Mod
 
 export const getTotalModifierBonus = (mods: Modifier[]): number => {
     return Object.entries(getEqBonusObject(mods)).reduce((x, [_, value]) => x + value, 0);
+};
+
+export const getDamageBonus = (character: Character, weapon: Weapon) => {
+    const modBonus = getTotalModifierBonus(getAllDamageModifiers(character, weapon))
+    const attBonus = getAttributeDamageBonus(character, weapon);
+    return modBonus + attBonus;
+};
+
+export const getAttackBonus = (character: Character, weapon: Weapon) => {
+    const modBonus = getTotalModifierBonus(getAllAttackModifiers(character, weapon));
+    const attBonus = getAttributeAttackBonus(character, weapon);
+    return modBonus + attBonus;
 };
 
 export const getEqBonusObject = (mods: Modifier[]): BonusObject => {
