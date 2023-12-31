@@ -1,4 +1,4 @@
-import { Armor, BonusTypes, Damage, Dice, Equipment, Weapon } from '@/_models';
+import { Armor, BodySlot, BonusTypes, Damage, Dice, Equipment, Weapon } from '@/_models';
 import { NumberInput } from '@/app/_components/NumberInput';
 import {
     Button,
@@ -166,11 +166,40 @@ export const AddEquipmentCard = ({
                 ) : null}
                 {!!isArmor ? (
                     <>
-                    <Typography sx={{margin: '.5rem 0'}}>Armor Info</Typography>
-                    <NumberInput value={(newEq as Armor).armorCheckPenalty} label='Armor Check Penalty' onChange={(
-                        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                    ) => onChange(e, 'armorCheckPenalty')}/>
-                    </>
+                        <Typography sx={{margin: '.5rem 0'}}>Armor Info</Typography>
+                        <FormControl fullWidth sx={formControlStyle}>
+                            <InputLabel id='body-slot-id'>Body Slot</InputLabel>
+                            <Select
+                                labelId='body-slot-id'
+                                id='body-slot'
+                                label='Body Slot'
+                                name='bodySlot'
+                                value={(newEq as Armor).bodySlot}
+                                onChange={(e: any) => onChange(e, 'bodySlot')}
+                            >
+                                {Object.keys(BodySlot).map((slot) => {
+                                    return (
+                                        <MenuItem key={slot} value={slot}>
+                                            {/* @ts-ignore */}
+                                            {BodySlot[slot]}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                        <NumberInput value={(newEq as Armor).armorCheckPenalty} label='Armor Check Penalty' onChange={(
+                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                        ) => onChange(e, 'armorCheckPenalty')}/>
+                        <NumberInput value={(newEq as Armor).maxDexBonus} label='Max Dex Bonus>' onChange={(
+                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                        ) => onChange(e, 'maxDexBonus')}/>
+                        <NumberInput value={(newEq as Armor).spellFailure} label='Spell Failure' onChange={(
+                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                        ) => onChange(e, 'spellFailure')}/>
+                        <NumberInput value={(newEq as Armor).hardness} label='Hardness' onChange={(
+                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                        ) => onChange(e, 'hardness')}/>
+                        </>
                 ) : null}
             </CardContent>
             <CardActions>
