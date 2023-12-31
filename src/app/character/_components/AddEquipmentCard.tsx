@@ -27,6 +27,8 @@ import {
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { Add } from '@mui/icons-material';
+import { ModChipStack } from '@/app/_components/ModChipStack';
+import * as R from 'ramda';
 
 interface AddEquipmentCardProps {
     onAdd: () => void;
@@ -53,8 +55,12 @@ export const AddEquipmentCard = ({
         marginBottom: '.5rem',
     };
     const handleAddModifier = (mod: Modifier) => {
-        newEq.modifiers.push(mod);
+        onChange({target: {value: [...newEq.modifiers, mod]}}, 'modifiers');
     };
+    const handleDeleteModifier = (mod: Modifier) => {
+        const filter = (x: Modifier) => x.id !== mod.id;
+        const filteredMods = R.filter(filter, newEq.modifiers);
+        onChange({target: {value: filteredMods}}, 'modifiers')};
     return (
         <Card>
             <CardActions>
@@ -309,6 +315,7 @@ export const AddEquipmentCard = ({
                         />
                     </>
                 ) : null}
+                <ModChipStack mods={newEq.modifiers} onDelete={handleDeleteModifier}/>
             </CardContent>
             <CardActions>
                 <Button onClick={() => onAdd()}>Add to Equipment</Button>
