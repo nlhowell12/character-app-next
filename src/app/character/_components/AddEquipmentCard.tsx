@@ -20,7 +20,7 @@ import { ChangeEvent, useState } from 'react';
 interface AddEquipmentCardProps {
     onAdd: () => void;
     onChange: (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        e: any,
         key: keyof Equipment | keyof Weapon | keyof Armor
     ) => void;
     newEq: Equipment;
@@ -89,6 +89,26 @@ export const AddEquipmentCard = ({
                                 >
                             ) => onChange(e, 'category')}
                         />
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={(newEq as Weapon).dexBasedAttack}
+                                        onChange={(e) => onChange(e, 'dexBasedAttack')}
+                                    />
+                                }
+                                label='Is attack based on Dex?'
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                    checked={(newEq as Weapon).dexBasedDamage}
+                                    onChange={(e) => onChange(e, 'dexBasedDamage')}
+                                    />
+                                }
+                                label='Is damage based on Dex?'
+                            />
+                        </FormGroup>
                         <NumberInput minZero value={(newEq as Weapon).numberOfDice} label='Number of Dice' onChange={(
                             e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                         ) => onChange(e, 'numberOfDice')}/>

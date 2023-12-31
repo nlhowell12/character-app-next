@@ -69,6 +69,8 @@ export const EquipmentDisplay = ({
         criticalRange: 20,
         category: '',
         damageTypes: [],
+        dexBasedAttack: false,
+        dexBasedDamage: false
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
@@ -76,10 +78,10 @@ export const EquipmentDisplay = ({
     );
     const [open, setOpen] = useState<boolean>(false);
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        e: any,
         key: keyof Equipment | keyof Weapon | keyof Armor
     ) => {
-        setNewObject({ ...newObject, [key]: e.target.value });
+        setNewObject({ ...newObject, [key]: e.target.checked || e.target.value });
     };
     const handleAdd = () => {
         dispatch(addEquipmentAction(newObject));
