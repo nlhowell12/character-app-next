@@ -40,7 +40,7 @@ export const CharacterInfoDisplay = ({
     const { updateCharacter } = useCharacterService();
     return (
         <Grid container>
-            <Grid item xs={6}>
+            <Grid item xs={12} lg={6}>
                 <Table>
                     <TableBody>
                         <TableRow sx={{ border: 'none' }}>
@@ -108,6 +108,7 @@ export const CharacterInfoDisplay = ({
                             <DisplayCell
                                 variant='body1'
                                 cellTitle='XP:'
+                                isNumber
                                 value={character.experience}
                                 editable={true}
                                 onChange={(e) => dispatch(updateAction(CharacterKeys.experience, Number(e.target.value)))}
@@ -117,6 +118,7 @@ export const CharacterInfoDisplay = ({
                             <DisplayCell
                                 variant='body1'
                                 cellTitle='Age:'
+                                isNumber
                                 value={!!character.age ? character.age : 'N/A'}
                             />
                             <DisplayCell
@@ -159,7 +161,7 @@ export const CharacterInfoDisplay = ({
                     </TableBody>
                 </Table>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={12} lg={6}>
                 <Stack direction='row' spacing={1} flexWrap='wrap'>
                     {R.filter(notASI, character.miscModifiers).map((mod) => {
                         return (

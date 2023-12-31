@@ -3,6 +3,7 @@ import { palette } from "./palette";
 
 export const numberInputStyling = {
   maxWidth: '100%',
+  width: '100%',
   '& input[type=number]': {
       '-moz-appearance': 'textfield',
   },

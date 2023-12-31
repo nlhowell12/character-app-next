@@ -51,11 +51,11 @@ export default function CharacterPage() {
 				<Grid item xs={'auto'}>
 					<AttributeDisplay character={character} />
 				</Grid>
-				<Grid item xs={6} xl={3} sx={{margin: '0 .5rem'}}>
+				<Grid item xs={8} xl={5} sx={{margin: '0 .5rem'}}>
 					<CombatInfoDisplay character={character} dispatch={dispatch}/>
 					<EquipmentDisplay character={character} dispatch={dispatch}/>
 				</Grid>
-				<Grid xs={2} item>
+				<Grid xs={12} md={2} item>
 					<SkillDisplay character={character} />
 				</Grid>
 			</Grid>
