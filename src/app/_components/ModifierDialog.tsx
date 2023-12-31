@@ -1,6 +1,5 @@
-import { AbilityTypes, AttributeNames, BonusTypes, Character, CharacterKeys, Damage, Modifier, SkillTypes } from '@/_models';
+import { AbilityTypes, AttributeNames, BonusTypes, Character, CharacterKeys, Damage, Dice, Modifier, SkillTypes } from '@/_models';
 import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
-import { numberInputStyling } from '@/_utils/theme';
 import {
     Card,
     CardHeader,
@@ -8,7 +7,6 @@ import {
     FormControl,
     InputLabel,
     Select,
-    OutlinedInput,
     Checkbox,
     FormControlLabel,
     FormGroup,
@@ -25,9 +23,10 @@ import { NumberInput } from './NumberInput';
 interface ModifierDialogProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
+    onAdd: (appliedModifier: Modifier) => void;
 }
 
-export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => {
+export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogProps) => {
     const [modifier, setModifier] = useState<Modifier>({
         value: 0,
         definition: '',
@@ -41,6 +40,8 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
         resistance: undefined,
         immunity: undefined,
         damageType: Damage.Acid,
+        damageDice: Dice.None,
+        numberOfDice: 0
     });
 
     const { value: modValue, definition, skill, attribute, type: bonusType, abilityType, damageType } = modifier;
@@ -100,7 +101,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
         damageType: (!!boolResistance || !!boolImmunity) ? damageType : undefined,
         id: uuidv4()
     };
-    const valueOptions = appliedModifier.value || appliedModifier.attribute;
+    const valueOptions = appliedModifier.value || appliedModifier.attribute || (appliedModifier.damageDice !== Dice.None && !!appliedModifier.numberOfDice);
     const valueAssignments = !!boolResistance || !!boolAttack || !!boolDamage || !!boolDefense || !!boolSkill || !!boolAttribute;
     const noModValue = valueAssignments && !valueOptions;
     const noDamageType = !!boolImmunity && !appliedModifier.damageType
@@ -115,21 +116,15 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
 
     const formValidation = !noValuesSelected && !noModValue && !noDamageType && !noUnassignedValue;
 
-    const handleApply = () => {
-        if(formValidation)
-        {
-            // set up on close
-            dispatch(updateAction(CharacterKeys.miscModifiers, [...character.miscModifiers, appliedModifier]))
-        } else {
-            // set up field validation or a warning
-            alert('Not good')
-        }
-    };
-
     const formControlStyle = {
         marginBottom: '.5rem',
     };
 
+    const handleAdd = () => {
+        if(formValidation){
+            onAdd(appliedModifier)
+        }
+    }
     return (
         <Card>
             <CardHeader title='Add Modifiers' />
@@ -238,7 +233,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
                             label='Does this confer immunity to damage?'
                         />
                     </FormGroup>
-                    <FormHelperText>Resistance, Attack, Damage, Defense, and Skills require a Value or Attribute to reference.</FormHelperText>
+                    <FormHelperText>Resistance, Attack, Damage, Defense, and Skills require a Value, Attribute, or additional Dice (size and number) to reference.</FormHelperText>
                     <FormHelperText>If Value or Attribute are selected, you must select where to apply it.</FormHelperText>
                 </FormControl>
                 <FormControl fullWidth sx={formControlStyle}>
@@ -354,7 +349,7 @@ export const ModifierDialog = ({ character, dispatch }: ModifierDialogProps) => 
                     </FormControl>
                 )}
                 <div style={{display: 'flex', justifyContent: 'end'}}>
-                    <Button disabled={!formValidation} variant='outlined' onClick={() => handleApply()}>Apply Modifier</Button>
+                    <Button disabled={!formValidation} variant='outlined' onClick={() => handleAdd()}>Apply Modifier</Button>
                 </div>
             </CardContent>
         </Card>

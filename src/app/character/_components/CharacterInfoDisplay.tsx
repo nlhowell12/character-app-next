@@ -38,6 +38,12 @@ export const CharacterInfoDisplay = ({
         x.definition !== ModifierSource.attributeScoreIncrease;
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
     const { updateCharacter } = useCharacterService();
+
+    const handleAddModifier = (appliedModifier: Modifier) => {
+        // set up on close
+        dispatch(updateAction(CharacterKeys.miscModifiers, [...character.miscModifiers, appliedModifier]))
+    
+    };
     return (
         <Grid container>
             <Grid item xs={12} lg={6}>
@@ -69,6 +75,7 @@ export const CharacterInfoDisplay = ({
                                     <ModifierDialog
                                         character={character}
                                         dispatch={dispatch}
+                                        onAdd={handleAddModifier}
                                     />
                                 </Dialog>
                             </TableCell>

@@ -1,5 +1,5 @@
 import { Equipment } from './equipment';
-import { AbilityTypes, BonusTypes, Damage, Sizes } from './gameMechanics';
+import { AbilityTypes, BonusTypes, Damage, Dice, Sizes } from './gameMechanics';
 
 export enum AttributeNames {
 	Strength = 'Strength',
@@ -195,6 +195,8 @@ export interface Modifier {
 	resistance?: boolean;
 	immunity?: boolean;
 	damageType?: Damage;
+	damageDice?: Dice;
+	numberOfDice?: number;
 	id?: string;
 }
 export interface Feat {
