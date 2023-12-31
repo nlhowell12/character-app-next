@@ -118,10 +118,10 @@ export interface Magick {
 }
 export interface SpellObject {
 	[CharacterClassNames.Cleric]: Prayer[];
-	[CharacterClassNames.Hexblade]: Spell[];
-	[CharacterClassNames.Oathsworn]: Prayer[];
+	[CharacterClassNames.Hexblade]: [Spell, Maneuver];
+	[CharacterClassNames.Oathsworn]: [Prayer, Maneuver];
 	[CharacterClassNames.Fighter]: Maneuver[];
-	[CharacterClassNames.PsychicWarrior]: Power[];
+	[CharacterClassNames.PsychicWarrior]: [Power, Maneuver];
 	[CharacterClassNames.Psion]: Power[];
 	[CharacterClassNames.Shadowcaster]: Mystery[];
 	[CharacterClassNames.SorcWiz]: Spell[];

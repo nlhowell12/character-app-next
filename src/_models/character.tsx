@@ -1,4 +1,4 @@
-import { AnyMagickType, Magick } from '.';
+import { AnyMagickType, Magick, SpellObject } from '.';
 import { Equipment } from './equipment';
 import { AbilityTypes, BonusTypes, Damage, Dice, Sizes } from './gameMechanics';
 
@@ -137,6 +137,7 @@ export interface Character {
 	playerName: string;
 	experience: number;
 	feats: Feat[];
+	spellBook: SpellObject;
 }
 export type SkillObject = {
 	[key in SkillTypes]: RankedSkill;
@@ -178,7 +179,6 @@ export interface CharacterClass {
 	classAbilities: ClassAbility[];
 	level: number;
 	secondarySave: AttributeNames;
-	spellBook: AnyMagickType[];
 }
 
 export enum ModifierSource {

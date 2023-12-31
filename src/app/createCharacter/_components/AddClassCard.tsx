@@ -105,6 +105,7 @@ export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
     );
     const [classAbilities, setClassAbilities] = useState<ClassAbility[]>([]);
     const [classSkills, setClassSkills] = useState<string[]>([]);
+
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
