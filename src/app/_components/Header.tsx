@@ -14,7 +14,6 @@ import MenuBook from '@mui/icons-material/MenuBook';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Home from '@mui/icons-material/Home';
-import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useState } from 'react';
@@ -26,6 +25,7 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
+	ListItemButton,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
@@ -159,18 +159,18 @@ export default function Header() {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					<ListItem button onClick={handleHome}>
+					<ListItemButton  onClick={handleHome}>
 						<ListItemIcon title='Home'>
 							<Home />
 						</ListItemIcon>
 						<ListItemText primary={'Home'} />
-					</ListItem>
-					<ListItem button onClick={handleSpellToggle}>
+					</ListItemButton>
+					<ListItemButton  onClick={handleSpellToggle}>
 						<ListItemIcon title='Full Spell List'>
 							<MenuBook />
 						</ListItemIcon>
-						<ListItemText primary={'Spells'} />
-					</ListItem>
+						<ListItemText primary={'Full Spell List'} />
+					</ListItemButton>
 				</List>
 			</Drawer>
 			<Dialog
