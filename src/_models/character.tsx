@@ -1,3 +1,4 @@
+import { AnyMagickType, Magick } from '.';
 import { Equipment } from './equipment';
 import { AbilityTypes, BonusTypes, Damage, Dice, Sizes } from './gameMechanics';
 
@@ -177,6 +178,7 @@ export interface CharacterClass {
 	classAbilities: ClassAbility[];
 	level: number;
 	secondarySave: AttributeNames;
+	spellBook: AnyMagickType[];
 }
 
 export enum ModifierSource {
@@ -197,7 +199,7 @@ export interface Modifier {
 	damageType?: Damage;
 	damageDice?: Dice;
 	numberOfDice?: number;
-	id?: string;
+	id: string;
 }
 export interface Feat {
 	prerequisites?: Feat[] | string[];

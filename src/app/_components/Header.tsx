@@ -28,6 +28,7 @@ import {
 	ListItemButton,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import useSpellService from '../api/_services/useSpellService';
 
 const drawerWidth = 240;
 
@@ -105,6 +106,7 @@ export default function Header() {
 	const [spellOpen, setSpellOpen] = useState<boolean>(false);
 	const [warning, setWarning] = useState<string>('');
 	const router = useRouter();
+    const { spells } = useSpellService();
 
 	const handleDrawerOpen = () => {
 		setOpen(true);
@@ -180,7 +182,7 @@ export default function Header() {
 				maxWidth='lg'
 				keepMounted
 			>
-				<SpellTable />
+				<SpellTable spells={spells} />
 			</Dialog>
 			<Dialog
 				open={!!warning}

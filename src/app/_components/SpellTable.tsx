@@ -22,17 +22,18 @@ import {
     MagickCategory,
 } from '@/_models';
 import { camelToTitle } from '@/_utils/stringUtils';
-import useSpellService from '../api/_services/useSpellService';
 import * as R from 'ramda';
 
-const SpellTooltip: React.FC<{
+interface SpellTableTooltipProps {
     description: string;
-    bonusType?: string;
-    damageType?: string;
-}> = ({ description }) => {
-    return <Typography>{description}</Typography>;
+}
+const SpellTooltip = ({ description }: SpellTableTooltipProps) => {
+    return (<Typography>{description}</Typography>);
 };
-export const SpellTable = () => {
+interface SpellTableProps {
+    spells: SpellObject | undefined;
+}
+export const SpellTable = ({spells}: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
         CharacterClassNames.Cleric
     );
@@ -45,7 +46,6 @@ export const SpellTable = () => {
     const [filteredRows, setFilteredRows] = useState<AnyMagickType[]>([]);
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-    const { spells } = useSpellService();
 
     const hybridClasses: CharacterClassNames[] = [
         CharacterClassNames.Hexblade,
@@ -96,8 +96,10 @@ export const SpellTable = () => {
     }, [spells, selectedClass]);
 
     useEffect(() => {
-        if(!!rows && isHybridClass && !!spells){
-            const filteredSpells: AnyMagickType[] = filterBySubtype(spells[filterClass]);
+        if (!!rows && isHybridClass && !!spells) {
+            const filteredSpells: AnyMagickType[] = filterBySubtype(
+                spells[filterClass]
+            );
             const columns = Object.keys(filteredSpells[0]).filter((x) =>
                 filterData(x)
             );
@@ -110,8 +112,10 @@ export const SpellTable = () => {
         const filteredRows = rows.filter((x: AnyMagickType) =>
             x.name.toLowerCase().includes(searchValue.toLowerCase())
         );
-        setFilteredRows(filteredRows);
-        setRowsPerPage(filteredRows.length)
+        if(!!filteredRows && !!filteredRows.length){
+            setFilteredRows(filteredRows);
+            setRowsPerPage(filteredRows.length);
+        }
     }, [searchValue, rows]);
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -253,7 +257,9 @@ export const SpellTable = () => {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component='div'
-                count={!!filteredRows.length ? filteredRows.length : rows.length}
+                count={
+                    !!filteredRows.length ? filteredRows.length : rows.length
+                }
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
