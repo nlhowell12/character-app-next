@@ -280,6 +280,7 @@ export const AddEquipmentCard = ({
                         <NumberInput
                             value={(newEq as Armor).armorCheckPenalty}
                             label='Armor Check Penalty'
+                            minZero
                             onChange={(
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
@@ -289,6 +290,7 @@ export const AddEquipmentCard = ({
                         <NumberInput
                             value={(newEq as Armor).maxDexBonus}
                             label='Max Dex Bonus'
+                            minZero
                             onChange={(
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
@@ -298,6 +300,7 @@ export const AddEquipmentCard = ({
                         <NumberInput
                             value={(newEq as Armor).spellFailure}
                             label='Spell Failure'
+                            minZero
                             onChange={(
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
@@ -307,6 +310,7 @@ export const AddEquipmentCard = ({
                         <NumberInput
                             value={(newEq as Armor).hardness}
                             label='Hardness'
+                            minZero
                             onChange={(
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement

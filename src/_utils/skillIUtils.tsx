@@ -26,7 +26,7 @@ export const getArmorCheckPenalties = (equipment: Equipment[]): number => {
 		(eq) => !!(eq as Armor).equipped && !!(eq as Armor).armorCheckPenalty
 	);
 	return armorWithPenalty.reduce(
-		(x, y) => x + (y as Armor).armorCheckPenalty,
+		(x, y) => x - Number((y as Armor).armorCheckPenalty),
 		0
 	);
 };

@@ -76,7 +76,7 @@ export const EquipmentDisplay = ({
     dispatch,
 }: EquipmentDisplayProps) => {
     const weapons = character.equipment.filter(
-        (eq: Equipment) => !!(eq as Weapon).damage
+        (eq: Equipment) => !!(eq as Weapon).damage && !!(eq as Weapon).numberOfDice
     );
     const armor = character.equipment.filter(
         (eq: Equipment) =>
@@ -249,6 +249,7 @@ export const EquipmentDisplay = ({
                             <TableCell>Bonus</TableCell>
                             <TableCell align='center'>Body Slot</TableCell>
                             <TableCell align='center'>Max Dex Bonus</TableCell>
+                            <TableCell align='center'>Armor Check Penalty</TableCell>
                             <TableCell align='center'>Spell Failure</TableCell>
                             <TableCell>Hardness</TableCell>
                             <TableCell align='center'>Equipped</TableCell>
@@ -280,6 +281,7 @@ export const EquipmentDisplay = ({
                                     </TableCell>
                                     <TableCell align='center'>{armor.bodySlot}</TableCell>
                                     <TableCell align='center'>{`+${armor.maxDexBonus}`}</TableCell>
+                                    <TableCell align='center'>{`${!!armor.armorCheckPenalty ? '-' : ''}${armor.armorCheckPenalty}`}</TableCell>
                                     <TableCell align='center'>{`${armor.spellFailure}%`}</TableCell>
                                     <TableCell>
                                         <OutlinedInput
