@@ -167,6 +167,24 @@ export const EquipmentDisplay = ({
         setNewObject(initialEquipmentState);
         setOpen(false);
     };
+    const weaponDamage = (weapon: Weapon) => {
+        const damageBonus = getDamageBonus(
+            character,
+            weapon
+        );
+        const damagePositive = damageBonus >= 0 ? '+' : '-';
+        if(weapon.damage === Dice.Minimum){
+            return `${1 + damageBonus}`
+        } else {
+            return `${Number(
+                weapon.numberOfDice.toString()
+            )}${
+                weapon.damage
+            } ${damagePositive} ${Math.abs(
+                damageBonus
+            )}`
+        }
+    }
     return (
         <Card>
             <div
@@ -253,13 +271,7 @@ export const EquipmentDisplay = ({
                                             }
                                         >
                                             <Typography>
-                                                {`${Number(
-                                                    weapon.numberOfDice.toString()
-                                                )}${
-                                                    weapon.damage
-                                                } ${damagePositive} ${Math.abs(
-                                                    damageBonus
-                                                )}`}
+                                                {weaponDamage(weapon)}
                                             </Typography>
                                         </Tooltip>
                                     </TableCell>
