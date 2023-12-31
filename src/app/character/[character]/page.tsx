@@ -1,6 +1,5 @@
 'use client'
 
-import { mockCharacters } from "@/_mockData/characters";
 import { Character } from "@/_models";
 import { useParams } from "next/navigation";
 import React, { useEffect, useReducer } from "react";
@@ -54,7 +53,7 @@ export default function CharacterPage() {
 				<Grid item xs={'auto'}>
 					<AttributeDisplay character={character} />
 				</Grid>
-				<Grid item xs={6}>
+				<Grid item xs={6} sx={{margin: '0 .5rem'}}>
 					<CombatInfoDisplay character={character} dispatch={dispatch}/>
 					<EquipmentDisplay character={character} dispatch={dispatch}/>
 				</Grid>

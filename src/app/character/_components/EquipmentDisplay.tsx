@@ -54,7 +54,7 @@ export const EquipmentDisplay = ({
             !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense)
     );
     const eqDisplayCardStyle = {
-        margin: '1rem',
+        margin: '0 .5rem'
     };
     const initialEquipmentState: Equipment = {
         id: uuidv4(),

@@ -2,7 +2,7 @@ import { AttributeNames, Character, CharacterKeys } from '@/_models';
 import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
 import { BonusObject, getTotalDefense, getDefenseBonuses, getResistances } from '@/_utils/defenseUtils';
 import { Table, TableBody, TableRow, TableCell, Typography } from '@mui/material';
-import { Dispatch, useEffect, useState } from 'react';
+import { Dispatch } from 'react';
 import { DisplayCell } from './DisplayCell';
 import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
 interface CombatInfoDisplayProps {
@@ -51,7 +51,7 @@ export const CombatInfoDisplay = ({
 	const defenses = getTotalDefense(character);
 
 	return (
-		<div style={{marginLeft: '1rem'}}>
+		<div>
 			<Table>
 				<TableBody>
 					<TableRow
