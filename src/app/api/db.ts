@@ -58,7 +58,8 @@ function characterModel() {
         miscModifiers: [Object],
         playerName: { type: String, required: true },
         experience: { type: Number, required: true },
-        feats: [Object]
+        feats: [Object],
+        spellBook: {type: Object, required: false}
     })
     return mongoose.models.Character || mongoose.model('Character', characterSchema, 'characters');
 
