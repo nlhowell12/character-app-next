@@ -190,7 +190,7 @@ export const AddEquipmentCard = ({
                         <NumberInput value={(newEq as Armor).armorCheckPenalty} label='Armor Check Penalty' onChange={(
                             e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                         ) => onChange(e, 'armorCheckPenalty')}/>
-                        <NumberInput value={(newEq as Armor).maxDexBonus} label='Max Dex Bonus>' onChange={(
+                        <NumberInput value={(newEq as Armor).maxDexBonus} label='Max Dex Bonus' onChange={(
                             e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                         ) => onChange(e, 'maxDexBonus')}/>
                         <NumberInput value={(newEq as Armor).spellFailure} label='Spell Failure' onChange={(

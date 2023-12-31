@@ -19,6 +19,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import {
     Armor,
     AttributeNames,
+    BodySlot,
     Character,
     Dice,
     Equipment,
@@ -106,6 +107,7 @@ export const EquipmentDisplay = ({
         maxDexBonus: 0,
         spellFailure: 0,
         hardness: 0,
+        bodySlot: BodySlot.None
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
@@ -162,7 +164,7 @@ export const EquipmentDisplay = ({
                     <TableBody>
                         <TableRow>
                             <TableCell>Name</TableCell>
-                            <TableCell>Damage</TableCell>
+                            <TableCell align='center'>Damage</TableCell>
                             <TableCell align='center'>Two-Handed?</TableCell>
                             <TableCell align='center'>
                                 Range Increment
@@ -184,7 +186,7 @@ export const EquipmentDisplay = ({
                             return (
                                 <TableRow key={weapon.name}>
                                     <TableCell>{weapon.name}</TableCell>
-                                    <TableCell>
+                                    <TableCell align='center'>
                                         <Tooltip
                                             title={`${weapon.damageTypes.join(
                                                 ', '
@@ -247,9 +249,9 @@ export const EquipmentDisplay = ({
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell>Bonus</TableCell>
-                            <TableCell>Body Slot</TableCell>
-                            <TableCell>Max Dex Bonus</TableCell>
-                            <TableCell>Spell Failure</TableCell>
+                            <TableCell align='center'>Body Slot</TableCell>
+                            <TableCell align='center'>Max Dex Bonus</TableCell>
+                            <TableCell align='center'>Spell Failure</TableCell>
                             <TableCell>Hardness</TableCell>
                             <TableCell align='center'>Equipped</TableCell>
                             <TableCell></TableCell>
@@ -278,9 +280,9 @@ export const EquipmentDisplay = ({
                                             </Typography>
                                         </Tooltip>
                                     </TableCell>
-                                    <TableCell>{armor.bodySlot}</TableCell>
-                                    <TableCell>{armor.maxDexBonus}</TableCell>
-                                    <TableCell>{armor.spellFailure}</TableCell>
+                                    <TableCell align='center'>{armor.bodySlot}</TableCell>
+                                    <TableCell align='center'>{`+${armor.maxDexBonus}`}</TableCell>
+                                    <TableCell align='center'>{`${armor.spellFailure}%`}</TableCell>
                                     <TableCell>
                                         <OutlinedInput
                                             type='number'
