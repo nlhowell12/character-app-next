@@ -35,13 +35,41 @@ import { v4 as uuidv4 } from 'uuid';
 import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling } from '@/_utils/theme';
 import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
-import { getDamageBonus } from '@/_utils/equipmentUtils';
+import { getAllArmorMods, getDamageBonus, getEqBonusObject, getTotalArmorBonus } from '@/_utils/equipmentUtils';
+import { BonusObject } from '@/_utils/defenseUtils';
+import { getSkillModifiers, getArmorCheckPenalties } from '@/_utils/skillIUtils';
 
 interface EquipmentDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
 }
 
+interface BonusTooltipProps {
+    bonusObject: BonusObject;
+};
+const BonusTooltip = (
+    {
+        bonusObject
+    }: BonusTooltipProps
+) => {
+    return (
+        <Table>
+            <TableBody>
+                <TableRow>
+                    {Object.keys(bonusObject).map((key) => {
+                        return (
+                        <TableCell key={key} size='small' align='center'>
+                            <Typography>{key}</Typography>
+                            {/* @ts-ignore */}
+                            <Typography>{bonusObject[key]}</Typography>
+                        </TableCell>
+                        )
+                    })}
+                </TableRow>
+            </TableBody>
+        </Table>
+    );
+};
 export const EquipmentDisplay = ({
     character,
     dispatch,
@@ -51,7 +79,7 @@ export const EquipmentDisplay = ({
     );
     const armor = character.equipment.filter(
         (eq: Equipment) =>
-            !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense)
+            !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense) || !!(eq as Armor).bodySlot
     );
     const eqDisplayCardStyle = {
         margin: '0 .5rem'
@@ -71,7 +99,10 @@ export const EquipmentDisplay = ({
         damageTypes: [],
         dexBasedAttack: false,
         dexBasedDamage: false,
-        rangeIncrement: 0
+        rangeIncrement: 0,
+        maxDexBonus: 0,
+        spellFailure: 0,
+        hardness: 0
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
@@ -206,25 +237,27 @@ export const EquipmentDisplay = ({
                             <TableCell></TableCell>
                         </TableRow>
                         {armor.map((eq) => {
-                            const armorMod = (eq as Armor).modifiers.find(
-                                (mod) => mod.defense
-                            );
+                            const armor = eq as Armor;
                             return (
-                                <TableRow key={eq.name}>
-                                    <TableCell>{eq.name}</TableCell>
-                                    <TableCell>{`${armorMod?.value || 0} (${
-                                        armorMod?.type
-                                    })`}</TableCell>
-                                    <TableCell>{eq.bodySlot}</TableCell>
+                                <TableRow key={armor.name}>
+                                    <TableCell>{armor.name}</TableCell>
+                                    <TableCell>
+                                        <Tooltip title={<BonusTooltip bonusObject={getEqBonusObject(character, getAllArmorMods(armor))}/>}>
+                                            <Typography>
+                                                {`+${getTotalArmorBonus(character, armor)}`}
+                                            </Typography>
+                                        </Tooltip>
+                                    </TableCell>
+                                    <TableCell>{armor.bodySlot}</TableCell>
                                     <TableCell align='center'>
-                                        {(eq as Armor).equipped ? (
+                                        {armor.equipped ? (
                                             <Tooltip title='Unequip Item'>
                                                 <CheckCircleOutlineIcon
                                                     sx={iconHoverStyling}
                                                     onClick={() =>
                                                         dispatch(
                                                             toggleEquippedAction(
-                                                                eq
+                                                                armor
                                                             )
                                                         )
                                                     }
@@ -237,7 +270,7 @@ export const EquipmentDisplay = ({
                                                     onClick={() =>
                                                         dispatch(
                                                             toggleEquippedAction(
-                                                                eq
+                                                                armor
                                                             )
                                                         )
                                                     }
@@ -252,7 +285,7 @@ export const EquipmentDisplay = ({
                                                 onClick={() =>
                                                     dispatch(
                                                         removeEquipmentAction(
-                                                            eq
+                                                            armor
                                                         )
                                                     )
                                                 }

@@ -1,4 +1,4 @@
-import { AttributeNames, Character, Modifier, Weapon, stackableBonuses } from '@/_models';
+import { Armor, AttributeNames, Character, Modifier, Weapon, stackableBonuses } from '@/_models';
 import { getModifierAttributeBonus, getTotalAttributeModifier } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
 
@@ -19,6 +19,15 @@ export const getAttributeAttackBonus = (
         ? getTotalAttributeModifier(character, AttributeNames.Dexterity)
         : getTotalAttributeModifier(character, AttributeNames.Strength);
 };
+
+export const getAllArmorMods = (armor: Armor): Modifier[] => {
+    return armor.modifiers.filter(mod => !!mod.defense);
+};
+
+export const getTotalArmorBonus = (character: Character, armor: Armor) => {
+    const mods = getAllArmorMods(armor);
+    return getTotalModifierBonus(character, mods);
+}
 
 export const getAllDamageModifiers = (character: Character, weapon: Weapon): Modifier[] => {
     const characterMods = character.miscModifiers.filter(x => !!x.damage);

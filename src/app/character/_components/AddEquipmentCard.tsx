@@ -43,7 +43,7 @@ export const AddEquipmentCard = ({
     return (
         <Card>
             <CardActions>
-                <FormGroup>
+                <FormGroup sx={{display: 'flex', flexDirection: 'row'}}>
                     <FormControlLabel
                         control={
                             <Checkbox
