@@ -38,11 +38,14 @@ import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling, numberInputStyling } from '@/_utils/theme';
 import {
     getAllArmorMods,
+    getAllDamageModifiers,
     getDamageBonus,
     getEqBonusObject,
     getTotalArmorBonus,
 } from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
+import { DisplayCell } from './DisplayCell';
+import { DisplayBox } from './DisplayBox';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -71,17 +74,49 @@ const BonusTooltip = ({ bonusObject }: BonusTooltipProps) => {
         </Table>
     );
 };
+interface WeaponDamageTooltipProps {
+    character: Character;
+    weapon: Weapon;
+}
+const WeaponDamageTooltip = ({
+    character,
+    weapon,
+}: WeaponDamageTooltipProps) => {
+    const eqDamageBonuses = getEqBonusObject(
+        character,
+        getAllDamageModifiers(character, weapon)
+    );
+    return (
+        <Table>
+            <TableBody>
+                <TableRow>
+                    {Object.keys(eqDamageBonuses).map((bon) => {
+                        const key = bon as keyof BonusObject;
+                        return (
+                            <TableCell key={key}>
+                                <DisplayBox
+                                    displayTitle={key}
+                                    displayValue={eqDamageBonuses[key]}
+                                />
+                            </TableCell>
+                        );
+                    })}
+                </TableRow>
+            </TableBody>
+        </Table>
+    );
+};
 export const EquipmentDisplay = ({
     character,
     dispatch,
 }: EquipmentDisplayProps) => {
     const weapons = character.equipment.filter(
-        (eq: Equipment) => !!(eq as Weapon).damage && !!(eq as Weapon).numberOfDice
+        (eq: Equipment) =>
+            !!(eq as Weapon).damage && !!(eq as Weapon).numberOfDice
     );
     const armor = character.equipment.filter(
         (eq: Equipment) =>
-            !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense) ||
-            !!(eq as Armor).bodySlot
+            !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense)
     );
     const eqDisplayCardStyle = {
         margin: '0 .5rem',
@@ -106,7 +141,7 @@ export const EquipmentDisplay = ({
         spellFailure: 0,
         hardness: 0,
         bodySlot: BodySlot.None,
-        amount: 1
+        amount: 1,
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
@@ -195,7 +230,13 @@ export const EquipmentDisplay = ({
                                             }}
                                             value={weapon.amount}
                                             onChange={(e) => {
-                                                dispatch(updateEquipmentAction(weapon.id, Number(e.target.value), 'amount'))
+                                                dispatch(
+                                                    updateEquipmentAction(
+                                                        weapon.id,
+                                                        Number(e.target.value),
+                                                        'amount'
+                                                    )
+                                                );
                                             }}
                                             inputProps={{
                                                 min: 0,
@@ -204,9 +245,12 @@ export const EquipmentDisplay = ({
                                     </TableCell>
                                     <TableCell align='center'>
                                         <Tooltip
-                                            title={`${weapon.damageTypes.join(
-                                                ', '
-                                            )}`}
+                                            title={
+                                                <WeaponDamageTooltip
+                                                    character={character}
+                                                    weapon={weapon}
+                                                />
+                                            }
                                         >
                                             <Typography>
                                                 {`${Number(
@@ -267,7 +311,9 @@ export const EquipmentDisplay = ({
                             <TableCell>Bonus</TableCell>
                             <TableCell align='center'>Body Slot</TableCell>
                             <TableCell align='center'>Max Dex Bonus</TableCell>
-                            <TableCell align='center'>Armor Check Penalty</TableCell>
+                            <TableCell align='center'>
+                                Armor Check Penalty
+                            </TableCell>
                             <TableCell align='center'>Spell Failure</TableCell>
                             <TableCell>Hardness</TableCell>
                             <TableCell align='center'>Equipped</TableCell>
@@ -297,9 +343,13 @@ export const EquipmentDisplay = ({
                                             </Typography>
                                         </Tooltip>
                                     </TableCell>
-                                    <TableCell align='center'>{armor.bodySlot}</TableCell>
+                                    <TableCell align='center'>
+                                        {armor.bodySlot}
+                                    </TableCell>
                                     <TableCell align='center'>{`+${armor.maxDexBonus}`}</TableCell>
-                                    <TableCell align='center'>{`${!!armor.armorCheckPenalty ? '-' : ''}${armor.armorCheckPenalty}`}</TableCell>
+                                    <TableCell align='center'>{`${
+                                        !!armor.armorCheckPenalty ? '-' : ''
+                                    }${armor.armorCheckPenalty}`}</TableCell>
                                     <TableCell align='center'>{`${armor.spellFailure}%`}</TableCell>
                                     <TableCell>
                                         <OutlinedInput
@@ -310,7 +360,13 @@ export const EquipmentDisplay = ({
                                             }}
                                             value={armor.hardness}
                                             onChange={(e) => {
-                                                dispatch(updateEquipmentAction(armor.id, e.target.value, 'hardness'))
+                                                dispatch(
+                                                    updateEquipmentAction(
+                                                        armor.id,
+                                                        e.target.value,
+                                                        'hardness'
+                                                    )
+                                                );
                                             }}
                                             inputProps={{
                                                 min: 0,

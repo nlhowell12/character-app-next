@@ -11,84 +11,16 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
+import { DisplayBox } from './DisplayBox';
 
-enum CardTitles {
+export enum CardTitles {
 	Total = 'Total',
 	Base = 'Base',
 	Modifier = 'Modifier',
 	Save = 'Save',
 }
 
-type CardTitlesType = BonusTypes | CardTitles;
-interface AttributeTooltipProps {
-	modifiers: Modifier[]
-}
-const AttributeTooltip = ({
-	modifiers,
-}: AttributeTooltipProps) => {
-	return (
-		<Table>
-			<TableBody>
-				<TableRow>
-					{modifiers.map((mod) => {
-						return (
-							<TableCell key={mod.type + mod.value}>
-								<DisplayBox
-									displayTitle={mod.type}
-									displayValue={mod.value || 0}
-									modifiers={modifiers}
-								/>
-							</TableCell>
-						);
-					})}
-				</TableRow>
-			</TableBody>
-		</Table>
-	);
-};
-
-interface AttributeDisplayProps {
-	displayTitle: CardTitlesType;
-	displayValue: number;
-	modifiers?: Modifier[];
-	icon?: any;
-}
-
-const DisplayBox = ({
-	modifiers,
-	displayTitle,
-	displayValue,
-	icon,
-}: AttributeDisplayProps) => {
-	return !!modifiers?.length && displayTitle === CardTitles.Total ? (
-		<Tooltip
-			title={<AttributeTooltip modifiers={modifiers} />}
-			placement='right'
-		>
-			<div style={{
-				textAlign: 'center',
-			}}>
-				<Typography variant='caption'>{displayTitle}</Typography>
-				<Typography variant='body1'>{displayValue}</Typography>
-			</div>
-		</Tooltip>
-	) : (
-		<div style={{
-			textAlign: 'center',
-		}}>
-			<div style={{
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-			}}>
-				<Typography variant='caption'>{displayTitle}</Typography>
-				{icon}
-			</div>
-			<Typography variant='body1'>{displayValue}</Typography>
-		</div>
-	);
-};
-
+export type CardTitlesType = BonusTypes | CardTitles;
 interface AttributeRowProps
 {
 	character: Character;
