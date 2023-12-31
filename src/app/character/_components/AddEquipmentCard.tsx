@@ -1,4 +1,14 @@
-import { Armor, BodySlot, BonusTypes, Damage, Dice, Equipment, Weapon } from '@/_models';
+import {
+    Armor,
+    BodySlot,
+    BonusTypes,
+    Damage,
+    Dice,
+    Equipment,
+    Modifier,
+    Weapon,
+} from '@/_models';
+import { ModifierDialog } from '@/app/_components/ModifierDialog';
 import { NumberInput } from '@/app/_components/NumberInput';
 import {
     Button,
@@ -16,6 +26,7 @@ import {
     Typography,
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
+import { Add } from '@mui/icons-material';
 
 interface AddEquipmentCardProps {
     onAdd: () => void;
@@ -34,16 +45,20 @@ export const AddEquipmentCard = ({
 }: AddEquipmentCardProps) => {
     const [isArmor, setIsArmor] = useState<boolean>(false);
     const [isWeapon, setIsWeapon] = useState<boolean>(false);
+    const [modOpen, setModOpen] = useState<boolean>(false);
     const textFieldStyling = {
-        marginBottom: '.5rem'
-    }
+        marginBottom: '.5rem',
+    };
     const formControlStyle = {
         marginBottom: '.5rem',
+    };
+    const handleAddModifier = (mod: Modifier) => {
+        newEq.modifiers.push(mod);
     };
     return (
         <Card>
             <CardActions>
-                <FormGroup sx={{display: 'flex', flexDirection: 'row'}}>
+                <FormGroup sx={{ display: 'flex', flexDirection: 'row' }}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -62,6 +77,18 @@ export const AddEquipmentCard = ({
                         }
                         label='Is this Armor?'
                     />
+                    <Button
+                        variant='outlined'
+                        onClick={() => setModOpen(true)}
+                    >
+                        <Typography>Add Modifier</Typography>
+                        <Add sx={{ marginLeft: '.5rem' }} />
+                    </Button>
+                    <ModifierDialog
+                        onAdd={handleAddModifier}
+                        onClose={() => setModOpen(false)}
+                        open={modOpen}
+                    />
                 </FormGroup>
             </CardActions>
             <CardContent>
@@ -73,12 +100,19 @@ export const AddEquipmentCard = ({
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                     ) => onChange(e, 'name')}
                 />
-                <NumberInput minZero value={newEq.weight} label='Weight' onChange={(
+                <NumberInput
+                    minZero
+                    value={newEq.weight}
+                    label='Weight'
+                    onChange={(
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                    ) => onChange(e, 'weight')}/>
+                    ) => onChange(e, 'weight')}
+                />
                 {!!isWeapon ? (
                     <>
-                    <Typography sx={{margin: '.5rem 0'}}>Weapon Info</Typography>
+                        <Typography sx={{ margin: '.5rem 0' }}>
+                            Weapon Info
+                        </Typography>
                         <TextField
                             value={(newEq as Weapon).category}
                             sx={textFieldStyling}
@@ -89,12 +123,22 @@ export const AddEquipmentCard = ({
                                 >
                             ) => onChange(e, 'category')}
                         />
-                        <FormGroup sx={{display: 'flex', flexDirection: 'row', margin: '0 0 .5rem'}}>
+                        <FormGroup
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                margin: '0 0 .5rem',
+                            }}
+                        >
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={(newEq as Weapon).dexBasedAttack}
-                                        onChange={(e) => onChange(e, 'dexBasedAttack')}
+                                        checked={
+                                            (newEq as Weapon).dexBasedAttack
+                                        }
+                                        onChange={(e) =>
+                                            onChange(e, 'dexBasedAttack')
+                                        }
                                     />
                                 }
                                 label='Is attack based on Dex?'
@@ -102,16 +146,27 @@ export const AddEquipmentCard = ({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                    checked={(newEq as Weapon).dexBasedDamage}
-                                    onChange={(e) => onChange(e, 'dexBasedDamage')}
+                                        checked={
+                                            (newEq as Weapon).dexBasedDamage
+                                        }
+                                        onChange={(e) =>
+                                            onChange(e, 'dexBasedDamage')
+                                        }
                                     />
                                 }
                                 label='Is damage based on Dex?'
                             />
                         </FormGroup>
-                        <NumberInput minZero value={(newEq as Weapon).numberOfDice} label='Number of Dice' onChange={(
-                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                        ) => onChange(e, 'numberOfDice')}/>
+                        <NumberInput
+                            minZero
+                            value={(newEq as Weapon).numberOfDice}
+                            label='Number of Dice'
+                            onChange={(
+                                e: ChangeEvent<
+                                    HTMLInputElement | HTMLTextAreaElement
+                                >
+                            ) => onChange(e, 'numberOfDice')}
+                        />
                         <FormControl fullWidth sx={formControlStyle}>
                             <InputLabel id='damage-id'>Damage Die</InputLabel>
                             <Select
@@ -124,16 +179,20 @@ export const AddEquipmentCard = ({
                             >
                                 {Object.keys(Dice).map((dam) => {
                                     return (
-                                        !!dam && <MenuItem key={dam} value={dam}>
-                                            {/* @ts-ignore */}
-                                            {Dice[dam]}
-                                        </MenuItem>
+                                        !!dam && (
+                                            <MenuItem key={dam} value={dam}>
+                                                {/* @ts-ignore */}
+                                                {Dice[dam]}
+                                            </MenuItem>
+                                        )
                                     );
                                 })}
                             </Select>
                         </FormControl>
                         <FormControl fullWidth sx={formControlStyle}>
-                            <InputLabel id='damage-types-id'>Damage Types</InputLabel>
+                            <InputLabel id='damage-types-id'>
+                                Damage Types
+                            </InputLabel>
                             <Select
                                 labelId='damage-types-id'
                                 id='damage-types'
@@ -141,7 +200,9 @@ export const AddEquipmentCard = ({
                                 name='damageTypes'
                                 value={(newEq as Weapon).damageTypes}
                                 multiple
-                                onChange={(e: any) => onChange(e, 'damageTypes')}
+                                onChange={(e: any) =>
+                                    onChange(e, 'damageTypes')
+                                }
                             >
                                 {Object.keys(Damage).map((dam) => {
                                     return (
@@ -153,20 +214,43 @@ export const AddEquipmentCard = ({
                                 })}
                             </Select>
                         </FormControl>
-                        <NumberInput minZero value={(newEq as Weapon).criticalRange} label='Crit Range' onChange={(
-                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                        ) => onChange(e, 'criticalRange')}/>
-                        <NumberInput minZero value={(newEq as Weapon).criticalMultiplier} label='Crit Multiplier' onChange={(
-                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                        ) => onChange(e, 'criticalMultiplier')}/>
-                        <NumberInput minZero value={(newEq as Weapon).rangeIncrement} label='Range Increment' onChange={(
-                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                        ) => onChange(e, 'rangeIncrement')}/>
+                        <NumberInput
+                            minZero
+                            value={(newEq as Weapon).criticalRange}
+                            label='Crit Range'
+                            onChange={(
+                                e: ChangeEvent<
+                                    HTMLInputElement | HTMLTextAreaElement
+                                >
+                            ) => onChange(e, 'criticalRange')}
+                        />
+                        <NumberInput
+                            minZero
+                            value={(newEq as Weapon).criticalMultiplier}
+                            label='Crit Multiplier'
+                            onChange={(
+                                e: ChangeEvent<
+                                    HTMLInputElement | HTMLTextAreaElement
+                                >
+                            ) => onChange(e, 'criticalMultiplier')}
+                        />
+                        <NumberInput
+                            minZero
+                            value={(newEq as Weapon).rangeIncrement}
+                            label='Range Increment'
+                            onChange={(
+                                e: ChangeEvent<
+                                    HTMLInputElement | HTMLTextAreaElement
+                                >
+                            ) => onChange(e, 'rangeIncrement')}
+                        />
                     </>
                 ) : null}
                 {!!isArmor ? (
                     <>
-                        <Typography sx={{margin: '.5rem 0'}}>Armor Info</Typography>
+                        <Typography sx={{ margin: '.5rem 0' }}>
+                            Armor Info
+                        </Typography>
                         <FormControl fullWidth sx={formControlStyle}>
                             <InputLabel id='body-slot-id'>Body Slot</InputLabel>
                             <Select
@@ -187,19 +271,43 @@ export const AddEquipmentCard = ({
                                 })}
                             </Select>
                         </FormControl>
-                        <NumberInput value={(newEq as Armor).armorCheckPenalty} label='Armor Check Penalty' onChange={(
-                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                        ) => onChange(e, 'armorCheckPenalty')}/>
-                        <NumberInput value={(newEq as Armor).maxDexBonus} label='Max Dex Bonus' onChange={(
-                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                        ) => onChange(e, 'maxDexBonus')}/>
-                        <NumberInput value={(newEq as Armor).spellFailure} label='Spell Failure' onChange={(
-                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                        ) => onChange(e, 'spellFailure')}/>
-                        <NumberInput value={(newEq as Armor).hardness} label='Hardness' onChange={(
-                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                        ) => onChange(e, 'hardness')}/>
-                        </>
+                        <NumberInput
+                            value={(newEq as Armor).armorCheckPenalty}
+                            label='Armor Check Penalty'
+                            onChange={(
+                                e: ChangeEvent<
+                                    HTMLInputElement | HTMLTextAreaElement
+                                >
+                            ) => onChange(e, 'armorCheckPenalty')}
+                        />
+                        <NumberInput
+                            value={(newEq as Armor).maxDexBonus}
+                            label='Max Dex Bonus'
+                            onChange={(
+                                e: ChangeEvent<
+                                    HTMLInputElement | HTMLTextAreaElement
+                                >
+                            ) => onChange(e, 'maxDexBonus')}
+                        />
+                        <NumberInput
+                            value={(newEq as Armor).spellFailure}
+                            label='Spell Failure'
+                            onChange={(
+                                e: ChangeEvent<
+                                    HTMLInputElement | HTMLTextAreaElement
+                                >
+                            ) => onChange(e, 'spellFailure')}
+                        />
+                        <NumberInput
+                            value={(newEq as Armor).hardness}
+                            label='Hardness'
+                            onChange={(
+                                e: ChangeEvent<
+                                    HTMLInputElement | HTMLTextAreaElement
+                                >
+                            ) => onChange(e, 'hardness')}
+                        />
+                    </>
                 ) : null}
             </CardContent>
             <CardActions>

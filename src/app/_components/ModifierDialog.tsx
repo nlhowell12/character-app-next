@@ -25,6 +25,7 @@ import {
     Button,
     TextField,
     FormHelperText,
+    Dialog,
 } from '@mui/material';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -32,10 +33,14 @@ import { NumberInput } from './NumberInput';
 
 interface ModifierDialogProps {
     onAdd: (appliedModifier: Modifier) => void;
+    onClose: () => void;
+    open: boolean;
 }
 
 export const ModifierDialog = ({
     onAdd,
+    onClose,
+    open
 }: ModifierDialogProps) => {
     const [modifier, setModifier] = useState<Modifier>({
         value: 0,
@@ -162,6 +167,10 @@ export const ModifierDialog = ({
         }
     };
     return (
+        <Dialog
+            open={open}
+            onClose={onClose}
+        >
         <Card>
             <CardHeader title='Add Modifiers' />
             <CardContent>
@@ -451,5 +460,6 @@ export const ModifierDialog = ({
                 </div>
             </CardContent>
         </Card>
+        </Dialog>
     );
 };

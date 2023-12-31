@@ -20,6 +20,7 @@ import { Add } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import useCharacterService from '@/app/api/_services/useCharacterService';
 import { v4 as uuidv4 } from 'uuid';
+import { ModChipStack } from '@/app/_components/ModChipStack';
 interface CharacterInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -43,6 +44,9 @@ export const CharacterInfoDisplay = ({
         // set up on close
         dispatch(updateAction(CharacterKeys.miscModifiers, [...character.miscModifiers, appliedModifier]))
     
+    };
+    const handleDeleteMod = (mod: Modifier) => {
+        dispatch(deleteModAction(mod))
     };
     return (
         <Grid container>
@@ -68,14 +72,11 @@ export const CharacterInfoDisplay = ({
                                     <Typography>Add Modifier</Typography>
                                     <Add sx={{ marginLeft: '.5rem' }} />
                                 </Button>
-                                <Dialog
+                                <ModifierDialog
+                                    onAdd={handleAddModifier}
                                     open={openModifiers}
                                     onClose={() => setOpenModifers(false)}
-                                >
-                                    <ModifierDialog
-                                        onAdd={handleAddModifier}
-                                    />
-                                </Dialog>
+                                />
                             </TableCell>
                             <TableCell sx={cellStylingObject}>
                                 <Button
@@ -167,17 +168,7 @@ export const CharacterInfoDisplay = ({
                 </Table>
             </Grid>
             <Grid item xs={12} lg={6}>
-                <Stack direction='row' spacing={1} flexWrap='wrap'>
-                    {R.filter(notASI, character.miscModifiers).map((mod) => {
-                        return (
-                            <ModChip
-                                key={`${mod.type}-${mod.id || uuidv4()}`}
-                                mod={mod}
-                                onDelete={() => dispatch(deleteModAction(mod))}
-                            />
-                        );
-                    })}
-                </Stack>
+                <ModChipStack mods={character.miscModifiers} onDelete={handleDeleteMod}/>
             </Grid>
         </Grid>
     );
