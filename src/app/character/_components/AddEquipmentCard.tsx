@@ -1,7 +1,6 @@
 import {
     Armor,
     BodySlot,
-    BonusTypes,
     Damage,
     Dice,
     Equipment,
@@ -29,25 +28,55 @@ import { ChangeEvent, useState } from 'react';
 import { Add } from '@mui/icons-material';
 import { ModChipStack } from '@/app/_components/ModChipStack';
 import * as R from 'ramda';
+import { v4 as uuidv4 } from 'uuid';
 
 interface AddEquipmentCardProps {
-    onAdd: () => void;
-    onChange: (
-        e: any,
-        key: keyof Equipment | keyof Weapon | keyof Armor
-    ) => void;
-    newEq: Equipment;
+    onAdd: (newEq: Equipment) => void;
     onClose: () => void;
 }
 export const AddEquipmentCard = ({
     onAdd,
-    onChange,
-    newEq,
     onClose,
 }: AddEquipmentCardProps) => {
     const [isArmor, setIsArmor] = useState<boolean>(false);
     const [isWeapon, setIsWeapon] = useState<boolean>(false);
     const [modOpen, setModOpen] = useState<boolean>(false);
+    const initialEquipmentState: Equipment = {
+        id: uuidv4(),
+        name: '',
+        weight: 0,
+        modifiers: [],
+        equipped: false,
+        numberOfDice: 0,
+        damage: Dice.d4,
+        armorCheckPenalty: 0,
+        criticalMultiplier: 2,
+        criticalRange: 20,
+        category: '',
+        damageTypes: [],
+        dexBasedAttack: false,
+        dexBasedDamage: false,
+        rangeIncrement: 0,
+        maxDexBonus: 0,
+        spellFailure: 0,
+        hardness: 0,
+        bodySlot: BodySlot.None,
+        amount: 1,
+    };
+
+    const [newEq, setNewObject] = useState<Equipment>(
+        initialEquipmentState
+    );
+
+    const handleChange = (
+        e: any,
+        key: keyof Equipment | keyof Weapon | keyof Armor
+    ) => {
+        setNewObject({
+            ...newEq,
+            [key]: e.target.checked || e.target.value,
+        });
+    };
     const textFieldStyling = {
         marginBottom: '.5rem',
     };
@@ -55,12 +84,12 @@ export const AddEquipmentCard = ({
         marginBottom: '.5rem',
     };
     const handleAddModifier = (mod: Modifier) => {
-        onChange({target: {value: [...newEq.modifiers, mod]}}, 'modifiers');
+        handleChange({target: {value: [...newEq.modifiers, mod]}}, 'modifiers');
     };
     const handleDeleteModifier = (mod: Modifier) => {
         const filter = (x: Modifier) => x.id !== mod.id;
         const filteredMods = R.filter(filter, newEq.modifiers);
-        onChange({target: {value: filteredMods}}, 'modifiers')};
+        handleChange({target: {value: filteredMods}}, 'modifiers')};
     return (
         <Card>
             <CardActions>
@@ -104,7 +133,7 @@ export const AddEquipmentCard = ({
                     label='Name'
                     onChange={(
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                    ) => onChange(e, 'name')}
+                    ) => handleChange(e, 'name')}
                 />
                 <NumberInput
                     minZero
@@ -112,7 +141,7 @@ export const AddEquipmentCard = ({
                     label='Weight'
                     onChange={(
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                    ) => onChange(e, 'weight')}
+                    ) => handleChange(e, 'weight')}
                 />
                 {!!isWeapon ? (
                     <>
@@ -127,7 +156,7 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'category')}
+                            ) => handleChange(e, 'category')}
                         />
                         <FormGroup
                             sx={{
@@ -143,7 +172,7 @@ export const AddEquipmentCard = ({
                                             (newEq as Weapon).dexBasedAttack
                                         }
                                         onChange={(e) =>
-                                            onChange(e, 'dexBasedAttack')
+                                            handleChange(e, 'dexBasedAttack')
                                         }
                                     />
                                 }
@@ -156,7 +185,7 @@ export const AddEquipmentCard = ({
                                             (newEq as Weapon).dexBasedDamage
                                         }
                                         onChange={(e) =>
-                                            onChange(e, 'dexBasedDamage')
+                                            handleChange(e, 'dexBasedDamage')
                                         }
                                     />
                                 }
@@ -171,7 +200,7 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'numberOfDice')}
+                            ) => handleChange(e, 'numberOfDice')}
                         />
                         <FormControl fullWidth sx={formControlStyle}>
                             <InputLabel id='damage-id'>Damage Die</InputLabel>
@@ -181,7 +210,7 @@ export const AddEquipmentCard = ({
                                 label='Damage Die'
                                 name='damage'
                                 value={(newEq as Weapon).damage}
-                                onChange={(e: any) => onChange(e, 'damage')}
+                                onChange={(e: any) => handleChange(e, 'damage')}
                             >
                                 {Object.keys(Dice).map((dam) => {
                                     return (
@@ -207,7 +236,7 @@ export const AddEquipmentCard = ({
                                 value={(newEq as Weapon).damageTypes}
                                 multiple
                                 onChange={(e: any) =>
-                                    onChange(e, 'damageTypes')
+                                    handleChange(e, 'damageTypes')
                                 }
                             >
                                 {Object.keys(Damage).map((dam) => {
@@ -228,7 +257,7 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'criticalRange')}
+                            ) => handleChange(e, 'criticalRange')}
                         />
                         <NumberInput
                             minZero
@@ -238,7 +267,7 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'criticalMultiplier')}
+                            ) => handleChange(e, 'criticalMultiplier')}
                         />
                         <NumberInput
                             minZero
@@ -248,7 +277,7 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'rangeIncrement')}
+                            ) => handleChange(e, 'rangeIncrement')}
                         />
                     </>
                 ) : null}
@@ -265,7 +294,7 @@ export const AddEquipmentCard = ({
                                 label='Body Slot'
                                 name='bodySlot'
                                 value={(newEq as Armor).bodySlot}
-                                onChange={(e: any) => onChange(e, 'bodySlot')}
+                                onChange={(e: any) => handleChange(e, 'bodySlot')}
                             >
                                 {Object.keys(BodySlot).map((slot) => {
                                     return (
@@ -285,7 +314,7 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'armorCheckPenalty')}
+                            ) => handleChange(e, 'armorCheckPenalty')}
                         />
                         <NumberInput
                             value={(newEq as Armor).maxDexBonus}
@@ -295,7 +324,7 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'maxDexBonus')}
+                            ) => handleChange(e, 'maxDexBonus')}
                         />
                         <NumberInput
                             value={(newEq as Armor).spellFailure}
@@ -305,7 +334,7 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'spellFailure')}
+                            ) => handleChange(e, 'spellFailure')}
                         />
                         <NumberInput
                             value={(newEq as Armor).hardness}
@@ -315,14 +344,14 @@ export const AddEquipmentCard = ({
                                 e: ChangeEvent<
                                     HTMLInputElement | HTMLTextAreaElement
                                 >
-                            ) => onChange(e, 'hardness')}
+                            ) => handleChange(e, 'hardness')}
                         />
                     </>
                 ) : null}
                 <ModChipStack mods={newEq.modifiers} onDelete={handleDeleteModifier}/>
             </CardContent>
             <CardActions>
-                <Button onClick={() => onAdd()}>Add to Equipment</Button>
+                <Button onClick={() => onAdd(newEq)}>Add to Equipment</Button>
                 <Button onClick={() => onClose()}>Cancel</Button>
             </CardActions>
         </Card>

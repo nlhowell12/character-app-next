@@ -44,7 +44,6 @@ import {
     getTotalArmorBonus,
 } from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
-import { DisplayCell } from './DisplayCell';
 import { DisplayBox } from './DisplayBox';
 
 interface EquipmentDisplayProps {
@@ -112,7 +111,7 @@ export const EquipmentDisplay = ({
 }: EquipmentDisplayProps) => {
     const weapons = character.equipment.filter(
         (eq: Equipment) =>
-            !!(eq as Weapon).damage && !!(eq as Weapon).numberOfDice
+            !!(eq as Weapon).damage && eq.bodySlot === BodySlot.None
     );
     const armor = character.equipment.filter(
         (eq: Equipment) =>
@@ -121,50 +120,14 @@ export const EquipmentDisplay = ({
     const eqDisplayCardStyle = {
         margin: '0 .5rem',
     };
-    const initialEquipmentState: Equipment = {
-        id: uuidv4(),
-        name: '',
-        weight: 0,
-        modifiers: [],
-        equipped: false,
-        numberOfDice: 0,
-        damage: Dice.d4,
-        armorCheckPenalty: 0,
-        criticalMultiplier: 2,
-        criticalRange: 20,
-        category: '',
-        damageTypes: [],
-        dexBasedAttack: false,
-        dexBasedDamage: false,
-        rangeIncrement: 0,
-        maxDexBonus: 0,
-        spellFailure: 0,
-        hardness: 0,
-        bodySlot: BodySlot.None,
-        amount: 1,
-    };
 
-    const [newObject, setNewObject] = useState<Equipment>(
-        initialEquipmentState
-    );
     const [open, setOpen] = useState<boolean>(false);
-    const handleChange = (
-        e: any,
-        key: keyof Equipment | keyof Weapon | keyof Armor
-    ) => {
-        setNewObject({
-            ...newObject,
-            [key]: e.target.checked || e.target.value,
-        });
-    };
-    const handleAdd = () => {
-        dispatch(addEquipmentAction(newObject));
+    const handleAdd = (newEq: Equipment) => {
+        dispatch(addEquipmentAction(newEq));
         setOpen(false);
-        setNewObject(initialEquipmentState);
     };
 
     const handleClose = () => {
-        setNewObject(initialEquipmentState);
         setOpen(false);
     };
     const weaponDamage = (weapon: Weapon) => {
@@ -173,7 +136,7 @@ export const EquipmentDisplay = ({
             weapon
         );
         const damagePositive = damageBonus >= 0 ? '+' : '-';
-        if(weapon.damage === Dice.Minimum){
+        if(!weapon.numberOfDice){
             return `${1 + damageBonus}`
         } else {
             return `${Number(
@@ -201,8 +164,6 @@ export const EquipmentDisplay = ({
             <Dialog open={open}>
                 <AddEquipmentCard
                     onAdd={handleAdd}
-                    onChange={handleChange}
-                    newEq={newObject}
                     onClose={handleClose}
                 />
             </Dialog>
