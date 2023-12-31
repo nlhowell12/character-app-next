@@ -89,7 +89,7 @@ export const AddEquipmentCard = ({
                                 >
                             ) => onChange(e, 'category')}
                         />
-                        <FormGroup>
+                        <FormGroup sx={{display: 'flex', flexDirection: 'row', margin: '0 0 .5rem'}}>
                             <FormControlLabel
                                 control={
                                     <Checkbox
