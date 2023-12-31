@@ -10,16 +10,13 @@ import {
     Typography,
 } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
-import { Character, CharacterKeys, Modifier, ModifierSource } from '@/_models';
+import { Character, CharacterKeys, Modifier } from '@/_models';
 import { CharacterAction, deleteModAction, updateAction } from '@/_reducer/characterReducer';
-import { ModChip } from '@/app/_components/ModChip';
 import { Dispatch, useState } from 'react';
-import * as R from 'ramda';
 import { ModifierDialog } from '@/app/_components/ModifierDialog';
 import { Add } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import useCharacterService from '@/app/api/_services/useCharacterService';
-import { v4 as uuidv4 } from 'uuid';
 import { ModChipStack } from '@/app/_components/ModChipStack';
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -35,13 +32,12 @@ export const CharacterInfoDisplay = ({
     character,
     dispatch,
 }: CharacterInfoDisplayProps) => {
-    const notASI = (x: Modifier) =>
-        x.definition !== ModifierSource.attributeScoreIncrease;
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
     const { updateCharacter } = useCharacterService();
 
     const handleAddModifier = (appliedModifier: Modifier) => {
         // set up on close
+        console.log(appliedModifier)
         dispatch(updateAction(CharacterKeys.miscModifiers, [...character.miscModifiers, appliedModifier]))
     
     };

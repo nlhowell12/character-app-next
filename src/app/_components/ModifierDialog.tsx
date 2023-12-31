@@ -78,6 +78,7 @@ export const ModifierDialog = ({
         boolAttribute: false,
         boolAttack: false,
         boolDamage: false,
+        boolDamageDice: false,
         boolDefense: false,
         boolAbilityType: false,
         boolResistance: false,
@@ -110,6 +111,8 @@ export const ModifierDialog = ({
         boolAbilityType,
         boolResistance,
         boolImmunity,
+        boolDamageType,
+        boolDamageDice
     } = optionalValues;
 
     const appliedModifier: Modifier = {
@@ -124,9 +127,9 @@ export const ModifierDialog = ({
         abilityType: !!boolAbilityType ? abilityType : undefined,
         resistance: boolResistance,
         immunity: boolImmunity,
-        damageType: !!boolResistance || !!boolImmunity || boolDamage ? damageType : undefined,
-        damageDice: !!boolDamage ? damageDice : undefined,
-        numberOfDice: !!boolDamage ? numberOfDice : undefined,
+        damageType: !!boolResistance || !!boolImmunity || boolDamageType ? damageType : undefined,
+        damageDice: !!boolDamage && !!boolDamageDice ? damageDice : undefined,
+        numberOfDice: !!boolDamage && !!boolDamageDice ? numberOfDice : undefined,
         id: uuidv4(),
     };
     const diceAndNumber =
@@ -219,7 +222,7 @@ export const ModifierDialog = ({
                                     name='boolAttribute'
                                 />
                             }
-                            label='Does this affect an attribute?'
+                            label='Does this modifiy an attribute (or is derived from one)?'
                         />
                         <FormControlLabel
                             control={
@@ -240,6 +243,16 @@ export const ModifierDialog = ({
                                 />
                             }
                             label='Does this modify your damage?'
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={boolDamageDice}
+                                    onChange={optionalValueHandler}
+                                    name='boolDamageDice'
+                                />
+                            }
+                            label='Does this add additional dice to your damage?'
                         />
                         <FormControlLabel
                             control={
@@ -281,6 +294,16 @@ export const ModifierDialog = ({
                             }
                             label='Does this confer immunity to damage?'
                         />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={boolDamageType}
+                                    onChange={optionalValueHandler}
+                                    name='boolDamageType'
+                                />
+                            }
+                            label='Does this have a specific damage type?'
+                        />
                     </FormGroup>
                     <FormHelperText>
                         Resistance, Attack, Damage, Defense, and Skills require
@@ -312,7 +335,7 @@ export const ModifierDialog = ({
                         })}
                     </Select>
                 </FormControl>
-                {!!optionalValues.boolDamage && (
+                {!!optionalValues.boolDamage && !!boolDamageDice && (
                     <>
                         <FormControl fullWidth sx={formControlStyle}>
                             <InputLabel id='damage-die-id'>
@@ -428,7 +451,7 @@ export const ModifierDialog = ({
                 )}
                 {(!!optionalValues.boolResistance ||
                     !!optionalValues.boolImmunity ||
-                    !!optionalValues.boolDamage) && (
+                    !!optionalValues.boolDamageType) && (
                     <FormControl fullWidth sx={formControlStyle}>
                         <InputLabel id='attribute-id'>Damage Type</InputLabel>
                         <Select

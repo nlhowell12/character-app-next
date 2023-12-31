@@ -1,7 +1,7 @@
 import { mockCharacters } from '@/_mockData/characters';
 import {
 	getArmorCheckPenalties,
-	getSkillModifiers,
+	getTotalSkillMod,
 	getTotalSkillValue,
 } from './skillIUtils';
 
@@ -17,7 +17,7 @@ describe('Skill Utils', () => {
 		expect(getArmorCheckPenalties([...mock0.equipment, {id: '12345', name: 'Shield', armorCheckPenalty: 2, weight: 8, modifiers: [], equipped: true}])).toBe(-2);
 	});
 	test('getSkillModiifiers', () => {
-		expect(getSkillModifiers(mock0.skills.Stealth, mock0)).toBe(4);
-		expect(getSkillModifiers(mock0.skills.Disguise, mock0)).toBe(2);
+		expect(getTotalSkillMod(mock0.skills.Stealth, mock0)).toBe(4);
+		expect(getTotalSkillMod(mock0.skills.Disguise, mock0)).toBe(2);
 	});
 });

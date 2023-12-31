@@ -15,7 +15,7 @@ export const getTotalSkillValue = (
 		? getArmorCheckPenalties(character.equipment)
 		: 0;
 	// const synergies = getSkillSynergies(skill, character);
-	const miscMods = getSkillModifiers(skill, character);
+	const miscMods = getTotalSkillMod(skill, character);
 	return (
 		(skill.ranks || 0) + attributeMod + armorCheckPenalty + miscMods
 	);
@@ -42,13 +42,13 @@ export const getArmorCheckPenalties = (equipment: Equipment[]): number => {
 // 	return synergies.reduce((x, y) => x + y.value, 0);
 // };
 
-export const getSkillModifiers = (
+export const getTotalSkillMod = (
 	skill: RankedSkill,
 	character: Character
 ): number => {
 	const bonuses: BonusObject = {} as BonusObject;
 	character.miscModifiers.forEach((mod) => {
-		if (mod.skill === skill.name) {
+		if (mod.skill === skill.name && !mod.damage) {
 			if (!bonuses[mod.type]) {
 				bonuses[mod.type] = 0;
 			}

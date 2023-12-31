@@ -20,7 +20,7 @@ export const getAllAttributeModifiers = (
 	attributeName: AttributeNames
 ): Modifier[] => {
 	const miscAttributeMods: Modifier[] =
-		character.miscModifiers.filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease);
+		character.miscModifiers.filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease && !mod.damage);
 	return miscAttributeMods;
 };
 
