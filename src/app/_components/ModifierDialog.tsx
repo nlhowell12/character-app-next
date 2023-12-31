@@ -26,19 +26,15 @@ import {
     TextField,
     FormHelperText,
 } from '@mui/material';
-import { Dispatch, useState } from 'react';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { NumberInput } from './NumberInput';
 
 interface ModifierDialogProps {
-    character: Character;
-    dispatch: Dispatch<CharacterAction>;
     onAdd: (appliedModifier: Modifier) => void;
 }
 
 export const ModifierDialog = ({
-    character,
-    dispatch,
     onAdd,
 }: ModifierDialogProps) => {
     const [modifier, setModifier] = useState<Modifier>({

@@ -73,8 +73,6 @@ export const CharacterInfoDisplay = ({
                                     onClose={() => setOpenModifers(false)}
                                 >
                                     <ModifierDialog
-                                        character={character}
-                                        dispatch={dispatch}
                                         onAdd={handleAddModifier}
                                     />
                                 </Dialog>
