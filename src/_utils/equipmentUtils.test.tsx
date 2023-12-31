@@ -70,32 +70,34 @@ describe('Equipment Utils', () => {
         expect(getAttributeAttackBonus(mockCharacters[0], sword)).toBe(0);
     })
     it('should get all damage mods', () => {
-        expect(getAllDamageModifiers(mockCharacters[0], dagger).length).toBe(4);
+        expect(getAllDamageModifiers(mockCharacters[0], dagger).length).toBe(5);
     })
     it('should get all attack mods', () => {
         expect(getAllAttackModifiers(mockCharacters[0], sword).length).toBe(5);
     })
+
     it('should total modifiers for damage or attack', () => {
         const damageModifiers = getAllDamageModifiers(mockCharacters[0], dagger);
         const attackModifiers = getAllAttackModifiers(mockCharacters[0], sword)
-        expect(getTotalModifierBonus(damageModifiers)).toBe(6);
-        expect(getTotalModifierBonus(attackModifiers)).toBe(5);
+        expect(getTotalModifierBonus(mockCharacters[0], damageModifiers)).toBe(8);
+        expect(getTotalModifierBonus(mockCharacters[0], attackModifiers)).toBe(5);
     });
     it('should get the damage bonus', () => {
-        expect(getDamageBonus(mockCharacters[0], dagger)).toBe(10);
-        expect(getDamageBonus(mockCharacters[0], sword)).toBe(2);
+        expect(getDamageBonus(mockCharacters[0], dagger)).toBe(12);
+        expect(getDamageBonus(mockCharacters[0], sword)).toBe(4);
     })
     it('should get the attack bonus', () => {
         expect(getAttackBonus(mockCharacters[0], sword)).toBe(5);
         expect(getAttackBonus(mockCharacters[0], dagger)).toBe(8);
     })
     it('should return an attack bonus object', () => {
-        expect(getEqBonusObject(getAllAttackModifiers(mockCharacters[0], sword))).toStrictEqual({
+        expect(getEqBonusObject(mockCharacters[0], getAllAttackModifiers(mockCharacters[0], sword))).toStrictEqual({
             [BonusTypes.Morale]: 3,
             [BonusTypes.Untyped]: 2
         })
-        expect(getEqBonusObject(getAllDamageModifiers(mockCharacters[0], sword))).toStrictEqual({
+        expect(getEqBonusObject(mockCharacters[0], getAllDamageModifiers(mockCharacters[0], sword))).toStrictEqual({
             [BonusTypes.Morale]: 2,
+            [BonusTypes.Untyped]: 2
         })
     })
 });

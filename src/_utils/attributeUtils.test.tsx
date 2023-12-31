@@ -2,6 +2,7 @@
 import { AttributeNames, BonusTypes, Modifier, ModifierSource } from '@/_models';
 import * as abilityUtils from './attributeUtils';
 import { mockCharacters } from '@/_mockData/characters';
+import { getModifierAttributeBonus } from './attributeUtils';
 
 const mockRacialModifiers: Modifier[] = [
 	{
@@ -49,6 +50,9 @@ describe('Attribute utils', () => {
 				.length
 		).toBe(0);
 	});
+	it('should return an attribuate based modifier', () => {
+        expect(getModifierAttributeBonus(mockCharacters[0], mockCharacters[0].miscModifiers.filter(x => !!x.attribute && !x.value)[0])).toBe(4)
+    })
 	test('getBaseAttributeScore', () => {
 		expect(
 			abilityUtils.getBaseAttributeScore(mock0, AttributeNames.Dexterity)

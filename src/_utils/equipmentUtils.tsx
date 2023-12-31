@@ -1,5 +1,5 @@
 import { AttributeNames, Character, Modifier, Weapon, stackableBonuses } from '@/_models';
-import { getTotalAttributeModifier } from './attributeUtils';
+import { getModifierAttributeBonus, getTotalAttributeModifier } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
 
 export const getAttributeDamageBonus = (
@@ -32,27 +32,31 @@ export const getAllAttackModifiers = (character: Character, weapon: Weapon): Mod
     return [...characterMods, ...weaponMods];
 };
 
-export const getTotalModifierBonus = (mods: Modifier[]): number => {
-    return Object.entries(getEqBonusObject(mods)).reduce((x, [_, value]) => x + value, 0);
+export const getTotalModifierBonus = (character: Character, mods: Modifier[]): number => {
+    return Object.entries(getEqBonusObject(character, mods)).reduce((x, [_, value]) => x + value, 0);
 };
 
 export const getDamageBonus = (character: Character, weapon: Weapon) => {
-    const modBonus = getTotalModifierBonus(getAllDamageModifiers(character, weapon))
+    const modBonus = getTotalModifierBonus(character, getAllDamageModifiers(character, weapon))
     const attBonus = getAttributeDamageBonus(character, weapon);
     return modBonus + attBonus;
 };
 
 export const getAttackBonus = (character: Character, weapon: Weapon) => {
-    const modBonus = getTotalModifierBonus(getAllAttackModifiers(character, weapon));
+    const modBonus = getTotalModifierBonus(character, getAllAttackModifiers(character, weapon));
     const attBonus = getAttributeAttackBonus(character, weapon);
     return modBonus + attBonus;
 };
 
-export const getEqBonusObject = (mods: Modifier[]): BonusObject => {
+export const getEqBonusObject = (character: Character, mods: Modifier[]): BonusObject => {
     const bonusObject: BonusObject = {} as BonusObject;
     mods.forEach(mod => {
+        const attributeBasedModifier = getModifierAttributeBonus(character, mod);
         if(!bonusObject[mod.type]){
             bonusObject[mod.type] = 0
+        }
+        if(!!attributeBasedModifier) {
+            mod.value = attributeBasedModifier;
         }
         if (stackableBonuses.some((type) => type === mod.type)) {
             bonusObject[mod.type] += mod.value;

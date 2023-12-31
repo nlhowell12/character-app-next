@@ -169,6 +169,12 @@ export const mockCharacters: Character[] = [
                 type: BonusTypes.Untyped,
                 attack: true
             },
+            {
+                value: 0,
+                attribute: AttributeNames.Intelligence,
+                type: BonusTypes.Untyped,
+                damage: true
+            },
         ],
     },
 ];

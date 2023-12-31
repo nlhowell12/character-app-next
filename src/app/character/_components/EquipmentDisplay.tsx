@@ -133,16 +133,8 @@ export const EquipmentDisplay = ({
                                 weapon.criticalRange < 20
                                     ? `${weapon.criticalRange}-20`
                                     : 20;
-                            const attDamageBonus = !weapon.dexBasedDamage
-                                ? getTotalAttributeModifier(
-                                      character,
-                                      AttributeNames.Strength
-                                  )
-                                : getTotalAttributeModifier(
-                                      character,
-                                      AttributeNames.Dexterity
-                                  );
-                            const damagePositive = attDamageBonus >= 0 ? '+' : '-';
+                            const damageBonus = getDamageBonus(character, weapon);
+                            const damagePositive = damageBonus >= 0 ? '+' : '-';
                             return (
                                 <TableRow key={weapon.name}>
                                     <TableCell>{weapon.name}</TableCell>
@@ -157,7 +149,7 @@ export const EquipmentDisplay = ({
                                                     weapon.numberOfDice.toString()
                                                 )}${
                                                     weapon.damage
-                                                } ${damagePositive} ${Math.abs(getDamageBonus(character, weapon))}`}
+                                                } ${damagePositive} ${Math.abs(damageBonus)}`}
                                             </Typography>
                                         </Tooltip>
                                     </TableCell>

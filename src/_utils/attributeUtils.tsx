@@ -11,6 +11,10 @@ export const getAttributeBonuses = (
 	return modifiers.filter((mod) => mod.attribute === attributeName)
 };
 
+export const getModifierAttributeBonus = (character: Character, mod: Modifier) => {
+    return !mod.value && !!mod.attribute ? getTotalAttributeModifier(character, mod.attribute): 0
+};
+
 export const getAllAttributeModifiers = (
 	character: Character,
 	attributeName: AttributeNames
