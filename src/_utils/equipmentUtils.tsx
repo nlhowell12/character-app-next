@@ -60,17 +60,18 @@ export const getAttackBonus = (character: Character, weapon: Weapon) => {
 export const getEqBonusObject = (character: Character, mods: Modifier[]): BonusObject => {
     const bonusObject: BonusObject = {} as BonusObject;
     mods.forEach(mod => {
+        let value = mod.value;
         const attributeBasedModifier = getModifierAttributeBonus(character, mod);
         if(!bonusObject[mod.type]){
             bonusObject[mod.type] = 0
         }
         if(!!attributeBasedModifier) {
-            mod.value = attributeBasedModifier;
+            value = attributeBasedModifier;
         }
         if (stackableBonuses.some((type) => type === mod.type)) {
-            bonusObject[mod.type] += mod.value;
+            bonusObject[mod.type] += value;
         } else if (mod.value > bonusObject[mod.type]) {
-            bonusObject[mod.type] = mod.value;
+            bonusObject[mod.type] = value;
         }
     })
     return bonusObject;

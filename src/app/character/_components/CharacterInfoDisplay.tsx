@@ -37,7 +37,6 @@ export const CharacterInfoDisplay = ({
 
     const handleAddModifier = (appliedModifier: Modifier) => {
         // set up on close
-        console.log(appliedModifier)
         dispatch(updateAction(CharacterKeys.miscModifiers, [...character.miscModifiers, appliedModifier]))
     
     };
