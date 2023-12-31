@@ -1,6 +1,8 @@
 import { useOutsideAlerter } from '@/_utils/outsideMouseClick';
+import { numberInputStyling } from '@/_utils/theme';
 import {
 	Card,
+	OutlinedInput,
 	TableCell,
 	TextField,
 	Tooltip,
@@ -16,6 +18,7 @@ interface DisplayCellProps {
 	cellTitle: string;
 	value: string | number | string[];
 	tooltip?: any;
+	isNumber?: boolean;
 	tooltipPlacement?:
 		| 'bottom'
 		| 'left'
@@ -31,6 +34,46 @@ interface DisplayCellProps {
 		| 'top-start'
 		| undefined;
 }
+
+interface DisplayCellInputProps {
+	isNumber: boolean;
+	onChange?: React.Dispatch<React.SetStateAction<any>>;
+	value: string | number | string[];
+}
+const DisplayCellInput = ({isNumber, onChange, value}: DisplayCellInputProps) => {
+	return !isNumber ? 
+		<TextField
+			onChange={onChange}
+			value={value}
+			autoFocus
+			onFocus={(e) => e.target.select()}
+			size='small'
+			fullWidth
+			InputProps={{
+				sx: {
+					height: '2rem'
+				},
+				inputProps:{
+					style: {
+						height: '0rem'
+					}
+				}
+			}}
+		/> : 
+		<OutlinedInput
+			type='number'
+			sx={{...numberInputStyling, height: '2rem'}}
+			value={Number(value)}
+			onChange={onChange}
+			onFocus={(e) => e.target.select()}
+			autoFocus
+			inputProps={{
+				style: {
+					height: '0rem'
+				}
+			}}
+	/>
+}
 export const DisplayCell = ({
 	variant = 'body1',
 	onChange,
@@ -39,6 +82,7 @@ export const DisplayCell = ({
 	value,
 	tooltip,
 	tooltipPlacement,
+	isNumber
 } : DisplayCellProps) => {
 	const [openEdit, setOpenEdit] = useState(false);
 	const cellRef = useRef(null);
@@ -70,23 +114,7 @@ export const DisplayCell = ({
 					sx={cardStylingObject}
 				>
 					{!!openEdit && !!onChange && !!editable ? (
-						<TextField
-							onChange={onChange}
-							value={value}
-							autoFocus
-							size='small'
-							fullWidth
-							InputProps={{
-								sx: {
-									height: '2rem'
-								},
-								inputProps:{
-									style: {
-										height: '0rem'
-									}
-								}
-							}}
-						></TextField>
+						<DisplayCellInput onChange={onChange} value={value} isNumber={isNumber || false}/>
 					) : (
 						<Typography sx={textFieldStylingObject} variant={variant}>{`${cellTitle} ${value}`}</Typography>
 					)}
@@ -103,24 +131,7 @@ export const DisplayCell = ({
 				sx={cardStylingObject}
 			>
 				{!!openEdit && !!onChange && !!editable ? (
-					<TextField
-						onChange={onChange}
-						value={value}
-						autoFocus
-						onFocus={(e) => e.target.select()}
-						size='small'
-						fullWidth
-						InputProps={{
-							sx: {
-								height: '2rem'
-							},
-							inputProps:{
-								style: {
-									height: '0rem'
-								}
-							}
-						}}
-					></TextField>
+					<DisplayCellInput onChange={onChange} value={value} isNumber={isNumber || false}/>
 				) : (
 					<Typography sx={textFieldStylingObject} variant={variant}>{`${cellTitle} ${value}`}</Typography>
 				)}

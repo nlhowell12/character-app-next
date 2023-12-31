@@ -15,7 +15,6 @@ import { Grid } from "@mui/material";
 export default function CharacterPage() {
 	const params = useParams<{ character: string }>();
 
-
 	const { characters } = useCharacterService()
 
 	const pageCharacter = characters?.find(
@@ -25,7 +24,6 @@ export default function CharacterPage() {
         characterReducer,
         initialCharacterState
     );
-
 
 	useEffect(() => {
 		if (!!pageCharacter) {
