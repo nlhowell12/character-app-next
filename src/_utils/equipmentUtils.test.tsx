@@ -13,7 +13,7 @@ import {
 } from './equipmentUtils';
 import { Armor, BonusTypes, Damage, Dice, Weapon } from '@/_models';
 
-const dagger: Weapon = {
+export const dagger: Weapon = {
     id: '12345',
     name: 'Dagger',
     weight: 4,
@@ -45,8 +45,8 @@ const dagger: Weapon = {
     ],
     rangeIncrement: 10,
 };
-const sword: Weapon = {
-    id: '12345',
+export const sword: Weapon = {
+    id: '123456',
     name: 'Sword',
     weight: 8,
     dexBasedAttack: false,
@@ -73,8 +73,8 @@ const sword: Weapon = {
     rangeIncrement: 0,
 };
 
-const magicLeather: Armor = {
-    id: '12345',
+export const magicLeather: Armor = {
+    id: '123457',
     name: 'Leather Armor',
     armorCheckPenalty: 0,
     maxDexBonus: 8,

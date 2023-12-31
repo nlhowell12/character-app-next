@@ -5,6 +5,7 @@ import {
     CardContent,
     CardHeader,
     Dialog,
+    OutlinedInput,
     Table,
     TableBody,
     TableCell,
@@ -29,13 +30,20 @@ import {
     addEquipmentAction,
     removeEquipmentAction,
     toggleEquippedAction,
+    updateEquipmentAction,
 } from '@/_reducer/characterReducer';
 import React, { Dispatch, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { AddEquipmentCard } from './AddEquipmentCard';
-import { iconHoverStyling } from '@/_utils/theme';
-import { getAllArmorMods, getDamageBonus, getEqBonusObject, getTotalArmorBonus } from '@/_utils/equipmentUtils';
+import { iconHoverStyling, numberInputStyling } from '@/_utils/theme';
+import {
+    getAllArmorMods,
+    getDamageBonus,
+    getEqBonusObject,
+    getTotalArmorBonus,
+} from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
+import { NumberInput } from '@/app/_components/NumberInput';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -44,24 +52,20 @@ interface EquipmentDisplayProps {
 
 interface BonusTooltipProps {
     bonusObject: BonusObject;
-};
-const BonusTooltip = (
-    {
-        bonusObject
-    }: BonusTooltipProps
-) => {
+}
+const BonusTooltip = ({ bonusObject }: BonusTooltipProps) => {
     return (
         <Table>
             <TableBody>
                 <TableRow>
                     {Object.keys(bonusObject).map((key) => {
                         return (
-                        <TableCell key={key} size='small' align='center'>
-                            <Typography>{key}</Typography>
-                            {/* @ts-ignore */}
-                            <Typography>{bonusObject[key]}</Typography>
-                        </TableCell>
-                        )
+                            <TableCell key={key} size='small' align='center'>
+                                <Typography>{key}</Typography>
+                                {/* @ts-ignore */}
+                                <Typography>{bonusObject[key]}</Typography>
+                            </TableCell>
+                        );
                     })}
                 </TableRow>
             </TableBody>
@@ -77,10 +81,11 @@ export const EquipmentDisplay = ({
     );
     const armor = character.equipment.filter(
         (eq: Equipment) =>
-            !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense) || !!(eq as Armor).bodySlot
+            !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense) ||
+            !!(eq as Armor).bodySlot
     );
     const eqDisplayCardStyle = {
-        margin: '0 .5rem'
+        margin: '0 .5rem',
     };
     const initialEquipmentState: Equipment = {
         id: uuidv4(),
@@ -100,7 +105,7 @@ export const EquipmentDisplay = ({
         rangeIncrement: 0,
         maxDexBonus: 0,
         spellFailure: 0,
-        hardness: 0
+        hardness: 0,
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
@@ -111,7 +116,10 @@ export const EquipmentDisplay = ({
         e: any,
         key: keyof Equipment | keyof Weapon | keyof Armor
     ) => {
-        setNewObject({ ...newObject, [key]: e.target.checked || e.target.value });
+        setNewObject({
+            ...newObject,
+            [key]: e.target.checked || e.target.value,
+        });
     };
     const handleAdd = () => {
         dispatch(addEquipmentAction(newObject));
@@ -156,7 +164,9 @@ export const EquipmentDisplay = ({
                             <TableCell>Name</TableCell>
                             <TableCell>Damage</TableCell>
                             <TableCell align='center'>Two-Handed?</TableCell>
-                            <TableCell align='center'>Range Increment</TableCell>
+                            <TableCell align='center'>
+                                Range Increment
+                            </TableCell>
                             <TableCell align='center'>Critical</TableCell>
                             <TableCell></TableCell>
                         </TableRow>
@@ -166,7 +176,10 @@ export const EquipmentDisplay = ({
                                 weapon.criticalRange < 20
                                     ? `${weapon.criticalRange}-20`
                                     : 20;
-                            const damageBonus = getDamageBonus(character, weapon);
+                            const damageBonus = getDamageBonus(
+                                character,
+                                weapon
+                            );
                             const damagePositive = damageBonus >= 0 ? '+' : '-';
                             return (
                                 <TableRow key={weapon.name}>
@@ -182,7 +195,9 @@ export const EquipmentDisplay = ({
                                                     weapon.numberOfDice.toString()
                                                 )}${
                                                     weapon.damage
-                                                } ${damagePositive} ${Math.abs(damageBonus)}`}
+                                                } ${damagePositive} ${Math.abs(
+                                                    damageBonus
+                                                )}`}
                                             </Typography>
                                         </Tooltip>
                                     </TableCell>
@@ -192,11 +207,13 @@ export const EquipmentDisplay = ({
                                         ) : null}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {!!weapon.rangeIncrement ?
-                                        <Typography>
-                                            {`${weapon.rangeIncrement} ft`}
-                                        </Typography>
-                                        : '-'}
+                                        {!!weapon.rangeIncrement ? (
+                                            <Typography>
+                                                {`${weapon.rangeIncrement} ft`}
+                                            </Typography>
+                                        ) : (
+                                            '-'
+                                        )}
                                     </TableCell>
                                     <TableCell align='center'>
                                         {`${critRange} / x${weapon.criticalMultiplier}`}
@@ -231,6 +248,9 @@ export const EquipmentDisplay = ({
                             <TableCell>Name</TableCell>
                             <TableCell>Bonus</TableCell>
                             <TableCell>Body Slot</TableCell>
+                            <TableCell>Max Dex Bonus</TableCell>
+                            <TableCell>Spell Failure</TableCell>
+                            <TableCell>Hardness</TableCell>
                             <TableCell align='center'>Equipped</TableCell>
                             <TableCell></TableCell>
                         </TableRow>
@@ -240,13 +260,43 @@ export const EquipmentDisplay = ({
                                 <TableRow key={armor.name}>
                                     <TableCell>{armor.name}</TableCell>
                                     <TableCell>
-                                        <Tooltip title={<BonusTooltip bonusObject={getEqBonusObject(character, getAllArmorMods(armor))}/>}>
+                                        <Tooltip
+                                            title={
+                                                <BonusTooltip
+                                                    bonusObject={getEqBonusObject(
+                                                        character,
+                                                        getAllArmorMods(armor)
+                                                    )}
+                                                />
+                                            }
+                                        >
                                             <Typography>
-                                                {`+${getTotalArmorBonus(character, armor)}`}
+                                                {`+${getTotalArmorBonus(
+                                                    character,
+                                                    armor
+                                                )}`}
                                             </Typography>
                                         </Tooltip>
                                     </TableCell>
                                     <TableCell>{armor.bodySlot}</TableCell>
+                                    <TableCell>{armor.maxDexBonus}</TableCell>
+                                    <TableCell>{armor.spellFailure}</TableCell>
+                                    <TableCell>
+                                        <OutlinedInput
+                                            type='number'
+                                            sx={{
+                                                ...numberInputStyling,
+                                                width: '4rem',
+                                            }}
+                                            value={armor.hardness}
+                                            onChange={(e) => {
+                                                dispatch(updateEquipmentAction(armor.id, e.target.value, 'hardness'))
+                                            }}
+                                            inputProps={{
+                                                min: 0,
+                                            }}
+                                        />
+                                    </TableCell>
                                     <TableCell align='center'>
                                         {armor.equipped ? (
                                             <Tooltip title='Unequip Item'>

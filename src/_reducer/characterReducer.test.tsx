@@ -11,10 +11,12 @@ import {
 	toggleEquippedAction,
 	updateAction,
 	updateAttributeAction,
+	updateEquipmentAction,
 	updateSkillAction,
 } from './characterReducer';
 import { mockCharacters } from '@/_mockData/characters';
 import * as R from 'ramda';
+import { dagger, magicLeather, sword } from '@/_utils/equipmentUtils.test';
 
 describe('characterReducer', () => {
 	it('should set state to character', () => {
@@ -86,6 +88,11 @@ describe('characterReducer', () => {
 		} as Weapon;
 		const newState = characterReducer({...initialCharacterState, equipment: [newWeapon]}, removeEquipmentAction(newWeapon))
 		expect(R.findIndex(x => x.id === newWeapon.id, newState.equipment)).toBe(-1)
+	});
+	it('should update key on specific equipment', () => {
+		const updatedHardness = 30;
+		const newState = characterReducer({...mockCharacters[0], equipment: [magicLeather, dagger, sword]}, updateEquipmentAction(magicLeather.id, updatedHardness, 'hardness'))
+		expect(newState.equipment).toStrictEqual([{...magicLeather, hardness: updatedHardness}, dagger, sword])
 	});
 	it('should delete mod from character modifiers', () => {
 		const modToDelete = mockCharacters[0].miscModifiers[0];

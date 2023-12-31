@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
@@ -12,6 +12,7 @@ export enum CharacterReducerActions {
 	TOGGLE_EQUIPPED = 'TOGGLE_EQUIPPED',
 	ADD_EQUIPMENT = 'ADD_EQUIPMENT',
 	REMOVE_EQUIPMENT = 'REMOVE_EQUIPMENT',
+	UPDATE_EQUIPMENT = 'UPDATE_EQUIPMENT',
 	DEFAULT = 'DEFAULT'
 }
 
@@ -41,7 +42,8 @@ type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Mo
 export type CharacterAction = {
 	type: CharacterReducerActions;
 	payload: {
-		key: CharacterKeys;
+		key: CharacterKeys | keyof Equipment | keyof Weapon | keyof Armor;
+		updateId?: string;
 		attribute?: AttributeNames;
 		skill?: SkillTypes;
 		value: AcceptedUpdateValues;
@@ -149,6 +151,21 @@ export const removeEquipmentAction = (
 	}
 };
 
+export const updateEquipmentAction = (
+	updateId: string,
+	value: string | number | Modifier[],
+	key: keyof Equipment | keyof Weapon | keyof Armor
+) : CharacterAction => {
+	return {
+		type: CharacterReducerActions.UPDATE_EQUIPMENT,
+		payload: {
+			updateId,
+			key,
+			value
+		}
+	}
+};
+
 export const resetAction = () => {
 	return {
 		type: CharacterReducerActions.RESET,
@@ -184,49 +201,50 @@ export const initialCharacterState: Character = {
 
 export const characterReducer = (state: Character, action: CharacterAction) => {
 	const { payload } = action;
+	const { value, updateId, key, attribute, skill } = payload;
 	switch (action.type) {
 		case CharacterReducerActions.SET_CHARACTER:
-			const value = payload.value as Character; 
-			return value;
+			const newChar = value as Character; 
+			return newChar;
 		case CharacterReducerActions.UPDATE:
 			return { ...state, [payload.key]: payload.value };
 		case CharacterReducerActions.UPDATEATTRIBUTE:
-			if (!!payload.attribute) {
+			if (!!attribute) {
 				return {
 					...state,
 					attributes: {
 						...state.attributes,
-						[payload.attribute]: {
+						[attribute]: {
 							value: Number(payload.value),
 						},
 					},
 				};
 			}
 		case CharacterReducerActions.UPDATESKILL:
-			if (!!payload.skill) {
+			if (!!skill) {
 				return {
 					...state,
 					skills: {
 						...state.skills,
-						[payload.skill]: {
-							...state.skills[payload.skill as keyof SkillObject],
-							ranks: payload.value,
+						[skill]: {
+							...state.skills[skill as keyof SkillObject],
+							ranks: value,
 						},
 					},
 				};
 			}
 		case CharacterReducerActions.DELETE_MOD:
-				if(payload.value){
-					const value = payload.value as Modifier;
+				if(value){
+					const deleteValue = value as Modifier;
 					return {
 						...state,
-						miscModifiers: state.miscModifiers.filter(x => !R.equals(x, value))
+						miscModifiers: state.miscModifiers.filter(x => !R.equals(x, deleteValue))
 					}
 				}
 		case CharacterReducerActions.TOGGLE_EQUIPPED:
-				if(payload.value){
-					const value = payload.value as Equipment;
-					const index = R.findIndex(R.propEq(value.name, 'name'))(state.equipment);
+				if(value){
+					const toggleValue = value as Equipment;
+					const index = R.findIndex(R.propEq(toggleValue.name, 'name'))(state.equipment);
 					const eq = state.equipment[index] as Armor;
 					const updatedEq = {...eq, equipped: !eq.equipped}
 					return {
@@ -235,21 +253,27 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 					}
 				}
 		case CharacterReducerActions.ADD_EQUIPMENT:
-			if(payload.value){
-				const value = payload.value as Equipment;
+			if(value){
+				const addEqValue = value as Equipment;
 				return {
 					...state,
-					equipment: [...state.equipment, value]
+					equipment: [...state.equipment, addEqValue]
 				}
 			}
 		case CharacterReducerActions.REMOVE_EQUIPMENT:
-			if(payload.value){
-				const value = payload.value as Equipment;
-				const filter = (x: Equipment) => x.id !== value.id;
+			if(value){
+				const removeEqValue = value as Equipment;
+				const filter = (x: Equipment) => x.id !== removeEqValue.id;
 				return {
 					...state,
 					equipment: R.filter(filter, state.equipment)
 				}
+			}
+		case CharacterReducerActions.UPDATE_EQUIPMENT:
+			if(updateId){
+				const index = R.findIndex(R.propEq(updateId, 'id'))(state.equipment);
+				const newObject: Equipment = {...state.equipment[index], [key]: value} as Equipment;
+				return {...state, equipment: R.update(index, newObject, state.equipment)}
 			}
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;
