@@ -166,7 +166,7 @@ export default function Header() {
 						<ListItemText primary={'Home'} />
 					</ListItem>
 					<ListItem button onClick={handleSpellToggle}>
-						<ListItemIcon title='Spells'>
+						<ListItemIcon title='Full Spell List'>
 							<MenuBook />
 						</ListItemIcon>
 						<ListItemText primary={'Spells'} />
