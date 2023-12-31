@@ -34,10 +34,8 @@ import React, { Dispatch, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling } from '@/_utils/theme';
-import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
 import { getAllArmorMods, getDamageBonus, getEqBonusObject, getTotalArmorBonus } from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
-import { getSkillModifiers, getArmorCheckPenalties } from '@/_utils/skillIUtils';
 
 interface EquipmentDisplayProps {
     character: Character;
