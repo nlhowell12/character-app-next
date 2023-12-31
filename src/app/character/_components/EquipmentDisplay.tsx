@@ -70,7 +70,8 @@ export const EquipmentDisplay = ({
         category: '',
         damageTypes: [],
         dexBasedAttack: false,
-        dexBasedDamage: false
+        dexBasedDamage: false,
+        rangeIncrement: 0
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
@@ -126,6 +127,7 @@ export const EquipmentDisplay = ({
                             <TableCell>Name</TableCell>
                             <TableCell>Damage</TableCell>
                             <TableCell align='center'>Two-Handed?</TableCell>
+                            <TableCell align='center'>Range Increment</TableCell>
                             <TableCell align='center'>Critical</TableCell>
                             <TableCell></TableCell>
                         </TableRow>
@@ -159,6 +161,13 @@ export const EquipmentDisplay = ({
                                         {!!weapon.twoHanded ? (
                                             <CheckCircleOutlineIcon />
                                         ) : null}
+                                    </TableCell>
+                                    <TableCell align='center'>
+                                        {!!weapon.rangeIncrement ?
+                                        <Typography>
+                                            {`${weapon.rangeIncrement} ft`}
+                                        </Typography>
+                                        : '-'}
                                     </TableCell>
                                     <TableCell align='center'>
                                         {`${critRange} / x${weapon.criticalMultiplier}`}

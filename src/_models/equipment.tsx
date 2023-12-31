@@ -36,9 +36,9 @@ export interface Weapon extends BaseEquipment {
     twoHanded: boolean;
     criticalRange: number;
     criticalMultiplier: number;
-    rangeIncrement?: number;
-    dexBasedAttack?: boolean;
-    dexBasedDamage?: boolean;
+    rangeIncrement: number;
+    dexBasedAttack: boolean;
+    dexBasedDamage: boolean;
 }
 
 export interface Armor extends BaseEquipment {

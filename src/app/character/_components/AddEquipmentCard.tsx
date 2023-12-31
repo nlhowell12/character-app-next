@@ -159,6 +159,9 @@ export const AddEquipmentCard = ({
                         <NumberInput minZero value={(newEq as Weapon).criticalMultiplier} label='Crit Multiplier' onChange={(
                             e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                         ) => onChange(e, 'criticalMultiplier')}/>
+                        <NumberInput minZero value={(newEq as Weapon).rangeIncrement} label='Range Increment' onChange={(
+                            e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                        ) => onChange(e, 'rangeIncrement')}/>
                     </>
                 ) : null}
                 {!!isArmor ? (
