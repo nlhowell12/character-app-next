@@ -26,6 +26,7 @@ export interface BaseEquipment {
     modifiers: Modifier[];
     size?: Sizes;
     bodySlot?: BodySlot;
+    amount: number;
 }
 
 export interface Weapon extends BaseEquipment {

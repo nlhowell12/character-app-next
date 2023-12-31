@@ -105,7 +105,8 @@ export const EquipmentDisplay = ({
         maxDexBonus: 0,
         spellFailure: 0,
         hardness: 0,
-        bodySlot: BodySlot.None
+        bodySlot: BodySlot.None,
+        amount: 1
     };
 
     const [newObject, setNewObject] = useState<Equipment>(
@@ -162,6 +163,7 @@ export const EquipmentDisplay = ({
                     <TableBody>
                         <TableRow>
                             <TableCell>Name</TableCell>
+                            <TableCell>Amount</TableCell>
                             <TableCell align='center'>Damage</TableCell>
                             <TableCell align='center'>Two-Handed?</TableCell>
                             <TableCell align='center'>
@@ -184,6 +186,22 @@ export const EquipmentDisplay = ({
                             return (
                                 <TableRow key={weapon.name}>
                                     <TableCell>{weapon.name}</TableCell>
+                                    <TableCell>
+                                        <OutlinedInput
+                                            type='number'
+                                            sx={{
+                                                ...numberInputStyling,
+                                                width: '4rem',
+                                            }}
+                                            value={weapon.amount}
+                                            onChange={(e) => {
+                                                dispatch(updateEquipmentAction(weapon.id, Number(e.target.value), 'amount'))
+                                            }}
+                                            inputProps={{
+                                                min: 0,
+                                            }}
+                                        />
+                                    </TableCell>
                                     <TableCell align='center'>
                                         <Tooltip
                                             title={`${weapon.damageTypes.join(
