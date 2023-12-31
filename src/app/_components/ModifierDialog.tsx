@@ -1,4 +1,14 @@
-import { AbilityTypes, AttributeNames, BonusTypes, Character, CharacterKeys, Damage, Dice, Modifier, SkillTypes } from '@/_models';
+import {
+    AbilityTypes,
+    AttributeNames,
+    BonusTypes,
+    Character,
+    CharacterKeys,
+    Damage,
+    Dice,
+    Modifier,
+    SkillTypes,
+} from '@/_models';
 import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
 import {
     Card,
@@ -26,7 +36,11 @@ interface ModifierDialogProps {
     onAdd: (appliedModifier: Modifier) => void;
 }
 
-export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogProps) => {
+export const ModifierDialog = ({
+    character,
+    dispatch,
+    onAdd,
+}: ModifierDialogProps) => {
     const [modifier, setModifier] = useState<Modifier>({
         value: 0,
         definition: '',
@@ -40,11 +54,21 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
         resistance: undefined,
         immunity: undefined,
         damageType: Damage.Acid,
-        damageDice: Dice.None,
-        numberOfDice: 0
+        damageDice: Dice.d4,
+        numberOfDice: 0,
     });
 
-    const { value: modValue, definition, skill, attribute, type: bonusType, abilityType, damageType } = modifier;
+    const {
+        value: modValue,
+        definition,
+        skill,
+        attribute,
+        type: bonusType,
+        abilityType,
+        damageType,
+        damageDice,
+        numberOfDice,
+    } = modifier;
 
     const [optionalValues, setOptionalValues] = useState({
         boolValue: false,
@@ -61,6 +85,7 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
     });
 
     const modifierValueHandler = (e: any) => {
+        console.log(e.target.name)
         setModifier({
             ...modifier,
             [e.target.name]: e.target.value,
@@ -88,7 +113,7 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
 
     const appliedModifier: Modifier = {
         value: !!boolValue ? Number(modValue) : 0,
-        definition: (!!boolDefinition || !!definition) ? definition : undefined,
+        definition: !!boolDefinition || !!definition ? definition : undefined,
         skill: !!boolSkill ? skill : undefined,
         attribute: !!boolAttribute ? attribute : undefined,
         attack: boolAttack,
@@ -98,38 +123,57 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
         abilityType: !!boolAbilityType ? abilityType : undefined,
         resistance: boolResistance,
         immunity: boolImmunity,
-        damageType: (!!boolResistance || !!boolImmunity) ? damageType : undefined,
-        id: uuidv4()
+        damageType: !!boolResistance || !!boolImmunity || boolDamage ? damageType : undefined,
+        damageDice: !!boolDamage ? damageDice : undefined,
+        numberOfDice: !!boolDamage ? numberOfDice : undefined,
+        id: uuidv4(),
     };
-    const valueOptions = appliedModifier.value || appliedModifier.attribute || (appliedModifier.damageDice !== Dice.None && !!appliedModifier.numberOfDice);
-    const valueAssignments = !!boolResistance || !!boolAttack || !!boolDamage || !!boolDefense || !!boolSkill || !!boolAttribute;
-    const noModValue = valueAssignments && !valueOptions;
-    const noDamageType = !!boolImmunity && !appliedModifier.damageType
+    const diceAndNumber =
+        !!damageDice &&
+        !!numberOfDice;
+    const valueOptions =
+        appliedModifier.value ||
+        appliedModifier.attribute ||
+        diceAndNumber
+    const valueAssignments =
+        !!boolResistance ||
+        !!boolAttack ||
+        !!boolDamage ||
+        !!boolDefense ||
+        !!boolSkill ||
+        !!boolAttribute;
+    const noModValue = !!valueAssignments && !valueOptions;
+    const noDamageType = !!boolImmunity && !appliedModifier.damageType;
     const noUnassignedValue = !!appliedModifier.value && !valueAssignments;
 
-    const noValuesSelected = Object.values(optionalValues).every(value => {
+    const noValuesSelected = Object.values(optionalValues).every((value) => {
         if (!value) {
-          return true;
+            return true;
         }
         return false;
-      });
+    });
 
-    const formValidation = !noValuesSelected && !noModValue && !noDamageType && !noUnassignedValue;
+    const formValidation =
+        !noValuesSelected && !noModValue && !noDamageType && !noUnassignedValue;
 
     const formControlStyle = {
         marginBottom: '.5rem',
     };
 
     const handleAdd = () => {
-        if(formValidation){
-            onAdd(appliedModifier)
+        if (formValidation) {
+            onAdd(appliedModifier);
         }
-    }
+    };
     return (
         <Card>
             <CardHeader title='Add Modifiers' />
             <CardContent>
-                <FormControl fullWidth sx={formControlStyle} error={!formValidation}>
+                <FormControl
+                    fullWidth
+                    sx={formControlStyle}
+                    error={!formValidation}
+                >
                     <FormLabel component='legend'>Check applicable:</FormLabel>
                     <FormGroup>
                         <FormControlLabel
@@ -180,7 +224,7 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
                                     name='boolAttack'
                                 />
                             }
-                            label='Does this modifer your attacks?'
+                            label='Does this modify your attacks?'
                         />
                         <FormControlLabel
                             control={
@@ -233,8 +277,15 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
                             label='Does this confer immunity to damage?'
                         />
                     </FormGroup>
-                    <FormHelperText>Resistance, Attack, Damage, Defense, and Skills require a Value, Attribute, or additional Dice (size and number) to reference.</FormHelperText>
-                    <FormHelperText>If Value or Attribute are selected, you must select where to apply it.</FormHelperText>
+                    <FormHelperText>
+                        Resistance, Attack, Damage, Defense, and Skills require
+                        a Value, Attribute, or additional Dice (size and number)
+                        to reference.
+                    </FormHelperText>
+                    <FormHelperText>
+                        If Value or Attribute are selected, you must select
+                        where to apply it.
+                    </FormHelperText>
                 </FormControl>
                 <FormControl fullWidth sx={formControlStyle}>
                     <InputLabel id='bonus-type-id'>Bonus Type</InputLabel>
@@ -256,12 +307,53 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
                         })}
                     </Select>
                 </FormControl>
+                {!!optionalValues.boolDamage && (
+                    <>
+                        <FormControl fullWidth sx={formControlStyle}>
+                            <InputLabel id='damage-die-id'>
+                                Damage Die
+                            </InputLabel>
+                            <Select
+                                labelId='damage-die-id'
+                                id='damage-die'
+                                label='Damage Die'
+                                name='damageDice'
+                                value={damageDice}
+                                onChange={modifierValueHandler}
+                            >
+                                {Object.keys(Dice).map((dam) => {
+                                    return (
+                                        <MenuItem key={dam} value={dam}>
+                                            {/* @ts-ignore */}
+                                            {Dice[dam]}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                        <NumberInput
+                            label='Number of Dice'
+                            value={numberOfDice || 0}
+                            onChange={modifierValueHandler}
+                        />
+                    </>
+                )}
                 {!!optionalValues.boolValue && (
-                    <NumberInput label='Value' value={modValue} onChange={modifierValueHandler}/>
+                    <NumberInput
+                        label='Value'
+                        value={modValue}
+                        onChange={modifierValueHandler}
+                    />
                 )}
                 {!!optionalValues.boolDefinition && (
                     <FormControl fullWidth sx={formControlStyle}>
-                        <TextField label='Definition' name='definition' multiline onChange={modifierValueHandler} value={definition}/>
+                        <TextField
+                            label='Definition'
+                            name='definition'
+                            multiline
+                            onChange={modifierValueHandler}
+                            value={definition}
+                        />
                     </FormControl>
                 )}
                 {!!optionalValues.boolSkill && (
@@ -287,7 +379,9 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
                 )}
                 {!!optionalValues.boolAttribute && (
                     <FormControl fullWidth sx={formControlStyle}>
-                        <InputLabel id='attribute-id'>Attribute Modified</InputLabel>
+                        <InputLabel id='attribute-id'>
+                            Attribute Modified
+                        </InputLabel>
                         <Select
                             label='Attribute'
                             value={attribute}
@@ -327,7 +421,9 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
                         </Select>
                     </FormControl>
                 )}
-                {(!!optionalValues.boolResistance || !!optionalValues.boolImmunity) && (
+                {(!!optionalValues.boolResistance ||
+                    !!optionalValues.boolImmunity ||
+                    !!optionalValues.boolDamage) && (
                     <FormControl fullWidth sx={formControlStyle}>
                         <InputLabel id='attribute-id'>Damage Type</InputLabel>
                         <Select
@@ -348,8 +444,14 @@ export const ModifierDialog = ({ character, dispatch, onAdd }: ModifierDialogPro
                         </Select>
                     </FormControl>
                 )}
-                <div style={{display: 'flex', justifyContent: 'end'}}>
-                    <Button disabled={!formValidation} variant='outlined' onClick={() => handleAdd()}>Apply Modifier</Button>
+                <div style={{ display: 'flex', justifyContent: 'end' }}>
+                    <Button
+                        disabled={!formValidation}
+                        variant='outlined'
+                        onClick={() => handleAdd()}
+                    >
+                        Apply Modifier
+                    </Button>
                 </div>
             </CardContent>
         </Card>

@@ -93,7 +93,7 @@ export const EquipmentDisplay = ({
         modifiers: [],
         equipped: false,
         numberOfDice: 0,
-        damage: Dice.None,
+        damage: Dice.d4,
         armorCheckPenalty: 0,
         criticalMultiplier: 2,
         criticalRange: 20,

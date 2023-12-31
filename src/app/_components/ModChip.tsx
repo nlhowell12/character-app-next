@@ -15,7 +15,7 @@ const modifierString = (key: keyof Modifier, value: any) => {
         case('definition'):
             return '';
         case('damageType'):
-            return value;
+            return `(${value})`;
         case('value'):
             return ''; 
         case('damage'):
@@ -30,6 +30,10 @@ const modifierString = (key: keyof Modifier, value: any) => {
             return '';
         case('id'):
             return '';
+        case('damageDice'):
+            return '';
+        case('numberOfDice'):
+            return '';
         default:
             return key
     }
@@ -39,6 +43,8 @@ export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     const positive = !!mod.value && mod.value >= 0 ? '+' : ''
     const modValue = !!mod.value ? `${positive}${mod.value}` : '';
     const modDefinition = !!mod.definition ? ` (${mod.definition})` : ''
+    const modType = !mod.numberOfDice ? mod.type : ''
+    const bonusDamageDice = !!mod.numberOfDice ? `+${mod.numberOfDice}${mod.damageDice}`: '';
     let assignmentString = '';
     Object.entries(mod).forEach(([key, value]) => {
         if(!!value){
@@ -48,7 +54,7 @@ export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     return (
         <Chip
             /* @ts-ignore */
-            label={`${modValue} ${mod.type as B} - ${assignmentString}${modDefinition}`}
+            label={`${bonusDamageDice} ${modValue} ${modType} - ${assignmentString}${modDefinition}`}
             variant='outlined'
             onDelete={onDelete}
         />

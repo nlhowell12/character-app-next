@@ -124,7 +124,7 @@ export const AddEquipmentCard = ({
                             >
                                 {Object.keys(Dice).map((dam) => {
                                     return (
-                                        <MenuItem key={dam} value={dam}>
+                                        !!dam && <MenuItem key={dam} value={dam}>
                                             {/* @ts-ignore */}
                                             {Dice[dam]}
                                         </MenuItem>

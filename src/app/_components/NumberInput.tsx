@@ -1,3 +1,4 @@
+import { camelString } from "@/_utils/stringUtils";
 import { numberInputStyling } from "@/_utils/theme"
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material"
 
@@ -18,7 +19,7 @@ export const NumberInput = ({label, value, onChange, minZero}: NumberInputProps)
             <OutlinedInput
                 type='number'
                 label={label}
-                name={label.toLowerCase()}
+                name={camelString(label)}
                 sx={numberInputStyling}
                 value={Number(value)}
                 onChange={onChange}
