@@ -45,12 +45,12 @@ export const CharacterInfoDisplay = ({
                     <TableBody>
                         <TableRow sx={{ border: 'none' }}>
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Name:'
                                 value={character.name}
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Player:'
                                 value={character.playerName || 'N/A'}
                             />
@@ -84,29 +84,29 @@ export const CharacterInfoDisplay = ({
                         </TableRow>
                         <TableRow>
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Classes:'
                                 value={character.classes.map(
                                     (cls) => `${cls.name} ${cls.level} `
                                 )}
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Race:'
                                 value={character.race}
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Subrace:'
                                 value={character.subRace}
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Size:'
                                 value={character.size}
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='XP:'
                                 value={character.experience}
                                 editable={true}
@@ -115,12 +115,12 @@ export const CharacterInfoDisplay = ({
                         </TableRow>
                         <TableRow>
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Age:'
                                 value={!!character.age ? character.age : 'N/A'}
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Height:'
                                 value={
                                     !!character.height
@@ -129,7 +129,7 @@ export const CharacterInfoDisplay = ({
                                 }
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Weight:'
                                 value={
                                     !!character.weight
@@ -138,7 +138,7 @@ export const CharacterInfoDisplay = ({
                                 }
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Eyes:'
                                 value={
                                     !!character.eyeColor
@@ -147,7 +147,7 @@ export const CharacterInfoDisplay = ({
                                 }
                             />
                             <DisplayCell
-                                variant='h6'
+                                variant='body1'
                                 cellTitle='Hair:'
                                 value={
                                     !!character.hairColor

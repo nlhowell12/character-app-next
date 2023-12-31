@@ -119,7 +119,7 @@ export const EquipmentDisplay = ({
                 <CardContent
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                    <Typography variant='h6'>Weapons</Typography>
+                    <Typography variant='body1'>Weapons</Typography>
                 </CardContent>
                 <Table>
                     <TableBody>
@@ -194,7 +194,7 @@ export const EquipmentDisplay = ({
             </Card>
             <Card sx={eqDisplayCardStyle}>
                 <CardContent>
-                    <Typography variant='h6'>Armor</Typography>
+                    <Typography variant='body1'>Armor</Typography>
                 </CardContent>
                 <Table>
                     <TableBody>

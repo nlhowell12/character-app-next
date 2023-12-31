@@ -11,6 +11,7 @@ import { EquipmentDisplay } from "../_components/EquipmentDisplay";
 import { SkillDisplay } from "../_components/SkillDisplay";
 import { characterReducer, initialCharacterState, setCharacterAction } from "@/_reducer/characterReducer";
 import useCharacterService from "@/app/api/_services/useCharacterService";
+import { Grid } from "@mui/material";
 
 export default function CharacterPage() {
 	const params = useParams<{ character: string }>();
@@ -44,16 +45,23 @@ export default function CharacterPage() {
             }}>
 				<CharacterInfoDisplay character={character} dispatch={dispatch} />
 			</div>
-			<div style={{
-                display: 'flex',
-            }}>
-				<AttributeDisplay character={character} />
-				<div>
+            <Grid container
+                style={{
+                    display: 'flex',
+                    height: '65vh',
+                }}
+            >
+				<Grid item xs={'auto'}>
+					<AttributeDisplay character={character} />
+				</Grid>
+				<Grid item xs={6}>
 					<CombatInfoDisplay character={character} dispatch={dispatch}/>
 					<EquipmentDisplay character={character} dispatch={dispatch}/>
-				</div>
-				<SkillDisplay character={character} />
-			</div>
+				</Grid>
+				<Grid xs={2} item>
+					<SkillDisplay character={character} />
+				</Grid>
+			</Grid>
 		</div>
 	)
 };

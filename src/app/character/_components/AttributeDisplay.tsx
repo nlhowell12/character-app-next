@@ -1,4 +1,4 @@
-import { BonusTypes, Modifier, Character, CharacterAttributes, AttributeNames } from '@/_models';
+import { BonusTypes, Modifier, Character, AttributeNames } from '@/_models';
 import { totalAttributeValue, getBaseAttributeScore, getTotalAttributeModifier, getAttributeBonuses, getAllAttributeModifiers } from '@/_utils/attributeUtils';
 import { getTotalSaveBonus, isProficientSave } from '@/_utils/defenseUtils';
 import { CheckCircle } from '@mui/icons-material';
@@ -69,7 +69,7 @@ const DisplayBox = ({
 				textAlign: 'center',
 			}}>
 				<Typography variant='caption'>{displayTitle}</Typography>
-				<Typography variant='h4'>{displayValue}</Typography>
+				<Typography variant='body1'>{displayValue}</Typography>
 			</div>
 		</Tooltip>
 	) : (
@@ -84,7 +84,7 @@ const DisplayBox = ({
 				<Typography variant='caption'>{displayTitle}</Typography>
 				{icon}
 			</div>
-			<Typography variant='h4'>{displayValue}</Typography>
+			<Typography variant='body1'>{displayValue}</Typography>
 		</div>
 	);
 };
@@ -99,16 +99,14 @@ const AttributeRow = ({ character, attribute, modifiers } : AttributeRowProps) =
 	const totalValue = totalAttributeValue(character, attribute);
 	return (
 		<TableRow sx={{
-			height: '3rem',
 			alignItems: 'center',
 			width: '100%',
 		}}>
 			<TableCell>
 				<Typography sx={{
-					padding: '0 1rem',
 					display: 'flex',
 					flexGrow: 1,
-				}} variant='h5'>
+				}} variant='body1'>
 					{attribute}
 				</Typography>
 			</TableCell>
@@ -164,7 +162,6 @@ export const AttributeDisplay = ({
 		<Card sx={{
 			width: 'fit-content',
 			height: 'fit-content',
-			minWidth: '37rem',
 		}}>
 			<Table sx={{
 				width: '100%',

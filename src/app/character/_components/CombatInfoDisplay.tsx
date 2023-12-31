@@ -58,26 +58,26 @@ export const CombatInfoDisplay = ({
 						sx={{border: 'none'}}
 					>
 						<DisplayCell
-							variant='h6'
+							variant='body1'
 							cellTitle='Max Hit Points:'
 							value={character.maxHitPoints}
 						/>
 						<DisplayCell
-							variant='h6'
+							variant='body1'
 							cellTitle='Current Hit Points:'
 							value={character.currentHitPoints}
 							editable={true}
 							onChange={(e) => dispatch(updateAction(CharacterKeys.currentHitPoints, Number(e.target.value)))}
 						/>
 						<DisplayCell
-							variant='h6'
+							variant='body1'
 							cellTitle='Non-Lethal Damage:'
 							value={character.nonLethalDamage}
 							editable={true}
 							onChange={(e) => dispatch(updateAction(CharacterKeys.nonLethalDamage, Number(e.target.value)))}
 						/>
 						<DisplayCell
-							variant='h6'
+							variant='body1'
 							cellTitle='Temp HP:'
 							value={character.tempHP}
 							editable={true}
@@ -88,7 +88,7 @@ export const CombatInfoDisplay = ({
 						sx={{border: 'none'}}
 					>
 						<DisplayCell
-							variant='h6'
+							variant='body1'
 							cellTitle='DS (DR):'
 							value={`${defenses.dsBonus} (${defenses.drBonus})`}
 							tooltip={
@@ -99,14 +99,14 @@ export const CombatInfoDisplay = ({
 							}
 						/>
 						<DisplayCell
-							variant='h6'
+							variant='body1'
 							cellTitle='Speed:'
 							value={character.movementSpeeds.map(
 								(spd) => ` ${spd.type}(${spd.speed}ft)`
 							)}
 						/>
 						<DisplayCell
-							variant='h6'
+							variant='body1'
 							cellTitle='Resist/Immune:'
 							value={Object.entries(getResistances(character)).map(
 								([key, value]) => `${key} - ${value}`

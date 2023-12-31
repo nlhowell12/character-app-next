@@ -49,7 +49,7 @@ export const FeatSelector = ({character, dispatch}: FeatSelectorProps) => {
                             key={ft.name}
                         >
                             <Tooltip title={ft.definition}>
-                                <Typography variant="h6">{ft.name}</Typography>
+                                <Typography variant="body1">{ft.name}</Typography>
                             </Tooltip>
                         </Card>
                     );

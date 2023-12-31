@@ -146,7 +146,7 @@ export default function Header() {
 					>
 						<ChevronRightIcon />
 					</IconButton>
-					<Typography variant='h6' noWrap component='div'>
+					<Typography variant='body1' noWrap component='div'>
 						Rhedrah Character Sheet
 					</Typography>
 				</Toolbar>
