@@ -35,6 +35,7 @@ export default () => {
               },
               body: JSON.stringify(character)
         })
+        return res;
     }
 
     return { characters, createCharacter, updateCharacter }

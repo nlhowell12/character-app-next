@@ -1,7 +1,9 @@
 import {
+    Alert,
     Button,
     Dialog,
     Grid,
+    Snackbar,
     Stack,
     Table,
     TableBody,
@@ -18,6 +20,7 @@ import { Add } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import useCharacterService from '@/app/api/_services/useCharacterService';
 import { ModChipStack } from '@/app/_components/ModChipStack';
+import { NextResponse } from 'next/server';
 interface CharacterInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -34,6 +37,7 @@ export const CharacterInfoDisplay = ({
 }: CharacterInfoDisplayProps) => {
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
     const { updateCharacter } = useCharacterService();
+    const [openSuccess, setOpenSuccess] = useState<boolean>(false);
 
     const handleAddModifier = (appliedModifier: Modifier) => {
         // set up on close
@@ -43,6 +47,12 @@ export const CharacterInfoDisplay = ({
     const handleDeleteMod = (mod: Modifier) => {
         dispatch(deleteModAction(mod))
     };
+    const handleUpdate = async () => {
+        const res: Response = await updateCharacter(character);
+        if(res.ok){
+            setOpenSuccess(true);
+        }
+    }
     return (
         <Grid container>
             <Grid item xs={12} lg={6}>
@@ -76,11 +86,16 @@ export const CharacterInfoDisplay = ({
                             <TableCell sx={cellStylingObject}>
                                 <Button
                                     variant='outlined'
-                                    onClick={() => updateCharacter(character)}
+                                    onClick={handleUpdate}
                                 >
                                     <Typography>Save Character</Typography>
                                     <SaveIcon sx={{ marginLeft: '.5rem' }} />
                                 </Button>
+                                <Snackbar open={openSuccess} autoHideDuration={3000} onClose={() => setOpenSuccess(false)} anchorOrigin={{vertical:'top', horizontal: 'center'}}>
+                                <Alert onClose={() => setOpenSuccess(false)} severity="success" sx={{ width: '100%' }}>
+                                    Character Saved Successfully!
+                                </Alert>
+                                </Snackbar>
                             </TableCell>
                         </TableRow>
                         <TableRow>
