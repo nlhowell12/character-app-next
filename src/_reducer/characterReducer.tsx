@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames, AnyMagickType } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
@@ -13,6 +13,7 @@ export enum CharacterReducerActions {
 	ADD_EQUIPMENT = 'ADD_EQUIPMENT',
 	REMOVE_EQUIPMENT = 'REMOVE_EQUIPMENT',
 	UPDATE_EQUIPMENT = 'UPDATE_EQUIPMENT',
+	LEARN_SPELL = 'LEARN_SPELL',
 	DEFAULT = 'DEFAULT'
 }
 
@@ -37,7 +38,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment;
+type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType;
 
 export type CharacterAction = {
 	type: CharacterReducerActions;
@@ -166,6 +167,20 @@ export const updateEquipmentAction = (
 	}
 };
 
+export const learnSpellAction = (
+	value: AnyMagickType,
+	className: CharacterClassNames
+): CharacterAction => {
+	return {
+		type: CharacterReducerActions.LEARN_SPELL,
+		payload: {
+			value,
+			key: CharacterKeys.spellBook,
+			updateId: className
+		}
+	}
+}
+
 export const resetAction = () => {
 	return {
 		type: CharacterReducerActions.RESET,
@@ -285,6 +300,10 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 				const index = R.findIndex(R.propEq(updateId, 'id'))(state.equipment);
 				const newObject: Equipment = {...state.equipment[index], [key]: value} as Equipment;
 				return {...state, equipment: R.update(index, newObject, state.equipment)}
+			}
+		case CharacterReducerActions.LEARN_SPELL:
+			const newSpellAdded = R.append(value, state.spellBook[updateId as keyof SpellObject])
+			return {...state, spellBook: {...state.spellBook, [updateId as keyof SpellObject]: newSpellAdded}
 			}
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;

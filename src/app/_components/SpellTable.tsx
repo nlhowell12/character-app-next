@@ -36,7 +36,7 @@ export interface SpellTableProps {
     spells: SpellObject;
     characterSpellbook?: boolean;
     character?: Character;
-    onChange?: () => void;
+    onChange?: (spell: AnyMagickType, className: CharacterClassNames) => void;
     personal?: boolean;
 }
 export const SpellTable = ({
@@ -279,9 +279,9 @@ export const SpellTable = ({
                                                                 <TableCell>
                                                                     <Checkbox
                                                                         checked={
-                                                                            false
+                                                                            !!character && R.includes(row, character.spellBook[selectedClass])
                                                                         }
-                                                                        onChange={() => {}}
+                                                                        onChange={() => !!onChange && onChange(row, selectedClass)}
                                                                         name='Known'
                                                                     />
                                                                 </TableCell>

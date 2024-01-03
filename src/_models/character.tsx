@@ -110,7 +110,8 @@ export enum CharacterKeys {
 	miscModifiers = 'miscModifiers',
 	playerName = 'playerName',
 	experience = 'experience',
-	feats = 'feats'
+	feats = 'feats',
+	spellBook = 'spellBook'
 }
 
 export interface Character {
