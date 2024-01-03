@@ -1,10 +1,11 @@
-import { Character, CharacterClass, CharacterKeys, Feat } from "@/_models";
+import { Character, CharacterKeys, Feat } from "@/_models";
 import { CharacterAction, updateAction } from "@/_reducer/characterReducer";
 import { Add } from "@mui/icons-material";
-import { Button, Typography, Dialog, Grid, Card, CardHeader, CardContent, List, ListItem, ListItemText, Tooltip } from "@mui/material";
+import { Button, Typography, Dialog, Grid, Card, CardHeader, CardContent, List, ListItem, ListItemText, Tooltip, Chip } from "@mui/material";
 import { Dispatch, useState } from "react";
 import { AddFeatCard } from "./AddFeatCard";
-
+import * as R from 'ramda';
+import { FeatDisplay } from "@/app/character/_components/FeatDisplay";
 interface FeatSelectorProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -23,6 +24,10 @@ export const FeatSelector = ({character, dispatch}: FeatSelectorProps) => {
             updateAction(CharacterKeys.feats, [...character.feats, feat])
         );
     };
+    const handleDelete = (feat: Feat) => {
+        const filter = R.propEq(feat.name, 'name');
+        dispatch(updateAction(CharacterKeys.feats, R.reject(filter, character.feats)))
+    }
     return (
         <div
             style={{
@@ -39,21 +44,10 @@ export const FeatSelector = ({character, dispatch}: FeatSelectorProps) => {
             <Grid
                 direction='column'
                 display='flex'
-                sx={{ marginTop: '.5rem' }}
+                sx={{ marginTop: '.5rem'}}
                 container
             >
-                {character.feats.map((ft: Feat) => {
-                    return (
-                        <Card
-                            sx={{ margin: '0 .25rem .5rem', padding: '0 .5rem' }}
-                            key={ft.name}
-                        >
-                            <Tooltip title={ft.definition}>
-                                <Typography variant="body1">{ft.name}</Typography>
-                            </Tooltip>
-                        </Card>
-                    );
-                })}
+                <FeatDisplay feats={character.feats} onDelete={handleDelete}/>
             </Grid>
         </div>
     );

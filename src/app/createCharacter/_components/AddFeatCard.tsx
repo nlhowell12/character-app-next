@@ -51,8 +51,8 @@ export const AddFeatCard = ({onClose, onSubmit} : AddFeatCardProps) => {
                 <Button onClick={(e) => onClose(e, 'buttonClose')}>
                     <CancelRounded />
                 </Button>
-                <Button>
-                    <CheckCircle onClick={() => handleSubmitClick()} />
+                <Button onClick={() => handleSubmitClick()}>
+                    <CheckCircle />
                 </Button>
             </CardActions>
         </Card>
