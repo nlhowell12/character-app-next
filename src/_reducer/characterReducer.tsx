@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames, AnyMagickType } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames, AnyMagickType, Magick } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
@@ -14,6 +14,7 @@ export enum CharacterReducerActions {
 	REMOVE_EQUIPMENT = 'REMOVE_EQUIPMENT',
 	UPDATE_EQUIPMENT = 'UPDATE_EQUIPMENT',
 	LEARN_SPELL = 'LEARN_SPELL',
+	PREPARE_SPELL = 'PREPARE_SPELL',
 	DEFAULT = 'DEFAULT'
 }
 
@@ -181,6 +182,20 @@ export const learnSpellAction = (
 	}
 }
 
+export const prepareSpellAction = (
+	value: AnyMagickType,
+	className: CharacterClassNames
+): CharacterAction => {
+	return {
+		type: CharacterReducerActions.PREPARE_SPELL,
+		payload: {
+			value,
+			key: CharacterKeys.spellBook,
+			updateId: className
+		}
+	}
+}
+
 export const resetAction = () => {
 	return {
 		type: CharacterReducerActions.RESET,
@@ -312,6 +327,13 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 				const newSpellAdded = R.append(value, state.spellBook[className])
 				return {...state, spellBook: {...state.spellBook, [className]: newSpellAdded}}
 			}
+		case CharacterReducerActions.PREPARE_SPELL:
+			const preparedSpell = value as AnyMagickType;
+			const classNamePrepare = updateId as keyof SpellObject;
+			const spellIndex = R.findIndex(R.propEq(preparedSpell.name, 'name'))(state.spellBook[updateId as keyof SpellObject]);
+			const updateSpell = state.spellBook[classNamePrepare][spellIndex] as Magick;
+			const updatedClassArray = R.update(spellIndex, {...updateSpell, prepared: !updateSpell.prepared} as AnyMagickType, state.spellBook[classNamePrepare])
+			return {...state, spellBook: {...state.spellBook, [classNamePrepare]: updatedClassArray}}
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;
 		default:

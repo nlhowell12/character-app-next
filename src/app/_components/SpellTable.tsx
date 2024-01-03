@@ -22,6 +22,7 @@ import {
     SpellObject,
     MagickCategory,
     Character,
+    Magick,
 } from '@/_models';
 import { camelToTitle } from '@/_utils/stringUtils';
 import * as R from 'ramda';
@@ -35,7 +36,7 @@ const SpellTooltip = ({ description }: SpellTableTooltipProps) => {
 export interface SpellTableProps {
     spells: SpellObject;
     characterSpellbook?: boolean;
-    character?: Character;
+    character: Character;
     onChange?: (spell: AnyMagickType, className: CharacterClassNames) => void;
     personal?: boolean;
 }
@@ -47,7 +48,7 @@ export const SpellTable = ({
     personal,
 }: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
-        Object.keys(spells)[0] as keyof SpellObject
+        !!spells ? Object.keys(spells)[0] as keyof SpellObject : CharacterClassNames.Cleric
     );
     const [selectedSubtype, setSelectedSubtype] = useState<MagickCategory>(
         MagickCategory.Maneuver
@@ -195,6 +196,9 @@ export const SpellTable = ({
             ? [MagickCategory.Psionic]
             : []),
     ];
+
+    const rowSpell = (spell: AnyMagickType): Magick => R.find(R.propEq(spell.name, 'name'))(character.spellBook[selectedClass]) as Magick;
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <Select
@@ -289,9 +293,9 @@ export const SpellTable = ({
                                                                 <TableCell>
                                                                     <Checkbox
                                                                         checked={
-                                                                            false
+                                                                            !!rowSpell(row) && rowSpell(row).prepared
                                                                         }
-                                                                        onChange={() => {}}
+                                                                        onChange={() => !!onChange && onChange(row, selectedClass)}
                                                                         name='Prepared'
                                                                     />
                                                                 </TableCell>

@@ -1,10 +1,12 @@
-import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice } from '@/_models';
+import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick } from '@/_models';
 import {
 	CharacterReducerActions,
 	addEquipmentAction,
 	characterReducer,
 	deleteModAction,
 	initialCharacterState,
+	learnSpellAction,
+	prepareSpellAction,
 	removeEquipmentAction,
 	resetAction,
 	setCharacterAction,
@@ -101,6 +103,30 @@ describe('characterReducer', () => {
 		expect(newState.miscModifiers.length).toBeGreaterThan(0);
 		expect(newState.miscModifiers.length).toBe(mockCharacters[0].miscModifiers.length - 1);
 	});
+	it('should add and remove a spell to a class spellbook', () => {
+		const spellToAdd = {name: 'Magic Missile'} as Spell;
+		const spellBook: Partial<SpellObject> = {
+			[CharacterClassNames.SorcWiz]: []
+		};
+		{/* @ts-ignore */}
+		const newState = characterReducer({...mockCharacters[0], spellBook}, learnSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
+		expect(newState.spellBook[CharacterClassNames.SorcWiz]).toStrictEqual([spellToAdd]);
+		const newState2 = characterReducer(newState, learnSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
+		expect(newState2.spellBook[CharacterClassNames.SorcWiz]).toStrictEqual([]);
+	})
+	it('should prepare and unprepare a spell', () => {
+		const spellToAdd = {name: 'Magic Missile', prepared: false} as Spell;
+		const spellBook: Partial<SpellObject> = {
+			[CharacterClassNames.SorcWiz]: [spellToAdd]
+		};
+		{/* @ts-ignore */}
+		const newState = characterReducer({...mockCharacters[0], spellBook}, prepareSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
+		const key = CharacterClassNames.SorcWiz as keyof SpellObject
+		expect((newState.spellBook[key][0] as Magick).prepared).toBeTruthy();
+		const newState2 = characterReducer(newState, prepareSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
+		expect((newState2.spellBook[key][0] as Magick).prepared).toBeFalsy();
+
+	})
 	it('should reset to initial', () => {
 		const name = 'Kyrin';
 		const newState = characterReducer(

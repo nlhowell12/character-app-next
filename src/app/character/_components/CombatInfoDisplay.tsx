@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import { DisplayCell } from './DisplayCell';
-import { CharacterAction, learnSpellAction, updateAction } from '@/_reducer/characterReducer';
+import { CharacterAction, learnSpellAction, prepareSpellAction, updateAction } from '@/_reducer/characterReducer';
 import MenuBook from '@mui/icons-material/MenuBook';
 import { SpellTable } from '@/app/_components/SpellTable';
 import useSpellService from '@/app/api/_services/useSpellService';
@@ -76,7 +76,11 @@ export const CombatInfoDisplay = ({
         setOpenSpellbook(true);
     };
     const handleLearnSpell = (spell: AnyMagickType, className: CharacterClassNames) => {
-        dispatch(learnSpellAction(spell, className))
+        dispatch(learnSpellAction(spell, className));
+    }
+
+    const handlePrepareSpell = (spell: AnyMagickType, className: CharacterClassNames) => {
+        dispatch(prepareSpellAction(spell, className));
     }
     return (
         <div>
@@ -179,7 +183,7 @@ export const CombatInfoDisplay = ({
                             >
                                 <SpellbookTabsContainer>
                                     <SpellTable spells={filterSpellObjectByCharacter(character, spells)} characterSpellbook character={character} onChange={handleLearnSpell}/>
-                                    <SpellTable spells={filterSpellObjectByCharacter(character, character.spellBook)} characterSpellbook personal character={character}/>
+                                    <SpellTable spells={filterSpellObjectByCharacter(character, character.spellBook)} characterSpellbook personal character={character} onChange={handlePrepareSpell}/>
                                 </SpellbookTabsContainer>
                             </Dialog>
                         </TableCell>}
