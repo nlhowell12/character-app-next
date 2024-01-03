@@ -1,4 +1,4 @@
-import { AnyMagickType, Magick, SpellObject } from '.';
+import { SpellObject } from '.';
 import { Equipment } from './equipment';
 import { AbilityTypes, BonusTypes, Damage, Dice, Sizes } from './gameMechanics';
 

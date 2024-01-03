@@ -302,8 +302,15 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 				return {...state, equipment: R.update(index, newObject, state.equipment)}
 			}
 		case CharacterReducerActions.LEARN_SPELL:
-			const newSpellAdded = R.append(value, state.spellBook[updateId as keyof SpellObject])
-			return {...state, spellBook: {...state.spellBook, [updateId as keyof SpellObject]: newSpellAdded}
+			const spell = value as AnyMagickType;
+			const spellAlreadyKnown = R.findIndex(R.propEq(spell.name, 'name'))(state.spellBook[updateId as keyof SpellObject]);
+			const className = updateId as keyof SpellObject;
+			if(spellAlreadyKnown != -1){
+				const filter = (x: AnyMagickType) => x.name !== spell.name;
+				return {...state, spellBook: {...state.spellBook, [className]: R.filter(filter, state.spellBook[className])}}
+			} else {
+				const newSpellAdded = R.append(value, state.spellBook[className])
+				return {...state, spellBook: {...state.spellBook, [className]: newSpellAdded}}
 			}
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;

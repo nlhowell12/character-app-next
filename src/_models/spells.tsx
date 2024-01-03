@@ -115,6 +115,7 @@ export interface Magick {
 	savingThrow?: string;
 	action: string;
 	bonusType?: string;
+	prepared?: boolean;
 }
 export interface SpellObject {
 	[CharacterClassNames.Cleric]: Prayer[];
