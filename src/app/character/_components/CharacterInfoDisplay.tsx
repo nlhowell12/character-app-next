@@ -1,6 +1,7 @@
 import {
     Alert,
     Button,
+    Dialog,
     Grid,
     Snackbar,
     Table,
@@ -18,6 +19,7 @@ import { Add } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import useCharacterService from '@/app/api/_services/useCharacterService';
 import { ModChipStack } from '@/app/_components/ModChipStack';
+import { FeatDisplay } from './FeatDisplay';
 interface CharacterInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -35,6 +37,7 @@ export const CharacterInfoDisplay = ({
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
     const { updateCharacter } = useCharacterService();
     const [openSuccess, setOpenSuccess] = useState<boolean>(false);
+    const [openFeats, setOpenFeats] = useState<boolean>(false);
 
     const handleAddModifier = (appliedModifier: Modifier) => {
         // set up on close
@@ -79,6 +82,18 @@ export const CharacterInfoDisplay = ({
                                     open={openModifiers}
                                     onClose={() => setOpenModifers(false)}
                                 />
+                            </TableCell>
+                            <TableCell sx={cellStylingObject}>
+                                <Button
+                                    variant='outlined'
+                                    onClick={() => setOpenFeats(true)}
+                                >
+                                    <Typography>View Feats</Typography>
+                                    <Add sx={{ marginLeft: '.5rem' }} />
+                                </Button>
+                                <Dialog open={openFeats} onClose={() => setOpenFeats(false)}>
+                                    <FeatDisplay feats={character.feats}/>
+                                </Dialog>
                             </TableCell>
                             <TableCell sx={cellStylingObject}>
                                 <Button

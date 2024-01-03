@@ -7,22 +7,20 @@ interface FeatDisplayProps {
 }
 export const FeatDisplay = ({feats, onDelete}: FeatDisplayProps) => {
     return (
-        feats.map((ft: Feat) => {
+        <Card sx={{padding: '.5rem', borderRadius: '.5rem'}}>
+        {feats.map((ft: Feat) => {
             return (
-                <Card
-                    sx={{ margin: '0 .25rem .5rem', padding: '0 .5rem', backgroundImage: 'none', backgroundColor: 'inherit' }}
-                    key={ft.name}
-                >
-                    <Tooltip title={ft.definition}>
+                    <Tooltip title={ft.definition} key={ft.name}>
                         <Chip
+                        sx={{margin: '.25rem'}}
                         /* @ts-ignore */
                         label={ft.name}
                         variant='outlined'
-                        onDelete={() => !!onDelete && onDelete(ft)}
+                        onDelete={!!onDelete ? () => onDelete(ft) : undefined}
                     />
                     </Tooltip>
-                </Card>
             );
-        })
+        })}
+        </Card>
     );
 };
