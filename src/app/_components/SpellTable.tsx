@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -56,6 +56,7 @@ export const SpellTable = ({
     const [filteredRows, setFilteredRows] = useState<AnyMagickType[]>([]);
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+    let initialLoad = useRef<boolean>(true);
 
     const hybridClasses: CharacterClassNames[] = [
         CharacterClassNames.Hexblade,
@@ -93,11 +94,19 @@ export const SpellTable = ({
     useEffect(() => {
         setSelectedSubtype(MagickCategory.Maneuver);
         if (!!spells) {
-            const includedClass = Object.keys(spells)[0] as keyof SpellObject;
-            let filteredSpells: AnyMagickType[] = filterBySubtype(
-                spells[includedClass]
-            );
-
+            let filteredSpells: AnyMagickType[] = [];
+            if(!!characterSpellbook && !!initialLoad){
+                const includedClass = Object.keys(spells)[0] as keyof SpellObject;
+                setSelectedClass(includedClass)
+                filteredSpells = filterBySubtype(
+                    spells[includedClass]
+                );
+                initialLoad.current = false;
+            } else {
+                filteredSpells = filterBySubtype(
+                    spells[selectedClass]
+                );
+            }
             const columns = Object.keys(filteredSpells[0]).filter((x) =>
                 filterData(x)
             );
@@ -154,7 +163,7 @@ export const SpellTable = ({
         setPage(0);
     };
 
-    const spellcastingSearchOptions = [
+    const spellcastingSearchOptions = !!spells ? R.filter((x) => Object.keys(spells).includes(x), [
         CharacterClassNames.Cleric,
         CharacterClassNames.Fighter,
         CharacterClassNames.Hexblade,
@@ -163,7 +172,7 @@ export const SpellTable = ({
         CharacterClassNames.PsychicWarrior,
         CharacterClassNames.Shadowcaster,
         CharacterClassNames.SorcWiz,
-    ];
+    ]) : [];
 
     const spellTypeOptions = [
         MagickCategory.Maneuver,
