@@ -2,14 +2,11 @@ import {
     AbilityTypes,
     AttributeNames,
     BonusTypes,
-    Character,
-    CharacterKeys,
     Damage,
     Dice,
     Modifier,
     SkillTypes,
 } from '@/_models';
-import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
 import {
     Card,
     CardHeader,
@@ -43,6 +40,7 @@ export const ModifierDialog = ({
     open
 }: ModifierDialogProps) => {
     const [modifier, setModifier] = useState<Modifier>({
+        id: '',
         value: 0,
         definition: '',
         skill: SkillTypes.Acrobatics,
@@ -87,7 +85,6 @@ export const ModifierDialog = ({
     });
 
     const modifierValueHandler = (e: any) => {
-        console.log(e.target.name)
         setModifier({
             ...modifier,
             [e.target.name]: e.target.value,

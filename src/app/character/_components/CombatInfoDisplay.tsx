@@ -13,11 +13,14 @@ import {
     TableCell,
     Typography,
     Button,
+    Dialog,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import { DisplayCell } from './DisplayCell';
 import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
 import MenuBook from '@mui/icons-material/MenuBook';
+import { SpellTable } from '@/app/_components/SpellTable';
+import useSpellService from '@/app/api/_services/useSpellService';
 
 interface CombatInfoDisplayProps {
     character: Character;
@@ -66,7 +69,7 @@ export const CombatInfoDisplay = ({
 }: CombatInfoDisplayProps) => {
     const defenses = getTotalDefense(character);
     const [openSpellbook, setOpenSpellbook] = useState<boolean>(false);
-
+    const {spells} = useSpellService()
     const handleSpellBookOpen = () => {
         setOpenSpellbook(true);
     };
@@ -162,6 +165,15 @@ export const CombatInfoDisplay = ({
                                 <Typography>Spell Book</Typography>
                                 <MenuBook sx={{ marginLeft: '.5rem' }} />
                             </Button>
+                            <Dialog
+                                open={openSpellbook}
+                                onClose={() => setOpenSpellbook(false)}
+                                fullWidth
+                                maxWidth='lg'
+                                keepMounted
+                            >
+                                <SpellTable spells={spells} />
+                            </Dialog>
                         </TableCell>}
                     </TableRow>
                 </TableBody>
