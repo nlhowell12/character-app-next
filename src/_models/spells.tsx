@@ -163,4 +163,4 @@ export interface Maneuver {
 	weapon: string;
 }
 
-export type AnyMagickType = Prayer | Spell | Maneuver | Power | Mystery;
+export type AnyMagickType = Magick | Prayer | Spell | Maneuver | Power | Mystery;

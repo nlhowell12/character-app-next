@@ -197,6 +197,7 @@ export const SpellTable = ({
             : []),
     ];
 
+    const isKnown = (spell: AnyMagickType) => R.any(R.propEq(spell.name, 'name'), character.spellBook[selectedClass])
     const rowSpell = (spell: AnyMagickType): Magick => R.find(R.propEq(spell.name, 'name'))(character.spellBook[selectedClass]) as Magick;
 
     return (
@@ -283,7 +284,7 @@ export const SpellTable = ({
                                                                 <TableCell>
                                                                     <Checkbox
                                                                         checked={
-                                                                            !!character && R.includes(row, character.spellBook[selectedClass])
+                                                                            isKnown(row)
                                                                         }
                                                                         onChange={() => !!onChange && onChange(row, selectedClass)}
                                                                         name='Known'
@@ -293,7 +294,7 @@ export const SpellTable = ({
                                                                 <TableCell>
                                                                     <Checkbox
                                                                         checked={
-                                                                            !!rowSpell(row) && rowSpell(row).prepared
+                                                                            rowSpell(row).prepared
                                                                         }
                                                                         onChange={() => !!onChange && onChange(row, selectedClass)}
                                                                         name='Prepared'
