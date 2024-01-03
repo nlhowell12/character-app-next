@@ -76,6 +76,7 @@ export const SpellTable = ({
             'description',
             'bonusType',
             'damageType',
+            'prepared'
         ];
         if (selectedSubtype !== MagickCategory.Maneuver) {
             filteredColumns.push('maneuverType');
