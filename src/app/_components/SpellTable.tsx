@@ -93,8 +93,9 @@ export const SpellTable = ({
     useEffect(() => {
         setSelectedSubtype(MagickCategory.Maneuver);
         if (!!spells) {
+            const includedClass = Object.keys(spells)[0] as keyof SpellObject;
             let filteredSpells: AnyMagickType[] = filterBySubtype(
-                spells[filterClass]
+                spells[includedClass]
             );
 
             const columns = Object.keys(filteredSpells[0]).filter((x) =>

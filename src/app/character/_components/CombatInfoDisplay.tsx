@@ -22,6 +22,7 @@ import MenuBook from '@mui/icons-material/MenuBook';
 import { SpellTable } from '@/app/_components/SpellTable';
 import useSpellService from '@/app/api/_services/useSpellService';
 import SpellbookTabsContainer from '@/app/_components/SpellbookTabsContainer';
+import { filterSpellObjectByCharacter } from '@/_utils/spellUtils';
 
 interface CombatInfoDisplayProps {
     character: Character;
@@ -156,7 +157,7 @@ export const CombatInfoDisplay = ({
                                 getResistances(character)
                             ).map(([key, value]) => `${key} - ${value}`)}
                         />
-                        {!!character.spellBook && 
+                        {!!character.spellBook && !!spells &&
 						<TableCell sx={cellStylingObject}>
                             <Button
 							sx={{padding: '0 .5rem'}}
@@ -174,7 +175,7 @@ export const CombatInfoDisplay = ({
                                 keepMounted
                             >
                                 <SpellbookTabsContainer>
-                                    <SpellTable spells={spells} characterSpellbook character={character}/>
+                                    <SpellTable spells={filterSpellObjectByCharacter(character, spells)} characterSpellbook character={character}/>
                                     <SpellTable spells={spells} characterSpellbook />
                                 </SpellbookTabsContainer>
                             </Dialog>
