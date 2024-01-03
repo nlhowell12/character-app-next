@@ -33,7 +33,7 @@ const SpellTooltip = ({ description }: SpellTableTooltipProps) => {
     return <Typography>{description}</Typography>;
 };
 export interface SpellTableProps {
-    spells: SpellObject | undefined;
+    spells: SpellObject;
     characterSpellbook?: boolean;
     character?: Character;
     onChange?: () => void;
@@ -47,7 +47,7 @@ export const SpellTable = ({
     personal,
 }: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
-        CharacterClassNames.Cleric
+        Object.keys(spells)[0] as keyof SpellObject
     );
     const [selectedSubtype, setSelectedSubtype] = useState<MagickCategory>(
         MagickCategory.Maneuver
