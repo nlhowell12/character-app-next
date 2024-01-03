@@ -21,6 +21,7 @@ import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
 import MenuBook from '@mui/icons-material/MenuBook';
 import { SpellTable } from '@/app/_components/SpellTable';
 import useSpellService from '@/app/api/_services/useSpellService';
+import SpellbookTabsContainer from '@/app/_components/SpellbookTabsContainer';
 
 interface CombatInfoDisplayProps {
     character: Character;
@@ -172,7 +173,10 @@ export const CombatInfoDisplay = ({
                                 maxWidth='lg'
                                 keepMounted
                             >
-                                <SpellTable spells={spells} />
+                                <SpellbookTabsContainer>
+                                    <SpellTable spells={spells} characterSpellbook character={character}/>
+                                    <SpellTable spells={spells} characterSpellbook />
+                                </SpellbookTabsContainer>
                             </Dialog>
                         </TableCell>}
                     </TableRow>

@@ -8,6 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {
+    Checkbox,
     MenuItem,
     Select,
     SelectChangeEvent,
@@ -20,22 +21,29 @@ import {
     AnyMagickType,
     SpellObject,
     MagickCategory,
+    Character,
 } from '@/_models';
 import { camelToTitle } from '@/_utils/stringUtils';
 import * as R from 'ramda';
 
 interface SpellTableTooltipProps {
     description: string;
-    characterSpellbook?: boolean;
-    onChange?: () => void;
 }
 const SpellTooltip = ({ description }: SpellTableTooltipProps) => {
-    return (<Typography>{description}</Typography>);
+    return <Typography>{description}</Typography>;
 };
-interface SpellTableProps {
+export interface SpellTableProps {
     spells: SpellObject | undefined;
+    characterSpellbook?: boolean;
+    character?: Character;
+    onChange?: () => void;
 }
-export const SpellTable = ({spells}: SpellTableProps) => {
+export const SpellTable = ({
+    spells,
+    characterSpellbook,
+    onChange,
+    character
+}: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
         CharacterClassNames.Cleric
     );
@@ -114,9 +122,8 @@ export const SpellTable = ({spells}: SpellTableProps) => {
         const filteredRows = rows.filter((x: AnyMagickType) =>
             x.name.toLowerCase().includes(searchValue.toLowerCase())
         );
-        if(!!filteredRows && !!filteredRows.length){
+        if (!!filteredRows && !!filteredRows.length) {
             setFilteredRows(filteredRows);
-            setRowsPerPage(filteredRows.length);
         }
     }, [searchValue, rows]);
 
@@ -208,6 +215,12 @@ export const SpellTable = ({spells}: SpellTableProps) => {
                 <Table stickyHeader aria-label='sticky table'>
                     <TableHead>
                         <TableRow>
+                            {!!characterSpellbook ?
+                            <>
+                                <TableCell>Known</TableCell>
+                                <TableCell>Prepared</TableCell>
+                            </>
+                            : null}
                             {columns.map((column) => (
                                 <TableCell key={column} align='left'>
                                     {camelToTitle(column)}
@@ -234,6 +247,26 @@ export const SpellTable = ({spells}: SpellTableProps) => {
                                         key={row.name}
                                     >
                                         <TableRow hover key={row.name}>
+                                            {!!characterSpellbook ? (
+                                                <>
+                                                    <TableCell>
+                                                        <Checkbox
+                                                            checked={false}
+                                                            onChange={() => {}}
+                                                            name='Known'
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Checkbox
+                                                            checked={
+                                                                false
+                                                            }
+                                                            onChange={() => {}}
+                                                            name='Prepared'
+                                                        />
+                                                    </TableCell>
+                                                </>
+                                            ) : null}
                                             {Object.entries(row)
                                                 .filter(([key, _]) =>
                                                     filterData(key)
