@@ -26,6 +26,8 @@ import * as R from 'ramda';
 
 interface SpellTableTooltipProps {
     description: string;
+    characterSpellbook?: boolean;
+    onChange?: () => void;
 }
 const SpellTooltip = ({ description }: SpellTableTooltipProps) => {
     return (<Typography>{description}</Typography>);

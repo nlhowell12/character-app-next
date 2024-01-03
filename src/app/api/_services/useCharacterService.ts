@@ -25,6 +25,7 @@ export default () => {
               },
               body: JSON.stringify(character)
         })
+        return res;
     }
 
     const updateCharacter = async (character: Character) => {

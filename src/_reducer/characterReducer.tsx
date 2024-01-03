@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
@@ -197,6 +197,7 @@ export const initialCharacterState: Character = {
 	playerName: '',
 	experience: 0,
 	feats: [],
+	spellBook: {} as SpellObject
 };
 
 export const characterReducer = (state: Character, action: CharacterAction) => {

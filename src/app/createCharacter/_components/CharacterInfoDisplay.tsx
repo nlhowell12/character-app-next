@@ -11,9 +11,7 @@ import {
     SelectChangeEvent,
     Button,
     Typography,
-    Dialog,
     Grid,
-    Stack,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import {
@@ -24,14 +22,15 @@ import {
 import {
     Character,
     CharacterKeys,
+    Modifier,
     Sizes,
 } from '@/_models';
 import { Add } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import { ModifierDialog } from '../../_components/ModifierDialog';
 
-import { ModChip } from '../../_components/ModChip';
 import useCharacterService from '@/app/api/_services/useCharacterService';
+import { ModChipStack } from '@/app/_components/ModChipStack';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -91,6 +90,15 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
             createCharacter(character);
         }
     }
+    
+    const handleAddModifier = (appliedModifier: Modifier) => {
+        // set up on close
+        dispatch(updateAction(CharacterKeys.miscModifiers, [...character.miscModifiers, appliedModifier]))
+    
+    };
+    const handleDeleteMod = (mod: Modifier) => {
+        dispatch(deleteModAction(mod))
+    };
     return (
         <Grid container>
             <Grid xs={6} item>
@@ -126,15 +134,11 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                                     <Typography>Add Modifier</Typography>
                                     <Add />
                                 </Button>
-                                <Dialog
-                                    open={openModifiers}
+                                <ModifierDialog
+                                    onAdd={handleAddModifier}
                                     onClose={() => setOpenModifers(false)}
-                                >
-                                    <ModifierDialog
-                                        character={character}
-                                        dispatch={dispatch}
-                                    />
-                                </Dialog>
+                                    open={openModifiers}
+                                />
                             </TableCell>
                             <TableCell sx={cellStylingObject}>
                                 <Button
@@ -272,11 +276,7 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                 </Table>
             </Grid>
             <Grid item>
-                <Stack direction='row' spacing={1} flexWrap='wrap'>
-                    {character.miscModifiers.map((mod) => {
-                        return <ModChip mod={mod} onDelete={() => dispatch(deleteModAction(mod))}/>;
-                    })}
-                </Stack>
+                <ModChipStack mods={character.miscModifiers} onDelete={handleDeleteMod}/>
             </Grid>
         </Grid>
     );
