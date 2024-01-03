@@ -102,14 +102,18 @@ export const SpellTable = ({
                     spells
                 )[0] as keyof SpellObject;
                 setSelectedClass(includedClass);
-                filteredSpells = !!spells[includedClass].length ? filterBySubtype(spells[includedClass]) : [];
+                filteredSpells = !!spells[includedClass].length
+                    ? filterBySubtype(spells[includedClass])
+                    : [];
                 initialLoad.current = false;
             } else {
-                filteredSpells = !!spells[selectedClass].length ? filterBySubtype(spells[selectedClass]) : [];
+                filteredSpells = !!spells[selectedClass].length
+                    ? filterBySubtype(spells[selectedClass])
+                    : [];
             }
-            const columns = !!filteredSpells.length ? Object.keys(filteredSpells[0]).filter((x) =>
-                filterData(x)
-            ) : [];
+            const columns = !!filteredSpells.length
+                ? Object.keys(filteredSpells[0]).filter((x) => filterData(x))
+                : [];
             setRows(filteredSpells);
             setColumns(columns);
         }
@@ -226,99 +230,128 @@ export const SpellTable = ({
                 value={searchValue}
                 placeholder={'Search by Name'}
             />
-            <TableContainer sx={{ maxHeight: 440 }}>
-                <Table stickyHeader aria-label='sticky table'>
-                    <TableHead>
-                        <TableRow>
-                            {!!characterSpellbook ? (
-                                <>
-                                    {!personal ? (
-                                        <TableCell>Known</TableCell>
-                                    ) : (
-                                        <TableCell>Prepared</TableCell>
-                                    )}
-                                </>
-                            ) : null}
-                            {columns.map((column) => (
-                                <TableCell key={column} align='left'>
-                                    {camelToTitle(column)}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {(!!filteredRows.length ? filteredRows : rows)
-                            .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                            )
-                            .map((row) => {
-                                return (
-                                    <Tooltip
-                                        followCursor
-                                        title={
-                                            <SpellTooltip
-                                                description={row.description}
-                                            />
-                                        }
-                                        placement='right'
-                                        key={row.name}
-                                    >
-                                        <TableRow hover key={row.name}>
-                                            {!!characterSpellbook ? (
-                                                <>
-                                                    {!personal ? (
-                                                        <TableCell>
-                                                            <Checkbox
-                                                                checked={false}
-                                                                onChange={() => {}}
-                                                                name='Known'
-                                                            />
-                                                        </TableCell>
-                                                    ) : (
-                                                        <TableCell>
-                                                            <Checkbox
-                                                                checked={false}
-                                                                onChange={() => {}}
-                                                                name='Prepared'
-                                                            />
-                                                        </TableCell>
-                                                    )}
-                                                </>
-                                            ) : null}
-                                            {Object.entries(row)
-                                                .filter(([key, _]) =>
-                                                    filterData(key)
-                                                )
-                                                .map(([_, val]) => {
-                                                    return (
-                                                        <TableCell
-                                                            key={_ + val}
-                                                        >
-                                                            <Typography>
-                                                                {val}
-                                                            </Typography>
-                                                        </TableCell>
-                                                    );
-                                                })}
-                                        </TableRow>
-                                    </Tooltip>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component='div'
-                count={
-                    !!filteredRows.length ? filteredRows.length : rows.length
-                }
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            {!!rows.length ? (
+                <>
+                    <TableContainer sx={{ maxHeight: 440 }}>
+                        <Table stickyHeader aria-label='sticky table'>
+                            <TableHead>
+                                <TableRow>
+                                    {!!characterSpellbook ? (
+                                        <>
+                                            {!personal ? (
+                                                <TableCell>Known</TableCell>
+                                            ) : (
+                                                <TableCell>Prepared</TableCell>
+                                            )}
+                                        </>
+                                    ) : null}
+                                    {columns.map((column) => (
+                                        <TableCell key={column} align='left'>
+                                            {camelToTitle(column)}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {(!!filteredRows.length ? filteredRows : rows)
+                                    .slice(
+                                        page * rowsPerPage,
+                                        page * rowsPerPage + rowsPerPage
+                                    )
+                                    .map((row) => {
+                                        return (
+                                            <Tooltip
+                                                followCursor
+                                                title={
+                                                    <SpellTooltip
+                                                        description={
+                                                            row.description
+                                                        }
+                                                    />
+                                                }
+                                                placement='right'
+                                                key={row.name}
+                                            >
+                                                <TableRow hover key={row.name}>
+                                                    {!!characterSpellbook ? (
+                                                        <>
+                                                            {!personal ? (
+                                                                <TableCell>
+                                                                    <Checkbox
+                                                                        checked={
+                                                                            false
+                                                                        }
+                                                                        onChange={() => {}}
+                                                                        name='Known'
+                                                                    />
+                                                                </TableCell>
+                                                            ) : (
+                                                                <TableCell>
+                                                                    <Checkbox
+                                                                        checked={
+                                                                            false
+                                                                        }
+                                                                        onChange={() => {}}
+                                                                        name='Prepared'
+                                                                    />
+                                                                </TableCell>
+                                                            )}
+                                                        </>
+                                                    ) : null}
+                                                    {Object.entries(row)
+                                                        .filter(([key, _]) =>
+                                                            filterData(key)
+                                                        )
+                                                        .map(([_, val]) => {
+                                                            return (
+                                                                <TableCell
+                                                                    key={
+                                                                        _ + val
+                                                                    }
+                                                                >
+                                                                    <Typography>
+                                                                        {val}
+                                                                    </Typography>
+                                                                </TableCell>
+                                                            );
+                                                        })}
+                                                </TableRow>
+                                            </Tooltip>
+                                        );
+                                    })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 100]}
+                        component='div'
+                        count={
+                            !!filteredRows.length
+                                ? filteredRows.length
+                                : rows.length
+                        }
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </>
+            ) : (
+                <div
+                    style={{
+                        display: 'flex',
+                        height: '10rem',
+                        width: '100%',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                    }}
+                >
+                    <Typography>
+                        You don't know any spells for this class
+                    </Typography>
+                </div>
+            )}
         </Paper>
     );
 };
