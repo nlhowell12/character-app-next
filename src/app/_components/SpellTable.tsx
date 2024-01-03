@@ -37,12 +37,14 @@ export interface SpellTableProps {
     characterSpellbook?: boolean;
     character?: Character;
     onChange?: () => void;
+    personal?: boolean;
 }
 export const SpellTable = ({
     spells,
     characterSpellbook,
     onChange,
-    character
+    character,
+    personal,
 }: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
         CharacterClassNames.Cleric
@@ -95,21 +97,19 @@ export const SpellTable = ({
         setSelectedSubtype(MagickCategory.Maneuver);
         if (!!spells) {
             let filteredSpells: AnyMagickType[] = [];
-            if(!!characterSpellbook && !!initialLoad){
-                const includedClass = Object.keys(spells)[0] as keyof SpellObject;
-                setSelectedClass(includedClass)
-                filteredSpells = filterBySubtype(
-                    spells[includedClass]
-                );
+            if (!!characterSpellbook && !!initialLoad) {
+                const includedClass = Object.keys(
+                    spells
+                )[0] as keyof SpellObject;
+                setSelectedClass(includedClass);
+                filteredSpells = !!spells[includedClass].length ? filterBySubtype(spells[includedClass]) : [];
                 initialLoad.current = false;
             } else {
-                filteredSpells = filterBySubtype(
-                    spells[selectedClass]
-                );
+                filteredSpells = !!spells[selectedClass].length ? filterBySubtype(spells[selectedClass]) : [];
             }
-            const columns = Object.keys(filteredSpells[0]).filter((x) =>
+            const columns = !!filteredSpells.length ? Object.keys(filteredSpells[0]).filter((x) =>
                 filterData(x)
-            );
+            ) : [];
             setRows(filteredSpells);
             setColumns(columns);
         }
@@ -163,16 +163,21 @@ export const SpellTable = ({
         setPage(0);
     };
 
-    const spellcastingSearchOptions = !!spells ? R.filter((x) => Object.keys(spells).includes(x), [
-        CharacterClassNames.Cleric,
-        CharacterClassNames.Fighter,
-        CharacterClassNames.Hexblade,
-        CharacterClassNames.Oathsworn,
-        CharacterClassNames.Psion,
-        CharacterClassNames.PsychicWarrior,
-        CharacterClassNames.Shadowcaster,
-        CharacterClassNames.SorcWiz,
-    ]) : [];
+    const spellcastingSearchOptions = !!spells
+        ? R.filter(
+              (x) => Object.keys(spells).includes(x),
+              [
+                  CharacterClassNames.Cleric,
+                  CharacterClassNames.Fighter,
+                  CharacterClassNames.Hexblade,
+                  CharacterClassNames.Oathsworn,
+                  CharacterClassNames.Psion,
+                  CharacterClassNames.PsychicWarrior,
+                  CharacterClassNames.Shadowcaster,
+                  CharacterClassNames.SorcWiz,
+              ]
+          )
+        : [];
 
     const spellTypeOptions = [
         MagickCategory.Maneuver,
@@ -225,12 +230,15 @@ export const SpellTable = ({
                 <Table stickyHeader aria-label='sticky table'>
                     <TableHead>
                         <TableRow>
-                            {!!characterSpellbook ?
-                            <>
-                                <TableCell>Known</TableCell>
-                                <TableCell>Prepared</TableCell>
-                            </>
-                            : null}
+                            {!!characterSpellbook ? (
+                                <>
+                                    {!personal ? (
+                                        <TableCell>Known</TableCell>
+                                    ) : (
+                                        <TableCell>Prepared</TableCell>
+                                    )}
+                                </>
+                            ) : null}
                             {columns.map((column) => (
                                 <TableCell key={column} align='left'>
                                     {camelToTitle(column)}
@@ -259,22 +267,23 @@ export const SpellTable = ({
                                         <TableRow hover key={row.name}>
                                             {!!characterSpellbook ? (
                                                 <>
-                                                    <TableCell>
-                                                        <Checkbox
-                                                            checked={false}
-                                                            onChange={() => {}}
-                                                            name='Known'
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Checkbox
-                                                            checked={
-                                                                false
-                                                            }
-                                                            onChange={() => {}}
-                                                            name='Prepared'
-                                                        />
-                                                    </TableCell>
+                                                    {!personal ? (
+                                                        <TableCell>
+                                                            <Checkbox
+                                                                checked={false}
+                                                                onChange={() => {}}
+                                                                name='Known'
+                                                            />
+                                                        </TableCell>
+                                                    ) : (
+                                                        <TableCell>
+                                                            <Checkbox
+                                                                checked={false}
+                                                                onChange={() => {}}
+                                                                name='Prepared'
+                                                            />
+                                                        </TableCell>
+                                                    )}
                                                 </>
                                             ) : null}
                                             {Object.entries(row)

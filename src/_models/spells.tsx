@@ -118,14 +118,15 @@ export interface Magick {
 }
 export interface SpellObject {
 	[CharacterClassNames.Cleric]: Prayer[];
-	[CharacterClassNames.Hexblade]: [Spell, Maneuver];
-	[CharacterClassNames.Oathsworn]: [Prayer, Maneuver];
+	[CharacterClassNames.Hexblade]: (Spell | Maneuver)[];
+	[CharacterClassNames.Oathsworn]: (Prayer | Maneuver)[];
 	[CharacterClassNames.Fighter]: Maneuver[];
-	[CharacterClassNames.PsychicWarrior]: [Power, Maneuver];
+	[CharacterClassNames.PsychicWarrior]: (Power | Maneuver)[];
 	[CharacterClassNames.Psion]: Power[];
 	[CharacterClassNames.Shadowcaster]: Mystery[];
 	[CharacterClassNames.SorcWiz]: Spell[];
 }
+
 export interface Spell extends Magick {
 	school: ArcaneSchool;
 }

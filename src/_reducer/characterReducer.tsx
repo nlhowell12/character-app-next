@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
@@ -173,6 +173,16 @@ export const resetAction = () => {
 	};
 };
 
+const initialSpellBook:SpellObject = {
+	[CharacterClassNames.Cleric]: [],
+	[CharacterClassNames.Fighter]: [],
+	[CharacterClassNames.Hexblade]: [],
+	[CharacterClassNames.Oathsworn]: [],
+	[CharacterClassNames.Psion]: [],
+	[CharacterClassNames.PsychicWarrior]: [],
+	[CharacterClassNames.Shadowcaster]: [],
+	[CharacterClassNames.SorcWiz]: [],
+}
 export const initialCharacterState: Character = {
 	name: '',
 	race: '',
@@ -197,7 +207,7 @@ export const initialCharacterState: Character = {
 	playerName: '',
 	experience: 0,
 	feats: [],
-	spellBook: {} as SpellObject
+	spellBook: initialSpellBook
 };
 
 export const characterReducer = (state: Character, action: CharacterAction) => {

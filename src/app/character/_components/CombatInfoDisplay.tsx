@@ -176,7 +176,7 @@ export const CombatInfoDisplay = ({
                             >
                                 <SpellbookTabsContainer>
                                     <SpellTable spells={filterSpellObjectByCharacter(character, spells)} characterSpellbook character={character}/>
-                                    <SpellTable spells={spells} characterSpellbook />
+                                    <SpellTable spells={character.spellBook} characterSpellbook personal character={character}/>
                                 </SpellbookTabsContainer>
                             </Dialog>
                         </TableCell>}
