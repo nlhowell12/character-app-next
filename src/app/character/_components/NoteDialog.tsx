@@ -59,15 +59,18 @@ const NoteItem = ({ note, dispatch }: NoteItemProps) => {
                     </IconButton>
                 }
             >
-                <ListItemAvatar onClick={handleClick}>
+                <ListItemAvatar
+                    onClick={handleClick}
+                    sx={{
+                        '&:hover': { opacity: '.6', cursor: 'pointer' },
+                    }}
+                >
                     <Avatar>
-                        <NotesIcon />
+                        {open ? <ExpandLess /> : <ExpandMore />}
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={`${note.title}`} />
-                <IconButton onClick={handleClick}>
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
+
             </ListItem>
             <Collapse in={open} unmountOnExit>
                 <TextField
