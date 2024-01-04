@@ -1,4 +1,5 @@
 import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes } from '@/_models';
+import { User } from '@/_models/user';
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
@@ -13,9 +14,18 @@ mongoose.Promise = global.Promise;
 
 export const db = {
     Spell: spellModel(),
-    Character: characterModel()
+    Character: characterModel(),
+    User: userModel()
 };
 
+function userModel(){
+    const userSchema = new Schema<User>({
+        name: { type: String, required: true },
+        password: { type: String, required: true },
+        isDm: { type: Boolean, required: true },
+    })
+    return mongoose.models.User || mongoose.model('User', userSchema, 'users');
+}
 function spellModel() {
     const spellSchema = new Schema<Spell>({
         name: { type: String, required: true },

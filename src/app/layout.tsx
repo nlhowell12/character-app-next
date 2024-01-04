@@ -1,3 +1,5 @@
+'use client'
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -5,34 +7,48 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import ThemeRegistry from "@/_utils/theme/ThemeRegistry";
 import { Grid } from "@mui/material";
 import Header from "./_components/Header";
+import { createContext, useState } from "react";
+import { User } from "@/_models/user";
+import useUserService from "./api/_services/useUserService";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Rhedrah Character Builder",
   description: "Created for use in the Second Edition of the Rhedrah campaign",
 };
+
+export const initialUser: User = {
+  name: '',
+  password: '',
+  isDm: false
+}
+export const UserContext = createContext(initialUser);
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  const { user } = useUserService();
   return (
     <html lang="en">
       <body className={inter.className}>
         <AppRouterCacheProvider>
           <ThemeRegistry options={{ key: "mui-theme" }}>
-            <Grid
-              sx={{
-                  marginLeft: "6rem",
-                  marginTop: "5rem",
-                  height: '100vh'
-                }}
-            >
-              <Header />
-              {children}
-            </Grid>
+            <UserContext.Provider value={user}>
+              <Grid
+                sx={{
+                    marginLeft: "6rem",
+                    marginTop: "5rem",
+                    height: '100vh'
+                  }}
+              >
+                <Header />
+                {children}
+              </Grid>
+            </UserContext.Provider>
           </ThemeRegistry>
         </AppRouterCacheProvider>
       </body>

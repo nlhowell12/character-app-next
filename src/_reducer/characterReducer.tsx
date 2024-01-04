@@ -1,6 +1,7 @@
 import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames, AnyMagickType, Magick, Note } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
+import { Reducer } from "react";
 
 export enum CharacterReducerActions {
 	SET_CHARACTER = 'SET_CHARACTER',
@@ -274,7 +275,7 @@ export const initialCharacterState: Character = {
 	notes: []
 };
 
-export const characterReducer = (state: Character, action: CharacterAction) => {
+export const characterReducer: Reducer<Character, CharacterAction> = (state, action): Character => {
 	const { payload } = action;
 	const { value, updateId, key, attribute, skill } = payload;
 	switch (action.type) {
@@ -369,10 +370,10 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 			const updatedClassArray = R.update(spellIndex, {...updateSpell, prepared: !updateSpell.prepared} as AnyMagickType, state.spellBook[classNamePrepare])
 			return {...state, spellBook: {...state.spellBook, [classNamePrepare]: updatedClassArray}}
 		case CharacterReducerActions.ADD_NOTE:
-			return {...state, notes: R.append(value, state.notes)}
+			return {...state, notes: R.append(value as Note, state.notes)}
 		case CharacterReducerActions.UPDATE_NOTE:
 			const noteIndex = R.findIndex(R.propEq(updateId, 'id'))(state.notes);
-			const updatedNote = {...state.notes[noteIndex], note: value}
+			const updatedNote = {...state.notes[noteIndex], note: value} as Note;
 			return {...state, notes: R.update(noteIndex, updatedNote, state.notes)}
 		case CharacterReducerActions.DELETE_NOTE:
 			return {...state, notes: R.reject(R.propEq(value, 'id'))(state.notes)}
