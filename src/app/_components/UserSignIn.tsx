@@ -7,16 +7,16 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import UserContext from '../_auth/UserContext';
 
-interface UserSignInProps {
-    handleSignIn: (user: User) => void;
-    handleCreate: (user: User) => void;
-}
-export const UserSignIn = ({ handleSignIn, handleCreate }: UserSignInProps) => {
+interface UserSignInProps {}
+export const UserSignIn = ({}: UserSignInProps) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [createFlow, setCreateFlow] = useState(false);
+
+    const { login, createNewUser } = useContext(UserContext);
 
     const textFieldStyling = {
         marginBottom: '.5rem',
@@ -54,7 +54,13 @@ export const UserSignIn = ({ handleSignIn, handleCreate }: UserSignInProps) => {
                     disabled={!username && !password}
                     variant='outlined'
                     onClick={() =>
-                        !createFlow ? handleSignIn({ name: username, password, isDm: false }) : handleCreate({ name: username, password, isDm: false })
+                        !createFlow
+                            ? login({ name: username, password, isDm: false })
+                            : createNewUser({
+                                  name: username,
+                                  password,
+                                  isDm: false,
+                              })
                     }
                 >
                     {createFlow ? 'Create New User' : 'Sign In'}
@@ -65,7 +71,9 @@ export const UserSignIn = ({ handleSignIn, handleCreate }: UserSignInProps) => {
                     onClick={() => setCreateFlow(!createFlow)}
                     textAlign='center'
                 >
-                    {createFlow ? 'Sign In with Existing User?' : 'Create New User?'}
+                    {createFlow
+                        ? 'Sign In with Existing User?'
+                        : 'Create New User?'}
                 </Typography>
             </CardContent>
         </Card>
