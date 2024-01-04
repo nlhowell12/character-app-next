@@ -1,12 +1,14 @@
-import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, AttributeNames } from '@/_models';
+import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes } from '@/_models';
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
+const dbPw = process.env.MONGO_PW;
 
-const dbUrl = process.env.MONGODB_URL;
-const dbName = process.env.MONGODB_NAME;
+const dbUrl = `mongodb+srv://nlhowell12:${dbPw}@characterbuilder.3boqqau.mongodb.net/character_sheet?retryWrites=true&w=majority`;
 
-mongoose.connect(`mongodb://${dbUrl}/${dbName}`);
+mongoose.connect(`${dbUrl}`).then(() => {
+    console.log('Connected to Atlas')
+})
 mongoose.Promise = global.Promise;
 
 export const db = {
