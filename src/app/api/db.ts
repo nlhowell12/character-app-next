@@ -62,6 +62,7 @@ function characterModel() {
         experience: { type: Number, required: true },
         feats: [Object],
         spellBook: {type: Map, of: Object},
+        notes: [Object]
     })
     return mongoose.models.Character || mongoose.model('Character', characterSchema, 'characters');
 

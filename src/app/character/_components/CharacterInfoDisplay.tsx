@@ -20,6 +20,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import useCharacterService from '@/app/api/_services/useCharacterService';
 import { ModChipStack } from '@/app/_components/ModChipStack';
 import { FeatDisplay } from './FeatDisplay';
+import { NoteDialog } from './NoteDialog';
+import NotesIcon from '@mui/icons-material/Notes';
+
 interface CharacterInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -38,6 +41,7 @@ export const CharacterInfoDisplay = ({
     const { updateCharacter } = useCharacterService();
     const [openSuccess, setOpenSuccess] = useState<boolean>(false);
     const [openFeats, setOpenFeats] = useState<boolean>(false);
+    const [openNotes, setOpenNotes] = useState<boolean>(false);
 
     const handleAddModifier = (appliedModifier: Modifier) => {
         // set up on close
@@ -94,6 +98,16 @@ export const CharacterInfoDisplay = ({
                                 <Dialog open={openFeats} onClose={() => setOpenFeats(false)}>
                                     <FeatDisplay feats={character.feats}/>
                                 </Dialog>
+                            </TableCell>
+                            <TableCell sx={cellStylingObject}>
+                                <Button
+                                    variant='outlined'
+                                    onClick={() => setOpenNotes(true)}
+                                >
+                                    <Typography>Open Notes</Typography>
+                                    <NotesIcon sx={{ marginLeft: '.5rem' }} />
+                                </Button>
+                                <NoteDialog open={openNotes} character={character} onClose={() => setOpenNotes(false)}/>
                             </TableCell>
                             <TableCell sx={cellStylingObject}>
                                 <Button
