@@ -17,21 +17,31 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NotesIcon from '@mui/icons-material/Notes';
-import { useState } from 'react';
+import { Dispatch, useState } from 'react';
 import Add from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
+import {
+    CharacterAction,
+    addNoteAction,
+    deleteNoteAction,
+    updateNoteAction,
+} from '@/_reducer/characterReducer';
+import { v4 as uuidv4 } from 'uuid';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 interface NoteDialogProps {
     character: Character;
     open: boolean;
     onClose: () => void;
+    dispatch: Dispatch<CharacterAction>;
 }
 
 interface NoteItemProps {
     note: Note;
+    dispatch: Dispatch<CharacterAction>;
 }
 
-const NoteItem = ({ note }: NoteItemProps) => {
+const NoteItem = ({ note, dispatch }: NoteItemProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const handleClick = () => {
         setOpen(!open);
@@ -39,22 +49,34 @@ const NoteItem = ({ note }: NoteItemProps) => {
     return (
         <>
             <ListItem
-                onClick={handleClick}
                 secondaryAction={
-                    <IconButton edge='end' aria-label='delete'>
+                    <IconButton
+                        edge='end'
+                        aria-label='delete'
+                        onClick={() => dispatch(deleteNoteAction(note.id))}
+                    >
                         <DeleteIcon />
                     </IconButton>
                 }
             >
-                <ListItemAvatar>
+                <ListItemAvatar onClick={handleClick}>
                     <Avatar>
                         <NotesIcon />
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={`${note.title}`} />
+                <IconButton onClick={handleClick}>
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
             </ListItem>
             <Collapse in={open} unmountOnExit>
-                <TextField value={note.note} />
+                <TextField
+                    fullWidth
+                    value={note.note}
+                    onChange={(e) =>
+                        dispatch(updateNoteAction(e.target.value, note.id))
+                    }
+                />
             </Collapse>
         </>
     );
@@ -62,26 +84,34 @@ const NoteItem = ({ note }: NoteItemProps) => {
 interface AddNoteDialogProps {
     open: boolean;
     onClose: () => void;
+    dispatch: Dispatch<CharacterAction>;
 }
 
-const AddNoteDialog = ({ open, onClose }: AddNoteDialogProps) => {
+const AddNoteDialog = ({ open, onClose, dispatch }: AddNoteDialogProps) => {
     const [note, setNote] = useState('');
     const [title, setTitle] = useState('');
 
     const reset = () => {
         setNote('');
         setTitle('');
-    }
+    };
     const handleSave = () => {
-        reset()
-        onClose()
+        dispatch(addNoteAction({ id: uuidv4(), title, note }));
+        reset();
+        onClose();
     };
     const textFieldStyling = {
-        marginBottom: '.5rem'
+        marginBottom: '.5rem',
     };
     return (
         <Dialog open={open} onClose={onClose}>
-            <Card sx={{padding: '.5rem', display: 'flex', flexDirection: 'column'}}>
+            <Card
+                sx={{
+                    padding: '.5rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
                 <TextField
                     sx={textFieldStyling}
                     value={title}
@@ -104,7 +134,12 @@ const AddNoteDialog = ({ open, onClose }: AddNoteDialogProps) => {
     );
 };
 
-export const NoteDialog = ({ character, open, onClose }: NoteDialogProps) => {
+export const NoteDialog = ({
+    character,
+    open,
+    onClose,
+    dispatch,
+}: NoteDialogProps) => {
     const [newNoteOpen, setNewNoteOpen] = useState(false);
     return (
         <Dialog open={open} onClose={onClose}>
@@ -113,7 +148,11 @@ export const NoteDialog = ({ character, open, onClose }: NoteDialogProps) => {
                     width: '20rem',
                 }}
             >
-                <AddNoteDialog open={newNoteOpen} onClose={() => setNewNoteOpen(false)}/>
+                <AddNoteDialog
+                    open={newNoteOpen}
+                    onClose={() => setNewNoteOpen(false)}
+                    dispatch={dispatch}
+                />
                 <List
                     dense
                     subheader={
@@ -137,7 +176,13 @@ export const NoteDialog = ({ character, open, onClose }: NoteDialogProps) => {
                     }
                 >
                     {character.notes?.map((note: Note) => {
-                        return <NoteItem note={note} key={note.id} />;
+                        return (
+                            <NoteItem
+                                note={note}
+                                key={note.id}
+                                dispatch={dispatch}
+                            />
+                        );
                     })}
                 </List>
             </Card>

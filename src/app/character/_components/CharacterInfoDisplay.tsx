@@ -107,7 +107,7 @@ export const CharacterInfoDisplay = ({
                                     <Typography>Open Notes</Typography>
                                     <NotesIcon sx={{ marginLeft: '.5rem' }} />
                                 </Button>
-                                <NoteDialog open={openNotes} character={character} onClose={() => setOpenNotes(false)}/>
+                                <NoteDialog open={openNotes} character={character} onClose={() => setOpenNotes(false)} dispatch={dispatch}/>
                             </TableCell>
                             <TableCell sx={cellStylingObject}>
                                 <Button

@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames, AnyMagickType, Magick } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames, AnyMagickType, Magick, Note } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 
@@ -15,6 +15,9 @@ export enum CharacterReducerActions {
 	UPDATE_EQUIPMENT = 'UPDATE_EQUIPMENT',
 	LEARN_SPELL = 'LEARN_SPELL',
 	PREPARE_SPELL = 'PREPARE_SPELL',
+	ADD_NOTE = 'ADD_NOTE',
+	UPDATE_NOTE = 'UPDATE_NOTE',
+	DELETE_NOTE = 'DELETE_NOTE',
 	DEFAULT = 'DEFAULT'
 }
 
@@ -39,7 +42,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType;
+type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType | Note;
 
 export type CharacterAction = {
 	type: CharacterReducerActions;
@@ -196,6 +199,36 @@ export const prepareSpellAction = (
 	}
 }
 
+export const addNoteAction = (value: Note): CharacterAction => {
+	return {
+		type: CharacterReducerActions.ADD_NOTE,
+		payload: {
+			value,
+			key: CharacterKeys.notes
+		}
+	}
+}
+
+export const updateNoteAction = (value: string, id: string): CharacterAction => {
+	return {
+		type: CharacterReducerActions.UPDATE_NOTE,
+		payload: {
+			value,
+			key: CharacterKeys.notes,
+			updateId: id
+		}
+	}
+}
+export const deleteNoteAction = (value: string): CharacterAction => {
+	return {
+		type: CharacterReducerActions.DELETE_NOTE,
+		payload: {
+			value,
+			key: CharacterKeys.notes,
+		}
+	}
+}
+
 export const resetAction = () => {
 	return {
 		type: CharacterReducerActions.RESET,
@@ -237,7 +270,8 @@ export const initialCharacterState: Character = {
 	playerName: '',
 	experience: 0,
 	feats: [],
-	spellBook: initialSpellBook
+	spellBook: initialSpellBook,
+	notes: []
 };
 
 export const characterReducer = (state: Character, action: CharacterAction) => {
@@ -334,6 +368,14 @@ export const characterReducer = (state: Character, action: CharacterAction) => {
 			const updateSpell = state.spellBook[classNamePrepare][spellIndex] as Magick;
 			const updatedClassArray = R.update(spellIndex, {...updateSpell, prepared: !updateSpell.prepared} as AnyMagickType, state.spellBook[classNamePrepare])
 			return {...state, spellBook: {...state.spellBook, [classNamePrepare]: updatedClassArray}}
+		case CharacterReducerActions.ADD_NOTE:
+			return {...state, notes: R.append(value, state.notes)}
+		case CharacterReducerActions.UPDATE_NOTE:
+			const noteIndex = R.findIndex(R.propEq(updateId, 'id'))(state.notes);
+			const updatedNote = {...state.notes[noteIndex], note: value}
+			return {...state, notes: R.update(noteIndex, updatedNote, state.notes)}
+		case CharacterReducerActions.DELETE_NOTE:
+			return {...state, notes: R.reject(R.propEq(value, 'id'))(state.notes)}
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;
 		default:
