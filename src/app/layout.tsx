@@ -56,7 +56,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AppRouterCacheProvider>
           <ThemeRegistry options={{ key: "mui-theme" }}>
-            <UserContext.Provider value={{user, login, createNewUser}}>
+            <UserContext.Provider value={{user, login, createNewUser, logout}}>
               <Grid
                 sx={{
                     marginLeft: "6rem",

@@ -1,13 +1,25 @@
 import { Character } from "@/_models";
-import { useEffect, useState } from "react";
+import { User } from "@/_models/user";
+import UserContext from "@/app/_auth/UserContext";
+import { useContext, useEffect, useState } from "react";
 
 export default () => {
     const [characters, setCharacters] = useState<Character[]>();
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
-        getAllCharacters()
-    }, [])
+        if(!!user){
+            populateCharacters(user)
+        }
+    }, [user])
 
+    const populateCharacters = (user: User) => {
+        if(!!user.isDm){
+            getAllCharacters()
+        } else {
+            getUserCharacters(user)
+        }
+    }
     const getAllCharacters = async () => {
         const res = await fetch('/api/characters');
         const characters = await res.json();
@@ -16,7 +28,14 @@ export default () => {
             setCharacters(characters);
         }
     }
-
+    const getUserCharacters = async (user: User) => {
+        const res = await fetch(`/api/characters?name=${user.name}`);
+        const characters = await res.json();
+        if(!!characters)
+        {
+            setCharacters(characters);
+        }
+    };
     const createCharacter = async (character: Character) => {
         const res = await fetch('/api/characters', {
             method: 'POST',
@@ -39,5 +58,5 @@ export default () => {
         return res;
     }
 
-    return { characters, createCharacter, updateCharacter }
+    return { characters, createCharacter, updateCharacter, getAllCharacters }
 }

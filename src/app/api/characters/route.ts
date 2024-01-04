@@ -1,8 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { characterRepo } from '../characterRepo';
+import { NextApiRequest } from 'next';
 
-export async function GET(request: Request) {
-    const characters = await characterRepo.getAll();
+export async function GET(req: NextRequest) {
+    const user = req.nextUrl.searchParams.get('name');
+    let characters;
+    if(!user) {
+        characters = await characterRepo.getAll();
+    } else {
+        characters = await characterRepo.getUser(user);
+    }
     return NextResponse.json(characters);
 }
 

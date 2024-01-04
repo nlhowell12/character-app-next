@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useReducer } from 'react';
+import { useContext, useEffect, useReducer } from 'react';
 import { AttributeDisplay } from './_components/AttributeDisplay';
 import { CharacterInfoDisplay } from './_components/CharacterInfoDisplay';
 import { characterReducer, initialCharacterState, updateAction } from '../../_reducer/characterReducer';
@@ -9,17 +9,20 @@ import { SkillDisplay } from './_components/SkillDisplay';
 import { Grid } from '@mui/material';
 import { CharacterKeys } from '@/_models';
 import { FeatSelector } from './_components/FeatSelector';
+import UserContext from '../_auth/UserContext';
 
 export default function CreateCharacter() {
     const [character, dispatch] = useReducer(
         characterReducer,
         initialCharacterState
     );
-    const playerName = 'Hater';
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
-        dispatch(updateAction(CharacterKeys.playerName, playerName))
-    }, [])
+        if(!!user){
+            dispatch(updateAction(CharacterKeys.playerName, user?.name))
+        }
+    }, [user])
     
     return (
         <div>
