@@ -175,6 +175,7 @@ export default function Header() {
 					</ListItemButton>
 				</List>
 			</Drawer>
+			{!!spells ? 
 			<Dialog
 				open={spellOpen}
 				onClose={handleSpellToggle}
@@ -182,8 +183,8 @@ export default function Header() {
 				maxWidth='lg'
 				keepMounted
 			>
-				<SpellTable spells={spells} />
-			</Dialog>
+				<SpellTable spells={spells}/>
+			</Dialog> : null}
 			<Dialog
 				open={!!warning}
 				onClose={handleDialogClose}

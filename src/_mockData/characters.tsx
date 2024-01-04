@@ -1,4 +1,4 @@
-import { BonusTypes, Damage, Sizes } from '../_models';
+import { BonusTypes, Damage, Sizes, SpellObject } from '../_models';
 import {
     AttributeNames,
     Character,
@@ -87,6 +87,7 @@ export const mockCharacters: Character[] = [
         skills: MockSkills,
         experience: 0,
         feats: [],
+        spellBook: {} as SpellObject,
         equipment: [
             {
                 id: '123456',
@@ -95,85 +96,113 @@ export const mockCharacters: Character[] = [
                 weight: 7,
                 modifiers: [
                     {
+                        id: '123456',
                         value: 2,
                         type: BonusTypes.Armor,
                         defense: true,
                     },
                 ],
                 equipped: true,
+                maxDexBonus: 8,
+                spellFailure: 0,
+                hardness: 50,
+                amount: 1
             },
         ],
         miscModifiers: [
             {
+                id: '123456',
                 value: 1,
                 type: BonusTypes.Racial,
                 defense: true,
-                definition: 'Natural Armor'
+                definition: 'Natural Armor',
             },
             {
+                id: '123456',
                 value: 5,
                 resistance: true,
                 damageType: Damage.Cold,
                 type: BonusTypes.Racial,
             },
             {
+                id: '123456',
                 definition: ModifierSource.attributeScoreIncrease,
                 attribute: AttributeNames.Dexterity,
                 type: BonusTypes.Untyped,
                 value: 1,
             },
-            { // added to test negative path, otherwise useless
+            {
+                // added to test negative path, otherwise useless
+                id: '123456',
                 value: 0,
                 definition: ModifierSource.attributeScoreIncrease,
                 attribute: AttributeNames.Dexterity,
                 type: BonusTypes.Untyped,
             },
-			{
-				value: 1,
-				type: BonusTypes.Untyped,
-				defense: true
-			},
-			{
-				value: 1,
-				type: BonusTypes.Untyped,
-				defense: true
-			},
-			{
-				value: 1,
-				type: BonusTypes.Untyped,
-				skill: SkillTypes.Disguise
-			},
-			{
-				value: 1,
-				type: BonusTypes.Untyped,
-				skill: SkillTypes.Disguise
-			},
-			{
-				value: 4,
-				type: BonusTypes.Size,
-				skill: SkillTypes.Stealth
-			},
             {
+                id: '123456',
+
+                value: 1,
+                type: BonusTypes.Untyped,
+                defense: true,
+            },
+            {
+                id: '123456',
+
+                value: 1,
+                type: BonusTypes.Untyped,
+                defense: true,
+            },
+            {
+                id: '123456',
+
+                value: 1,
+                type: BonusTypes.Untyped,
+                skill: SkillTypes.Disguise,
+            },
+            {
+                id: '123456',
+
+                value: 1,
+                type: BonusTypes.Untyped,
+                skill: SkillTypes.Disguise,
+            },
+            {
+                id: '123456',
+
+                value: 4,
+                type: BonusTypes.Size,
+                skill: SkillTypes.Stealth,
+            },
+            {
+                id: '123456',
+
                 value: 2,
                 type: BonusTypes.Morale,
                 damage: true,
-                attack: true
+                attack: true,
             },
             {
+                id: '123456',
+
                 value: 1,
                 type: BonusTypes.Untyped,
-                attack: true
+                attack: true,
             },
             {
+                id: '123456',
+
                 value: 1,
                 type: BonusTypes.Untyped,
-                attack: true
+                attack: true,
             },
             {
+                id: '123456',
+
                 value: 0,
                 attribute: AttributeNames.Intelligence,
                 type: BonusTypes.Untyped,
-                damage: true
+                damage: true,
             },
         ],
     },

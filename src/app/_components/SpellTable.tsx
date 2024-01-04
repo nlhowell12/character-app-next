@@ -36,7 +36,7 @@ const SpellTooltip = ({ description }: SpellTableTooltipProps) => {
 export interface SpellTableProps {
     spells: SpellObject;
     characterSpellbook?: boolean;
-    character: Character;
+    character?: Character;
     onChange?: (spell: AnyMagickType, className: CharacterClassNames) => void;
     personal?: boolean;
 }
@@ -198,8 +198,8 @@ export const SpellTable = ({
             : []),
     ];
 
-    const isKnown = (spell: AnyMagickType) => R.any(R.propEq(spell.name, 'name'), character.spellBook[selectedClass])
-    const rowSpell = (spell: AnyMagickType): Magick => R.find(R.propEq(spell.name, 'name'))(character.spellBook[selectedClass]) as Magick;
+    const isKnown = (spell: AnyMagickType) => !!character ? R.any(R.propEq(spell.name, 'name'), character.spellBook[selectedClass]) : false;
+    const rowSpell = (spell: AnyMagickType): Magick => !!character ? R.find(R.propEq(spell.name, 'name'))(character.spellBook[selectedClass]) as Magick : {prepared: false} as Magick;
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -354,7 +354,7 @@ export const SpellTable = ({
                     }}
                 >
                     <Typography>
-                        You don't know any spells for this class
+                        You dont know any spells for this class
                     </Typography>
                 </div>
             )}
