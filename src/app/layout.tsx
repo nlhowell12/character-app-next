@@ -8,7 +8,7 @@ import ThemeRegistry from "@/_utils/theme/ThemeRegistry";
 import { Grid } from "@mui/material";
 import Header from "./_components/Header";
 import { User } from "@/_models/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useUserService from "./api/_services/useUserService";
 import UserContext from "./_auth/UserContext";
 
@@ -33,11 +33,20 @@ export default function RootLayout({
   const [user, setUser] = useState<User>();
 
   const { createUser, loginUser} = useUserService();
-
+  const localStorageKey = 'user';
+  useEffect(() => {
+    const storedUser = localStorage.getItem(localStorageKey);
+    if(storedUser)
+    {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser)
+    }
+  }, [])
   const login = async (user: User) => {
     const res = await loginUser(user);
     if(res.name){
       setUser(user)
+      localStorage.setItem(localStorageKey, JSON.stringify(user))
     }
   }
   const createNewUser = async (user: User) => {
@@ -49,6 +58,7 @@ export default function RootLayout({
 
   const logout = () => {
     setUser(undefined);
+    localStorage.removeItem(localStorageKey)
   };
 
   return (

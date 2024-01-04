@@ -16,7 +16,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Home from '@mui/icons-material/Home';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { SpellTable } from './SpellTable';
 import {
 	Button,
@@ -29,6 +29,8 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import useSpellService from '../api/_services/useSpellService';
+import UserContext from '../_auth/UserContext';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
 
@@ -108,6 +110,8 @@ export default function Header() {
 	const router = useRouter();
     const { spells } = useSpellService();
 
+	const { logout } = useContext(UserContext);
+
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
@@ -172,6 +176,12 @@ export default function Header() {
 							<MenuBook />
 						</ListItemIcon>
 						<ListItemText primary={'Full Spell List'} />
+					</ListItemButton>
+					<ListItemButton  onClick={logout}>
+						<ListItemIcon title='Logout'>
+							<LogoutIcon />
+						</ListItemIcon>
+						<ListItemText primary={'Logout'} />
 					</ListItemButton>
 				</List>
 			</Drawer>
