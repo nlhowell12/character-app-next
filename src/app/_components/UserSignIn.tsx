@@ -26,8 +26,8 @@ export const UserSignIn = ({}: UserSignInProps) => {
             sx={{
                 width: '20rem',
                 position: 'absolute',
-                top: '50%',
-                left: '50%',
+                top: '35%',
+                left: '45%',
             }}
         >
             <CardContent

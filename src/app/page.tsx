@@ -11,9 +11,7 @@ export default function Home() {
     const { characters } = useCharacterService();
     const { user } = useContext(UserContext);
 
-    return !user?.name ? (
-        <UserSignIn/>
-    ) : (
+    return (
         <Grid container>
             {!!characters && <CharacterCardList characters={characters} />}
         </Grid>
