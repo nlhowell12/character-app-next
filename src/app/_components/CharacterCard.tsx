@@ -22,6 +22,7 @@ export const CharacterCard = ({
 						padding: '0 1rem',
 						margin: '1rem 1rem 0',
 						'&:hover': { opacity: '.6', cursor: 'pointer' },
+						minHeight: '10rem'
 					}}>
 				<CardHeader title={character.name} />
 				<CardContent>
