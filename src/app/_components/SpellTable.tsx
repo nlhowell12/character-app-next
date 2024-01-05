@@ -307,6 +307,7 @@ export const SpellTable = ({
                                                             ) : (
                                                                 <TableCell>
                                                                     <NumberInput
+                                                                        sx={{maxWidth: '4rem'}}
                                                                         value={
                                                                             (
                                                                                 row as Magick
