@@ -1,4 +1,4 @@
-import { AnyMagickType, AttributeNames, Character, CharacterClassNames, CharacterKeys } from '@/_models';
+import { AnyMagickType, AttributeNames, Character, CharacterClassNames, CharacterKeys, SpellCastingClasses } from '@/_models';
 import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
 import {
     BonusObject,
@@ -23,7 +23,7 @@ import { SpellTable } from '@/app/_components/SpellTable';
 import useSpellService from '@/app/api/_services/useSpellService';
 import SpellbookTabsContainer from '@/app/_components/SpellbookTabsContainer';
 import { filterSpellObjectByCharacter } from '@/_utils/spellUtils';
-
+import * as R from 'ramda';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -81,6 +81,9 @@ export const CombatInfoDisplay = ({
 
     const handlePrepareSpell = (spell: AnyMagickType, className: CharacterClassNames) => {
         dispatch(prepareSpellAction(spell, className));
+    }
+    const hasSpellCastingClass = () => {
+        return character.classes.some(r=> Object.keys(SpellCastingClasses).includes(r.name))
     }
     return (
         <div>
@@ -164,7 +167,7 @@ export const CombatInfoDisplay = ({
                                 getResistances(character)
                             ).map(([key, value]) => `${key} - ${value}`)}
                         />
-                        {!!character.spellBook && !!spells &&
+                        {!!character.spellBook && !!spells && hasSpellCastingClass() &&
 						<TableCell sx={cellStylingObject}>
                             <Button
 							sx={{padding: '0 .5rem'}}
