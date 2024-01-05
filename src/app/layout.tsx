@@ -38,7 +38,7 @@ export default function RootLayout({
     const localStorageKey = 'user';
     useEffect(() => {
         const storedUser = localStorage.getItem(localStorageKey);
-        if (storedUser) {
+        if (!!storedUser) {
             const parsedUser = JSON.parse(storedUser);
             setUser(parsedUser);
         }
@@ -46,8 +46,8 @@ export default function RootLayout({
     const login = async (user: User) => {
         const res = await loginUser(user);
         if (res.name) {
-            setUser(user);
-            localStorage.setItem(localStorageKey, JSON.stringify(user));
+            setUser(res);
+            localStorage.setItem(localStorageKey, JSON.stringify(res));
         }
     };
     const createNewUser = async (user: User) => {

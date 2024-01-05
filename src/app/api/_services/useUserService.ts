@@ -12,6 +12,7 @@ const useUserService = () => {
         });
         if(res.status === 200){
             const user = await res.json()
+            console.log(user, 'login')
             return user;
         } else {
             return new NextResponse(`Password did not match or User has not been created`, {status: 500});
