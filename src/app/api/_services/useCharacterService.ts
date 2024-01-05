@@ -14,7 +14,6 @@ export default () => {
     }, [user])
 
     const populateCharacters = (user: User) => {
-        console.log(user)
         if(user.isDm){
             getAllCharacters()
         } else {

@@ -314,7 +314,7 @@ export const SpellTable = ({
                                                                             )
                                                                                 .prepared
                                                                         }
-                                                                        label='Prepared'
+                                                                        label=''
                                                                         onChange={(e) =>
                                                                             !!onChange &&
                                                                             onChange(
