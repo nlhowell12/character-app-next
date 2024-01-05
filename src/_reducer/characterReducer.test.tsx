@@ -115,17 +115,14 @@ describe('characterReducer', () => {
 		expect(newState2.spellBook[CharacterClassNames.SorcWiz]).toStrictEqual([]);
 	})
 	it('should prepare and unprepare a spell', () => {
-		const spellToAdd = {name: 'Magic Missile', prepared: false} as Spell;
+		const spellToAdd = {name: 'Magic Missile', prepared: 1} as Spell;
 		const spellBook: Partial<SpellObject> = {
 			[CharacterClassNames.SorcWiz]: [spellToAdd]
 		};
 		{/* @ts-ignore */}
 		const newState = characterReducer({...mockCharacters[0], spellBook}, prepareSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
 		const key = CharacterClassNames.SorcWiz as keyof SpellObject
-		expect((newState.spellBook[key][0] as Magick).prepared).toBeTruthy();
-		const newState2 = characterReducer(newState, prepareSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
-		expect((newState2.spellBook[key][0] as Magick).prepared).toBeFalsy();
-
+		expect((newState.spellBook[key][0] as Magick).prepared).toBe(1);
 	})
 	it('should reset to initial', () => {
 		const name = 'Kyrin';

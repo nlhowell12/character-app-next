@@ -26,6 +26,7 @@ import {
 } from '@/_models';
 import { camelToTitle } from '@/_utils/stringUtils';
 import * as R from 'ramda';
+import { NumberInput } from './NumberInput';
 
 interface SpellTableTooltipProps {
     description: string;
@@ -48,7 +49,9 @@ export const SpellTable = ({
     personal,
 }: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
-        !!spells ? Object.keys(spells)[0] as keyof SpellObject : CharacterClassNames.Cleric
+        !!spells
+            ? (Object.keys(spells)[0] as keyof SpellObject)
+            : CharacterClassNames.Cleric
     );
     const [selectedSubtype, setSelectedSubtype] = useState<MagickCategory>(
         MagickCategory.Maneuver
@@ -76,7 +79,7 @@ export const SpellTable = ({
             'description',
             'bonusType',
             'damageType',
-            'prepared'
+            'prepared',
         ];
         if (selectedSubtype !== MagickCategory.Maneuver) {
             filteredColumns.push('maneuverType');
@@ -198,8 +201,13 @@ export const SpellTable = ({
             : []),
     ];
 
-    const isKnown = (spell: AnyMagickType) => !!character ? R.any(R.propEq(spell.name, 'name'), character.spellBook[selectedClass]) : false;
-    const rowSpell = (spell: AnyMagickType): Magick => !!character ? R.find(R.propEq(spell.name, 'name'))(character.spellBook[selectedClass]) as Magick : {prepared: false} as Magick;
+    const isKnown = (spell: AnyMagickType) =>
+        !!character
+            ? R.any(
+                  R.propEq(spell.name, 'name'),
+                  character.spellBook[selectedClass]
+              )
+            : false;
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <Select
@@ -283,40 +291,60 @@ export const SpellTable = ({
                                                             {!personal ? (
                                                                 <TableCell>
                                                                     <Checkbox
-                                                                        checked={
-                                                                            isKnown(row)
+                                                                        checked={isKnown(
+                                                                            row
+                                                                        )}
+                                                                        onChange={() =>
+                                                                            !!onChange &&
+                                                                            onChange(
+                                                                                row,
+                                                                                selectedClass
+                                                                            )
                                                                         }
-                                                                        onChange={() => !!onChange && onChange(row, selectedClass)}
                                                                         name='Known'
                                                                     />
                                                                 </TableCell>
                                                             ) : (
                                                                 <TableCell>
-                                                                    <Checkbox
-                                                                        checked={
-                                                                            rowSpell(row).prepared
+                                                                    <NumberInput
+                                                                        value={
+                                                                            (
+                                                                                row as Magick
+                                                                            )
+                                                                                .prepared
                                                                         }
-                                                                        onChange={() => !!onChange && onChange(row, selectedClass)}
-                                                                        name='Prepared'
+                                                                        label='Prepared'
+                                                                        onChange={(e) =>
+                                                                            !!onChange &&
+                                                                            onChange(
+                                                                                {...(row as Magick), prepared: e.target.value},
+                                                                                selectedClass
+                                                                            )
+                                                                        }
                                                                     />
                                                                 </TableCell>
                                                             )}
                                                         </>
                                                     ) : null}
-                                                    {columns
-                                                        .map((val) => {
-                                                            return (
-                                                                <TableCell
-                                                                    key={
-                                                                        row[val as keyof AnyMagickType] + val
+                                                    {columns.map((val) => {
+                                                        return (
+                                                            <TableCell
+                                                                key={
+                                                                    row[
+                                                                        val as keyof AnyMagickType
+                                                                    ] + val
+                                                                }
+                                                            >
+                                                                <Typography>
+                                                                    {
+                                                                        row[
+                                                                            val as keyof AnyMagickType
+                                                                        ]
                                                                     }
-                                                                >
-                                                                    <Typography>
-                                                                        {row[val as keyof AnyMagickType]}
-                                                                    </Typography>
-                                                                </TableCell>
-                                                            );
-                                                        })}
+                                                                </Typography>
+                                                            </TableCell>
+                                                        );
+                                                    })}
                                                 </TableRow>
                                             </Tooltip>
                                         );

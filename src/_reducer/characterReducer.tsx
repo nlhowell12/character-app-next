@@ -370,7 +370,7 @@ export const characterReducer: Reducer<Character, CharacterAction> = (state, act
 			const classNamePrepare = updateId as keyof SpellObject;
 			const spellIndex = R.findIndex(R.propEq(preparedSpell.name, 'name'))(state.spellBook[updateId as keyof SpellObject]);
 			const updateSpell = state.spellBook[classNamePrepare][spellIndex] as Magick;
-			const updatedClassArray = R.update(spellIndex, {...updateSpell, prepared: !updateSpell.prepared} as AnyMagickType, state.spellBook[classNamePrepare])
+			const updatedClassArray = R.update(spellIndex, {...updateSpell, prepared: (value as Magick).prepared} as AnyMagickType, state.spellBook[classNamePrepare])
 			return {...state, spellBook: {...state.spellBook, [classNamePrepare]: updatedClassArray}}
 		case CharacterReducerActions.ADD_NOTE:
 			return {...state, notes: R.append(value as Note, state.notes)}

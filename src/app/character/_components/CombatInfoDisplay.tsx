@@ -119,7 +119,7 @@ export const CombatInfoDisplay = ({
 
     const handlePrepareSpell = (
         spell: AnyMagickType,
-        className: CharacterClassNames
+        className: CharacterClassNames,
     ) => {
         dispatch(prepareSpellAction(spell, className));
     };

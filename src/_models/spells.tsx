@@ -115,7 +115,7 @@ export interface Magick {
     savingThrow?: string;
     action: string;
     bonusType?: string;
-    prepared?: boolean;
+    prepared: number;
 }
 export const SpellCastingClasses = [
     CharacterClassNames.Cleric,
