@@ -44,6 +44,7 @@ export const mockCharacters: Character[] = [
                 speed: 20,
             },
         ],
+        notes: [],
         classes: [
             {
                 name: 'Rogue',
