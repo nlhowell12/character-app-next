@@ -125,7 +125,7 @@ export const CombatInfoDisplay = ({
     };
     const hasSpellCastingClass = () => {
         return character.classes.some((r) =>
-            Object.keys(SpellCastingClasses).includes(r.name)
+            Object.values(SpellCastingClasses).includes(r.name as CharacterClassNames)
         );
     };
     return (
