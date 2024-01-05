@@ -200,7 +200,6 @@ export const SpellTable = ({
 
     const isKnown = (spell: AnyMagickType) => !!character ? R.any(R.propEq(spell.name, 'name'), character.spellBook[selectedClass]) : false;
     const rowSpell = (spell: AnyMagickType): Magick => !!character ? R.find(R.propEq(spell.name, 'name'))(character.spellBook[selectedClass]) as Magick : {prepared: false} as Magick;
-
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <Select
@@ -304,19 +303,16 @@ export const SpellTable = ({
                                                             )}
                                                         </>
                                                     ) : null}
-                                                    {Object.entries(row)
-                                                        .filter(([key, _]) =>
-                                                            filterData(key)
-                                                        )
-                                                        .map(([_, val]) => {
+                                                    {columns
+                                                        .map((val) => {
                                                             return (
                                                                 <TableCell
                                                                     key={
-                                                                        _ + val
+                                                                        row[val as keyof AnyMagickType] + val
                                                                     }
                                                                 >
                                                                     <Typography>
-                                                                        {val}
+                                                                        {row[val as keyof AnyMagickType]}
                                                                     </Typography>
                                                                 </TableCell>
                                                             );
