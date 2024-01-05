@@ -112,7 +112,10 @@ export enum CharacterKeys {
 	experience = 'experience',
 	feats = 'feats',
 	spellBook = 'spellBook',
-	notes = 'notes'
+	notes = 'notes',
+	powerPoints = 'powerPoints',
+	maxPowerPoints = 'maxPowerPoints',
+	isPsionic = 'isPsionic'
 }
 
 export interface Note {
@@ -131,6 +134,9 @@ export interface Character {
 	maxHitPoints: number;
 	currentHitPoints: number;
 	nonLethalDamage: number;
+	isPsionic: boolean;
+	powerPoints: number;
+	maxPowerPoints: number;
 	tempHP: number;
 	age: number;
 	height: string;

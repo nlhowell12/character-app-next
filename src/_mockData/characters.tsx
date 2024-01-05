@@ -45,6 +45,9 @@ export const mockCharacters: Character[] = [
             },
         ],
         notes: [],
+        isPsionic: true,
+        powerPoints: 3,
+        maxPowerPoints: 3,
         classes: [
             {
                 name: 'Rogue',

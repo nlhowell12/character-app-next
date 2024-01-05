@@ -43,7 +43,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType | Note;
+type AcceptedUpdateValues = string | number | boolean | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType | Note;
 
 export type CharacterAction = {
 	type: CharacterReducerActions;
@@ -258,6 +258,9 @@ export const initialCharacterState: Character = {
 	maxHitPoints: 0,
 	currentHitPoints: 0,
 	nonLethalDamage: 0,
+	isPsionic: false,
+	powerPoints: 0,
+	maxPowerPoints: 0,
 	tempHP: 0,
 	age: 0,
 	height: '',
