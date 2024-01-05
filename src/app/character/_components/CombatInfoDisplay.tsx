@@ -1,4 +1,11 @@
-import { AnyMagickType, AttributeNames, Character, CharacterClassNames, CharacterKeys, SpellCastingClasses } from '@/_models';
+import {
+    AnyMagickType,
+    AttributeNames,
+    Character,
+    CharacterClassNames,
+    CharacterKeys,
+    SpellCastingClasses,
+} from '@/_models';
 import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
 import {
     BonusObject,
@@ -17,13 +24,17 @@ import {
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import { DisplayCell } from './DisplayCell';
-import { CharacterAction, learnSpellAction, prepareSpellAction, updateAction } from '@/_reducer/characterReducer';
+import {
+    CharacterAction,
+    learnSpellAction,
+    prepareSpellAction,
+    updateAction,
+} from '@/_reducer/characterReducer';
 import MenuBook from '@mui/icons-material/MenuBook';
 import { SpellTable } from '@/app/_components/SpellTable';
 import useSpellService from '@/app/api/_services/useSpellService';
 import SpellbookTabsContainer from '@/app/_components/SpellbookTabsContainer';
-import { filterSpellObjectByCharacter } from '@/_utils/spellUtils';
-import * as R from 'ramda';
+import { filterSpellObjectByCharacter, isCharacterPsionic } from '@/_utils/spellUtils';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -34,12 +45,15 @@ interface AcTooltipProps {
     character: Character;
 }
 
+const tooltipCellStyling = {
+    border: 'none',
+};
 const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
     return (
         <Table>
             <TableBody>
                 <TableRow>
-                    <TableCell>
+                    <TableCell sx={tooltipCellStyling}>
                         <Typography>{`Dexterity: ${getTotalAttributeModifier(
                             character,
                             AttributeNames.Dexterity
@@ -49,7 +63,7 @@ const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
                 {Object.entries(acBonuses).map(([key, value]) => {
                     return (
                         <TableRow key={`${key} + ${value}`}>
-                            <TableCell>
+                            <TableCell sx={tooltipCellStyling}>
                                 <Typography>{`${key} ${value}`}</Typography>
                             </TableCell>
                         </TableRow>
@@ -60,9 +74,30 @@ const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
     );
 };
 
+interface ResistImmuneTooltipProps {
+    character: Character;
+}
+const ResistImmuneTooltip = ({ character }: ResistImmuneTooltipProps) => {
+    const resistances = getResistances(character);
+    return !!Object.keys(resistances).length ? (
+        <Table>
+            <TableBody>
+                {Object.entries(getResistances(character)).map(
+                    ([key, value]) => (
+                        <TableRow key={`${key} + ${value}`}>
+                            <TableCell sx={tooltipCellStyling}>
+                                <Typography>{`${key} ${value}`}</Typography>
+                            </TableCell>
+                        </TableRow>
+                    )
+                )}
+            </TableBody>
+        </Table>
+    ) : undefined;
+};
 const cellStylingObject = {
-	borderBottom: 'none',
-	padding: '0 .5rem .5rem 0',
+    borderBottom: 'none',
+    padding: '0 .5rem .5rem 0',
 };
 
 export const CombatInfoDisplay = ({
@@ -71,20 +106,28 @@ export const CombatInfoDisplay = ({
 }: CombatInfoDisplayProps) => {
     const defenses = getTotalDefense(character);
     const [openSpellbook, setOpenSpellbook] = useState<boolean>(false);
-    const {spells} = useSpellService()
+    const { spells } = useSpellService();
     const handleSpellBookOpen = () => {
         setOpenSpellbook(true);
     };
-    const handleLearnSpell = (spell: AnyMagickType, className: CharacterClassNames) => {
+    const handleLearnSpell = (
+        spell: AnyMagickType,
+        className: CharacterClassNames
+    ) => {
         dispatch(learnSpellAction(spell, className));
-    }
+    };
 
-    const handlePrepareSpell = (spell: AnyMagickType, className: CharacterClassNames) => {
+    const handlePrepareSpell = (
+        spell: AnyMagickType,
+        className: CharacterClassNames
+    ) => {
         dispatch(prepareSpellAction(spell, className));
-    }
+    };
     const hasSpellCastingClass = () => {
-        return character.classes.some(r=> Object.keys(SpellCastingClasses).includes(r.name))
-    }
+        return character.classes.some((r) =>
+            Object.keys(SpellCastingClasses).includes(r.name)
+        );
+    };
     return (
         <div>
             <Table>
@@ -101,6 +144,9 @@ export const CombatInfoDisplay = ({
                             value={character.currentHitPoints}
                             editable={true}
                             isNumber
+                            tooltip={
+                                <ResistImmuneTooltip character={character} />
+                            }
                             onChange={(e) =>
                                 dispatch(
                                     updateAction(
@@ -160,36 +206,68 @@ export const CombatInfoDisplay = ({
                                 (spd) => ` ${spd.type}(${spd.speed}ft)`
                             )}
                         />
-                        <DisplayCell
-                            variant='body1'
-                            cellTitle='Resist/Immune:'
-                            value={Object.entries(
-                                getResistances(character)
-                            ).map(([key, value]) => `${key} - ${value}`)}
-                        />
-                        {!!character.spellBook && !!spells && hasSpellCastingClass() &&
-						<TableCell sx={cellStylingObject}>
-                            <Button
-							sx={{padding: '0 .5rem'}}
-                                variant='outlined'
-                                onClick={handleSpellBookOpen}
-                            >
-                                <Typography>Spell Book</Typography>
-                                <MenuBook sx={{ marginLeft: '.5rem' }} />
-                            </Button>
-                            <Dialog
-                                open={openSpellbook}
-                                onClose={() => setOpenSpellbook(false)}
-                                fullWidth
-                                maxWidth='lg'
-                                keepMounted
-                            >
-                                <SpellbookTabsContainer>
-                                    <SpellTable spells={filterSpellObjectByCharacter(character, spells)} characterSpellbook character={character} onChange={handleLearnSpell}/>
-                                    <SpellTable spells={filterSpellObjectByCharacter(character, character.spellBook)} characterSpellbook personal character={character} onChange={handlePrepareSpell}/>
-                                </SpellbookTabsContainer>
-                            </Dialog>
-                        </TableCell>}
+                        {!!character.maxPowerPoints && isCharacterPsionic(character) && (
+                            <DisplayCell
+                                variant='body1'
+                                cellTitle='Power Points:'
+                                value={character.powerPoints}
+                                editable={true}
+                                isNumber
+                                onChange={(e) =>
+                                    dispatch(
+                                        updateAction(
+                                            CharacterKeys.powerPoints,
+                                            Number(e.target.value)
+                                        )
+                                    )
+                                }
+                            />
+                        )}
+                        {!!character.spellBook &&
+                            !!spells &&
+                            hasSpellCastingClass() && (
+                                <TableCell sx={cellStylingObject}>
+                                    <Button
+                                        sx={{ padding: '0 .5rem' }}
+                                        variant='outlined'
+                                        onClick={handleSpellBookOpen}
+                                    >
+                                        <Typography>Spell Book</Typography>
+                                        <MenuBook
+                                            sx={{ marginLeft: '.5rem' }}
+                                        />
+                                    </Button>
+                                    <Dialog
+                                        open={openSpellbook}
+                                        onClose={() => setOpenSpellbook(false)}
+                                        fullWidth
+                                        maxWidth='lg'
+                                        keepMounted
+                                    >
+                                        <SpellbookTabsContainer>
+                                            <SpellTable
+                                                spells={filterSpellObjectByCharacter(
+                                                    character,
+                                                    spells
+                                                )}
+                                                characterSpellbook
+                                                character={character}
+                                                onChange={handleLearnSpell}
+                                            />
+                                            <SpellTable
+                                                spells={filterSpellObjectByCharacter(
+                                                    character,
+                                                    character.spellBook
+                                                )}
+                                                characterSpellbook
+                                                personal
+                                                character={character}
+                                                onChange={handlePrepareSpell}
+                                            />
+                                        </SpellbookTabsContainer>
+                                    </Dialog>
+                                </TableCell>
+                            )}
                     </TableRow>
                 </TableBody>
             </Table>
