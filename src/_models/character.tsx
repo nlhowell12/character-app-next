@@ -92,7 +92,7 @@ export enum CharacterKeys {
 	name = 'name',
 	race = 'race',
 	size = 'size',
-	subRace = 'subrace',
+	subRace = 'subRace',
 	attributes = 'attributes',
 	classes = 'classes',
 	maxHitPoints = 'maxHitPoints',
