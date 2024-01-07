@@ -98,7 +98,7 @@ export default {
 	},
 	[SkillTypes.Ride]: {
 		name: SkillTypes.Ride,
-		linkedAttribute: AttributeNames.Charisma,
+		linkedAttribute: AttributeNames.Dexterity,
 		ranks: 0,
 	},
 	[SkillTypes.SenseMotive]: {
