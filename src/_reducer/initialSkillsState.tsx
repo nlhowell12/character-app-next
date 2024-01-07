@@ -28,7 +28,7 @@ export default {
 	},
 	[SkillTypes.Concentration]: {
 		name: SkillTypes.Concentration,
-		linkedAttribute: AttributeNames.Constitution,
+		linkedAttribute: AttributeNames.Wisdom,
 		ranks: 0,
 	},
 	[SkillTypes.EscapeArtist]: {
