@@ -58,10 +58,12 @@ const DisplayCellInput = ({
                 sx: {
                     height: '2rem',
                     margin: '0 .5rem',
+					textWrap: 'nowrap'
                 },
                 inputProps: {
                     style: {
                         height: '0rem',
+						textWrap: 'nowrap'
                     },
                 },
             }}
@@ -77,6 +79,7 @@ const DisplayCellInput = ({
             inputProps={{
                 style: {
                     height: '0rem',
+					textWrap: 'nowrap'
                 },
             }}
         />
@@ -105,6 +108,7 @@ export const DisplayCell = ({
     };
     const textFieldStylingObject = {
         padding: '0 .5rem',
+		textWrap: 'nowrap'
     };
     useOutsideAlerter(cellRef, setOpenEdit);
 
@@ -123,6 +127,7 @@ export const DisplayCell = ({
                             onChange={onChange}
                             value={value}
                             isNumber={isNumber || false}
+
                         />
                     ) : (
                         <Typography

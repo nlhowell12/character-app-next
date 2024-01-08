@@ -68,7 +68,7 @@ export default function CharacterPage() {
                             <Grid item xs={'auto'}>
                                 <AttributeDisplay character={character} />
                             </Grid>
-                            <Grid item xs={12} md={6} sx={{[theme.breakpoints.up('lg')]: {
+                            <Grid item xs={12} lg={6} sx={{[theme.breakpoints.up('lg')]: {
 								display: 'none'
 							}}}>
 								<Grid container>
