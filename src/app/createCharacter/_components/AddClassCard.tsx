@@ -143,7 +143,7 @@ export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
     };
 
     return (
-        <Card variant='outlined'>
+        <Card variant='outlined' sx={{overflow: 'scroll'}}>
             <CardHeader title='Add New Class' />
             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
                 <div
