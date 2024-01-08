@@ -91,7 +91,7 @@ export const AddEquipmentCard = ({
         const filteredMods = R.filter(filter, newEq.modifiers);
         handleChange({target: {value: filteredMods}}, 'modifiers')};
     return (
-        <Card>
+        <Card sx={{overflow: 'scroll'}}>
             <CardActions>
                 <FormGroup sx={{ display: 'flex', flexDirection: 'row' }}>
                     <FormControlLabel

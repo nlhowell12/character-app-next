@@ -20,7 +20,6 @@ import {
     Armor,
     BodySlot,
     Character,
-    Dice,
     Equipment,
     Modifier,
     Weapon,
