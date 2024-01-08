@@ -1,13 +1,15 @@
-import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick } from '@/_models';
+import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick, Movement, MovementTypes } from '@/_models';
 import {
 	CharacterReducerActions,
 	addEquipmentAction,
+	addMovementActions,
 	characterReducer,
 	deleteModAction,
 	initialCharacterState,
 	learnSpellAction,
 	prepareSpellAction,
 	removeEquipmentAction,
+	removeMovementAction,
 	resetAction,
 	setCharacterAction,
 	toggleEquippedAction,
@@ -123,6 +125,16 @@ describe('characterReducer', () => {
 		const newState = characterReducer({...mockCharacters[0], spellBook}, prepareSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
 		const key = CharacterClassNames.SorcWiz as keyof SpellObject
 		expect((newState.spellBook[key][0] as Magick).prepared).toBe(1);
+	})
+	it('should add and remove movement speeds', () => {
+		const newMovement: Movement = {
+			type: MovementTypes.Fly,
+			speed: 60
+		};
+		const newState = characterReducer(mockCharacters[0], addMovementActions(newMovement));
+		expect(newState.movementSpeeds.includes(newMovement)).toBeTruthy()
+		const newState2 = characterReducer(newState, removeMovementAction(newMovement));
+		expect(newState2.movementSpeeds.includes(newMovement)).toBeFalsy();
 	})
 	it('should reset to initial', () => {
 		const name = 'Kyrin';

@@ -4,7 +4,6 @@ import {
     Card,
     Grid,
     OutlinedInput,
-    TableCell,
     TextField,
     Tooltip,
     Typography,
@@ -20,6 +19,7 @@ interface DisplayCellProps {
     value: string | number | string[];
     tooltip?: any;
     isNumber?: boolean;
+    onClick?: () => void;
     tooltipPlacement?:
         | 'bottom'
         | 'left'
@@ -94,6 +94,7 @@ export const DisplayCell = ({
     tooltip,
     tooltipPlacement,
     isNumber,
+    onClick
 }: DisplayCellProps) => {
     const [openEdit, setOpenEdit] = useState(false);
     const cellRef = useRef(null);
@@ -101,6 +102,7 @@ export const DisplayCell = ({
     const cardStylingObject = {
         '&:hover': {
             borderColor: !!editable ? '#666666' : undefined,
+            cursor: !!editable ? 'pointer' : undefined,
         },
         height: 'fit-content',
         alignContent: 'flex-start',
@@ -116,8 +118,8 @@ export const DisplayCell = ({
         <Grid item xs={4}>
             <Tooltip title={tooltip} placement={tooltipPlacement} followCursor>
                 <Card
-                    onClick={() => setOpenEdit(true)}
-                    onKeyDown={(e) => e.key === 'Enter' && setOpenEdit(false)}
+                onClick={!!onClick ? onClick : () => setOpenEdit(true)}
+                onKeyDown={(e) => e.key === 'Enter' && setOpenEdit(false)}
                     variant='outlined'
                     ref={cellRef}
                     sx={cardStylingObject}
@@ -141,7 +143,7 @@ export const DisplayCell = ({
     ) : (
         <Grid item xs={4}>
             <Card
-                onClick={() => setOpenEdit(true)}
+                onClick={!!onClick ? onClick : () => setOpenEdit(true)}
                 onKeyDown={(e) => e.key === 'Enter' && setOpenEdit(false)}
                 variant='outlined'
                 ref={cellRef}

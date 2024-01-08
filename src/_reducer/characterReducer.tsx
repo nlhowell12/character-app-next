@@ -1,4 +1,4 @@
-import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames, AnyMagickType, Magick, Note } from "@/_models";
+import { CharacterAttributes, AttributeNames, CharacterClass, CharacterKeys, SkillTypes, Character, Sizes, SkillObject, Modifier, Feat, Equipment, Armor, Weapon, SpellObject, CharacterClassNames, AnyMagickType, Magick, Note, Movement } from "@/_models";
 import initialSkillsState from "./initialSkillsState";
 import * as R from 'ramda';
 import { Reducer } from "react";
@@ -19,6 +19,8 @@ export enum CharacterReducerActions {
 	ADD_NOTE = 'ADD_NOTE',
 	UPDATE_NOTE = 'UPDATE_NOTE',
 	DELETE_NOTE = 'DELETE_NOTE',
+	ADD_MOVEMENT = 'ADD_MOVEMENT',
+	REMOVE_MOVEMENT = 'REMOVE_MOVEMENT',
 	DEFAULT = 'DEFAULT'
 }
 
@@ -43,7 +45,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | boolean | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType | Note;
+type AcceptedUpdateValues = string | number | boolean | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType | Note | Movement;
 
 export type CharacterAction = {
 	type: CharacterReducerActions;
@@ -229,6 +231,25 @@ export const deleteNoteAction = (value: string): CharacterAction => {
 		}
 	}
 }
+export const addMovementActions = (value: Movement): CharacterAction => {
+	return {
+		type: CharacterReducerActions.ADD_MOVEMENT,
+		payload: {
+			value,
+			key: CharacterKeys.movementSpeeds,
+		}
+	}
+}
+
+export const removeMovementAction = (value: Movement): CharacterAction => {
+	return {
+		type: CharacterReducerActions.REMOVE_MOVEMENT,
+		payload: {
+			value,
+			key: CharacterKeys.movementSpeeds,
+		}
+	}
+}
 
 export const resetAction = () => {
 	return {
@@ -381,6 +402,12 @@ export const characterReducer: Reducer<Character, CharacterAction> = (state, act
 			return {...state, notes: R.update(noteIndex, updatedNote, state.notes)}
 		case CharacterReducerActions.DELETE_NOTE:
 			return {...state, notes: R.reject(R.propEq(value, 'id'))(state.notes)}
+		case CharacterReducerActions.ADD_MOVEMENT:
+			return {...state, movementSpeeds: R.append(value as Movement, state.movementSpeeds)};
+		case CharacterReducerActions.REMOVE_MOVEMENT:
+			const removeSpeed = value as Movement;
+			const speedFilter = (x: Movement) => x.speed === removeSpeed.speed && x.type === removeSpeed.type;
+			return {...state, movementSpeeds: R.reject(speedFilter, state.movementSpeeds)};
 		case CharacterReducerActions.RESET:
 			return initialCharacterState;
 		default:

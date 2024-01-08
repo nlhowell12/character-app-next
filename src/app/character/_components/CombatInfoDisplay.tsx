@@ -38,6 +38,7 @@ import {
     filterSpellObjectByCharacter,
     isCharacterPsionic,
 } from '@/_utils/spellUtils';
+import { SpeedDialog } from './SpeedDialog';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -109,6 +110,7 @@ export const CombatInfoDisplay = ({
 }: CombatInfoDisplayProps) => {
     const defenses = getTotalDefense(character);
     const [openSpellbook, setOpenSpellbook] = useState<boolean>(false);
+    const [openSpeed, setOpenSpeed] = useState(false);
     const { spells } = useSpellService();
     const handleSpellBookOpen = () => {
         setOpenSpellbook(true);
@@ -203,22 +205,25 @@ export const CombatInfoDisplay = ({
                 value={character.movementSpeeds.map(
                     (spd) => ` ${spd.type}(${spd.speed}ft)`
                 )}
+                onClick={() => setOpenSpeed(true)}
+                editable
             />
-                <DisplayCell
-                    variant='body1'
-                    cellTitle='Hero Points:'
-                    value={character.heroPoints}
-                    editable={true}
-                    isNumber
-                    onChange={(e) =>
-                        dispatch(
-                            updateAction(
-                                CharacterKeys.heroPoints,
-                                Number(e.target.value)
-                            )
+            <SpeedDialog dispatch={dispatch} character={character} open={openSpeed} onClose={() => setOpenSpeed(false)}/>
+            <DisplayCell
+                variant='body1'
+                cellTitle='Hero Points:'
+                value={character.heroPoints}
+                editable={true}
+                isNumber
+                onChange={(e) =>
+                    dispatch(
+                        updateAction(
+                            CharacterKeys.heroPoints,
+                            Number(e.target.value)
                         )
-                    }
-                />
+                    )
+                }
+            />
             {!!character.maxPowerPoints && isCharacterPsionic(character) && (
                 <DisplayCell
                     variant='body1'

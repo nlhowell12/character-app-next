@@ -116,7 +116,8 @@ export enum CharacterKeys {
 	powerPoints = 'powerPoints',
 	maxPowerPoints = 'maxPowerPoints',
 	isPsionic = 'isPsionic',
-	heroPoints = 'heroPoints'
+	heroPoints = 'heroPoints',
+	movementSpeeds = 'movementSpeeds'
 }
 
 export interface Note {
