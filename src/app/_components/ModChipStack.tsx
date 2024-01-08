@@ -13,7 +13,7 @@ export const ModChipStack = ({ mods, onDelete }: ModChipStackProps) => {
     const notASI = (x: Modifier) =>
     x.definition !== ModifierSource.attributeScoreIncrease;
     return (
-        <Stack direction='row' spacing={1} flexWrap='wrap'>
+        <Stack direction='row' spacing={1} flexWrap='wrap' justifyContent='flex-end'>
             {R.filter(notASI, mods).map((mod) => {
                 return (
                     <ModChip
