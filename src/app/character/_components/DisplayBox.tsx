@@ -1,5 +1,5 @@
 import { Modifier } from "@/_models";
-import { Tooltip, Typography } from "@mui/material";
+import { TextField, Tooltip, Typography } from "@mui/material";
 import { CardTitles, CardTitlesType } from "./AttributeDisplay";
 import { AttributeTooltip } from "./AttributeTooltip";
 
@@ -8,6 +8,10 @@ interface AttributeDisplayProps {
 	displayValue: number;
 	modifiers?: Modifier[];
 	icon?: any;
+	editable?: boolean;
+	onChange?: (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void; 
 }
 
 export const DisplayBox = ({
@@ -15,6 +19,8 @@ export const DisplayBox = ({
 	displayTitle,
 	displayValue,
 	icon,
+	editable,
+	onChange
 }: AttributeDisplayProps) => {
 	return !!modifiers?.length && displayTitle === CardTitles.Total ? (
 		<Tooltip
@@ -40,7 +46,17 @@ export const DisplayBox = ({
 				<Typography variant='caption'>{displayTitle}</Typography>
 				{icon}
 			</div>
-			<Typography variant='body1'>{displayValue}</Typography>
+			{!!editable && !!onChange ? (
+                <TextField
+                    sx={{
+                        maxWidth: '4rem',
+                    }}
+                    value={displayValue}
+                    onChange={(e) => !!onChange && onChange(e)}
+                />
+            ) : (
+                <Typography variant='body1'>{displayValue}</Typography>
+            )}
 		</div>
 	);
 };

@@ -10,7 +10,10 @@ import {
 } from '@mui/material';
 import React, { Dispatch } from 'react';
 
-import { CharacterAction, updateAttributeAction } from '../../../_reducer/characterReducer';
+import {
+    CharacterAction,
+    updateAttributeAction,
+} from '../../../_reducer/characterReducer';
 import { BonusTypes, Modifier, Character, AttributeNames } from '@/_models';
 import {
     totalAttributeValue,
@@ -20,6 +23,7 @@ import {
     getAllAttributeModifiers,
 } from '@/_utils/attributeUtils';
 import { getTotalSaveBonus } from '@/_utils/defenseUtils';
+import { DisplayBox } from '@/app/character/_components/DisplayBox';
 
 enum CardTitles {
     Total = 'Total',
@@ -29,105 +33,22 @@ enum CardTitles {
 }
 
 type CardTitlesType = BonusTypes | CardTitles;
-
-interface AttributeTooltipProps {
-    modifiers: Modifier[]
-};
-
-const AttributeTooltip = ({
-    modifiers,
-} : AttributeTooltipProps) => {
-    return (
-        <Table>
-            <TableBody>
-                <TableRow>
-                    {modifiers.map((mod) => {
-                        return (
-                            <TableCell key={mod.type + mod.value}>
-                                <DisplayBox
-                                    displayTitle={mod.type}
-                                    displayValue={mod.value || 0}
-                                    modifiers={modifiers}
-                                />
-                            </TableCell>
-                        );
-                    })}
-                </TableRow>
-            </TableBody>
-        </Table>
-    );
-};
-
-interface AttributeDisplayBoxProps {
-    displayTitle: CardTitlesType;
-    displayValue: number;
-    modifiers?: Modifier[];
-    editable?: boolean;
-    dispatch?: Dispatch<CharacterAction>;
-    onChange?: (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => void;
-}
-
-const DisplayBox = ({
-    modifiers,
-    displayTitle,
-    displayValue,
-    editable,
-    onChange,
-} : AttributeDisplayBoxProps) => {
-    return !!modifiers?.length && displayTitle === CardTitles.Total ? (
-        <Tooltip
-            title={<AttributeTooltip modifiers={modifiers} />}
-            placement='right'
-        >
-            <div
-                style={{
-                    textAlign: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-            >
-                <Typography variant='caption'>{displayTitle}</Typography>
-                <Typography variant='h4'>{displayValue}</Typography>
-            </div>
-        </Tooltip>
-    ) : (
-        <div
-            style={{
-                textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-            }}
-        >
-            <Typography variant='caption'>{displayTitle}</Typography>
-            {!!editable ? (
-                <TextField
-                    sx={{
-                        maxWidth: '4rem',
-                    }}
-                    value={displayValue}
-                    onChange={(e) => !!onChange && onChange(e)}
-                />
-            ) : (
-                <Typography variant='h4'>{displayValue}</Typography>
-            )}
-        </div>
-    );
-};
-
 interface AttributeRowProps {
     character: Character;
     attribute: AttributeNames;
     modifiers: Modifier[];
     dispatch?: Dispatch<CharacterAction>;
 }
-const AttributeRow = ({ character, attribute, modifiers, dispatch } : AttributeRowProps) => {
+const AttributeRow = ({
+    character,
+    attribute,
+    modifiers,
+    dispatch,
+}: AttributeRowProps) => {
     const totalValue = totalAttributeValue(character, attribute);
     return (
         <TableRow
             sx={{
-                height: '3rem',
                 alignItems: 'center',
                 width: '100%',
             }}
@@ -135,11 +56,10 @@ const AttributeRow = ({ character, attribute, modifiers, dispatch } : AttributeR
             <TableCell>
                 <Typography
                     sx={{
-                        padding: '0 1rem',
                         display: 'flex',
                         flexGrow: 1,
                     }}
-                    variant='h5'
+                    variant='body1'
                 >
                     {attribute}
                 </Typography>
@@ -196,9 +116,12 @@ const AttributeRow = ({ character, attribute, modifiers, dispatch } : AttributeR
 interface AttributeDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
-};
+}
 
-export const AttributeDisplay = ({ character, dispatch } : AttributeDisplayProps) => {
+export const AttributeDisplay = ({
+    character,
+    dispatch,
+}: AttributeDisplayProps) => {
     const { attributes } = character;
     return (
         <Card
@@ -216,7 +139,10 @@ export const AttributeDisplay = ({ character, dispatch } : AttributeDisplayProps
                 <TableBody>
                     {Object.keys(attributes).map((attribute) => {
                         const typedAtt = attribute as AttributeNames;
-                        const modifiers = getAllAttributeModifiers(character, typedAtt);
+                        const modifiers = getAllAttributeModifiers(
+                            character,
+                            typedAtt
+                        );
                         return (
                             <AttributeRow
                                 key={typedAtt}
