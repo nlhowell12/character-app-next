@@ -209,7 +209,7 @@ export const SpellTable = ({
               )
             : false;
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <Paper sx={{ width: '100%', overflow: 'scroll' }}>
             <Select
                 onChange={handleClassChange}
                 value={selectedClass}
@@ -246,7 +246,7 @@ export const SpellTable = ({
             {!!rows.length ? (
                 <>
                     <TableContainer sx={{ maxHeight: 440 }}>
-                        <Table stickyHeader aria-label='sticky table'>
+                        <Table stickyHeader aria-label='sticky table' size='small'>
                             <TableHead>
                                 <TableRow>
                                     {!!characterSpellbook ? (
