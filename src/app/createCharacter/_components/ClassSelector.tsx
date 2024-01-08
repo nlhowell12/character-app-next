@@ -32,7 +32,7 @@ interface ClassSelectorProps {
 
 export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
     const [open, setOpen] = useState<boolean>(false);
-    const [edit, setEdit] = useState<boolean>(false);
+    const [edit, setEdit] = useState<CharacterClass>();
     const handleClose = (event: any, reason: any) => {
         if (reason !== 'backdropClick') {
             setOpen(false);
@@ -46,10 +46,10 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
     const handleEditSubmit = (cls:CharacterClass) => {
         const updateIndex = R.findIndex(R.propEq(cls.name, 'name'))(character.classes)
         dispatch(updateAction(CharacterKeys.classes, R.update(updateIndex, cls, character.classes)))
-        setEdit(false)
+        setEdit(undefined)
     };
-    const handleEdit = () => {
-        setEdit(true);
+    const handleEdit = (cls: CharacterClass) => {
+        setEdit(cls);
         setOpen(true)
     }
     return (
@@ -63,7 +63,7 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                 <Add />
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <AddClassCard onClose={handleClose} onSubmit={edit ? handleEditSubmit : handleSubmit} />
+                <AddClassCard onClose={handleClose} onSubmit={edit ? handleEditSubmit : handleSubmit} editClass={edit}/>
             </Dialog>
             <Grid
                 direction='row'
@@ -80,7 +80,7 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                                 '&:hover': { opacity: '.6', cursor: 'pointer' },
                             }}
                             key={cls.name}
-                            onClick={handleEdit}
+                            onClick={() => handleEdit(cls)}
                         >
                             <CardHeader title={cls.name} />
                             <CardContent>
