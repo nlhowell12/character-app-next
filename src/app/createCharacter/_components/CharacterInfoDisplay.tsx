@@ -14,6 +14,8 @@ import {
     Grid,
     Checkbox,
     FormControlLabel,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import {
@@ -23,7 +25,6 @@ import {
 } from '../../../_reducer/characterReducer';
 import {
     Character,
-    CharacterClassNames,
     CharacterKeys,
     Modifier,
     Sizes,
@@ -35,10 +36,12 @@ import { ModifierDialog } from '../../_components/ModifierDialog';
 import useCharacterService from '@/app/api/_services/useCharacterService';
 import { ModChipStack } from '@/app/_components/ModChipStack';
 import { isCharacterPsionic } from '@/_utils/spellUtils';
+import { useRouter } from 'next/navigation';
 
 interface CharacterInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
+    onUpdate?: () => void;
 }
 
 interface DisplayCellProps {
@@ -74,13 +77,15 @@ const DisplayCell = ({
     );
 };
 
-export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
+export const CharacterInfoDisplay = ({
     character,
     dispatch,
-}) => {
+    onUpdate,
+}: CharacterInfoDisplayProps) => {
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
-    const { createCharacter } = useCharacterService();
-
+    const { createCharacter, updateCharacter } = useCharacterService();
+    const [error, setError] = useState(false);
+    const router = useRouter();
     const handleSizeChange = (e: SelectChangeEvent<string>) => {
         const {
             target: { value },
@@ -88,10 +93,24 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
         dispatch(updateAction(CharacterKeys.size, value));
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const validateSubmit = true;
         if (!!validateSubmit) {
-            createCharacter(character);
+            if (!!onUpdate) {
+                const res: Response = await updateCharacter(character);
+                if (res.ok) {
+                    onUpdate();
+                } else {
+                    setError(true);
+                }
+            } else {
+                const res: Response = await createCharacter(character);
+                if (res.ok) {
+                    router.push('/');
+                } else {
+                    setError(true);
+                }
+            }
         }
     };
 
@@ -109,6 +128,20 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
     };
     return (
         <Grid container>
+            <Snackbar
+                open={error}
+                autoHideDuration={3000}
+                onClose={() => setError(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => setError(false)}
+                    severity='error'
+                    sx={{ width: '100%' }}
+                >
+                    Error
+                </Alert>
+            </Snackbar>
             <Grid xs={12} item>
                 <Table>
                     <TableBody>
@@ -150,7 +183,7 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                             </TableCell>
                             <TableCell sx={cellStylingObject}>
                                 <Button variant='outlined' onClick={handleSave}>
-                                    <Typography>Create Character</Typography>
+                                    <Typography>{!!onUpdate ? `Update Character `: `Create Character`}</Typography>
                                     <SaveIcon sx={{ marginLeft: '.5rem' }} />
                                 </Button>
                             </TableCell>
@@ -326,7 +359,10 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
                                                         e.target.checked
                                                     )
                                                 );
-                                                if (!e.target.checked && character.maxPowerPoints > 0) {
+                                                if (
+                                                    !e.target.checked &&
+                                                    character.maxPowerPoints > 0
+                                                ) {
                                                     dispatch(
                                                         updateAction(
                                                             CharacterKeys.maxPowerPoints,

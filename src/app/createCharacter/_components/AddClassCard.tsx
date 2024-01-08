@@ -5,6 +5,7 @@ import {
     ClassAbility,
     SkillTypes,
 } from '@/_models';
+import { NumberInput } from '@/app/_components/NumberInput';
 import { Add, CancelRounded, CheckCircle } from '@mui/icons-material';
 import {
     Button,
@@ -194,13 +195,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                                     })}
                             </Select>
                         </FormControl>
-                        <TextField
-                            sx={textFieldStyling}
-                            variant='outlined'
-                            label='Level'
-                            value={level}
-                            onChange={(e) => setLevel(Number(e.target.value))}
-                        />
+                        <NumberInput value={level} label='Level' onChange={(e) => setLevel(Number(e.target.value))}/>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <FormControl fullWidth sx={formControlStyling}>

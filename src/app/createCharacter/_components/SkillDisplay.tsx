@@ -15,6 +15,7 @@ import {
     TextField,
     Tooltip,
     Typography,
+    useTheme,
 } from '@mui/material';
 import { Dispatch } from 'react';
 interface SkillDisplayProps {
@@ -75,9 +76,12 @@ const SkillsTooltip = ({ skill, character }: SkillsTooltipProps) => {
 };
 
 export const SkillDisplay = ({ character, dispatch }: SkillDisplayProps) => {
+    const theme = useTheme();
     return (
         <Card
-            sx={{ overflow: 'scroll', maxHeight: '65vh', width: 'fit-content' }}
+        sx={{ overflow: 'scroll', width: 'fit-content', [theme.breakpoints.up('xl')]: {
+            maxHeight: '65vh'
+        } }}
         >
             <Table>
                 <TableBody>

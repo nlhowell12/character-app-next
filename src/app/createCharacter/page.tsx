@@ -1,15 +1,10 @@
 'use client'
 
 import { useContext, useEffect, useReducer } from 'react';
-import { AttributeDisplay } from './_components/AttributeDisplay';
-import { CharacterInfoDisplay } from './_components/CharacterInfoDisplay';
 import { characterReducer, initialCharacterState, updateAction } from '../../_reducer/characterReducer';
-import { ClassSelector } from './_components/ClassSelector';
-import { SkillDisplay } from './_components/SkillDisplay';
-import { Grid } from '@mui/material';
 import { CharacterKeys } from '@/_models';
-import { FeatSelector } from './_components/FeatSelector';
 import UserContext from '../_auth/UserContext';
+import { EditCharacter } from './_components/EditCharacter';
 
 export default function CreateCharacter() {
     const [character, dispatch] = useReducer(
@@ -25,35 +20,6 @@ export default function CreateCharacter() {
     }, [user])
     
     return (
-		<div style={{height: '100vh'}}>
-			<div style={{
-                borderBottom: `1px solid grey`,
-                paddingBottom: '.5rem',
-                marginBottom: '1rem',
-                width: '99%',
-            }}>
-                <CharacterInfoDisplay
-                    character={character}
-                    dispatch={dispatch}
-                />
-            </div>
-            <Grid container
-                style={{
-                    display: 'flex',
-                    height: '65vh',
-                }}
-            >
-                <Grid item xs={'auto'}>
-                    <AttributeDisplay character={character} dispatch={dispatch} />
-                </Grid>
-                <Grid item xs={12} md={4}display='flex'>
-                    <ClassSelector character={character} dispatch={dispatch} />
-                    <FeatSelector character={character} dispatch={dispatch} />
-                </Grid>
-				<Grid xs={12} md={2} item>
-                    <SkillDisplay character={character} dispatch={dispatch}/>
-                </Grid>
-            </Grid>
-        </div>
+		<EditCharacter character={character} dispatch={dispatch}/>
     );
 };

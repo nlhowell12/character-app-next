@@ -41,7 +41,7 @@ const AddSpeedDialog = ({ dispatch }: AddSpeedDialogProps) => {
     };
 
     const handleSave = () => {
-        dispatch(addMovementActions({ type, speed }));
+        dispatch(addMovementActions({ type, speed: Number(speed) }));
         reset();
     };
     const textFieldStyling = {
@@ -108,6 +108,7 @@ export const SpeedDialog = ({
                     {character.movementSpeeds.map((spd) => {
                         return (
                             <Chip
+                                key={`${spd.type}${spd.speed}`}
                                 label={`${spd.type} - ${spd.speed}`}
                                 variant='outlined'
                                 onDelete={() =>

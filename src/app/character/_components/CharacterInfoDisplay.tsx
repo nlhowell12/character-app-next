@@ -13,9 +13,9 @@ import {
     deleteModAction,
     updateAction,
 } from '@/_reducer/characterReducer';
-import { Dispatch, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { ModifierDialog } from '@/app/_components/ModifierDialog';
-import { Add } from '@mui/icons-material';
+import { Add, OndemandVideoTwoTone } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import useCharacterService from '@/app/api/_services/useCharacterService';
 import { ModChipStack } from '@/app/_components/ModChipStack';
@@ -26,6 +26,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 interface CharacterInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
+    onEdit: Dispatch<SetStateAction<boolean>>;
 }
 
 const cellStylingObject = {
@@ -36,6 +37,7 @@ const cellStylingObject = {
 export const CharacterInfoDisplay = ({
     character,
     dispatch,
+    onEdit
 }: CharacterInfoDisplayProps) => {
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
     const { updateCharacter } = useCharacterService();
@@ -121,6 +123,14 @@ export const CharacterInfoDisplay = ({
                     sx={buttonStlying}
                 >
                     <Typography>Save Character</Typography>
+                    <SaveIcon sx={{ marginLeft: '.5rem' }} />
+                </Button>
+                <Button
+                    variant='outlined'
+                    onClick={() => onEdit(true)}
+                    sx={buttonStlying}
+                >
+                    <Typography>Edit Character</Typography>
                     <SaveIcon sx={{ marginLeft: '.5rem' }} />
                 </Button>
                 <Snackbar
