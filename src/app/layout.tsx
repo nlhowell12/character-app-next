@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import useUserService from './api/_services/useUserService';
 import UserContext from './_auth/UserContext';
 import { UserSignIn } from './_components/UserSignIn';
+import {LoadSkeleton} from './_components/LoadSkeleton';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -33,23 +34,27 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     const [user, setUser] = useState<User>();
-
+    const [isLoading, setLoading] = useState(true);
     const { createUser, loginUser } = useUserService();
     const localStorageKey = 'user';
+
     useEffect(() => {
         const storedUser = localStorage.getItem(localStorageKey);
         if (!!storedUser) {
             const parsedUser = JSON.parse(storedUser);
             setUser(parsedUser);
         }
+        setLoading(false)
     }, []);
 
     const login = async (user: User) => {
+        setLoading(true);
         const res = await loginUser(user);
         if (res.name) {
             setUser(res);
             localStorage.setItem(localStorageKey, JSON.stringify({name: res.name, isDm: res.isDm}));
         }
+        setLoading(false)
     };
     const createNewUser = async (user: User) => {
         const res = await createUser(user);
@@ -71,20 +76,22 @@ export default function RootLayout({
                         <UserContext.Provider
                             value={{ user, login, createNewUser, logout }}
                         >
-                            {!user?.name ? (
-                                <UserSignIn />
-                            ) : (
-                                <Grid
-                                    sx={{
-                                        marginLeft: '6rem',
-                                        marginTop: '5rem',
-                                        height: '100vh',
-                                    }}
-                                >
-                                    <Header />
-                                    {children}
-                                </Grid>
-                            )}
+                            <LoadSkeleton loading={isLoading}>
+                                {!user?.name ? (
+                                    <UserSignIn />
+                                ) : (
+                                    <Grid
+                                        sx={{
+                                            marginLeft: '6rem',
+                                            marginTop: '5rem',
+                                            height: '100vh',
+                                        }}
+                                    >
+                                        <Header />
+                                        {children}
+                                    </Grid>
+                                )}
+                            </LoadSkeleton>
                         </UserContext.Provider>
                     </ThemeRegistry>
                 </AppRouterCacheProvider>

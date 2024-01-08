@@ -39,8 +39,6 @@ export default function CharacterPage() {
     }, [pageCharacter]);
 
     const theme = useTheme();
-    const xsBreak = useMediaQuery(theme.breakpoints.up('xs'));
-    const smBreak = useMediaQuery(theme.breakpoints.up('sm'));
 
     return (
         !!character && (
