@@ -76,6 +76,7 @@ function characterModel() {
         isPsionic: Boolean,
         powerPoints: { type: Number },
         maxPowerPoints: { type: Number },
+        heroPoints: { type: Number },
     })
     return mongoose.models.Character || mongoose.model('Character', characterSchema, 'characters');
 

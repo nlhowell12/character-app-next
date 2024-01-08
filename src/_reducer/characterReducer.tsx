@@ -275,7 +275,8 @@ export const initialCharacterState: Character = {
 	experience: 0,
 	feats: [],
 	spellBook: initialSpellBook,
-	notes: []
+	notes: [],
+	heroPoints: 0
 };
 
 export const characterReducer: Reducer<Character, CharacterAction> = (state, action): Character => {

@@ -14,6 +14,7 @@ export const mockCharacters: Character[] = [
         race: 'Dromite',
         subRace: 'Ice Caste',
         size: Sizes.Small,
+        heroPoints: 3,
         attributes: {
             [AttributeNames.Strength]: {
                 value: 11,

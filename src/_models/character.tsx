@@ -115,7 +115,8 @@ export enum CharacterKeys {
 	notes = 'notes',
 	powerPoints = 'powerPoints',
 	maxPowerPoints = 'maxPowerPoints',
-	isPsionic = 'isPsionic'
+	isPsionic = 'isPsionic',
+	heroPoints = 'heroPoints'
 }
 
 export interface Note {
@@ -152,6 +153,7 @@ export interface Character {
 	feats: Feat[];
 	spellBook: SpellObject;
 	notes: Note[];
+	heroPoints: number;
 }
 export type SkillObject = {
 	[key in SkillTypes]: RankedSkill;

@@ -204,6 +204,21 @@ export const CombatInfoDisplay = ({
                     (spd) => ` ${spd.type}(${spd.speed}ft)`
                 )}
             />
+                <DisplayCell
+                    variant='body1'
+                    cellTitle='Hero Points:'
+                    value={character.heroPoints}
+                    editable={true}
+                    isNumber
+                    onChange={(e) =>
+                        dispatch(
+                            updateAction(
+                                CharacterKeys.heroPoints,
+                                Number(e.target.value)
+                            )
+                        )
+                    }
+                />
             {!!character.maxPowerPoints && isCharacterPsionic(character) && (
                 <DisplayCell
                     variant='body1'
