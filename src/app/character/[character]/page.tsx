@@ -14,7 +14,8 @@ import {
     setCharacterAction,
 } from '@/_reducer/characterReducer';
 import useCharacterService from '@/app/api/_services/useCharacterService';
-import { Fab, Grid, SwipeableDrawer, useMediaQuery, useTheme } from '@mui/material';
+import { Button, Fab, Grid, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 export default function CharacterPage() {
     const params = useParams<{ character: string }>();
@@ -67,19 +68,26 @@ export default function CharacterPage() {
                         height: '65vh',
                     }}
                 >
-						<Fab variant="extended" 
-						onClick={() => setOpenSkillDrawer(true)}
-						sx={{
+						<Button  variant='outlined' 
+							onClick={() => setOpenSkillDrawer(true)}
+							color='primary'
+							sx={{
 							position: 'absolute',
 							transform: 'rotate(-90deg)',
-							right: 0,
-							marginTop: '1rem',
+							right: '-1rem',
+							top: '31rem',
+							borderRadius: '1rem 1rem 0 0',
+							padding: '0 .5rem 0 .5rem',
+							margin: 0,
+							textTransform: 'none',
+							alignContent: 'center',
 							[theme.breakpoints.up('xl')]: {
 								display: 'none',
 							},
 						}}>
-							Skills
-						</Fab>
+							<Typography variant='body1' textTransform='none'>Skills</Typography>
+							<ArrowDropUpIcon sx={{margin: 0}}/>
+						</Button>
 						<SwipeableDrawer
 							keepMounted
 							anchor={'right'}
