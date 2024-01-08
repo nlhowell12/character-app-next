@@ -109,7 +109,7 @@ export const CharacterInfoDisplay: React.FC<CharacterInfoDisplayProps> = ({
     };
     return (
         <Grid container>
-            <Grid xs={6} item>
+            <Grid xs={12} item>
                 <Table>
                     <TableBody>
                         <TableRow
