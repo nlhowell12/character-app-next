@@ -25,15 +25,13 @@ export default function CreateCharacter() {
     }, [user])
     
     return (
-        <div>
-            <div
-                style={{
-                    borderBottom: `1px solid grey`,
-                    paddingBottom: '.5rem',
-                    marginBottom: '1rem',
-                    width: '99%',
-                }}
-            >
+		<div style={{height: '100vh'}}>
+			<div style={{
+                borderBottom: `1px solid grey`,
+                paddingBottom: '.5rem',
+                marginBottom: '1rem',
+                width: '99%',
+            }}>
                 <CharacterInfoDisplay
                     character={character}
                     dispatch={dispatch}
@@ -48,11 +46,11 @@ export default function CreateCharacter() {
                 <Grid item xs={'auto'}>
                     <AttributeDisplay character={character} dispatch={dispatch} />
                 </Grid>
-                <Grid item xs={4} display='flex'>
+                <Grid item xs={12} md={4}display='flex'>
                     <ClassSelector character={character} dispatch={dispatch} />
                     <FeatSelector character={character} dispatch={dispatch} />
                 </Grid>
-                <Grid item xs={2}>
+				<Grid xs={12} md={2} item>
                     <SkillDisplay character={character} dispatch={dispatch}/>
                 </Grid>
             </Grid>
