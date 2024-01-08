@@ -23,6 +23,7 @@ import {
     CharacterKeys,
     SkillTypes,
 } from '@/_models';
+import * as R from 'ramda';
 
 interface ClassSelectorProps {
     character: Character;
@@ -31,7 +32,7 @@ interface ClassSelectorProps {
 
 export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
     const [open, setOpen] = useState<boolean>(false);
-
+    const [edit, setEdit] = useState<boolean>(false);
     const handleClose = (event: any, reason: any) => {
         if (reason !== 'backdropClick') {
             setOpen(false);
@@ -42,6 +43,15 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
             updateAction(CharacterKeys.classes, [...character.classes, cls])
         );
     };
+    const handleEditSubmit = (cls:CharacterClass) => {
+        const updateIndex = R.findIndex(R.propEq(cls.name, 'name'))(character.classes)
+        dispatch(updateAction(CharacterKeys.classes, R.update(updateIndex, cls, character.classes)))
+        setEdit(false)
+    };
+    const handleEdit = () => {
+        setEdit(true);
+        setOpen(true)
+    }
     return (
         <div
             style={{
@@ -53,7 +63,7 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                 <Add />
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <AddClassCard onClose={handleClose} onSubmit={handleSubmit} />
+                <AddClassCard onClose={handleClose} onSubmit={edit ? handleEditSubmit : handleSubmit} />
             </Dialog>
             <Grid
                 direction='row'
@@ -64,8 +74,13 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                 {character.classes.map((cls) => {
                     return (
                         <Card
-                            sx={{ margin: '0 .25rem .5rem', width: '20rem' }}
+                            sx={{
+                                margin: '0 .25rem .5rem',
+                                width: '20rem',
+                                '&:hover': { opacity: '.6', cursor: 'pointer' },
+                            }}
                             key={cls.name}
+                            onClick={handleEdit}
                         >
                             <CardHeader title={cls.name} />
                             <CardContent>

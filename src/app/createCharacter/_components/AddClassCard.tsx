@@ -24,7 +24,7 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 interface AddClassAbilityProps {
     addAbility: (ability: ClassAbility) => void;
@@ -90,9 +90,10 @@ const ClassAbilityCard = ({abl}: ClassAbilityCardProps) => {
 interface AddClassCardProps {
     onClose: (event: any, reason: any) => void;
     onSubmit: (cls: CharacterClass) => void;
+    editClass?: CharacterClass;
 }
 
-export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
+export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps) => {
     const [className, setClassName] = useState<CharacterClassNames>(
         CharacterClassNames.Barbarian
     );
@@ -113,6 +114,18 @@ export const AddClassCard = ({ onClose, onSubmit }: AddClassCardProps) => {
     };
     const open = Boolean(anchorEl);
 
+    useEffect(() => {
+        if(!!editClass) {
+            const {name, level, primarySave, secondarySave, classAbilities, classSkills} = editClass;
+            setClassName(name as CharacterClassNames);
+            setLevel(level)
+            setPrimarySave(primarySave)
+            setSecondarySave(secondarySave)
+            setClassAbilities(classAbilities)
+            setClassSkills(classSkills)
+        }
+    },[editClass])
+    
     const handleSubmitClick = () => {
         const cls: CharacterClass = {
             name: className,
