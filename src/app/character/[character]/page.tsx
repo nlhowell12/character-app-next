@@ -43,7 +43,7 @@ export default function CharacterPage() {
     return (
         !!character && (
             <div style={{ height: '100vh' }}>
-                <div
+				<Grid container display={'flex'} flexDirection='row'
                     style={{
                         borderBottom: `1px solid grey`,
                         paddingBottom: '.5rem',
@@ -55,7 +55,7 @@ export default function CharacterPage() {
                         character={character}
                         dispatch={dispatch}
                     />
-                </div>
+                </Grid>
                 <Grid
                     container
                     style={{
