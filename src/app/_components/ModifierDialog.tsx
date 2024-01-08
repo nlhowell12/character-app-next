@@ -171,7 +171,8 @@ export const ModifierDialog = ({
             open={open}
             onClose={onClose}
         >
-        <Card>
+        <Card
+        sx={{overflow: 'scroll'}}>
             <CardHeader title='Add Modifiers' />
             <CardContent>
                 <FormControl
