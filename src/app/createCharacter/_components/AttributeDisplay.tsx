@@ -4,8 +4,6 @@ import {
     TableBody,
     TableCell,
     TableRow,
-    TextField,
-    Tooltip,
     Typography,
 } from '@mui/material';
 import React, { Dispatch } from 'react';
@@ -14,7 +12,7 @@ import {
     CharacterAction,
     updateAttributeAction,
 } from '../../../_reducer/characterReducer';
-import { BonusTypes, Modifier, Character, AttributeNames } from '@/_models';
+import { Modifier, Character, AttributeNames } from '@/_models';
 import {
     totalAttributeValue,
     getBaseAttributeScore,
@@ -24,15 +22,8 @@ import {
 } from '@/_utils/attributeUtils';
 import { getTotalSaveBonus } from '@/_utils/defenseUtils';
 import { DisplayBox } from '@/app/character/_components/DisplayBox';
+import { CardTitles } from '@/app/character/_components/AttributeDisplay';
 
-enum CardTitles {
-    Total = 'Total',
-    Base = 'Base',
-    Modifier = 'Modifier',
-    Save = 'Save',
-}
-
-type CardTitlesType = BonusTypes | CardTitles;
 interface AttributeRowProps {
     character: Character;
     attribute: AttributeNames;
