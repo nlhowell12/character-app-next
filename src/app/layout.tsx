@@ -43,11 +43,12 @@ export default function RootLayout({
             setUser(parsedUser);
         }
     }, []);
+
     const login = async (user: User) => {
         const res = await loginUser(user);
         if (res.name) {
             setUser(res);
-            localStorage.setItem(localStorageKey, JSON.stringify(res));
+            localStorage.setItem(localStorageKey, JSON.stringify({name: res.name, isDm: res.isDm}));
         }
     };
     const createNewUser = async (user: User) => {
