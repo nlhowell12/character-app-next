@@ -8,6 +8,7 @@ import {
     TableRow,
     Tooltip,
     Typography,
+    useTheme
 } from '@mui/material';
 interface SkillDisplayProps {
     character: Character;
@@ -71,9 +72,12 @@ const SkillsTooltip = (
 };
 
 export const SkillDisplay = ({ character }: SkillDisplayProps) => {
+    const theme = useTheme();
     return (
         <Card
-            sx={{ overflow: 'scroll', width: 'fit-content' }}
+            sx={{ overflow: 'scroll', width: 'fit-content', [theme.breakpoints.up('xl')]: {
+                maxHeight: '65vh'
+            } }}
         >
             <Table>
                 <TableBody>

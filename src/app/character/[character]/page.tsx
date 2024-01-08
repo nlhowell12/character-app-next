@@ -73,7 +73,10 @@ export default function CharacterPage() {
 							position: 'absolute',
 							transform: 'rotate(-90deg)',
 							right: 0,
-							marginTop: '1rem'
+							marginTop: '1rem',
+							[theme.breakpoints.up('xl')]: {
+								display: 'none',
+							},
 						}}>
 							Skills
 						</Fab>
