@@ -27,6 +27,7 @@ import {
 import { camelToTitle } from '@/_utils/stringUtils';
 import * as R from 'ramda';
 import { NumberInput } from './NumberInput';
+import { iconHoverStyling } from '@/_utils/theme';
 
 interface SpellTableTooltipProps {
     description: string;
@@ -60,6 +61,8 @@ export const SpellTable = ({
     const [rows, setRows] = useState<AnyMagickType[]>([]);
     const [searchValue, setSearchValue] = useState<string>('');
     const [filteredRows, setFilteredRows] = useState<AnyMagickType[]>([]);
+    const [onlyPrepared, setOnlyPrepared] = useState<AnyMagickType[]>([]);
+
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     let initialLoad = useRef<boolean>(true);
@@ -70,6 +73,16 @@ export const SpellTable = ({
         CharacterClassNames.PsychicWarrior,
     ];
     const isHybridClass = hybridClasses.includes(selectedClass);
+
+    const handleOnlyPrepared = () => {
+        if(!onlyPrepared.length) {
+            const filter = (x:Magick) => x.prepared > 0;
+            const onlyPreparedSpells = R.filter(filter, rows as Magick[])
+            setOnlyPrepared(onlyPreparedSpells);
+        } else {
+            setOnlyPrepared([])
+        }
+    };
 
     const filterData = (col: string) => {
         const filteredColumns: string[] = [
@@ -116,13 +129,16 @@ export const SpellTable = ({
                     ? filterBySubtype(spells[selectedClass])
                     : [];
             }
+            if(!!onlyPrepared.length){
+                filteredSpells = onlyPrepared
+            }
             const columns = !!filteredSpells.length
                 ? Object.keys(filteredSpells[0]).filter((x) => filterData(x))
                 : [];
             setRows(filteredSpells);
             setColumns(columns);
         }
-    }, [spells, selectedClass]);
+    }, [spells, selectedClass, onlyPrepared]);
 
     useEffect(() => {
         if (!!rows && isHybridClass && !!spells) {
@@ -254,7 +270,7 @@ export const SpellTable = ({
                                             {!personal ? (
                                                 <TableCell>Known</TableCell>
                                             ) : (
-                                                <TableCell>Prepared</TableCell>
+                                                <TableCell onClick={handleOnlyPrepared} sx={iconHoverStyling}>Prepared / Used</TableCell>
                                             )}
                                         </>
                                     ) : null}
