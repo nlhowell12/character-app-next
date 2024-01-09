@@ -175,7 +175,7 @@ export interface Maneuver {
 }
 
 export type AnyMagickType =
-    | Magick
+    Magick
     | Prayer
     | Spell
     | Maneuver

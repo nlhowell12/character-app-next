@@ -9,6 +9,8 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {
     Checkbox,
+    FormControl,
+    InputLabel,
     MenuItem,
     Select,
     SelectChangeEvent,
@@ -63,6 +65,7 @@ export const SpellTable = ({
     const [searchValue, setSearchValue] = useState<string>('');
     const [filteredRows, setFilteredRows] = useState<AnyMagickType[]>([]);
     const [onlyPrepared, setOnlyPrepared] = useState<AnyMagickType[]>([]);
+    const [columnFilter, setColumnFilter] = useState<{column:string, value:string}>({column: '', value: ''});
 
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -76,13 +79,58 @@ export const SpellTable = ({
     const isHybridClass = hybridClasses.includes(selectedClass);
 
     const handleOnlyPrepared = () => {
-        if(!onlyPrepared.length) {
-            const filter = (x:Magick) => x.prepared > 0;
-            const onlyPreparedSpells = R.filter(filter, rows as Magick[])
+        if (!onlyPrepared.length) {
+            const filter = (x: Magick) => x.prepared > 0;
+            const onlyPreparedSpells = R.filter(filter, rows as Magick[]);
             setOnlyPrepared(onlyPreparedSpells);
         } else {
-            setOnlyPrepared([])
+            setOnlyPrepared([]);
         }
+    };
+    const resetColumnFilter  = () => {
+        setColumnFilter({column: '', value: ''});
+    }
+    const filterSelectCell = (column: string) => {
+        const filterColumns = ['school', 'domain', 'path', 'discipline'];
+        const filterSelectOptions = (column: string) => {
+            let optionsSet = new Set<string>();
+            /* @ts-ignore */
+            filteredRows.forEach((x: AnyMagickType) =>optionsSet.add(x[column]));
+            return optionsSet;
+        };
+        const handleColumnFilter = (e: SelectChangeEvent<string>) => {
+            const {
+                target: { value },
+            } = e;
+            if (!!value) {
+                setColumnFilter({column, value});
+            } else {
+                resetColumnFilter()
+            }
+        };
+        if (filterColumns.includes(column)) {
+            return (
+                <FormControl sx={{ width: '100%' }}>
+                    <InputLabel>{camelToTitle(column)}</InputLabel>
+                    <Select
+                        variant='standard'
+                        label={camelToTitle(column)}
+                        onChange={handleColumnFilter}
+                        fullWidth
+                    >
+                        <MenuItem value=''>Reset</MenuItem>
+                        {Array.from(filterSelectOptions(column)).map((opt) => {
+                            return (
+                                <MenuItem key={opt} value={opt}>
+                                    {opt}
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
+            );
+        }
+        return camelToTitle(column);
     };
 
     const filterData = (col: string) => {
@@ -130,8 +178,12 @@ export const SpellTable = ({
                     ? filterBySubtype(spells[selectedClass])
                     : [];
             }
-            if(!!onlyPrepared.length){
-                filteredSpells = onlyPrepared
+            if (!!onlyPrepared.length) {
+                filteredSpells = onlyPrepared;
+            }
+            if(!!columnFilter.value){
+                /* @ts-ignore */
+                filteredSpells = filteredSpells.filter(x => x[columnFilter.column] === columnFilter.value)
             }
             const columns = !!filteredSpells.length
                 ? Object.keys(filteredSpells[0]).filter((x) => filterData(x))
@@ -139,7 +191,7 @@ export const SpellTable = ({
             setRows(filteredSpells);
             setColumns(columns);
         }
-    }, [spells, selectedClass, onlyPrepared]);
+    }, [spells, selectedClass, onlyPrepared, columnFilter]);
 
     useEffect(() => {
         if (!!rows && isHybridClass && !!spells) {
@@ -169,6 +221,7 @@ export const SpellTable = ({
 
     const handleClassChange = (event: SelectChangeEvent) => {
         setSelectedSubtype(MagickCategory.Maneuver);
+        resetColumnFilter();
         setSelectedClass(event.target.value as keyof SpellObject);
     };
 
@@ -263,7 +316,11 @@ export const SpellTable = ({
             {!!rows.length ? (
                 <>
                     <TableContainer sx={{ maxHeight: 440 }}>
-                        <Table stickyHeader aria-label='sticky table' size='small'>
+                        <Table
+                            stickyHeader
+                            aria-label='sticky table'
+                            size='small'
+                        >
                             <TableHead>
                                 <TableRow>
                                     {!!characterSpellbook ? (
@@ -271,19 +328,29 @@ export const SpellTable = ({
                                             {!personal ? (
                                                 <TableCell>Known</TableCell>
                                             ) : (
-                                                <TableCell onClick={handleOnlyPrepared} sx={iconHoverStyling}>
+                                                <TableCell
+                                                    onClick={handleOnlyPrepared}
+                                                    sx={iconHoverStyling}
+                                                >
                                                     Prepared / Used
-                                                    {!!onlyPrepared.length && 
-                                                    <Tooltip title='Only Showing Prepared'>
-                                                        <InfoIcon sx={{marginLeft: '.5rem'}} color='primary'/>
-                                                    </Tooltip>}
+                                                    {!!onlyPrepared.length && (
+                                                        <Tooltip title='Only Showing Prepared'>
+                                                            <InfoIcon
+                                                                sx={{
+                                                                    marginLeft:
+                                                                        '.5rem',
+                                                                }}
+                                                                color='primary'
+                                                            />
+                                                        </Tooltip>
+                                                    )}
                                                 </TableCell>
                                             )}
                                         </>
                                     ) : null}
                                     {columns.map((column) => (
                                         <TableCell key={column} align='left'>
-                                            {camelToTitle(column)}
+                                            {filterSelectCell(column)}
                                         </TableCell>
                                     ))}
                                 </TableRow>
@@ -330,7 +397,10 @@ export const SpellTable = ({
                                                             ) : (
                                                                 <TableCell>
                                                                     <NumberInput
-                                                                        sx={{maxWidth: '4rem'}}
+                                                                        sx={{
+                                                                            maxWidth:
+                                                                                '4rem',
+                                                                        }}
                                                                         value={
                                                                             (
                                                                                 row as Magick
@@ -338,10 +408,18 @@ export const SpellTable = ({
                                                                                 .prepared
                                                                         }
                                                                         label=''
-                                                                        onChange={(e) =>
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
                                                                             !!onChange &&
                                                                             onChange(
-                                                                                {...(row as Magick), prepared: e.target.value},
+                                                                                {
+                                                                                    ...(row as Magick),
+                                                                                    prepared:
+                                                                                        e
+                                                                                            .target
+                                                                                            .value,
+                                                                                },
                                                                                 selectedClass
                                                                             )
                                                                         }
