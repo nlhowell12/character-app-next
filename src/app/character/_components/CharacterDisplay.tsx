@@ -20,11 +20,12 @@ interface CharacterDisplayProps {
 };
 export const  CharacterDisplay = ({character, dispatch, onEdit}: CharacterDisplayProps) => {
 	const [openSkillDrawer, setOpenSkillDrawer] = useState(false);
+	const [openAttDrawer, setOpenAttDrawer] = useState(false);
     const theme = useTheme();
 
     return (
         !!character && (
-            <div style={{ height: '100vh' }}>
+            <div style={{ height: '100vh', marginRight: '2rem' }}>
                 <Grid
                     container
                     display={'flex'}
@@ -49,14 +50,53 @@ export const  CharacterDisplay = ({character, dispatch, onEdit}: CharacterDispla
                         height: '65vh',
                     }}
                 >
-						<Button  variant='outlined' 
+                    <Grid item xs={12} lg={'auto'} sx={{position: 'relative'}}>
+                        <Grid container>
+                            <Grid item xs={'auto'}  sx={{
+                                [theme.breakpoints.down('xl')]: {
+                                    display: 'none',
+                                },
+                            }}>
+                                <AttributeDisplay character={character} />
+                            </Grid>
+                            <Button  variant='outlined' 
+							onClick={() => setOpenAttDrawer(true)}
+							color='primary'
+							sx={{
+							position: 'absolute',
+							transform: 'rotate(90deg)',
+							left: '-4rem',
+							top: '3rem',
+							borderRadius: '1rem 1rem 0 0',
+							padding: '0 .5rem 0 .5rem',
+							margin: 0,
+							textTransform: 'none',
+							alignContent: 'center',
+							[theme.breakpoints.up('xl')]: {
+								display: 'none',
+							},
+						}}>
+							<Typography variant='body1' textTransform='none'>Attributes</Typography>
+							<ArrowDropUpIcon sx={{margin: 0}}/>
+						</Button>
+						<SwipeableDrawer
+                            PaperProps={{sx:{marginTop: '15%', height: 'fit-content'}}}
+							keepMounted
+							anchor={'left'}
+							open={openAttDrawer}
+							onClose={() => setOpenAttDrawer(false)}
+							onOpen={() => setOpenAttDrawer(true)}
+							>
+                        	<AttributeDisplay character={character} />
+						</SwipeableDrawer>
+                        <Button  variant='outlined' 
 							onClick={() => setOpenSkillDrawer(true)}
 							color='primary'
 							sx={{
 							position: 'absolute',
 							transform: 'rotate(-90deg)',
-							right: '-1rem',
-							top: '31rem',
+							right: '-3.5rem',
+							top: '2rem',
 							borderRadius: '1rem 1rem 0 0',
 							padding: '0 .5rem 0 .5rem',
 							margin: 0,
@@ -78,11 +118,6 @@ export const  CharacterDisplay = ({character, dispatch, onEdit}: CharacterDispla
 							>
                         	<SkillDisplay character={character} />
 						</SwipeableDrawer>
-                    <Grid item xs={12} lg={'auto'} sx={{position: 'relative'}}>
-                        <Grid container>
-                            <Grid item xs={'auto'}>
-                                <AttributeDisplay character={character} />
-                            </Grid>
                             <Grid
                                 item
                                 xs={12}
