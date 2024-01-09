@@ -40,6 +40,7 @@ export interface Weapon extends BaseEquipment {
     rangeIncrement: number;
     dexBasedAttack: boolean;
     dexBasedDamage: boolean;
+    isWeapon: boolean;
 }
 
 export interface Armor extends BaseEquipment {
@@ -48,4 +49,5 @@ export interface Armor extends BaseEquipment {
     maxDexBonus: number;
     spellFailure: number;
     hardness: number;
+    isArmor: boolean;
 }

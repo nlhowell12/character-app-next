@@ -14,6 +14,7 @@ export enum CharacterReducerActions {
 	ADD_EQUIPMENT = 'ADD_EQUIPMENT',
 	REMOVE_EQUIPMENT = 'REMOVE_EQUIPMENT',
 	UPDATE_EQUIPMENT = 'UPDATE_EQUIPMENT',
+	REPLACE_EQUIPMENT = 'REPLACE_EQUIPMENT',
 	LEARN_SPELL = 'LEARN_SPELL',
 	PREPARE_SPELL = 'PREPARE_SPELL',
 	ADD_NOTE = 'ADD_NOTE',
@@ -169,6 +170,20 @@ export const updateEquipmentAction = (
 		payload: {
 			updateId,
 			key,
+			value
+		}
+	}
+};
+
+export const replaceEquipmentAction = (
+	updateId: string,
+	value: Equipment,
+) : CharacterAction => {
+	return {
+		type: CharacterReducerActions.REPLACE_EQUIPMENT,
+		payload: {
+			key: CharacterKeys.equipment,
+			updateId,
 			value
 		}
 	}
@@ -376,6 +391,13 @@ export const characterReducer: Reducer<Character, CharacterAction> = (state, act
 				const newObject: Equipment = {...state.equipment[index], [key]: value} as Equipment;
 				return {...state, equipment: R.update(index, newObject, state.equipment)}
 			}
+		case CharacterReducerActions.REPLACE_EQUIPMENT:
+			if(updateId){
+				const index = R.findIndex(R.propEq(updateId, 'id'))(state.equipment);
+				const replaceEq = value as Equipment;
+				return {...state, equipment: R.update(index, replaceEq, state.equipment)}
+			}
+			return {...state}
 		case CharacterReducerActions.LEARN_SPELL:
 			const spell = value as AnyMagickType;
 			const spellAlreadyKnown = R.findIndex(R.propEq(spell.name, 'name'))(state.spellBook[updateId as keyof SpellObject]);

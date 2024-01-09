@@ -16,6 +16,7 @@ import {
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
+import EditIcon from '@mui/icons-material/Edit';
 import {
     Armor,
     BodySlot,
@@ -28,6 +29,7 @@ import {
     CharacterAction,
     addEquipmentAction,
     removeEquipmentAction,
+    replaceEquipmentAction,
     toggleEquippedAction,
     updateEquipmentAction,
 } from '@/_reducer/characterReducer';
@@ -121,9 +123,16 @@ export const EquipmentDisplay = ({
     };
 
     const [open, setOpen] = useState<boolean>(false);
+    const [editEq, setEditEq] = useState<Equipment>();
+
     const handleAdd = (newEq: Equipment) => {
         dispatch(addEquipmentAction(newEq));
         setOpen(false);
+    };
+
+    const handleEdit = (newEq: Equipment) => {
+        dispatch(replaceEquipmentAction(newEq.id, newEq));
+        setEditEq(undefined);
     };
 
     const handleClose = () => {
@@ -160,10 +169,12 @@ export const EquipmentDisplay = ({
                     <Button onClick={() => setOpen(true)}>Add</Button>
                 </CardActions>
             </div>
-            <Dialog open={open}>
+            <Dialog open={open || !!editEq}>
                 <AddEquipmentCard
                     onAdd={handleAdd}
                     onClose={handleClose}
+                    edit={editEq}
+                    onEdit={handleEdit}
                 />
             </Dialog>
             <Card sx={eqDisplayCardStyle}>
@@ -184,6 +195,7 @@ export const EquipmentDisplay = ({
                             </TableCell>
                             <TableCell align='center'>Critical</TableCell>
                             <TableCell></TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                         {weapons.map((eq) => {
                             const weapon = eq as Weapon;
@@ -191,11 +203,6 @@ export const EquipmentDisplay = ({
                                 weapon.criticalRange < 20
                                     ? `${weapon.criticalRange}-20`
                                     : 20;
-                            const damageBonus = getDamageBonus(
-                                character,
-                                weapon
-                            );
-                            const damagePositive = damageBonus >= 0 ? '+' : '-';
                             return (
                                 <TableRow key={weapon.name}>
                                     <TableCell>{weapon.name}</TableCell>
@@ -253,6 +260,16 @@ export const EquipmentDisplay = ({
                                         {`${critRange} / x${weapon.criticalMultiplier}`}
                                     </TableCell>
                                     <TableCell>
+                                        <Tooltip title='Edit Equipment'>
+                                            <EditIcon
+                                                sx={iconHoverStyling}
+                                                onClick={() =>
+                                                    setEditEq(weapon)
+                                                }
+                                            />
+                                        </Tooltip>
+                                    </TableCell>
+                                    <TableCell>
                                         <Tooltip title='Remove Equipment'>
                                             <ClearIcon
                                                 sx={iconHoverStyling}
@@ -289,6 +306,7 @@ export const EquipmentDisplay = ({
                             <TableCell align='center'>Spell Failure</TableCell>
                             <TableCell>Hardness</TableCell>
                             <TableCell align='center'>Equipped</TableCell>
+                            <TableCell></TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                         {armor.map((eq) => {
@@ -373,6 +391,16 @@ export const EquipmentDisplay = ({
                                                 />
                                             </Tooltip>
                                         )}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Tooltip title='Edit Equipment'>
+                                            <EditIcon
+                                                sx={iconHoverStyling}
+                                                onClick={() =>
+                                                    setEditEq(armor)
+                                                }
+                                            />
+                                        </Tooltip>
                                     </TableCell>
                                     <TableCell>
                                         <Tooltip title='Remove Equipment'>

@@ -24,7 +24,7 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Add } from '@mui/icons-material';
 import { ModChipStack } from '@/app/_components/ModChipStack';
 import * as R from 'ramda';
@@ -32,14 +32,16 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface AddEquipmentCardProps {
     onAdd: (newEq: Equipment) => void;
+    onEdit: (newEq: Equipment) => void;
     onClose: () => void;
+    edit?: Equipment;
 }
 export const AddEquipmentCard = ({
     onAdd,
     onClose,
+    edit,
+    onEdit
 }: AddEquipmentCardProps) => {
-    const [isArmor, setIsArmor] = useState<boolean>(false);
-    const [isWeapon, setIsWeapon] = useState<boolean>(false);
     const [modOpen, setModOpen] = useState<boolean>(false);
     const initialEquipmentState: Equipment = {
         id: uuidv4(),
@@ -62,7 +64,15 @@ export const AddEquipmentCard = ({
         hardness: 0,
         bodySlot: BodySlot.None,
         amount: 1,
+        isArmor: false,
+        isWeapon: false
     };
+
+    useEffect(() => {
+        if(!!edit){
+            setNewObject(edit)
+        }
+    },[])
 
     const [newEq, setNewObject] = useState<Equipment>(
         initialEquipmentState
@@ -97,8 +107,8 @@ export const AddEquipmentCard = ({
                     <FormControlLabel
                         control={
                             <Checkbox
-                                checked={isWeapon}
-                                onChange={(e) => setIsWeapon(e.target.checked)}
+                                checked={(newEq as Weapon).isWeapon}
+                                onChange={(e) => handleChange(e, 'isWeapon')}
                             />
                         }
                         label='Is this a Weapon?'
@@ -106,8 +116,8 @@ export const AddEquipmentCard = ({
                     <FormControlLabel
                         control={
                             <Checkbox
-                                checked={isArmor}
-                                onChange={(e) => setIsArmor(e.target.checked)}
+                                checked={(newEq as Armor).isArmor}
+                                onChange={(e) => handleChange(e, 'isArmor')}
                             />
                         }
                         label='Is this Armor?'
@@ -143,7 +153,7 @@ export const AddEquipmentCard = ({
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                     ) => handleChange(e, 'weight')}
                 />
-                {!!isWeapon ? (
+                {!!(newEq as Weapon).isWeapon ? (
                     <>
                         <Typography sx={{ margin: '.5rem 0' }}>
                             Weapon Info
@@ -281,7 +291,7 @@ export const AddEquipmentCard = ({
                         />
                     </>
                 ) : null}
-                {!!isArmor ? (
+                {!!(newEq as Armor).isArmor ? (
                     <>
                         <Typography sx={{ margin: '.5rem 0' }}>
                             Armor Info
@@ -351,7 +361,7 @@ export const AddEquipmentCard = ({
                 <ModChipStack mods={newEq.modifiers} onDelete={handleDeleteModifier}/>
             </CardContent>
             <CardActions>
-                <Button onClick={() => onAdd(newEq)}>Add to Equipment</Button>
+                <Button onClick={() => !!edit ? onEdit(newEq) : onAdd(newEq)}>{!!edit ? `Update Equipment` :`Add to Equipment`}</Button>
                 <Button onClick={() => onClose()}>Cancel</Button>
             </CardActions>
         </Card>
