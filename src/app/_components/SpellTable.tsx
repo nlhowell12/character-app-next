@@ -117,6 +117,7 @@ export const SpellTable = ({
                         label={camelToTitle(column)}
                         onChange={handleColumnFilter}
                         fullWidth
+                        value={columnFilter.value}
                     >
                         <MenuItem value=''>Reset</MenuItem>
                         {Array.from(filterSelectOptions(column)).map((opt) => {
