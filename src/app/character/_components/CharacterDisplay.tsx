@@ -7,20 +7,28 @@ import { CharacterInfoDisplay } from './CharacterInfoDisplay';
 import { CombatInfoDisplay } from './CombatInfoDisplay';
 import { EquipmentDisplay } from './EquipmentDisplay';
 import { SkillDisplay } from './SkillDisplay';
+import { CharacterAction } from '@/_reducer/characterReducer';
 import {
-    CharacterAction,
-} from '@/_reducer/characterReducer';
-import { Button, Grid, SwipeableDrawer, Typography, useTheme } from '@mui/material';
+    Button,
+    Grid,
+    SwipeableDrawer,
+    Typography,
+    useTheme,
+} from '@mui/material';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 interface CharacterDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
     onEdit: Dispatch<SetStateAction<boolean>>;
-};
-export const  CharacterDisplay = ({character, dispatch, onEdit}: CharacterDisplayProps) => {
-	const [openSkillDrawer, setOpenSkillDrawer] = useState(false);
-	const [openAttDrawer, setOpenAttDrawer] = useState(false);
+}
+export const CharacterDisplay = ({
+    character,
+    dispatch,
+    onEdit,
+}: CharacterDisplayProps) => {
+    const [openSkillDrawer, setOpenSkillDrawer] = useState(false);
+    const [openAttDrawer, setOpenAttDrawer] = useState(false);
     const theme = useTheme();
 
     return (
@@ -50,74 +58,108 @@ export const  CharacterDisplay = ({character, dispatch, onEdit}: CharacterDispla
                         height: '65vh',
                     }}
                 >
-                    <Grid item xs={12} lg={'auto'} sx={{position: 'relative'}}>
+                    <Grid
+                        item
+                        xs={12}
+                        lg={'auto'}
+                        sx={{ position: 'relative' }}
+                    >
                         <Grid container>
-                            <Grid item xs={'auto'}  sx={{
-                                [theme.breakpoints.down('xl')]: {
-                                    display: 'none',
-                                },
-                            }}>
+                            <Grid
+                                item
+                                xs={'auto'}
+                                sx={{
+                                    [theme.breakpoints.down('xl')]: {
+                                        display: 'none',
+                                    },
+                                }}
+                            >
                                 <AttributeDisplay character={character} />
                             </Grid>
-                            <Button  variant='outlined' 
-							onClick={() => setOpenAttDrawer(true)}
-							color='primary'
-							sx={{
-							position: 'absolute',
-							transform: 'rotate(90deg)',
-							left: '-4rem',
-							top: '3rem',
-							borderRadius: '1rem 1rem 0 0',
-							padding: '0 .5rem 0 .5rem',
-							margin: 0,
-							textTransform: 'none',
-							alignContent: 'center',
-							[theme.breakpoints.up('xl')]: {
-								display: 'none',
-							},
-						}}>
-							<Typography variant='body1' textTransform='none'>Attributes</Typography>
-							<ArrowDropUpIcon sx={{margin: 0}}/>
-						</Button>
-						<SwipeableDrawer
-                            PaperProps={{sx:{marginTop: '15%', height: 'fit-content'}}}
-							keepMounted
-							anchor={'left'}
-							open={openAttDrawer}
-							onClose={() => setOpenAttDrawer(false)}
-							onOpen={() => setOpenAttDrawer(true)}
-							>
-                        	<AttributeDisplay character={character} />
-						</SwipeableDrawer>
-                        <Button  variant='outlined' 
-							onClick={() => setOpenSkillDrawer(true)}
-							color='primary'
-							sx={{
-							position: 'absolute',
-							transform: 'rotate(-90deg)',
-							right: '-3.5rem',
-							top: '2rem',
-							borderRadius: '1rem 1rem 0 0',
-							padding: '0 .5rem 0 .5rem',
-							margin: 0,
-							textTransform: 'none',
-							alignContent: 'center',
-							[theme.breakpoints.up('xl')]: {
-								display: 'none',
-							},
-						}}>
-							<Typography variant='body1' textTransform='none'>Skills</Typography>
-							<ArrowDropUpIcon sx={{margin: 0}}/>
-						</Button>
-						<SwipeableDrawer
-							keepMounted
-							anchor={'right'}
-							open={openSkillDrawer}
-							onClose={() => setOpenSkillDrawer(false)}
-							onOpen={() => setOpenSkillDrawer(true)}
-							>
-                        	<SkillDisplay character={character} />
-						</SwipeableDrawer>
+                            <Button
+                                variant='outlined'
+                                onClick={() => setOpenAttDrawer(true)}
+                                color='primary'
+                                sx={{
+                                    position: 'absolute',
+                                    transform: 'rotate(90deg)',
+                                    left: '-4rem',
+                                    top: '3rem',
+                                    borderRadius: '1rem 1rem 0 0',
+                                    padding: '0 .5rem 0 .5rem',
+                                    margin: 0,
+                                    textTransform: 'none',
+                                    alignContent: 'center',
+                                    [theme.breakpoints.up('xl')]: {
+                                        display: 'none',
+                                    },
+                                }}
+                            >
+                                <Typography
+                                    variant='body1'
+                                    textTransform='none'
+                                >
+                                    Attributes
+                                </Typography>
+                                <ArrowDropUpIcon sx={{ margin: 0 }} />
+                            </Button>
+                            <SwipeableDrawer
+                                PaperProps={{
+                                    sx: {
+                                        marginTop: '15%',
+                                        height: 'fit-content',
+                                    },
+                                }}
+                                keepMounted
+                                anchor={'left'}
+                                open={openAttDrawer}
+                                onClose={() => setOpenAttDrawer(false)}
+                                onOpen={() => setOpenAttDrawer(true)}
+                            >
+                                <AttributeDisplay character={character} />
+                            </SwipeableDrawer>
+                            <Button
+                                variant='outlined'
+                                onClick={() => setOpenSkillDrawer(true)}
+                                color='primary'
+                                sx={{
+                                    position: 'absolute',
+                                    transform: 'rotate(-90deg)',
+                                    right: '-3.5rem',
+                                    top: '2rem',
+                                    borderRadius: '1rem 1rem 0 0',
+                                    padding: '0 .5rem 0 .5rem',
+                                    margin: 0,
+                                    textTransform: 'none',
+                                    alignContent: 'center',
+                                    [theme.breakpoints.up('xl')]: {
+                                        display: 'none',
+                                    },
+                                }}
+                            >
+                                <Typography
+                                    variant='body1'
+                                    textTransform='none'
+                                >
+                                    Skills
+                                </Typography>
+                                <ArrowDropUpIcon sx={{ margin: 0 }} />
+                            </Button>
+                            <SwipeableDrawer
+                                PaperProps={{
+                                    sx: {
+                                        marginTop: '6%',
+                                        maxHeight: '92vh'
+                                    },
+                                }}
+                                keepMounted
+                                anchor={'right'}
+                                open={openSkillDrawer}
+                                onClose={() => setOpenSkillDrawer(false)}
+                                onOpen={() => setOpenSkillDrawer(true)}
+                            >
+                                <SkillDisplay character={character} />
+                            </SwipeableDrawer>
                             <Grid
                                 item
                                 xs={12}
@@ -183,4 +225,4 @@ export const  CharacterDisplay = ({character, dispatch, onEdit}: CharacterDispla
             </div>
         )
     );
-}
+};
