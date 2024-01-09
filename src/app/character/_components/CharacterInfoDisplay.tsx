@@ -15,7 +15,7 @@ import {
 } from '@/_reducer/characterReducer';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { ModifierDialog } from '@/app/_components/ModifierDialog';
-import { Add, OndemandVideoTwoTone } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import useCharacterService from '@/app/api/_services/useCharacterService';
 import { ModChipStack } from '@/app/_components/ModChipStack';
@@ -28,11 +28,6 @@ interface CharacterInfoDisplayProps {
     dispatch: Dispatch<CharacterAction>;
     onEdit: Dispatch<SetStateAction<boolean>>;
 }
-
-const cellStylingObject = {
-    borderBottom: 'none',
-    padding: '0 .5rem .5rem 0',
-};
 
 export const CharacterInfoDisplay = ({
     character,

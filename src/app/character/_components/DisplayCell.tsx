@@ -20,6 +20,7 @@ interface DisplayCellProps {
     tooltip?: any;
     isNumber?: boolean;
     onClick?: () => void;
+    disabled?: boolean;
     tooltipPlacement?:
         | 'bottom'
         | 'left'
@@ -40,11 +41,13 @@ interface DisplayCellInputProps {
     isNumber: boolean;
     onChange?: React.Dispatch<React.SetStateAction<any>>;
     value: string | number | string[];
+    disabled?: boolean;
 }
 const DisplayCellInput = ({
     isNumber,
     onChange,
     value,
+    disabled
 }: DisplayCellInputProps) => {
     return !isNumber ? (
         <TextField
@@ -54,6 +57,7 @@ const DisplayCellInput = ({
             onFocus={(e) => e.target.select()}
             size='small'
             fullWidth
+            disabled={disabled}
             InputProps={{
                 sx: {
                     height: '2rem',
@@ -76,6 +80,7 @@ const DisplayCellInput = ({
             onChange={onChange}
             onFocus={(e) => e.target.select()}
             autoFocus
+            disabled={disabled}
             inputProps={{
                 style: {
                     height: '0rem',
@@ -94,7 +99,8 @@ export const DisplayCell = ({
     tooltip,
     tooltipPlacement,
     isNumber,
-    onClick
+    onClick,
+    disabled
 }: DisplayCellProps) => {
     const [openEdit, setOpenEdit] = useState(false);
     const cellRef = useRef(null);
@@ -129,7 +135,7 @@ export const DisplayCell = ({
                             onChange={onChange}
                             value={value}
                             isNumber={isNumber || false}
-
+                            disabled={disabled}
                         />
                     ) : (
                         <Typography
@@ -154,6 +160,7 @@ export const DisplayCell = ({
                         onChange={onChange}
                         value={value}
                         isNumber={isNumber || false}
+                        disabled={disabled}
                     />
                 ) : (
                     <Typography
