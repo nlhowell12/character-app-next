@@ -112,11 +112,11 @@ export const EquipmentDisplay = ({
 }: EquipmentDisplayProps) => {
     const weapons = character.equipment.filter(
         (eq: Equipment) =>
-            !!(eq as Weapon).damage && eq.bodySlot === BodySlot.None
+            (eq as Weapon).isWeapon
     );
     const armor = character.equipment.filter(
         (eq: Equipment) =>
-            !!(eq as Armor).modifiers.some((mod: Modifier) => !!mod.defense)
+            (eq as Armor).isArmor
     );
     const eqDisplayCardStyle = {
         margin: '0 .5rem',
