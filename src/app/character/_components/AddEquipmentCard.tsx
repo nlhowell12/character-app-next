@@ -87,6 +87,15 @@ export const AddEquipmentCard = ({
             [key]: e.target.checked || e.target.value,
         });
     };
+    const handleCheck = (
+        e: any,
+        key: keyof Equipment | keyof Weapon | keyof Armor
+    ) => {
+        setNewObject({
+            ...newEq,
+            [key]: e.target.checked
+        });
+    };
     const textFieldStyling = {
         marginBottom: '.5rem',
     };
@@ -108,7 +117,7 @@ export const AddEquipmentCard = ({
                         control={
                             <Checkbox
                                 checked={(newEq as Weapon).isWeapon}
-                                onChange={(e) => handleChange(e, 'isWeapon')}
+                                onChange={(e) => handleCheck(e, 'isWeapon')}
                             />
                         }
                         label='Is this a Weapon?'
@@ -117,7 +126,7 @@ export const AddEquipmentCard = ({
                         control={
                             <Checkbox
                                 checked={(newEq as Armor).isArmor}
-                                onChange={(e) => handleChange(e, 'isArmor')}
+                                onChange={(e) => handleCheck(e, 'isArmor')}
                             />
                         }
                         label='Is this Armor?'
@@ -153,6 +162,26 @@ export const AddEquipmentCard = ({
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                     ) => handleChange(e, 'weight')}
                 />
+                 <FormControl fullWidth sx={formControlStyle}>
+                            <InputLabel id='body-slot-id'>Body Slot</InputLabel>
+                            <Select
+                                labelId='body-slot-id'
+                                id='body-slot'
+                                label='Body Slot'
+                                name='bodySlot'
+                                value={(newEq as Armor).bodySlot}
+                                onChange={(e: any) => handleChange(e, 'bodySlot')}
+                            >
+                                {Object.keys(BodySlot).map((slot) => {
+                                    return (
+                                        <MenuItem key={slot} value={slot}>
+                                            {/* @ts-ignore */}
+                                            {BodySlot[slot]}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
                 {!!(newEq as Weapon).isWeapon ? (
                     <>
                         <Typography sx={{ margin: '.5rem 0' }}>
@@ -296,26 +325,6 @@ export const AddEquipmentCard = ({
                         <Typography sx={{ margin: '.5rem 0' }}>
                             Armor Info
                         </Typography>
-                        <FormControl fullWidth sx={formControlStyle}>
-                            <InputLabel id='body-slot-id'>Body Slot</InputLabel>
-                            <Select
-                                labelId='body-slot-id'
-                                id='body-slot'
-                                label='Body Slot'
-                                name='bodySlot'
-                                value={(newEq as Armor).bodySlot}
-                                onChange={(e: any) => handleChange(e, 'bodySlot')}
-                            >
-                                {Object.keys(BodySlot).map((slot) => {
-                                    return (
-                                        <MenuItem key={slot} value={slot}>
-                                            {/* @ts-ignore */}
-                                            {BodySlot[slot]}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
                         <NumberInput
                             value={(newEq as Armor).armorCheckPenalty}
                             label='Armor Check Penalty'

@@ -118,6 +118,10 @@ export const EquipmentDisplay = ({
         (eq: Equipment) =>
             (eq as Armor).isArmor
     );
+    const otherEq = character.equipment.filter(
+        (eq: Equipment) =>
+            !(eq as Armor).isArmor && !(eq as Weapon).isWeapon
+    );
     const eqDisplayCardStyle = {
         margin: '0 .5rem',
     };
@@ -136,7 +140,9 @@ export const EquipmentDisplay = ({
     };
 
     const handleClose = () => {
-        setOpen(false);
+        !editEq ?
+        setOpen(false) :
+        setEditEq(undefined)
     };
     const weaponDamage = (weapon: Weapon) => {
         const damageBonus = getDamageBonus(
@@ -410,6 +416,85 @@ export const EquipmentDisplay = ({
                                                     dispatch(
                                                         removeEquipmentAction(
                                                             armor
+                                                        )
+                                                    )
+                                                }
+                                            />
+                                        </Tooltip>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
+            </Card>
+            <Card sx={eqDisplayCardStyle}>
+                <CardContent>
+                    <Typography variant='body1'>Other Equipment</Typography>
+                </CardContent>
+                <Table>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell align='center'>Body Slot</TableCell>
+                            <TableCell align='center'>Equipped</TableCell>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                        {otherEq.map((eq) => {
+                            return (
+                                <TableRow key={eq.name}>
+                                    <TableCell>{eq.name}</TableCell>
+                                    <TableCell align='center'>
+                                        {eq.bodySlot}
+                                    </TableCell>
+                                    <TableCell align='center'>
+                                        {(eq as Armor).equipped ? (
+                                            <Tooltip title='Unequip Item'>
+                                                <CheckCircleOutlineIcon
+                                                    sx={iconHoverStyling}
+                                                    onClick={() =>
+                                                        dispatch(
+                                                            toggleEquippedAction(
+                                                                eq
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip title='Equip Item'>
+                                                <AddCircleOutlineIcon
+                                                    sx={iconHoverStyling}
+                                                    onClick={() =>
+                                                        dispatch(
+                                                            toggleEquippedAction(
+                                                                eq
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </Tooltip>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Tooltip title='Edit Equipment'>
+                                            <EditIcon
+                                                sx={iconHoverStyling}
+                                                onClick={() =>
+                                                    setEditEq(eq)
+                                                }
+                                            />
+                                        </Tooltip>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Tooltip title='Remove Equipment'>
+                                            <ClearIcon
+                                                sx={iconHoverStyling}
+                                                onClick={() =>
+                                                    dispatch(
+                                                        removeEquipmentAction(
+                                                            eq
                                                         )
                                                     )
                                                 }
