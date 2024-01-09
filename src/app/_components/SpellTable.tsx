@@ -275,7 +275,7 @@ export const SpellTable = ({
                                                     Prepared / Used
                                                     {!!onlyPrepared.length && 
                                                     <Tooltip title='Only Showing Prepared'>
-                                                        <InfoIcon sx={{marginLeft: '.5rem'}}/>
+                                                        <InfoIcon sx={{marginLeft: '.5rem'}} color='primary'/>
                                                     </Tooltip>}
                                                 </TableCell>
                                             )}
