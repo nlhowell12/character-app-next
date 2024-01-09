@@ -436,6 +436,7 @@ export const EquipmentDisplay = ({
                     <TableBody>
                         <TableRow>
                             <TableCell>Name</TableCell>
+                            <TableCell>Amount</TableCell>
                             <TableCell align='center'>Body Slot</TableCell>
                             <TableCell align='center'>Equipped</TableCell>
                             <TableCell></TableCell>
@@ -445,6 +446,28 @@ export const EquipmentDisplay = ({
                             return (
                                 <TableRow key={eq.name}>
                                     <TableCell>{eq.name}</TableCell>
+                                    <TableCell>
+                                        <OutlinedInput
+                                            type='number'
+                                            sx={{
+                                                ...numberInputStyling,
+                                                width: '4rem',
+                                            }}
+                                            value={eq.amount}
+                                            onChange={(e) => {
+                                                dispatch(
+                                                    updateEquipmentAction(
+                                                        eq.id,
+                                                        Number(e.target.value),
+                                                        'amount'
+                                                    )
+                                                );
+                                            }}
+                                            inputProps={{
+                                                min: 0,
+                                            }}
+                                        />
+                                    </TableCell>
                                     <TableCell align='center'>
                                         {eq.bodySlot}
                                     </TableCell>
