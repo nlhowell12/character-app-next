@@ -8,6 +8,11 @@ const getAll = async () => {
     return characters;
 }
 
+const getChar = async (charName: string) => {
+    const character = await Character.findOne({name: charName})
+    return character;
+};
+
 const getUser = async (user: string) => {
     const characters = await Character.find({playerName: user})
     return characters
@@ -38,5 +43,6 @@ export const characterRepo = {
     getAll,
     getUser,
     create,
-    update
+    update,
+    getChar
 };

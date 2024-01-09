@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 
 export default () => {
     const [characters, setCharacters] = useState<Character[]>();
+    const [char, setSingleChar] = useState<Character>();
     const { user } = useContext(UserContext);
 
     useEffect(() => {
@@ -19,7 +20,14 @@ export default () => {
         } else {
             getUserCharacters(user)
         }
-    }
+    };
+
+    const getOneCharacter = async (name: string) => {
+        const res = await fetch(`/api/characters?character=${name}`)
+        const character = await res.json();
+        setSingleChar(character);
+    };
+
     const getAllCharacters = async () => {
         const res = await fetch('/api/characters');
         const characters = await res.json();
@@ -58,5 +66,5 @@ export default () => {
         return res;
     }
 
-    return { characters, createCharacter, updateCharacter, getAllCharacters }
+    return { characters, createCharacter, updateCharacter, getAllCharacters, char, getOneCharacter }
 }

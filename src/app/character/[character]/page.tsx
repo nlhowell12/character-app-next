@@ -16,11 +16,19 @@ export default function CharacterPage() {
     const params = useParams<{ character: string }>();
     const [edit, setEdit] = useState(false);
 
-    const { characters } = useCharacterService();
+    const { char, getOneCharacter } = useCharacterService();
 
-    const pageCharacter = characters?.find(
-        (character: Character) => character.name === params.character
-    );
+    useEffect(() => {
+        getOneCharacter(params.character);
+    },[])
+
+    useEffect(() => {
+        if(!!char && !!char.name){
+            dispatch(setCharacterAction(char));
+            document.title = char.name;
+        }
+    }, [char]);
+
     const [character, dispatch] = useReducer(
         characterReducer,
         initialCharacterState
@@ -29,13 +37,6 @@ export default function CharacterPage() {
     const handleUpdate = () => {
         setEdit(false);
     };
-
-    useEffect(() => {
-        if (!!pageCharacter) {
-            dispatch(setCharacterAction(pageCharacter));
-            document.title = pageCharacter.name;
-        }
-    }, [pageCharacter]);
 
     return !!character ? (
         edit ? (
