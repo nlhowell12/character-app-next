@@ -23,7 +23,7 @@ export const EditCharacter = ({character, dispatch, onUpdate}: EditCharacterDisp
 	const [openSkillDrawer, setOpenSkillDrawer] = useState(false);
 
     useEffect(() => {
-        if(!!user){
+        if(!!user && !onUpdate){
             dispatch(updateAction(CharacterKeys.playerName, user?.name))
         }
     }, [user])

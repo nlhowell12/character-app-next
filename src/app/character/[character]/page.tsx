@@ -1,6 +1,5 @@
 'use client';
 
-import { Character } from '@/_models';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useReducer, useState } from 'react';
 import {
