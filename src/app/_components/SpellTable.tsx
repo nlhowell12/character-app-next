@@ -28,6 +28,7 @@ import { camelToTitle } from '@/_utils/stringUtils';
 import * as R from 'ramda';
 import { NumberInput } from './NumberInput';
 import { iconHoverStyling } from '@/_utils/theme';
+import InfoIcon from '@mui/icons-material/Info';
 
 interface SpellTableTooltipProps {
     description: string;
@@ -270,7 +271,13 @@ export const SpellTable = ({
                                             {!personal ? (
                                                 <TableCell>Known</TableCell>
                                             ) : (
-                                                <TableCell onClick={handleOnlyPrepared} sx={iconHoverStyling}>Prepared / Used</TableCell>
+                                                <TableCell onClick={handleOnlyPrepared} sx={iconHoverStyling}>
+                                                    Prepared / Used
+                                                    {!!onlyPrepared.length && 
+                                                    <Tooltip title='Only Showing Prepared'>
+                                                        <InfoIcon sx={{marginLeft: '.5rem'}}/>
+                                                    </Tooltip>}
+                                                </TableCell>
                                             )}
                                         </>
                                     ) : null}
