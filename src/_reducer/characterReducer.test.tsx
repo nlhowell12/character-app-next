@@ -101,7 +101,7 @@ describe('characterReducer', () => {
 	it('should delete mod from character modifiers', () => {
 		const modToDelete = mockCharacters[0].miscModifiers[0];
 		const newState = characterReducer(mockCharacters[0], deleteModAction(modToDelete))
-		expect(newState.miscModifiers.findIndex(x => modToDelete.definition === x.definition)).toBe(-1)
+		expect(newState.miscModifiers.findIndex(x => modToDelete.id === x.id)).toBe(-1)
 		expect(newState.miscModifiers.length).toBeGreaterThan(0);
 		expect(newState.miscModifiers.length).toBe(mockCharacters[0].miscModifiers.length - 1);
 	});

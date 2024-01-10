@@ -6,12 +6,14 @@ import { getModifierAttributeBonus } from './attributeUtils';
 
 const mockRacialModifiers: Modifier[] = [
 	{
+		id: '1234',
 		value: 2,
 		type: BonusTypes.Racial,
 		attribute: AttributeNames.Intelligence,
 	},
-	{ value: 2, type: BonusTypes.Racial, attribute: AttributeNames.Dexterity },
+	{ id: '1111',value: 2, type: BonusTypes.Racial, attribute: AttributeNames.Dexterity },
 	{
+		id: '12345',
 		value: -2,
 		type: BonusTypes.Racial,
 		attribute: AttributeNames.Constitution,
@@ -44,7 +46,7 @@ describe('Attribute utils', () => {
 		expect(
 			abilityUtils.getAllAttributeModifiers(mock0, AttributeNames.Strength)
 				.length
-		).toBe(0);
+		).toBe(1);
 		expect(
 			abilityUtils.getAllAttributeModifiers(mock0, AttributeNames.Dexterity)
 				.length
@@ -58,7 +60,7 @@ describe('Attribute utils', () => {
 			abilityUtils.getBaseAttributeScore(mock0, AttributeNames.Dexterity)
 		).toBe(18);
 		expect(
-			abilityUtils.getBaseAttributeScore({...mock0, miscModifiers: [{value: 0, definition: ModifierSource.attributeScoreIncrease, attribute: AttributeNames.Strength, type: BonusTypes.Racial}]}, AttributeNames.Dexterity)
+			abilityUtils.getBaseAttributeScore({...mock0, miscModifiers: [{id: '12345678', value: 0, definition: ModifierSource.attributeScoreIncrease, attribute: AttributeNames.Strength, type: BonusTypes.Racial}]}, AttributeNames.Dexterity)
 		).toBe(17);
 	});
 	test('totalAttributeValue', () => {

@@ -28,6 +28,17 @@ export const getTotalDefense = (character: Character): DefenseObject => {
 
 	return { dsBonus: 10 + dexMod + totalDSBonuses, drBonus: totalDRBonuses };
 };
+export const getMaximumDexMod = (eq: Equipment[]): number | null => {
+	const dexRestrictions = eq.filter(x => !!(x as Armor).maxDexBonus && (x as Armor).maxDexBonus > -1 && !!(x as Armor).equipped)
+	let mod: number = 10;
+	dexRestrictions.forEach((x) => {
+		const armor = x as Armor;
+		if(armor.maxDexBonus < mod){
+			mod = armor.maxDexBonus
+		}
+	})
+	return mod || null;
+};
 
 export const getMiscAcBonuses = (character: Character): Modifier[] => {
 	const miscMods: Modifier[] = [];
