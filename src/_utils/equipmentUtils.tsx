@@ -1,4 +1,4 @@
-import { Armor, AttributeNames, CarryingCapacityObject, Character, Modifier, Weapon, stackableBonuses } from '@/_models';
+import { Armor, AttributeNames, CarryingCapacityObject, Character, Equipment, Modifier, Weapon, stackableBonuses } from '@/_models';
 import { getModifierAttributeBonus, getTotalAttributeModifier, totalAttributeValue } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
 
@@ -50,6 +50,9 @@ export const getAllAttackModifiers = (character: Character, weapon: Weapon): Mod
     return [...characterMods, ...weaponMods];
 };
 
+export const getTotalEquipmentWeight = (eq: Equipment[]) => {
+    return eq.reduce((x, y) => x + (y.weight * y.amount), 0)
+};
 export const determineCarryingCapacity = (character: Character): CarryingCapacityObject=> {
     const totalStrength: number = totalAttributeValue(character, AttributeNames.Strength);
     const getLight = (value: number) => Math.floor(.3333333333333333333333 * value);
