@@ -105,6 +105,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
     const [secondarySave, setSecondarySave] = useState<AttributeNames>(
         AttributeNames.Strength
     );
+    const [BAB, setBAB] = useState<number>(0);
     const [classAbilities, setClassAbilities] = useState<ClassAbility[]>([]);
     const [classSkills, setClassSkills] = useState<string[]>([]);
 
@@ -117,13 +118,14 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
 
     useEffect(() => {
         if(!!editClass) {
-            const {name, level, primarySave, secondarySave, classAbilities, classSkills} = editClass;
+            const {name, level, primarySave, secondarySave, classAbilities, classSkills, BAB} = editClass;
             setClassName(name as CharacterClassNames);
             setLevel(level)
             setPrimarySave(primarySave)
             setSecondarySave(secondarySave)
             setClassAbilities(classAbilities)
             setClassSkills(classSkills)
+            setBAB(BAB)
         }
     },[editClass])
     
@@ -131,6 +133,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
         const cls: CharacterClass = {
             name: className,
             level,
+            BAB,
             primarySave,
             secondarySave,
             classAbilities,
@@ -158,7 +161,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
 
     return (
         <Card variant='outlined' sx={{overflow: 'scroll'}}>
-            <CardHeader title='Add New Class' />
+            <CardHeader title={!!editClass ? 'Update Class' : 'Add New Class'} />
             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
                 <div
                     style={{
@@ -196,6 +199,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                             </Select>
                         </FormControl>
                         <NumberInput value={level} label='Level' onChange={(e) => setLevel(Number(e.target.value))}/>
+                        <NumberInput value={BAB} label='Base Attack Bonus' onChange={(e) => setBAB(Number(e.target.value))}/>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <FormControl fullWidth sx={formControlStyling}>
