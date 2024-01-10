@@ -196,6 +196,7 @@ export interface CharacterClass {
 	classAbilities: ClassAbility[];
 	level: number;
 	secondarySave: AttributeNames;
+	BAB: number;
 }
 
 export enum ModifierSource {

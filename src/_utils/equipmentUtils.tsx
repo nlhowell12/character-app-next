@@ -40,6 +40,10 @@ export const getDiceDamageModifiers = (character: Character, weapon: Weapon): Mo
     return allMods.filter(x => !!x.damageType);
 };
 
+export const getTotalBAB = (character: Character) => {
+    return character.classes.reduce((x, y) => x + y.BAB, 0)
+};
+
 export const getAllAttackModifiers = (character: Character, weapon: Weapon): Modifier[] => {
     const characterMods = character.miscModifiers.filter(x => !!x.attack);
     const weaponMods = weapon.modifiers.filter(x => !!x.attack);

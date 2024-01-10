@@ -10,6 +10,7 @@ import {
     getDiceDamageModifiers,
     getEqBonusObject,
     getTotalArmorBonus,
+    getTotalBAB,
     getTotalModifierBonus,
 } from './equipmentUtils';
 import { Armor, BonusTypes, Damage, Dice, Weapon } from '@/_models';
@@ -132,7 +133,9 @@ describe('Equipment Utils', () => {
     it('should get all attack mods', () => {
         expect(getAllAttackModifiers(mockCharacters[0], sword).length).toBe(5);
     });
-
+    it('should get total BAB from all classes', () => {
+        expect(getTotalBAB(mockCharacters[0])).toBe(1)
+    })
     it('should total modifiers for damage or attack', () => {
         const damageModifiers = getAllDamageModifiers(
             mockCharacters[0],
