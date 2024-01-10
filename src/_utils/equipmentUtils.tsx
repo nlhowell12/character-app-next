@@ -40,8 +40,8 @@ export const getDiceDamageModifiers = (character: Character, weapon: Weapon): Mo
     return allMods.filter(x => !!x.damageType);
 };
 
-export const getTotalBAB = (character: Character) => {
-    return character.classes.reduce((x, y) => x + y.BAB, 0)
+export const getTotalBAB = (character: Character): number => {
+    return character.classes.reduce((x, y) => !!y.BAB ? x + y.BAB : 0, 0)
 };
 
 export const getAllAttackModifiers = (character: Character, weapon: Weapon): Modifier[] => {
@@ -63,7 +63,8 @@ export const getDamageBonus = (character: Character, weapon: Weapon) => {
 export const getAttackBonus = (character: Character, weapon: Weapon) => {
     const modBonus = getTotalModifierBonus(character, getAllAttackModifiers(character, weapon));
     const attBonus = getAttributeAttackBonus(character, weapon);
-    return modBonus + attBonus;
+    const classBabTotal = getTotalBAB(character);
+    return Number(modBonus + attBonus + classBabTotal);
 };
 
 export const getEqBonusObject = (character: Character, mods: Modifier[]): BonusObject => {

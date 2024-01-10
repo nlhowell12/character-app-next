@@ -37,6 +37,7 @@ import { iconHoverStyling, numberInputStyling } from '@/_utils/theme';
 import {
     getAllArmorMods,
     getAllDamageModifiers,
+    getAttackBonus,
     getDamageBonus,
     getDiceDamageModifiers,
     getEqBonusObject,
@@ -201,6 +202,7 @@ export const EquipmentDisplay = ({
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell>Amount</TableCell>
+                            <TableCell align='center'>Attack Bonus</TableCell>
                             <TableCell align='center'>Damage</TableCell>
                             <TableCell align='center'>Two-Handed?</TableCell>
                             <TableCell align='center'>
@@ -240,6 +242,9 @@ export const EquipmentDisplay = ({
                                                 min: 0,
                                             }}
                                         />
+                                    </TableCell>
+                                    <TableCell align='center'>
+                                       <Typography>{`+${getAttackBonus(character, weapon)}`}</Typography>
                                     </TableCell>
                                     <TableCell align='center'>
                                         <Tooltip

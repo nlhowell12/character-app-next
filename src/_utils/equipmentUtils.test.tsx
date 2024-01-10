@@ -154,8 +154,8 @@ describe('Equipment Utils', () => {
         expect(getDamageBonus(mockCharacters[0], sword)).toBe(4);
     });
     it('should get the attack bonus', () => {
-        expect(getAttackBonus(mockCharacters[0], sword)).toBe(5);
-        expect(getAttackBonus(mockCharacters[0], dagger)).toBe(8);
+        expect(getAttackBonus(mockCharacters[0], sword)).toBe(6);
+        expect(getAttackBonus(mockCharacters[0], dagger)).toBe(9);
     });
     it('should return an attack bonus object', () => {
         expect(
