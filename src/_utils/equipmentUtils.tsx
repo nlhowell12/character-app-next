@@ -35,6 +35,11 @@ export const getAllDamageModifiers = (character: Character, weapon: Weapon): Mod
     return [...characterMods, ...weaponMods];
 };
 
+export const getDiceDamageModifiers = (character: Character, weapon: Weapon): Modifier[] => {
+    const allMods = getAllDamageModifiers(character, weapon);
+    return allMods.filter(x => !!x.damageType);
+};
+
 export const getAllAttackModifiers = (character: Character, weapon: Weapon): Modifier[] => {
     const characterMods = character.miscModifiers.filter(x => !!x.attack);
     const weaponMods = weapon.modifiers.filter(x => !!x.attack);
@@ -61,17 +66,19 @@ export const getEqBonusObject = (character: Character, mods: Modifier[]): BonusO
     const bonusObject: BonusObject = {} as BonusObject;
     mods.forEach(mod => {
         let value = mod.value;
-        const attributeBasedModifier = getModifierAttributeBonus(character, mod);
-        if(!bonusObject[mod.type]){
-            bonusObject[mod.type] = 0
-        }
-        if(!!attributeBasedModifier) {
-            value = attributeBasedModifier;
-        }
-        if (stackableBonuses.some((type) => type === mod.type)) {
-            bonusObject[mod.type] += value;
-        } else if (mod.value > bonusObject[mod.type]) {
-            bonusObject[mod.type] = value;
+            const attributeBasedModifier = getModifierAttributeBonus(character, mod);
+            if(!!value || !!attributeBasedModifier){
+            if(!bonusObject[mod.type]){
+                bonusObject[mod.type] = 0
+            }
+            if(!!attributeBasedModifier) {
+                value = attributeBasedModifier;
+            }
+            if (stackableBonuses.some((type) => type === mod.type)) {
+                bonusObject[mod.type] += value;
+            } else if (mod.value > bonusObject[mod.type]) {
+                bonusObject[mod.type] = value;
+            }
         }
     })
     return bonusObject;

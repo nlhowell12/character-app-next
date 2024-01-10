@@ -7,6 +7,7 @@ import {
     getAttributeAttackBonus,
     getAttributeDamageBonus,
     getDamageBonus,
+    getDiceDamageModifiers,
     getEqBonusObject,
     getTotalArmorBonus,
     getTotalModifierBonus,
@@ -26,21 +27,35 @@ export const dagger: Weapon = {
     twoHanded: false,
     criticalMultiplier: 2,
     criticalRange: 19,
+    isWeapon: true,
+    amount: 1,
     modifiers: [
         {
+            id: '123',
             type: BonusTypes.Paranormal,
             value: 2,
             damage: true,
         },
         {
+            id: '1234',
             type: BonusTypes.Untyped,
             value: 1,
             damage: true,
         },
         {
+            id: '12345',
             type: BonusTypes.Untyped,
             value: 1,
             damage: true,
+        },
+        {
+            id: '123456',
+            type: BonusTypes.Untyped,
+            numberOfDice: 1,
+            damageDice: Dice.d6,
+            value: 0,
+            damage: true,
+            damageType: Damage.Fire
         },
     ],
     rangeIncrement: 10,
@@ -58,13 +73,17 @@ export const sword: Weapon = {
     twoHanded: false,
     criticalMultiplier: 2,
     criticalRange: 19,
+    isWeapon: true, 
+    amount: 1,
     modifiers: [
         {
+            id: '123',
             type: BonusTypes.Morale,
             value: 2,
             attack: true,
         },
         {
+            id: '1234',
             type: BonusTypes.Morale,
             value: 3,
             attack: true,
@@ -82,9 +101,13 @@ export const magicLeather: Armor = {
     hardness: 50,
     weight: 4,
     magical: true,
+    isArmor: true,
+    amount: 1,
     modifiers: [
-        {type: BonusTypes.Armor, value: 2, defense: true},
-        {type: BonusTypes.Enhancement, value: 2, defense: true},
+        {            id: '123',
+        type: BonusTypes.Armor, value: 2, defense: true},
+        {            id: '1234',
+        type: BonusTypes.Enhancement, value: 2, defense: true},
     ],
 };
 
@@ -98,7 +121,13 @@ describe('Equipment Utils', () => {
         expect(getAttributeAttackBonus(mockCharacters[0], sword)).toBe(0);
     });
     it('should get all damage mods', () => {
-        expect(getAllDamageModifiers(mockCharacters[0], dagger).length).toBe(5);
+        expect(getAllDamageModifiers(mockCharacters[0], dagger).length).toBe(6);
+    });
+    it('should get all damage dice mods', () => {
+        expect(getDiceDamageModifiers(mockCharacters[0], dagger).length).toBe(1);
+        expect(getDiceDamageModifiers(mockCharacters[0], dagger)[0].numberOfDice).toBe(1);
+        expect(getDiceDamageModifiers(mockCharacters[0], dagger)[0].damageDice).toBe(Dice.d6);
+        expect(getDiceDamageModifiers(mockCharacters[0], dagger)[0].damageType).toBe(Damage.Fire);
     });
     it('should get all attack mods', () => {
         expect(getAllAttackModifiers(mockCharacters[0], sword).length).toBe(5);

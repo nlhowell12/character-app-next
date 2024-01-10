@@ -41,6 +41,7 @@ import {
     getAllArmorMods,
     getAllDamageModifiers,
     getDamageBonus,
+    getDiceDamageModifiers,
     getEqBonusObject,
     getTotalArmorBonus,
 } from '@/_utils/equipmentUtils';
@@ -150,6 +151,15 @@ export const EquipmentDisplay = ({
             weapon
         );
         const damagePositive = damageBonus >= 0 ? '+' : '-';
+        const diceDamageBonuses = getDiceDamageModifiers(character, weapon);
+        const bonusDiceString = () => {
+            let string = '';
+            diceDamageBonuses.forEach(x => {
+                const addString = `\n+ ${x.numberOfDice}${x.damageDice} ${x.damageType}`
+                string += addString
+            })
+            return string;
+        }
         if(!weapon.numberOfDice){
             return `${1 + damageBonus}`
         } else {
@@ -159,7 +169,7 @@ export const EquipmentDisplay = ({
                 weapon.damage
             } ${damagePositive} ${Math.abs(
                 damageBonus
-            )}`
+            )} ${bonusDiceString()}`
         }
     }
     return (

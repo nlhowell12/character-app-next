@@ -126,7 +126,7 @@ export const ModifierDialog = ({
         immunity: boolImmunity,
         damageType: !!boolResistance || !!boolImmunity || boolDamageType ? damageType : undefined,
         damageDice: !!boolDamage && !!boolDamageDice ? damageDice : undefined,
-        numberOfDice: !!boolDamage && !!boolDamageDice ? numberOfDice : undefined,
+        numberOfDice: !!boolDamage && !!boolDamageDice ? Number(numberOfDice) : undefined,
         id: uuidv4(),
     };
     const diceAndNumber =
