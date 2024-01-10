@@ -19,6 +19,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import {
     Armor,
+    CarryingCapacityObject,
     Character,
     Equipment,
     Weapon,
@@ -35,6 +36,7 @@ import React, { Dispatch, useState } from 'react';
 import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling, numberInputStyling } from '@/_utils/theme';
 import {
+    determineCarryingCapacity,
     getAllArmorMods,
     getAllDamageModifiers,
     getAttackBonus,
@@ -45,6 +47,8 @@ import {
 } from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
 import { DisplayBox } from './DisplayBox';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import { camelToTitle } from '@/_utils/stringUtils';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -65,6 +69,29 @@ const BonusTooltip = ({ bonusObject }: BonusTooltipProps) => {
                                 <Typography>{key}</Typography>
                                 {/* @ts-ignore */}
                                 <Typography>{bonusObject[key]}</Typography>
+                            </TableCell>
+                        );
+                    })}
+                </TableRow>
+            </TableBody>
+        </Table>
+    );
+};
+interface CarryCapTooltipProps {
+    cap: CarryingCapacityObject;
+};
+
+const CarryCapTooltip = ({ cap }: CarryCapTooltipProps) => {
+    return (
+        <Table>
+            <TableBody>
+                <TableRow>
+                    {Object.keys(cap).map((key) => {
+                        return (
+                            <TableCell key={key} size='small' align='center'>
+                                <Typography>{camelToTitle(key)}</Typography>
+                                {/* @ts-ignore */}
+                                <Typography>{cap[key]}</Typography>
                             </TableCell>
                         );
                     })}
@@ -180,6 +207,9 @@ export const EquipmentDisplay = ({
             >
                 <CardHeader title='Equipment' />
                 <CardActions>
+                    <Tooltip title={<CarryCapTooltip cap={determineCarryingCapacity(character)}/>}>
+                        <FitnessCenterIcon />
+                    </Tooltip>
                     <Button onClick={() => setOpen(true)}>Add</Button>
                 </CardActions>
             </div>
