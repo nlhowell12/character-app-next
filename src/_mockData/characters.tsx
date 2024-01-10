@@ -129,21 +129,21 @@ export const mockCharacters: Character[] = [
         ],
         miscModifiers: [
             {
-                id: '123456',
+                id: '1',
                 value: 1,
                 type: BonusTypes.Racial,
                 defense: true,
                 definition: 'Natural Armor',
             },
             {
-                id: '123456',
+                id: '12',
                 value: 5,
                 resistance: true,
                 damageType: Damage.Cold,
                 type: BonusTypes.Racial,
             },
             {
-                id: '123456',
+                id: '123',
                 definition: ModifierSource.attributeScoreIncrease,
                 attribute: AttributeNames.Dexterity,
                 type: BonusTypes.Untyped,
@@ -151,14 +151,14 @@ export const mockCharacters: Character[] = [
             },
             {
                 // added to test negative path, otherwise useless
-                id: '123456',
+                id: '1234',
                 value: 0,
                 definition: ModifierSource.attributeScoreIncrease,
                 attribute: AttributeNames.Dexterity,
                 type: BonusTypes.Untyped,
             },
             {
-                id: '123456',
+                id: '12345',
 
                 value: 1,
                 type: BonusTypes.Untyped,
@@ -172,28 +172,28 @@ export const mockCharacters: Character[] = [
                 defense: true,
             },
             {
-                id: '123456',
+                id: '1234567',
 
                 value: 1,
                 type: BonusTypes.Untyped,
                 skill: SkillTypes.Disguise,
             },
             {
-                id: '123456',
+                id: '12345678',
 
                 value: 1,
                 type: BonusTypes.Untyped,
                 skill: SkillTypes.Disguise,
             },
             {
-                id: '123456',
+                id: '123456789',
 
                 value: 4,
                 type: BonusTypes.Size,
                 skill: SkillTypes.Stealth,
             },
             {
-                id: '123456',
+                id: '1234567890',
 
                 value: 2,
                 type: BonusTypes.Morale,
@@ -201,14 +201,14 @@ export const mockCharacters: Character[] = [
                 attack: true,
             },
             {
-                id: '123456',
+                id: '12345678901',
 
                 value: 1,
                 type: BonusTypes.Untyped,
                 attack: true,
             },
             {
-                id: '123456',
+                id: '123456789012',
 
                 value: 1,
                 type: BonusTypes.Untyped,
