@@ -78,3 +78,9 @@ export enum AbilityTypes {
     Extraordinary = 'Extraordinary',
     Supernatural = 'Supernatural',
 }
+
+export interface CarryingCapacityObject {
+    light: number;
+    med: number;
+    heavy: number;
+}

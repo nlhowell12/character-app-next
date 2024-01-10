@@ -128,6 +128,13 @@ export const mockCharacters: Character[] = [
             },
         ],
         miscModifiers: [
+
+            {
+                id: '0',
+                value: -4,
+                type: BonusTypes.Racial,
+                attribute: AttributeNames.Strength
+            },
             {
                 id: '1',
                 value: 1,

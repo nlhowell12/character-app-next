@@ -1,5 +1,5 @@
-import { Armor, AttributeNames, Character, Modifier, Weapon, stackableBonuses } from '@/_models';
-import { getModifierAttributeBonus, getTotalAttributeModifier } from './attributeUtils';
+import { Armor, AttributeNames, CarryingCapacityObject, Character, Modifier, Weapon, stackableBonuses } from '@/_models';
+import { getModifierAttributeBonus, getTotalAttributeModifier, totalAttributeValue } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
 
 export const getAttributeDamageBonus = (
@@ -50,6 +50,29 @@ export const getAllAttackModifiers = (character: Character, weapon: Weapon): Mod
     return [...characterMods, ...weaponMods];
 };
 
+export const determineCarryingCapacity = (character: Character): CarryingCapacityObject=> {
+    const totalStrength: number = totalAttributeValue(character, AttributeNames.Strength);
+    const getLight = (value: number) => Math.floor(.3333333333333333333333 * value);
+    const getMed = (value: number) => Math.floor(.66666666666666666666666666666 * value);
+    const getMiddleMax = (str: number) => Math.ceil(Math.round(100 * Math.pow(2, ((str - 10)/5))));
+        const roundToFive = (val: number) => {
+            if(totalStrength % 2 === 0){
+                return (Math.floor(val / 5)) * 5; 
+            } else {
+                return (Math.ceil(val / 5)) * 5; 
+            }
+        }
+        if(totalStrength <= 10){
+            const max = totalStrength * 10;
+            return {light: getLight(max), med: getMed(max), heavy: max}
+        } else if(totalStrength <= 15){
+            const max = roundToFive(getMiddleMax(totalStrength));
+            return {light: getLight(max), med: getMed(max), heavy: max}
+        } else {
+            const max = roundToFive((getMiddleMax(totalStrength -5) * 2))
+            return {light: getLight(max), med: getMed(max), heavy: max}
+        }
+};
 export const getTotalModifierBonus = (character: Character, mods: Modifier[]): number => {
     return Object.entries(getEqBonusObject(character, mods)).reduce((x, [_, value]) => x + value, 0);
 };
