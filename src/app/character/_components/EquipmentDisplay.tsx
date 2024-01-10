@@ -89,7 +89,7 @@ const CarryCapTooltip = ({ cap }: CarryCapTooltipProps) => {
                 <TableRow>
                     {Object.keys(cap).map((key) => {
                         return (
-                            <TableCell key={key} size='small' align='center'>
+                            <TableCell key={key} size='small' align='center' sx={{borderBottom: 'none'}}>
                                 <Typography>{camelToTitle(key)}</Typography>
                                 {/* @ts-ignore */}
                                 <Typography>{cap[key]}</Typography>
@@ -210,7 +210,7 @@ export const EquipmentDisplay = ({
             return 'error'
         }
     };
-    
+
     return (
         <Card>
             <div
@@ -224,6 +224,8 @@ export const EquipmentDisplay = ({
                     <Tooltip title={<CarryCapTooltip cap={carryingCap}/>}>
                         <FitnessCenterIcon color={weightIconColor()}/>
                     </Tooltip>
+                    <Typography variant='caption'>{`Total: ${totalWeightCarried} lbs`}</Typography>
+
                     <Button onClick={() => setOpen(true)}>Add</Button>
                 </CardActions>
             </div>

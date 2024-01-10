@@ -1,4 +1,4 @@
-import { Armor, AttributeNames, CarryingCapacityObject, Character, Equipment, Modifier, Weapon, stackableBonuses } from '@/_models';
+import { Armor, AttributeNames, CarryingCapacityObject, Character, Equipment, Modifier, Sizes, Weapon, stackableBonuses } from '@/_models';
 import { getModifierAttributeBonus, getTotalAttributeModifier, totalAttributeValue } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
 
@@ -53,7 +53,20 @@ export const getAllAttackModifiers = (character: Character, weapon: Weapon): Mod
 export const getTotalEquipmentWeight = (eq: Equipment[]) => {
     return eq.reduce((x, y) => x + (y.weight * y.amount), 0)
 };
+
 export const determineCarryingCapacity = (character: Character): CarryingCapacityObject=> {
+    const capSizeMods = {
+        [Sizes.ColossalPlus]: 16,
+        [Sizes.Colossal]: 16,
+        [Sizes.Gargantuan]: 8,
+        [Sizes.Huge]: 4,
+        [Sizes.Large]: 2,
+        [Sizes.Medium]: 1,
+        [Sizes.Small]: .75,
+        [Sizes.Tiny]: .5,
+        [Sizes.Diminutive]: .25,
+        [Sizes.Fine]: .12
+    };
     const totalStrength: number = totalAttributeValue(character, AttributeNames.Strength);
     const getLight = (value: number) => Math.floor(.3333333333333333333333 * value);
     const getMed = (value: number) => Math.floor(.66666666666666666666666666666 * value);
@@ -66,13 +79,13 @@ export const determineCarryingCapacity = (character: Character): CarryingCapacit
             }
         }
         if(totalStrength <= 10){
-            const max = totalStrength * 10;
+            const max = totalStrength * 10 * capSizeMods[character.size];
             return {light: getLight(max), med: getMed(max), heavy: max}
         } else if(totalStrength <= 15){
-            const max = roundToFive(getMiddleMax(totalStrength));
+            const max = roundToFive(getMiddleMax(totalStrength)) * capSizeMods[character.size];
             return {light: getLight(max), med: getMed(max), heavy: max}
         } else {
-            const max = roundToFive((getMiddleMax(totalStrength -5) * 2))
+            const max = roundToFive((getMiddleMax(totalStrength -5) * 2)) * capSizeMods[character.size];
             return {light: getLight(max), med: getMed(max), heavy: max}
         }
 };

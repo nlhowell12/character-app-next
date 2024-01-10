@@ -15,7 +15,7 @@ import {
     getTotalEquipmentWeight,
     getTotalModifierBonus,
 } from './equipmentUtils';
-import { Armor, BonusTypes, Character, Damage, Dice, Weapon } from '@/_models';
+import { Armor, BonusTypes, Character, Damage, Dice, Sizes, Weapon } from '@/_models';
 
 export const dagger: Weapon = {
     id: '12345',
@@ -136,12 +136,13 @@ describe('Equipment Utils', () => {
         expect(getAllAttackModifiers(mockCharacters[0], sword).length).toBe(5);
     });
     it('should return the correct carrying capacity', () => {
-        expect(determineCarryingCapacity(mockCharacters[0])).toStrictEqual({light: 23, med: 46, heavy: 70})
-        expect(determineCarryingCapacity({...mockCharacters[0], attributes:{...mockCharacters[0].attributes, Strength: {value: 11}}})).toStrictEqual({light: 23, med: 46, heavy: 70})
-        expect(determineCarryingCapacity({...mockCharacters[0], attributes:{...mockCharacters[0].attributes, Strength: {value: 15}}})).toStrictEqual({light: 38, med: 76, heavy: 115})
-        expect(determineCarryingCapacity({...mockCharacters[0], attributes:{...mockCharacters[0].attributes, Strength: {value: 22}}})).toStrictEqual({light: 100, med: 200, heavy: 300})
-        expect(determineCarryingCapacity({...mockCharacters[0], attributes:{...mockCharacters[0].attributes, Strength: {value: 23}}})).toStrictEqual({light: 116, med: 233, heavy: 350})
-        expect(determineCarryingCapacity({...mockCharacters[0], attributes:{...mockCharacters[0].attributes, Strength: {value: 24}}})).toStrictEqual({light: 133, med: 266, heavy: 400})
+        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium})).toStrictEqual({light: 23, med: 46, heavy: 70})
+        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 11}}})).toStrictEqual({light: 23, med: 46, heavy: 70})
+        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 15}}})).toStrictEqual({light: 38, med: 76, heavy: 115})
+        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 22}}})).toStrictEqual({light: 100, med: 200, heavy: 300})
+        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 23}}})).toStrictEqual({light: 116, med: 233, heavy: 350})
+        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 24}}})).toStrictEqual({light: 133, med: 266, heavy: 400})
+        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Small, attributes:{...mockCharacters[0].attributes, Strength: {value: 24}}})).toStrictEqual({light: 100, med: 200, heavy: 300})
     });
     it('should return total weight of carried equipment', () => {
         expect(getTotalEquipmentWeight(mockCharacters[0].equipment)).toBe(7)
