@@ -85,25 +85,9 @@ export const mockCharacters: Character[] = [
                 primarySave: AttributeNames.Dexterity,
                 secondarySave: AttributeNames.Intelligence,
                 classSkills: [
-                    SkillTypes.Acrobatics,
-                    SkillTypes.Bluff,
-                    SkillTypes.Diplomacy,
-                    SkillTypes.Disguise,
-                    SkillTypes.EscapeArtist,
-                    SkillTypes.KnowledgeLocal,
-                    SkillTypes.Perception,
-                    SkillTypes.SenseMotive,
-                    SkillTypes.SleightOfHand,
-                    SkillTypes.Stealth,
                 ],
                 classAbilities: [
-                    {
-                        name: 'Lethality - Mien of Despair',
-                        description: '',
-                        level: 1,
-                    },
-                    { name: 'Quick to Act +1', description: '', level: 1 },
-                    { name: 'Sneak Attack +1d6', description: '', level: 1 },
+                    
                 ],
             },
         ],
