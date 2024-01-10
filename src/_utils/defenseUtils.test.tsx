@@ -3,7 +3,6 @@ import { mockCharacters } from '@/_mockData/characters';
 import { AttributeNames, BonusTypes } from '@/_models';
 import * as defenseUtils from './defenseUtils';
 import { getTotalAttributeModifier } from './attributeUtils';
-import { EQ } from 'ramda';
 
 describe('Defense Utilities', () => {
 	const mock0 = mockCharacters[0];
@@ -30,9 +29,13 @@ describe('Defense Utilities', () => {
 			[BonusTypes.Enhancement]: getTotalAttributeModifier(mock0, AttributeNames.Wisdom)
 		});
 	});
-	it('should get correct maximum dex mod', () => {
-		expect(defenseUtils.getMaximumDexMod(mock0.equipment)).toBe(8);
-		expect(defenseUtils.getMaximumDexMod([...mock0.equipment, {name: "Tower Shield", maxDexBonus: 2, equipped: true, id: '12345'}])).toBe(2);
+	it('should get correct maximum dex mod from equipment', () => {
+		expect(defenseUtils.getLowestEqDexMod(mock0.equipment)).toBe(8);
+		expect(defenseUtils.getLowestEqDexMod([...mock0.equipment, {...mock0.equipment[0], maxDexBonus: 2}])).toBe(2);
+	})
+	it('should get edjusted adjusted dex mod', () => {
+		expect(defenseUtils.getAdjustedMaxDexMod(mock0)).toBe(4)
+		expect(defenseUtils.getAdjustedMaxDexMod({...mock0, equipment: [...mock0.equipment, {...mock0.equipment[0], maxDexBonus: 2}]})).toBe(2)
 	})
 	test('getTotalDefense', () => {
 		expect(defenseUtils.getTotalDefense(mock0)).toStrictEqual({

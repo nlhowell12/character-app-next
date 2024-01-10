@@ -13,7 +13,8 @@ export const getTotalDefense = (character: Character): DefenseObject => {
 		BonusTypes.Shield,
 		BonusTypes.Racial,
 	];
-	const dexMod = getTotalAttributeModifier(character, AttributeNames.Dexterity);
+	const adjustedDexMod = getAdjustedMaxDexMod(character);
+	
 	const acBonuses = getDefenseBonuses(character);
 	let totalDRBonuses = 0;
 	let totalDSBonuses = 0;
@@ -26,14 +27,20 @@ export const getTotalDefense = (character: Character): DefenseObject => {
 		}
 	});
 
-	return { dsBonus: 10 + dexMod + totalDSBonuses, drBonus: totalDRBonuses };
+	return { dsBonus: 10 + Number(adjustedDexMod) + totalDSBonuses, drBonus: totalDRBonuses };
 };
-export const getMaximumDexMod = (eq: Equipment[]): number | null => {
+
+export const getAdjustedMaxDexMod = (character: Character): number => {
+	const maxDex = getLowestEqDexMod(character.equipment);
+	const dexMod = getTotalAttributeModifier(character, AttributeNames.Dexterity);
+	return!!maxDex && maxDex < dexMod ? maxDex : dexMod;
+};
+export const getLowestEqDexMod = (eq: Equipment[]): number | null => {
 	const dexRestrictions = eq.filter(x => !!(x as Armor).maxDexBonus && (x as Armor).maxDexBonus > -1 && !!(x as Armor).equipped)
-	let mod: number = 10;
+	let mod: number | null = null;
 	dexRestrictions.forEach((x) => {
 		const armor = x as Armor;
-		if(armor.maxDexBonus < mod){
+		if(!mod || armor.maxDexBonus < mod){
 			mod = armor.maxDexBonus
 		}
 	})

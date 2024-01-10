@@ -12,6 +12,7 @@ import {
     getTotalDefense,
     getDefenseBonuses,
     getResistances,
+    getAdjustedMaxDexMod,
 } from '@/_utils/defenseUtils';
 import {
     Table,
@@ -58,9 +59,8 @@ const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
             <TableBody>
                 <TableRow>
                     <TableCell sx={tooltipCellStyling}>
-                        <Typography>{`Dexterity: ${getTotalAttributeModifier(
-                            character,
-                            AttributeNames.Dexterity
+                        <Typography>{`Dexterity: ${getAdjustedMaxDexMod(
+                            character
                         )}`}</Typography>
                     </TableCell>
                 </TableRow>
@@ -208,7 +208,12 @@ export const CombatInfoDisplay = ({
                 onClick={() => setOpenSpeed(true)}
                 editable
             />
-            <SpeedDialog dispatch={dispatch} character={character} open={openSpeed} onClose={() => setOpenSpeed(false)}/>
+            <SpeedDialog
+                dispatch={dispatch}
+                character={character}
+                open={openSpeed}
+                onClose={() => setOpenSpeed(false)}
+            />
             <DisplayCell
                 variant='body1'
                 cellTitle='Hero Points:'
