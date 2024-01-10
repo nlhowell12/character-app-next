@@ -19,10 +19,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import {
     Armor,
-    BodySlot,
     Character,
     Equipment,
-    Modifier,
     Weapon,
 } from '@/_models';
 import {
@@ -34,7 +32,6 @@ import {
     updateEquipmentAction,
 } from '@/_reducer/characterReducer';
 import React, { Dispatch, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling, numberInputStyling } from '@/_utils/theme';
 import {
