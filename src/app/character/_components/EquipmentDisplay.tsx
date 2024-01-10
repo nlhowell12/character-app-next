@@ -32,7 +32,7 @@ import {
     toggleEquippedAction,
     updateEquipmentAction,
 } from '@/_reducer/characterReducer';
-import React, { Dispatch, useState } from 'react';
+import React, { Dispatch, useMemo, useRef, useState } from 'react';
 import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling, numberInputStyling } from '@/_utils/theme';
 import {
@@ -44,6 +44,7 @@ import {
     getDiceDamageModifiers,
     getEqBonusObject,
     getTotalArmorBonus,
+    getTotalEquipmentWeight,
 } from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
 import { DisplayBox } from './DisplayBox';
@@ -197,6 +198,19 @@ export const EquipmentDisplay = ({
             )} ${bonusDiceString()}`
         }
     }
+    const totalWeightCarried = useMemo(() => {return getTotalEquipmentWeight(character.equipment)}, [character.equipment.length]);
+    const carryingCap = useMemo(() => {return determineCarryingCapacity(character)}, [character.attributes.Strength])
+    const weightIconColor = () => {
+        if(totalWeightCarried <= carryingCap.light)
+        {
+            return 'success'
+        } else if (totalWeightCarried <= carryingCap.med){
+            return 'warning'
+        } else {
+            return 'error'
+        }
+    };
+    
     return (
         <Card>
             <div
@@ -207,8 +221,8 @@ export const EquipmentDisplay = ({
             >
                 <CardHeader title='Equipment' />
                 <CardActions>
-                    <Tooltip title={<CarryCapTooltip cap={determineCarryingCapacity(character)}/>}>
-                        <FitnessCenterIcon />
+                    <Tooltip title={<CarryCapTooltip cap={carryingCap}/>}>
+                        <FitnessCenterIcon color={weightIconColor()}/>
                     </Tooltip>
                     <Button onClick={() => setOpen(true)}>Add</Button>
                 </CardActions>
