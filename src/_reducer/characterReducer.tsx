@@ -46,7 +46,7 @@ const initialAttributes: CharacterAttributes = {
 	},
 };
 
-type AcceptedUpdateValues = string | number | boolean | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType | Note | Movement;
+type AcceptedUpdateValues = string | string[] | number | boolean | CharacterClass[] | Modifier[] | Modifier | Character | Feat[] | Equipment | AnyMagickType | Note | Movement;
 
 export type CharacterAction = {
 	type: CharacterReducerActions;

@@ -103,7 +103,7 @@ export const CharacterInfoDisplay = ({
                     onClick={() => setOpenNotes(true)}
                     sx={buttonStlying}
                 >
-                    <Typography>Open Notes</Typography>
+                    <Typography>Other Info</Typography>
                     <NotesIcon sx={{ marginLeft: '.5rem' }} />
                 </Button>
                 <NoteDialog

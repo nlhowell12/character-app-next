@@ -1,4 +1,4 @@
-import { Character, Note } from '@/_models';
+import { Character, CharacterKeys, Magick, Note } from '@/_models';
 import {
     Grid,
     Typography,
@@ -14,6 +14,13 @@ import {
     Card,
     ListSubheader,
     Button,
+    Table,
+    TableCell,
+    TableRow,
+    Tooltip,
+    CardActions,
+    Stack,
+    Chip,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Dispatch, useState } from 'react';
@@ -23,11 +30,12 @@ import {
     CharacterAction,
     addNoteAction,
     deleteNoteAction,
+    updateAction,
     updateNoteAction,
 } from '@/_reducer/characterReducer';
 import { v4 as uuidv4 } from 'uuid';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-
+import { CancelRounded, CheckCircle, ExpandLess, ExpandMore } from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
 interface NoteDialogProps {
     character: Character;
     open: boolean;
@@ -39,6 +47,26 @@ interface NoteItemProps {
     note: Note;
     dispatch: Dispatch<CharacterAction>;
 }
+
+interface LanguageTooltipProps {
+    character: Character;
+}
+const LanguageTooltip = ({ character }: LanguageTooltipProps) => {
+    const tableCellStyling = { borderBottom: 'none' };
+    return (
+        <Table size='small'>
+            {character?.languages.map((lang) => {
+                return (
+                    <TableRow>
+                        <TableCell sx={tableCellStyling}>
+                            <Typography>{lang}</Typography>
+                        </TableCell>
+                    </TableRow>
+                );
+            })}
+        </Table>
+    );
+};
 
 const NoteItem = ({ note, dispatch }: NoteItemProps) => {
     const [open, setOpen] = useState<boolean>(false);
@@ -64,12 +92,9 @@ const NoteItem = ({ note, dispatch }: NoteItemProps) => {
                         '&:hover': { opacity: '.6', cursor: 'pointer' },
                     }}
                 >
-                    <Avatar>
-                        {open ? <ExpandLess /> : <ExpandMore />}
-                    </Avatar>
+                    <Avatar>{open ? <ExpandLess /> : <ExpandMore />}</Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={`${note.title}`} />
-
             </ListItem>
             <Collapse in={open} unmountOnExit>
                 <TextField
@@ -92,7 +117,7 @@ interface AddNoteDialogProps {
 const AddNoteDialog = ({ open, onClose, dispatch }: AddNoteDialogProps) => {
     const [note, setNote] = useState('');
     const [title, setTitle] = useState('');
-
+    
     const reset = () => {
         setNote('');
         setTitle('');
@@ -143,6 +168,23 @@ export const NoteDialog = ({
     dispatch,
 }: NoteDialogProps) => {
     const [newNoteOpen, setNewNoteOpen] = useState(false);
+    const [openLang, setOpenLang] = useState(false);
+    const [newLang, setNewLang] = useState('');
+
+    const textFieldStyling = {
+        marginBottom: '.5rem',
+    };
+
+    const handleAddLang = () => {
+        dispatch(updateAction(CharacterKeys.languages, [...character.languages, newLang]))
+        setOpenLang(false);
+        setNewLang('');
+    }
+
+    const handleRemoveLang = (lang: string) => {
+        dispatch(updateAction(CharacterKeys.languages, character.languages.filter(x => x !== lang)))
+
+    };
     return (
         <Dialog open={open} onClose={onClose}>
             <Card
@@ -177,6 +219,47 @@ export const NoteDialog = ({
                         </ListSubheader>
                     }
                 >
+                    <Dialog open={openLang} onClose={() => setOpenLang(false)}>
+                    <Card
+                        sx={{
+                            padding: '.5rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <TextField
+                            sx={textFieldStyling}
+                            value={newLang}
+                            onChange={(e) => setNewLang(e.target.value)}
+                            label='New Language'
+                        />
+                            <CardActions sx={{ justifyContent: 'right' }}>
+                                <Button onClick={(e) => setOpenLang(false)}>
+                                    <CancelRounded />
+                                </Button>
+                                <Button>
+                                    <CheckCircle onClick={() => handleAddLang()} />
+                                </Button>
+                            </CardActions>
+                        </Card>
+                        <Stack>
+                            {character.languages.map(lang => {
+                                return <Chip label={lang} onDelete={() => handleRemoveLang(lang)}/>
+                            })}
+                        </Stack>
+                    </Dialog>
+                    <Tooltip title={<LanguageTooltip character={character}/>} followCursor>
+                        <ListItem
+                            secondaryAction={
+                                <IconButton onClick={() => setOpenLang(true)}>
+                                    <EditIcon />
+                                </IconButton>
+                            }
+                        >
+                            {' '}
+                            <ListItemText primary={'Languages'} />
+                        </ListItem>
+                    </Tooltip>
                     {character.notes?.map((note: Note) => {
                         return (
                             <NoteItem
