@@ -37,7 +37,7 @@ function spellModel() {
         class: { type: String, enum: CharacterClassNames, required: true },
         level: { type: Number, required: true },
         damageType: String,
-        savingThrow: String,
+        savingThrow: {type: String, required: true},
         action: { type: String, required: true },
         bonusType: String,
         school: { type: String, required: true, enum: ArcaneSchool },

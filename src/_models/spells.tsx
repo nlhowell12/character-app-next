@@ -166,6 +166,7 @@ export interface Maneuver {
     name: string;
     maneuverType: string;
     action: string;
+    savingThrow: string;
     description: string;
     category: MagickCategory;
     class: CharacterClassNames;
