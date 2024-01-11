@@ -105,6 +105,8 @@ export enum CharacterKeys {
 	eyeColor = 'eyeColor',
 	hairColor = 'hairColor',
 	languages = 'languages',
+	specialAbilities = 'specialAbilities',
+	proficiencies = 'proficiencies',
 	skills = 'skills',
 	equipment = 'equipment',
 	miscModifiers = 'miscModifiers',
@@ -146,6 +148,9 @@ export interface Character {
 	eyeColor: string;
 	hairColor: string;
 	languages: string[];
+	specialAbilities: string[];
+
+	proficiencies: string[];
 	skills: SkillObject;
 	equipment: Equipment[];
 	miscModifiers: Modifier[];

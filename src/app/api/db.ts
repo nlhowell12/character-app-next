@@ -65,6 +65,8 @@ function characterModel() {
         eyeColor: { type: String},
         hairColor: { type: String },
         languages: [String],
+        proficiencies: [String],
+        specialAbilities: [String],
         skills: {type: Map, of: Object},
         equipment: [Object],
         miscModifiers: [Object],
