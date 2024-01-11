@@ -49,6 +49,14 @@ export const mockCharacters: Character[] = [
         isPsionic: true,
         powerPoints: 3,
         maxPowerPoints: 3,
+        currency: {
+            cp: 0,
+            sp: 0,
+            gp: 0,
+            pp: 0
+        },
+        specialAbilities: [],
+        proficiencies: [],
         classes: [
             {
                 name: 'Rogue',

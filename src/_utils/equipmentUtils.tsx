@@ -1,4 +1,4 @@
-import { Armor, AttributeNames, CarryingCapacityObject, Character, Equipment, Modifier, Sizes, Weapon, stackableBonuses } from '@/_models';
+import { Armor, AttributeNames, CarryingCapacityObject, Character, Currency, Equipment, Modifier, Sizes, Weapon, stackableBonuses } from '@/_models';
 import { getModifierAttributeBonus, getTotalAttributeModifier, totalAttributeValue } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
 
@@ -54,6 +54,17 @@ export const getTotalEquipmentWeight = (eq: Equipment[]) => {
     return eq.reduce((x, y) => x + (y.weight * y.amount), 0)
 };
 
+export const getCurrencyWeight = (coins: Currency): number => {
+    return Object.values(coins).reduce((x, y) => Number(x) + Number(y), 0) / 50
+}
+
+export const getTotalCarriedWeight = (character: Character): number => {
+    const eqWeight = getTotalEquipmentWeight(character.equipment);
+    const currencyWeight = getCurrencyWeight(character.currency);
+    console.log(eqWeight, currencyWeight)
+    return Number((eqWeight + currencyWeight).toFixed(2));
+}
+
 export const determineCarryingCapacity = (character: Character): CarryingCapacityObject=> {
     const capSizeMods = {
         [Sizes.ColossalPlus]: 16,
@@ -68,10 +79,10 @@ export const determineCarryingCapacity = (character: Character): CarryingCapacit
         [Sizes.Fine]: .12
     };
     const totalStrength: number = totalAttributeValue(character, AttributeNames.Strength);
-    const getLight = (value: number) => Math.floor(.3333333333333333333333 * value);
-    const getMed = (value: number) => Math.floor(.66666666666666666666666666666 * value);
-    const getMiddleMax = (str: number) => Math.ceil(Math.round(100 * Math.pow(2, ((str - 10)/5))));
-        const roundToFive = (val: number) => {
+    const getLight = (value: number): number => Math.floor(.3333333333333333333333 * value);
+    const getMed = (value: number): number => Math.floor(.66666666666666666666666666666 * value);
+    const getMiddleMax = (str: number): number => Math.ceil(Math.round(100 * Math.pow(2, ((str - 10)/5))));
+        const roundToFive = (val: number): number => {
             if(totalStrength % 2 === 0){
                 return (Math.floor(val / 5)) * 5; 
             } else {

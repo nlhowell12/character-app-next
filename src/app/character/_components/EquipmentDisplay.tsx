@@ -48,6 +48,7 @@ import {
     getDiceDamageModifiers,
     getEqBonusObject,
     getTotalArmorBonus,
+    getTotalCarriedWeight,
     getTotalEquipmentWeight,
 } from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
@@ -164,13 +165,13 @@ const CurrencyDisplay = ({
                     <TableRow>
                         {Object.keys(character.currency).map((coin) => {
                             return (
-                                <TableCell>
+                                <TableCell sx={{borderBottom: 'none'}}>
                                     <NumberInput
                                         label={coin.toUpperCase()}
                                         value={
-                                            character.currency[
+                                            Number(character.currency[
                                                 coin as keyof Currency
-                                            ]
+                                            ])
                                         }
                                         onChange={(e) =>
                                             dispatch(
@@ -179,7 +180,7 @@ const CurrencyDisplay = ({
                                                     {
                                                         ...character.currency,
                                                         [coin as keyof Currency]:
-                                                            e.target.value,
+                                                            Number(e.target.value).toFixed(2),
                                                     }
                                                 )
                                             )
@@ -250,8 +251,8 @@ export const EquipmentDisplay = ({
         }
     };
     const totalWeightCarried = useMemo(() => {
-        return getTotalEquipmentWeight(character.equipment);
-    }, [character.equipment.length]);
+        return getTotalCarriedWeight(character);
+    }, [character.equipment.length, character.currency]);
     const carryingCap = useMemo(() => {
         return determineCarryingCapacity(character);
     }, [character.attributes.Strength]);

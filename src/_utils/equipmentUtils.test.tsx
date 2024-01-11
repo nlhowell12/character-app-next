@@ -7,6 +7,7 @@ import {
     getAttackBonus,
     getAttributeAttackBonus,
     getAttributeDamageBonus,
+    getCurrencyWeight,
     getDamageBonus,
     getDiceDamageModifiers,
     getEqBonusObject,
@@ -15,7 +16,7 @@ import {
     getTotalEquipmentWeight,
     getTotalModifierBonus,
 } from './equipmentUtils';
-import { Armor, BonusTypes, Character, Damage, Dice, Sizes, Weapon } from '@/_models';
+import { Armor, BonusTypes, Character, Currency, Damage, Dice, Sizes, Weapon } from '@/_models';
 
 export const dagger: Weapon = {
     id: '12345',
@@ -198,5 +199,15 @@ describe('Equipment Utils', () => {
     it('should get totalArmorBonus', () => {
         const total = getTotalArmorBonus(mockCharacters[0], magicLeather)
         expect(total).toBe(4)
+    });
+    it('should get weight of coins carried', () => {
+        const mockCurrency: Currency = {
+            cp: 47,
+            sp: 200,
+            gp: 53,
+            pp: 100
+        }
+        const total = getCurrencyWeight(mockCurrency)
+        expect(total).toBe(8)
     });
 });
