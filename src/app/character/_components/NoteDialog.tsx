@@ -336,14 +336,16 @@ export const NoteDialog = ({
                                 justifyContent: 'space-between',
                             }}
                         >
-                            Notes
-                            <IconButton
-                                edge='end'
-                                aria-label='add'
-                                onClick={() => setNewNoteOpen(true)}
-                            >
-                                <Add />
-                            </IconButton>
+                            Other Information
+                            <Tooltip title='Add Note'>
+                                <IconButton
+                                    edge='end'
+                                    aria-label='add'
+                                    onClick={() => setNewNoteOpen(true)}
+                                >
+                                    <Add/>
+                                </IconButton>
+                            </Tooltip>    
                         </ListSubheader>
                     }
                 >
