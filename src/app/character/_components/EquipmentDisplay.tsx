@@ -165,7 +165,7 @@ const CurrencyDisplay = ({
                     <TableRow>
                         {Object.keys(character.currency).map((coin) => {
                             return (
-                                <TableCell sx={{borderBottom: 'none'}}>
+                                <TableCell key={coin} sx={{borderBottom: 'none'}}>
                                     <NumberInput
                                         label={coin.toUpperCase()}
                                         value={

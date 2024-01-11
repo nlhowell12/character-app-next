@@ -62,7 +62,7 @@ const OtherInfoTooltip = ({ display}: OtherInfoTooltipProps) => {
         <Table size='small'>
             {display.map((x) => {
                 return (
-                    <TableRow>
+                    <TableRow key={x}>
                         <TableCell sx={tableCellStyling}>
                             <Typography>{x}</Typography>
                         </TableCell>
@@ -239,7 +239,7 @@ const StringArrayDialog = ({
             </Card>
             <Stack>
                 {display.map((x) => {
-                    return <Chip label={x} onDelete={() => onRemove(x)} />;
+                    return <Chip key={x} label={x} onDelete={() => onRemove(x)} />;
                 })}
             </Stack>
         </Dialog>
