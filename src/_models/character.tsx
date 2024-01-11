@@ -109,6 +109,7 @@ export enum CharacterKeys {
 	proficiencies = 'proficiencies',
 	skills = 'skills',
 	equipment = 'equipment',
+	currency = 'currency',
 	miscModifiers = 'miscModifiers',
 	playerName = 'playerName',
 	experience = 'experience',
@@ -121,6 +122,13 @@ export enum CharacterKeys {
 	heroPoints = 'heroPoints',
 	movementSpeeds = 'movementSpeeds'
 }
+
+export interface Currency {
+	cp: number;
+	sp: number;
+	gp: number;
+	pp: number;
+};
 
 export interface Note {
 	id: string;
@@ -149,7 +157,7 @@ export interface Character {
 	hairColor: string;
 	languages: string[];
 	specialAbilities: string[];
-
+	currency: Currency
 	proficiencies: string[];
 	skills: SkillObject;
 	equipment: Equipment[];

@@ -68,6 +68,7 @@ function characterModel() {
         proficiencies: [String],
         specialAbilities: [String],
         skills: {type: Map, of: Object},
+        currency: {type: Map, of: Object},
         equipment: [Object],
         miscModifiers: [Object],
         playerName: { type: String, required: true },

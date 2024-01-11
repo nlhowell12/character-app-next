@@ -5,6 +5,7 @@ import {
     CardContent,
     CardHeader,
     Dialog,
+    IconButton,
     OutlinedInput,
     Table,
     TableBody,
@@ -21,6 +22,8 @@ import {
     Armor,
     CarryingCapacityObject,
     Character,
+    CharacterKeys,
+    Currency,
     Equipment,
     Weapon,
 } from '@/_models';
@@ -30,6 +33,7 @@ import {
     removeEquipmentAction,
     replaceEquipmentAction,
     toggleEquippedAction,
+    updateAction,
     updateEquipmentAction,
 } from '@/_reducer/characterReducer';
 import React, { Dispatch, useMemo, useRef, useState } from 'react';
@@ -50,6 +54,8 @@ import { BonusObject } from '@/_utils/defenseUtils';
 import { DisplayBox } from './DisplayBox';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { camelToTitle } from '@/_utils/stringUtils';
+import PaidIcon from '@mui/icons-material/Paid';
+import { NumberInput } from '@/app/_components/NumberInput';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -80,7 +86,7 @@ const BonusTooltip = ({ bonusObject }: BonusTooltipProps) => {
 };
 interface CarryCapTooltipProps {
     cap: CarryingCapacityObject;
-};
+}
 
 const CarryCapTooltip = ({ cap }: CarryCapTooltipProps) => {
     return (
@@ -89,7 +95,12 @@ const CarryCapTooltip = ({ cap }: CarryCapTooltipProps) => {
                 <TableRow>
                     {Object.keys(cap).map((key) => {
                         return (
-                            <TableCell key={key} size='small' align='center' sx={{borderBottom: 'none'}}>
+                            <TableCell
+                                key={key}
+                                size='small'
+                                align='center'
+                                sx={{ borderBottom: 'none' }}
+                            >
                                 <Typography>{camelToTitle(key)}</Typography>
                                 {/* @ts-ignore */}
                                 <Typography>{cap[key]}</Typography>
@@ -133,21 +144,69 @@ const WeaponDamageTooltip = ({
         </Table>
     );
 };
+
+interface CurrencyDisplayProps {
+    character: Character;
+    dispatch: Dispatch<CharacterAction>;
+    open: boolean;
+    onClose: () => void;
+}
+const CurrencyDisplay = ({
+    character,
+    dispatch,
+    open,
+    onClose
+}: CurrencyDisplayProps) => {
+    return (
+        <Dialog open={open} onClose={onClose}>
+            <Card>
+                <Table>
+                    <TableRow>
+                        {Object.keys(character.currency).map((coin) => {
+                            return (
+                                <TableCell>
+                                    <NumberInput
+                                        label={coin.toUpperCase()}
+                                        value={
+                                            character.currency[
+                                                coin as keyof Currency
+                                            ]
+                                        }
+                                        onChange={(e) =>
+                                            dispatch(
+                                                updateAction(
+                                                    CharacterKeys.currency,
+                                                    {
+                                                        ...character.currency,
+                                                        [coin as keyof Currency]:
+                                                            e.target.value,
+                                                    }
+                                                )
+                                            )
+                                        }
+                                    />
+                                </TableCell>
+                            );
+                        })}
+                    </TableRow>
+                </Table>
+            </Card>
+        </Dialog>
+    );
+};
+
 export const EquipmentDisplay = ({
     character,
     dispatch,
 }: EquipmentDisplayProps) => {
     const weapons = character.equipment.filter(
-        (eq: Equipment) =>
-            (eq as Weapon).isWeapon
+        (eq: Equipment) => (eq as Weapon).isWeapon
     );
     const armor = character.equipment.filter(
-        (eq: Equipment) =>
-            (eq as Armor).isArmor
+        (eq: Equipment) => (eq as Armor).isArmor
     );
     const otherEq = character.equipment.filter(
-        (eq: Equipment) =>
-            !(eq as Armor).isArmor && !(eq as Weapon).isWeapon
+        (eq: Equipment) => !(eq as Armor).isArmor && !(eq as Weapon).isWeapon
     );
     const eqDisplayCardStyle = {
         margin: '0 .5rem',
@@ -155,6 +214,7 @@ export const EquipmentDisplay = ({
 
     const [open, setOpen] = useState<boolean>(false);
     const [editEq, setEditEq] = useState<Equipment>();
+    const [openCurrency, setOpenCurrency] = useState<boolean>(false);
 
     const handleAdd = (newEq: Equipment) => {
         dispatch(addEquipmentAction(newEq));
@@ -167,47 +227,41 @@ export const EquipmentDisplay = ({
     };
 
     const handleClose = () => {
-        !editEq ?
-        setOpen(false) :
-        setEditEq(undefined)
+        !editEq ? setOpen(false) : setEditEq(undefined);
     };
     const weaponDamage = (weapon: Weapon) => {
-        const damageBonus = getDamageBonus(
-            character,
-            weapon
-        );
+        const damageBonus = getDamageBonus(character, weapon);
         const damagePositive = damageBonus >= 0 ? '+' : '-';
         const diceDamageBonuses = getDiceDamageModifiers(character, weapon);
         const bonusDiceString = () => {
             let string = '';
-            diceDamageBonuses.forEach(x => {
-                const addString = `\n+ ${x.numberOfDice}${x.damageDice} ${x.damageType}`
-                string += addString
-            })
+            diceDamageBonuses.forEach((x) => {
+                const addString = `\n+ ${x.numberOfDice}${x.damageDice} ${x.damageType}`;
+                string += addString;
+            });
             return string;
-        }
-        if(!weapon.numberOfDice){
-            return `${1 + damageBonus}`
+        };
+        if (!weapon.numberOfDice) {
+            return `${1 + damageBonus}`;
         } else {
-            return `${Number(
-                weapon.numberOfDice.toString()
-            )}${
+            return `${Number(weapon.numberOfDice.toString())}${
                 weapon.damage
-            } ${damagePositive} ${Math.abs(
-                damageBonus
-            )} ${bonusDiceString()}`
+            } ${damagePositive} ${Math.abs(damageBonus)} ${bonusDiceString()}`;
         }
-    }
-    const totalWeightCarried = useMemo(() => {return getTotalEquipmentWeight(character.equipment)}, [character.equipment.length]);
-    const carryingCap = useMemo(() => {return determineCarryingCapacity(character)}, [character.attributes.Strength])
+    };
+    const totalWeightCarried = useMemo(() => {
+        return getTotalEquipmentWeight(character.equipment);
+    }, [character.equipment.length]);
+    const carryingCap = useMemo(() => {
+        return determineCarryingCapacity(character);
+    }, [character.attributes.Strength]);
     const weightIconColor = () => {
-        if(totalWeightCarried <= carryingCap.light)
-        {
-            return 'success'
-        } else if (totalWeightCarried <= carryingCap.med){
-            return 'warning'
+        if (totalWeightCarried <= carryingCap.light) {
+            return 'success';
+        } else if (totalWeightCarried <= carryingCap.med) {
+            return 'warning';
         } else {
-            return 'error'
+            return 'error';
         }
     };
 
@@ -221,8 +275,13 @@ export const EquipmentDisplay = ({
             >
                 <CardHeader title='Equipment' />
                 <CardActions>
-                    <Tooltip title={<CarryCapTooltip cap={carryingCap}/>}>
-                        <FitnessCenterIcon color={weightIconColor()}/>
+                    <Tooltip title='Currency'>
+                        <IconButton onClick={() => setOpenCurrency(true)}>
+                            <PaidIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={<CarryCapTooltip cap={carryingCap} />}>
+                        <FitnessCenterIcon color={weightIconColor()} />
                     </Tooltip>
                     <Typography variant='caption'>{`Total: ${totalWeightCarried} lbs`}</Typography>
 
@@ -237,6 +296,7 @@ export const EquipmentDisplay = ({
                     onEdit={handleEdit}
                 />
             </Dialog>
+            <CurrencyDisplay character={character} dispatch={dispatch} open={openCurrency} onClose={() => setOpenCurrency(false)}/>
             <Card sx={eqDisplayCardStyle}>
                 <CardContent
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
@@ -290,7 +350,10 @@ export const EquipmentDisplay = ({
                                         />
                                     </TableCell>
                                     <TableCell align='center'>
-                                       <Typography>{`+${getAttackBonus(character, weapon)}`}</Typography>
+                                        <Typography>{`+${getAttackBonus(
+                                            character,
+                                            weapon
+                                        )}`}</Typography>
                                     </TableCell>
                                     <TableCell align='center'>
                                         <Tooltip
@@ -460,9 +523,7 @@ export const EquipmentDisplay = ({
                                         <Tooltip title='Edit Equipment'>
                                             <EditIcon
                                                 sx={iconHoverStyling}
-                                                onClick={() =>
-                                                    setEditEq(armor)
-                                                }
+                                                onClick={() => setEditEq(armor)}
                                             />
                                         </Tooltip>
                                     </TableCell>
@@ -562,9 +623,7 @@ export const EquipmentDisplay = ({
                                         <Tooltip title='Edit Equipment'>
                                             <EditIcon
                                                 sx={iconHoverStyling}
-                                                onClick={() =>
-                                                    setEditEq(eq)
-                                                }
+                                                onClick={() => setEditEq(eq)}
                                             />
                                         </Tooltip>
                                     </TableCell>
