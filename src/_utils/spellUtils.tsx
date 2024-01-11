@@ -36,20 +36,21 @@ export const isCharacterPsionic = (character: Character): boolean => {
     );
 };
 
-export const getSpellDcAttribute = (character: Character, spell: AnyMagickType): number => {
+export const getSpellDcAttribute = (character: Character, spell: AnyMagickType, useDex?: boolean): number => {
+    const getManeuverMod = () => getTotalAttributeModifier(character, useDex ? AttributeNames.Dexterity : AttributeNames.Strength)
     switch(spell.class) {
         case(CharacterClassNames.Cleric):
         case(CharacterClassNames.Oathsworn):
         case(CharacterClassNames.PsychicWarrior):
             if(spell.category === MagickCategory.Maneuver) {
-                return getTotalAttributeModifier(character, AttributeNames.Strength)
+                return getManeuverMod()
             }
             return getTotalAttributeModifier(character, AttributeNames.Wisdom);
         case(CharacterClassNames.Shadowcaster):
         case(CharacterClassNames.Hexblade):
         case(CharacterClassNames.SorcWiz):
             if(spell.category === MagickCategory.Maneuver) {
-                return getTotalAttributeModifier(character, AttributeNames.Strength)
+                return getManeuverMod()
             }
             if(character.classes.some(x => x.name === CharacterClassNames.Wizard)){
                 return getTotalAttributeModifier(character, AttributeNames.Intelligence)
@@ -58,13 +59,13 @@ export const getSpellDcAttribute = (character: Character, spell: AnyMagickType):
         case(CharacterClassNames.Psion):
             return getTotalAttributeModifier(character, AttributeNames.Intelligence);
         case(CharacterClassNames.Fighter):
-            return getTotalAttributeModifier(character, AttributeNames.Strength);
+        return getManeuverMod()
         default:
             return 0
     }
 };
 
-export const getSpellDc = (character: Character, spell: AnyMagickType): number => {
-    const attribute = getSpellDcAttribute(character, spell);
+export const getSpellDc = (character: Character, spell: AnyMagickType, useDex?: boolean): number => {
+    const attribute = getSpellDcAttribute(character, spell, useDex);
     return 10 + attribute + spell.level
 };

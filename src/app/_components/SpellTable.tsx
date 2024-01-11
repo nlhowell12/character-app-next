@@ -8,6 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {
+    Button,
     Checkbox,
     FormControl,
     InputLabel,
@@ -36,15 +37,16 @@ import { getSpellDc } from '@/_utils/spellUtils';
 interface SpellTableTooltipProps {
     character?: Character
     spell: AnyMagickType;
+    useDex?: boolean;
 }
-const SpellTooltip = ({ character, spell }: SpellTableTooltipProps) => {
+const SpellTooltip = ({ character, spell, useDex }: SpellTableTooltipProps) => {
     const tableCellStyling = { borderBottom: 'none'};
         return (
         <Table>
             <TableRow>
                 {!!character && !!(spell as Magick).savingThrow && <TableCell sx={{...tableCellStyling, borderRight: '1px solid grey'}}>
                     <Typography>DC</Typography>
-                    <Typography>{getSpellDc(character, spell)}</Typography>
+                    <Typography>{getSpellDc(character, spell, useDex)}</Typography>
                 </TableCell>}
                 <TableCell sx={tableCellStyling}>
                     <Typography>{spell.description}</Typography>
@@ -80,6 +82,8 @@ export const SpellTable = ({
     const [searchValue, setSearchValue] = useState<string>('');
     const [filteredRows, setFilteredRows] = useState<AnyMagickType[]>([]);
     const [onlyPrepared, setOnlyPrepared] = useState<AnyMagickType[]>([]);
+    const [useDex, setUseDex] = useState<boolean>(false);
+
     const [columnFilter, setColumnFilter] = useState<{
         column: string;
         value: string;
@@ -89,12 +93,13 @@ export const SpellTable = ({
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     let initialLoad = useRef<boolean>(true);
 
-    const hybridClasses: CharacterClassNames[] = [
+    const maneuverClasses: CharacterClassNames[] = [
         CharacterClassNames.Hexblade,
         CharacterClassNames.Oathsworn,
         CharacterClassNames.PsychicWarrior,
+        CharacterClassNames.Fighter
     ];
-    const isHybridClass = hybridClasses.includes(selectedClass);
+    const isHybridClass = maneuverClasses.includes(selectedClass);
 
     const handleOnlyPrepared = () => {
         if (!onlyPrepared.length) {
@@ -316,8 +321,9 @@ export const SpellTable = ({
                     );
                 })}
             </Select>
-            {hybridClasses.includes(selectedClass) ? (
-                <Select
+            {isHybridClass ? (
+                <>
+                 <Select
                     onChange={handleSubtypeChange}
                     value={selectedSubtype}
                     sx={{ marginRight: '1rem' }}
@@ -330,6 +336,11 @@ export const SpellTable = ({
                         );
                     })}
                 </Select>
+                {selectedSubtype === MagickCategory.Maneuver && 
+                <Button variant='outlined' sx={{marginRight: '1rem'}}onClick={() => setUseDex(!useDex)} color={useDex ? 'success' : undefined}>Use Dex for Maneuver</Button>
+                }
+                </>
+               
             ) : null}
             <TextField
                 onChange={handleSearchChange}
@@ -394,6 +405,7 @@ export const SpellTable = ({
                                                             row
                                                         }
                                                         character={character}
+                                                        useDex={useDex}
                                                     />
                                                 }
                                                 placement='right'
