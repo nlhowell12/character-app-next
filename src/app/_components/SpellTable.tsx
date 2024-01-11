@@ -31,12 +31,27 @@ import * as R from 'ramda';
 import { NumberInput } from './NumberInput';
 import { iconHoverStyling } from '@/_utils/theme';
 import InfoIcon from '@mui/icons-material/Info';
+import { getSpellDc } from '@/_utils/spellUtils';
 
 interface SpellTableTooltipProps {
-    description: string;
+    character?: Character
+    spell: AnyMagickType;
 }
-const SpellTooltip = ({ description }: SpellTableTooltipProps) => {
-    return <Typography>{description}</Typography>;
+const SpellTooltip = ({ character, spell }: SpellTableTooltipProps) => {
+    const tableCellStyling = { borderBottom: 'none'};
+        return (
+        <Table>
+            <TableRow>
+                {!!character && !!(spell as Magick).savingThrow && <TableCell sx={{...tableCellStyling, borderRight: '1px solid grey'}}>
+                    <Typography>DC</Typography>
+                    <Typography>{getSpellDc(character, spell)}</Typography>
+                </TableCell>}
+                <TableCell sx={tableCellStyling}>
+                    <Typography>{spell.description}</Typography>
+                </TableCell>
+            </TableRow>
+        </Table>
+    );
 };
 export interface SpellTableProps {
     spells: SpellObject;
@@ -65,7 +80,10 @@ export const SpellTable = ({
     const [searchValue, setSearchValue] = useState<string>('');
     const [filteredRows, setFilteredRows] = useState<AnyMagickType[]>([]);
     const [onlyPrepared, setOnlyPrepared] = useState<AnyMagickType[]>([]);
-    const [columnFilter, setColumnFilter] = useState<{column:string, value:string}>({column: '', value: ''});
+    const [columnFilter, setColumnFilter] = useState<{
+        column: string;
+        value: string;
+    }>({ column: '', value: '' });
 
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -87,15 +105,17 @@ export const SpellTable = ({
             setOnlyPrepared([]);
         }
     };
-    const resetColumnFilter  = () => {
-        setColumnFilter({column: '', value: ''});
-    }
+    const resetColumnFilter = () => {
+        setColumnFilter({ column: '', value: '' });
+    };
     const filterSelectCell = (column: string) => {
         const filterColumns = ['school', 'domain', 'path', 'discipline'];
         const filterSelectOptions = (column: string) => {
             let optionsSet = new Set<string>();
-            /* @ts-ignore */
-            filteredRows.forEach((x: AnyMagickType) =>optionsSet.add(x[column]));
+            filteredRows.forEach((x: AnyMagickType) =>
+                /* @ts-ignore */
+                optionsSet.add(x[column])
+            );
             return optionsSet;
         };
         const handleColumnFilter = (e: SelectChangeEvent<string>) => {
@@ -103,9 +123,9 @@ export const SpellTable = ({
                 target: { value },
             } = e;
             if (!!value) {
-                setColumnFilter({column, value});
+                setColumnFilter({ column, value });
             } else {
-                resetColumnFilter()
+                resetColumnFilter();
             }
         };
         if (filterColumns.includes(column)) {
@@ -182,9 +202,11 @@ export const SpellTable = ({
             if (!!onlyPrepared.length) {
                 filteredSpells = onlyPrepared;
             }
-            if(!!columnFilter.value){
+            if (!!columnFilter.value) {
+                filteredSpells = filteredSpells.filter(
                 /* @ts-ignore */
-                filteredSpells = filteredSpells.filter(x => x[columnFilter.column] === columnFilter.value)
+                    (x) => x[columnFilter.column] === columnFilter.value
+                );
             }
             const columns = !!filteredSpells.length
                 ? Object.keys(filteredSpells[0]).filter((x) => filterData(x))
@@ -368,9 +390,10 @@ export const SpellTable = ({
                                                 followCursor
                                                 title={
                                                     <SpellTooltip
-                                                        description={
-                                                            row.description
+                                                        spell={
+                                                            row
                                                         }
+                                                        character={character}
                                                     />
                                                 }
                                                 placement='right'
