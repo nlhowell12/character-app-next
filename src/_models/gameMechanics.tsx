@@ -84,3 +84,43 @@ export interface CarryingCapacityObject {
     med: number;
     heavy: number;
 }
+
+export enum StatusEffects {
+    AbilityDamaged = 'Ability Damaged',
+    AbilityDrained = 'Ability Drained',
+    Blinded = 'Blinded',
+    Confused = 'Confused',
+    Cowering = 'Cowering',
+    Cursed = 'Cursed',
+    Dazed = 'Dazed',
+    Dazzled = 'Dazzled',
+    Deafened = 'Deafened',
+    Disabled = 'Disabled',
+    Dying = 'Dying',
+    EnergyDrained = 'Energy Drained',
+    Entangled = 'Entangled',
+    Exhausted = 'Exhausted',
+    Fascinated = 'Fascinated',
+    Fatigued = 'Fatigued',
+    FlatFooted = 'Flat Footed',
+    Frightened = 'Frightened',
+    Grappled = 'Grappled',
+    Held = 'Held',
+    Helpless = 'Helpless',
+    Invisible = 'Invisible',
+    Nauseated = 'Nauseated',
+    Panicked = 'Panicked',
+    Paralyzed = 'Paralyzed',
+    Petrified = 'Petrified',
+    Pinned = 'Pinned',
+    Poisoned = 'Poison',
+    Prone = 'Prone',
+    Shaken = 'Shaken',
+    Sickened = 'Sickened',
+    Slowed = 'Slowed',
+    Stable = 'Stable',
+    Staggered = 'Staggered',
+    Stunned = 'Stunned',
+    Turned = 'Turned',
+    Unconscious = 'Unconscious'
+}

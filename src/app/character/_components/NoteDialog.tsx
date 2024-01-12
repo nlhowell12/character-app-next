@@ -41,6 +41,7 @@ import {
     ExpandMore,
 } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
+import { StatusEffectDialog } from './StatusEffectDialog';
 interface NoteDialogProps {
     character: Character;
     open: boolean;
@@ -251,6 +252,7 @@ export const NoteDialog = ({
     onClose,
     dispatch,
 }: NoteDialogProps) => {
+    const [openStatus, setOpenStatus] = useState(false);
     const [newNoteOpen, setNewNoteOpen] = useState(false);
     const [openLang, setOpenLang] = useState(false);
     const [newLang, setNewLang] = useState('');
@@ -382,6 +384,8 @@ export const NoteDialog = ({
                         label='Add New Special Ability'
                     />
                     <OtherInfoListItem title='Special Abilities' display={character.specialAbilities} onEdit={() => setOpenSpec(true)}/>
+                    <StatusEffectDialog open={openStatus} character={character} dispatch={dispatch} onClose={() => setOpenStatus(false)}/>
+                    <OtherInfoListItem title='Status Effects' display={character.statusEffects} onEdit={() => setOpenStatus(true)}/>
                     {character.notes?.map((note: Note) => {
                         return (
                             <NoteItem
