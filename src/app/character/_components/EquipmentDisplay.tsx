@@ -264,7 +264,7 @@ export const EquipmentDisplay = ({
 
     const carryingCap = useMemo(() => {
         return determineCarryingCapacity(character);
-    }, [character.attributes.Strength, character.size]);
+    }, [character]);
 
     const weightIconColor = () => {
         if (totalWeightCarried <= carryingCap.light) {

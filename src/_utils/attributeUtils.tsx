@@ -1,5 +1,5 @@
 import { AttributeNames,Character, Modifier, ModifierSource } from "@/_models";
-import { getEntangledModifiers, getExhaustedModifiers } from "./statusEffectUtils";
+import { getEntangledModifiers, getExhaustedModifiers, getFatiguedModifiers } from "./statusEffectUtils";
 
 export const getAttributeModifier = (score: number): number => {
 	return Math.floor((score - 10) / 2);
@@ -20,11 +20,11 @@ export const getAllAttributeModifiers = (
 	character: Character,
 	attributeName: AttributeNames
 ): Modifier[] => {
-	const exhaustedModifiers = getExhaustedModifiers(character);
-	const entagledModifiers: Modifier[] = getEntangledModifiers(character);
-
+	const exhausted = getExhaustedModifiers(character);
+	const entangled: Modifier[] = getEntangledModifiers(character);
+	const fatigue = getFatiguedModifiers(character);
 	const miscAttributeMods: Modifier[] =
-		[...character.miscModifiers, ...exhaustedModifiers, ...entagledModifiers].filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease && !mod.damage);
+		[...character.miscModifiers, ...exhausted, ...entangled, ...fatigue].filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease && !mod.damage);
 	
 	return miscAttributeMods;
 };
