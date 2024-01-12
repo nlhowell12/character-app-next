@@ -1,5 +1,5 @@
 
-import { Armor, AttributeNames, BonusTypes, Character, CharacterClass, Damage, Equipment, Modifier, stackableBonuses } from '@/_models';
+import { Armor, AttributeNames, BonusTypes, Character, CharacterClass, Damage, Equipment, Modifier, StatusEffects, stackableBonuses } from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
 
 export interface DefenseObject {
@@ -7,13 +7,17 @@ export interface DefenseObject {
 	drBonus: number;
 }
 
+const adjustForBlinded = (character: Character, dexMod: number) => {
+	return !character.statusEffects.includes(StatusEffects.Blinded) ? dexMod :  -2
+};
+
 export const getTotalDefense = (character: Character): DefenseObject => {
 	const drBonusTypes = [
 		BonusTypes.Armor,
 		BonusTypes.Shield,
 		BonusTypes.Racial,
 	];
-	const adjustedDexMod = getAdjustedMaxDexMod(character);
+	const adjustedDexMod = adjustForBlinded(character, getAdjustedMaxDexMod(character));
 	
 	const acBonuses = getDefenseBonuses(character);
 	let totalDRBonuses = 0;
