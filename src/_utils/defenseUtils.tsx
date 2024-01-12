@@ -11,7 +11,7 @@ import {
     stackableBonuses,
 } from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
-import { getFearModifiers } from './statusEffectUtils';
+import { getFearModifiers, getSickenedModifiers } from './statusEffectUtils';
 
 export interface DefenseObject {
     dsBonus: number;
@@ -191,6 +191,7 @@ export const getSaveModifiers = (
     );
     const statusEffectMods = [
         ...getFearModifiers(character, undefined, saveName),
+		...getSickenedModifiers(character, undefined, saveName)
     ].filter(x => x.attribute === saveName);
     return [...miscMods, ...statusEffectMods];
 };

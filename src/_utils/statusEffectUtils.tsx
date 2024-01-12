@@ -137,6 +137,46 @@ const getFearModifiers = (
           ]
         : [];
 }
+const getSickenedModifiers = (
+    character: Character,
+    skill?: SkillTypes,
+    attribute?: AttributeNames
+): Modifier[] => {
+    const fearStatuses = [StatusEffects.Sickened];
+    return character.statusEffects.some(x => fearStatuses.includes(x))
+        ? [
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -2,
+                  skill,
+                  statusEffect: StatusEffects.Sickened,
+              },
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -2,
+                  attack: true,
+                  statusEffect: StatusEffects.Sickened,
+              },
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -2,
+                  damage: true,
+                  statusEffect: StatusEffects.Sickened,
+              },
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -2,
+                  save: true,
+                  attribute,
+                  statusEffect: StatusEffects.Sickened,
+              },
+          ]
+        : [];
+}
 
 export {
     getExhaustedModifiers,
@@ -145,4 +185,5 @@ export {
     getFascinatedModifiers,
     getFatiguedModifiers,
     getFearModifiers,
+    getSickenedModifiers
 };

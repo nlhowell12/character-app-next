@@ -20,6 +20,7 @@ import {
     getDazzledModifiers,
     getEntangledModifiers,
     getFearModifiers,
+    getSickenedModifiers,
 } from './statusEffectUtils';
 
 export const getAttributeDamageBonus = (
@@ -55,7 +56,10 @@ export const getAllDamageModifiers = (
 ): Modifier[] => {
     const characterMods = character.miscModifiers.filter((x) => !!x.damage);
     const weaponMods = weapon.modifiers.filter((x) => !!x.damage);
-    return [...characterMods, ...weaponMods];
+    const statusEffectMods = [
+        ...getSickenedModifiers(character)
+    ].filter((x) => !!x.damage);
+    return [...characterMods, ...weaponMods, ...statusEffectMods];
 };
 
 export const getDiceDamageModifiers = (
@@ -79,7 +83,8 @@ export const getAllAttackModifiers = (
     const statusEffectMods = [
         ...getEntangledModifiers(character),
         ...getDazzledModifiers(character),
-        ...getFearModifiers(character)
+        ...getFearModifiers(character),
+        ...getSickenedModifiers(character)
     ].filter((x) => !!x.attack);
     return [...characterMods, ...weaponMods, ...statusEffectMods];
 };
