@@ -1,5 +1,6 @@
 import { AttributeNames, BonusTypes, Character, Modifier, ModifierSource, StatusEffects } from "@/_models";
 import { v4 as uuidv4 } from 'uuid';
+import { getEntagledModifiers, getExhaustedModifiers } from "./statusEffectUtils";
 
 export const getAttributeModifier = (score: number): number => {
 	return Math.floor((score - 10) / 2);
@@ -20,12 +21,11 @@ export const getAllAttributeModifiers = (
 	character: Character,
 	attributeName: AttributeNames
 ): Modifier[] => {
-	const exhaustedModifiers: Modifier[] = character.statusEffects.includes(StatusEffects.Exhausted) ? [
-		{id: uuidv4(), type: BonusTypes.Untyped, value: -6, attribute: AttributeNames.Dexterity},
-		{id: uuidv4(), type: BonusTypes.Untyped, value: -6, attribute: AttributeNames.Strength},
-	] : [];
+	const exhaustedModifiers = getExhaustedModifiers(character);
+	const entagledModifiers: Modifier[] = getEntagledModifiers(character);
+
 	const miscAttributeMods: Modifier[] =
-		[...character.miscModifiers, ...exhaustedModifiers].filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease && !mod.damage);
+		[...character.miscModifiers, ...exhaustedModifiers, ...entagledModifiers].filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease && !mod.damage);
 	
 	return miscAttributeMods;
 };
