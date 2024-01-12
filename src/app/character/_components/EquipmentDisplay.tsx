@@ -258,12 +258,15 @@ export const EquipmentDisplay = ({
             } ${damagePositive} ${Math.abs(damageBonus)} ${bonusDiceString()}`;
         }
     };
+    
     const totalWeightCarried = useMemo(() => {
         return getTotalCarriedWeight(character);
     }, [character.equipment.length, character.currency]);
+
     const carryingCap = useMemo(() => {
         return determineCarryingCapacity(character);
     }, [character.attributes.Strength, character.size]);
+
     const weightIconColor = () => {
         if (totalWeightCarried <= carryingCap.light) {
             return 'success';
