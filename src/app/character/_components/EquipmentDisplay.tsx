@@ -366,7 +366,7 @@ export const EquipmentDisplay = ({
                                         />
                                     </TableCell>
                                     <TableCell align='center'>
-                                        <Typography>{`+${getAttackBonus(
+                                        <Typography>{`${getAttackBonus(
                                             character,
                                             weapon
                                         )}`}</Typography>

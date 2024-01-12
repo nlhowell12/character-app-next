@@ -171,7 +171,9 @@ export const getAttackBonus = (character: Character, weapon: Weapon) => {
     );
     const attBonus = getAttributeAttackBonus(character, weapon);
     const classBabTotal = getTotalBAB(character);
-    return Number(modBonus + attBonus + classBabTotal);
+    const total = modBonus + attBonus + classBabTotal;
+    
+    return `${total > 0 ? '+': ''}${total}`;
 };
 
 export const getEqBonusObject = (

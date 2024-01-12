@@ -1,4 +1,4 @@
-import { AttributeNames,Character, Modifier, ModifierSource } from "@/_models";
+import { AttributeNames,Character, Modifier, ModifierSource, StatusEffects } from "@/_models";
 import { getEntangledModifiers, getExhaustedModifiers, getFatiguedModifiers } from "./statusEffectUtils";
 
 export const getAttributeModifier = (score: number): number => {
@@ -57,7 +57,9 @@ export const totalAttributeValue = (
 	getAllAttributeModifiers(character, attributeName).forEach((mod) => {
 		total += mod.value;
 	});
-	return total;
+	const isParalyzed = character.statusEffects.includes(StatusEffects.Paralyzed) && (attributeName === AttributeNames.Strength || attributeName === AttributeNames.Dexterity);
+	const isHelpless = character.statusEffects.includes(StatusEffects.Helpless) && attributeName === AttributeNames.Dexterity;
+	return (isParalyzed || isHelpless) ? 0 : total;
 };
 
 export const getTotalAttributeModifier = (

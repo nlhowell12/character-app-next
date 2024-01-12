@@ -7,6 +7,7 @@ import {
     SkillTypes,
 } from '@/_models';
 import { v4 as uuidv4 } from 'uuid';
+import { totalAttributeValue } from './attributeUtils';
 
 const getFatiguedModifiers = (character: Character): Modifier[] =>
     character.statusEffects.includes(StatusEffects.Fatigued)
@@ -136,11 +137,12 @@ const getFearModifiers = (
           ]
         : [];
 }
+
 export {
     getExhaustedModifiers,
     getEntangledModifiers,
     getDazzledModifiers,
     getFascinatedModifiers,
     getFatiguedModifiers,
-    getFearModifiers
+    getFearModifiers,
 };
