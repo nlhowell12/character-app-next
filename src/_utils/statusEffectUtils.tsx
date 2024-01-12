@@ -103,10 +103,44 @@ const getFascinatedModifiers = (
           ]
         : [];
 
+const getFearModifiers = (
+    character: Character,
+    skill?: SkillTypes,
+    attribute?: AttributeNames
+): Modifier[] => {
+    const fearStatuses = [StatusEffects.Shaken, StatusEffects.Frightened, StatusEffects.Panicked];
+    return character.statusEffects.some(x => fearStatuses.includes(x))
+        ? [
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -2,
+                  skill,
+                  statusEffect: StatusEffects.Shaken,
+              },
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -2,
+                  attack: true,
+                  statusEffect: StatusEffects.Shaken,
+              },
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -2,
+                  save: true,
+                  attribute,
+                  statusEffect: StatusEffects.Shaken,
+              },
+          ]
+        : [];
+}
 export {
     getExhaustedModifiers,
     getEntangledModifiers,
     getDazzledModifiers,
     getFascinatedModifiers,
     getFatiguedModifiers,
+    getFearModifiers
 };

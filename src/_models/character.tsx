@@ -224,6 +224,7 @@ export interface Modifier {
 	attribute?: AttributeNames;
 	attack?: boolean;
 	damage?: boolean;
+	save?: boolean;
 	defense?: boolean;
 	type: BonusTypes;
 	abilityType?: AbilityTypes;
