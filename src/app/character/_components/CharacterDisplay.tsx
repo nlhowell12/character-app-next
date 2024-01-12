@@ -52,7 +52,7 @@ export const CharacterDisplay = ({
                     />
                 </Grid>
                 <Grid
-                    item
+                    container
                     style={{
                         display: 'flex',
                         height: '65vh',

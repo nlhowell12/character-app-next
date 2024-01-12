@@ -79,7 +79,7 @@ export const StatusEffectDialog = ({
     const statusEffects = Object.keys(StatusEffects);
     return (
         <Dialog open={open} onClose={onClose}>
-            <Card>
+            <Card sx={{overflow: 'scroll'}}>
                 <CardHeader subheader='Status Effects'/>
                 <CardContent  sx={{display: 'flex', flexDirection: 'row'}}>
                     <List
