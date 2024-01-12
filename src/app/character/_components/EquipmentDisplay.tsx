@@ -263,7 +263,7 @@ export const EquipmentDisplay = ({
     }, [character.equipment.length, character.currency]);
     const carryingCap = useMemo(() => {
         return determineCarryingCapacity(character);
-    }, [character.attributes.Strength]);
+    }, [character.attributes.Strength, character.size]);
     const weightIconColor = () => {
         if (totalWeightCarried <= carryingCap.light) {
             return 'success';
