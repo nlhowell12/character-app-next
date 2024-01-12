@@ -6,9 +6,9 @@ const getExhaustedModifiers = (character: Character): Modifier[] => character.st
     {id: uuidv4(), type: BonusTypes.Untyped, value: -6, attribute: AttributeNames.Strength, statusEffect: StatusEffects.Exhausted},
 ] : [];
 
-const getEntagledModifiers = (character: Character): Modifier[] => character.statusEffects.includes(StatusEffects.Entangled) ? [
-    {id: uuidv4(), type: BonusTypes.Untyped, value: -4, attribute: AttributeNames.Dexterity},
-    {id: uuidv4(), type: BonusTypes.Untyped, value: -2, attack: true, definition: 'Entangled'},
+const getEntangledModifiers = (character: Character): Modifier[] => character.statusEffects.includes(StatusEffects.Entangled) ? [
+    {id: uuidv4(), type: BonusTypes.Untyped, value: -4, attribute: AttributeNames.Dexterity, statusEffect: StatusEffects.Entangled},
+    {id: uuidv4(), type: BonusTypes.Untyped, value: -2, attack: true, statusEffect: StatusEffects.Entangled},
 ] : [];
 
-export { getExhaustedModifiers, getEntagledModifiers };
+export { getExhaustedModifiers, getEntangledModifiers };

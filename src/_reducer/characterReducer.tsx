@@ -349,6 +349,7 @@ export const initialCharacterState: Character = {
     spellBook: initialSpellBook,
     notes: [],
     heroPoints: 0,
+    statusEffects: []
 };
 
 export const characterReducer: Reducer<Character, CharacterAction> = (

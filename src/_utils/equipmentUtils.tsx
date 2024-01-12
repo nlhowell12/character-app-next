@@ -1,6 +1,7 @@
 import { Armor, AttributeNames, CarryingCapacityObject, Character, Currency, Equipment, Modifier, Sizes, Weapon, stackableBonuses } from '@/_models';
 import { getModifierAttributeBonus, getTotalAttributeModifier, totalAttributeValue } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
+import { getEntangledModifiers } from './statusEffectUtils';
 
 export const getAttributeDamageBonus = (
     character: Character,
@@ -47,7 +48,8 @@ export const getTotalBAB = (character: Character): number => {
 export const getAllAttackModifiers = (character: Character, weapon: Weapon): Modifier[] => {
     const characterMods = character.miscModifiers.filter(x => !!x.attack);
     const weaponMods = weapon.modifiers.filter(x => !!x.attack);
-    return [...characterMods, ...weaponMods];
+    const statusEffectMods = [...getEntangledModifiers(character).filter(x => !!x.attack)];
+    return [...characterMods, ...weaponMods, ...statusEffectMods];
 };
 
 export const getTotalEquipmentWeight = (eq: Equipment[]) => {

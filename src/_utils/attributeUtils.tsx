@@ -1,6 +1,5 @@
-import { AttributeNames, BonusTypes, Character, Modifier, ModifierSource, StatusEffects } from "@/_models";
-import { v4 as uuidv4 } from 'uuid';
-import { getEntagledModifiers, getExhaustedModifiers } from "./statusEffectUtils";
+import { AttributeNames,Character, Modifier, ModifierSource } from "@/_models";
+import { getEntangledModifiers, getExhaustedModifiers } from "./statusEffectUtils";
 
 export const getAttributeModifier = (score: number): number => {
 	return Math.floor((score - 10) / 2);
@@ -22,7 +21,7 @@ export const getAllAttributeModifiers = (
 	attributeName: AttributeNames
 ): Modifier[] => {
 	const exhaustedModifiers = getExhaustedModifiers(character);
-	const entagledModifiers: Modifier[] = getEntagledModifiers(character);
+	const entagledModifiers: Modifier[] = getEntangledModifiers(character);
 
 	const miscAttributeMods: Modifier[] =
 		[...character.miscModifiers, ...exhaustedModifiers, ...entagledModifiers].filter((mod) => mod.attribute === attributeName && mod.definition !== ModifierSource.attributeScoreIncrease && !mod.damage);

@@ -80,7 +80,7 @@ function characterModel() {
         powerPoints: { type: Number },
         maxPowerPoints: { type: Number },
         heroPoints: { type: Number },
-        statusEffects: [String]
+        statusEffects: {type: [String], required: true}
     })
     return mongoose.models.Character || mongoose.model('Character', characterSchema, 'characters');
 
