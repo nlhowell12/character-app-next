@@ -23,10 +23,12 @@ const adjustDexForStatusEffects = (character: Character, dexMod: number) => {
         StatusEffects.Blinded,
         StatusEffects.Cowering,
         StatusEffects.Frightened,
+		StatusEffects.Stunned
     ];
     const additionalPenaltyMods = [
         StatusEffects.Blinded,
         StatusEffects.Cowering,
+		StatusEffects.Stunned
     ];
     const additionalPenalty = character.statusEffects.some((x) =>
         additionalPenaltyMods.includes(x)

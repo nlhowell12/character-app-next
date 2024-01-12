@@ -5,6 +5,7 @@ import {
     CharacterClassNames,
     CharacterKeys,
     SpellCastingClasses,
+    StatusEffects,
 } from '@/_models';
 import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
 import {
@@ -22,6 +23,9 @@ import {
     Typography,
     Button,
     Dialog,
+    Card,
+    Grid,
+    Alert,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import { DisplayCell } from './DisplayCell';
@@ -41,6 +45,7 @@ import {
 } from '@/_utils/spellUtils';
 import { SpeedDialog } from './SpeedDialog';
 import { checkForHalfMovement } from '@/_utils/classUtils';
+import { isNumber } from 'util';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -137,6 +142,22 @@ export const CombatInfoDisplay = ({
         );
     };
     const adjustedMovement = checkForHalfMovement(character);
+    const immobilzedStatusEffects = [
+        StatusEffects.Dying,
+        StatusEffects.Stunned,
+        StatusEffects.Unconscious,
+        StatusEffects.Pinned,
+        StatusEffects.Petrified,
+        StatusEffects.Paralyzed,
+        StatusEffects.Held,
+        StatusEffects.Helpless,
+        StatusEffects.Grappled,
+        StatusEffects.Fascinated,
+        StatusEffects.Cowering,
+    ];
+    const cannotMove = character.statusEffects.some((x) =>
+        immobilzedStatusEffects.includes(x)
+    );
     return (
         <>
             <DisplayCell
@@ -201,15 +222,24 @@ export const CombatInfoDisplay = ({
                     />
                 }
             />
-            <DisplayCell
-                variant='body1'
-                cellTitle='Speed:'
-                value={adjustedMovement.map(
-                    (spd) => ` ${spd.type}(${spd.speed}ft)`
-                )}
-                onClick={() => setOpenSpeed(true)}
-                editable
-            />
+            {!cannotMove ? (
+                <DisplayCell
+                    variant='body1'
+                    cellTitle='Speed:'
+                    value={adjustedMovement.map(
+                        (spd) => ` ${spd.type}(${spd.speed}ft)`
+                    )}
+                    onClick={() => setOpenSpeed(true)}
+                    editable
+                />
+            ) : (
+                <Grid item xs={4}>
+                    <Alert severity='error'>
+                        You are prevented from moving!
+                    </Alert>
+                </Grid>
+            )}
+
             <SpeedDialog
                 dispatch={dispatch}
                 character={character}
