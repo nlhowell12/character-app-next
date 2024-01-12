@@ -11,7 +11,7 @@ import {
     stackableBonuses,
 } from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
-import { getFearModifiers, getSickenedModifiers } from './statusEffectUtils';
+import { getFearModifiers, getSickenedModifiers, getSlowedModifiers } from './statusEffectUtils';
 
 export interface DefenseObject {
     dsBonus: number;
@@ -123,7 +123,8 @@ export type BonusObject = {
 export const getDefenseBonuses = (character: Character): BonusObject => {
     const miscMods = getMiscAcBonuses(character);
     const equipmentMods = getEquipmentWithAcBonuses(character);
-    const mods = [...miscMods, ...equipmentMods];
+	const statusEffectMods = [...getSlowedModifiers(character)].filter(x => !!x.defense);
+    const mods = [...miscMods, ...equipmentMods, ...statusEffectMods];
     const defenseBonuses: BonusObject = {} as BonusObject;
     mods.forEach((mod) => {
         if (!mod.value && !!mod.attribute) {
@@ -134,7 +135,7 @@ export const getDefenseBonuses = (character: Character): BonusObject => {
         }
         if (!!mod.value) {
             if (stackableBonuses.some((type) => type === mod.type)) {
-                defenseBonuses[mod.type] += mod.value;
+                defenseBonuses[mod.type] += Number(mod.value);
             } else if (mod.value > defenseBonuses[mod.type]) {
                 defenseBonuses[mod.type] = mod.value;
             }

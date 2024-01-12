@@ -21,6 +21,7 @@ import {
     getEntangledModifiers,
     getFearModifiers,
     getSickenedModifiers,
+    getSlowedModifiers,
 } from './statusEffectUtils';
 
 export const getAttributeDamageBonus = (
@@ -84,7 +85,8 @@ export const getAllAttackModifiers = (
         ...getEntangledModifiers(character),
         ...getDazzledModifiers(character),
         ...getFearModifiers(character),
-        ...getSickenedModifiers(character)
+        ...getSickenedModifiers(character),
+        ...getSlowedModifiers(character)
     ].filter((x) => !!x.attack);
     return [...characterMods, ...weaponMods, ...statusEffectMods];
 };

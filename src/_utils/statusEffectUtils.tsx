@@ -177,6 +177,28 @@ const getSickenedModifiers = (
           ]
         : [];
 }
+const getSlowedModifiers = (
+    character: Character,
+): Modifier[] => {
+    return character.statusEffects.includes(StatusEffects.Slowed)
+        ? [
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -1,
+                  attack: true,
+                  statusEffect: StatusEffects.Slowed,
+              },
+              {
+                  id: uuidv4(),
+                  type: BonusTypes.Untyped,
+                  value: -1,
+                  defense: true,
+                  statusEffect: StatusEffects.Slowed,
+              },
+          ]
+        : [];
+}
 
 export {
     getExhaustedModifiers,
@@ -185,5 +207,6 @@ export {
     getFascinatedModifiers,
     getFatiguedModifiers,
     getFearModifiers,
-    getSickenedModifiers
+    getSickenedModifiers,
+    getSlowedModifiers
 };
