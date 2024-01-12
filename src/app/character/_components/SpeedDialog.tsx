@@ -1,4 +1,4 @@
-import { Character, MovementTypes } from '@/_models';
+import { Character, MovementTypes, StatusEffects } from '@/_models';
 import {
     CharacterAction,
     addMovementActions,
@@ -20,6 +20,7 @@ import {
 import { Dispatch, useState } from 'react';
 import Add from '@mui/icons-material/Add';
 import { NumberInput } from '@/app/_components/NumberInput';
+import { checkForHalfMovement, reduceSpeed } from '@/_utils/classUtils';
 
 interface SpeedDialogProps {
     character: Character;
@@ -97,6 +98,7 @@ export const SpeedDialog = ({
     onClose,
     dispatch,
 }: SpeedDialogProps) => {
+    const adjustedMovement = checkForHalfMovement(character);
     return (
         <Dialog open={open} onClose={onClose}>
             <Card
@@ -105,7 +107,7 @@ export const SpeedDialog = ({
                 }}
             >
                 <Stack>
-                    {character.movementSpeeds.map((spd) => {
+                    {adjustedMovement.map((spd) => {
                         return (
                             <Chip
                                 key={`${spd.type}${spd.speed}`}

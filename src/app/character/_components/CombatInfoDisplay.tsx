@@ -40,6 +40,7 @@ import {
     isCharacterPsionic,
 } from '@/_utils/spellUtils';
 import { SpeedDialog } from './SpeedDialog';
+import { checkForHalfMovement } from '@/_utils/classUtils';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -135,6 +136,7 @@ export const CombatInfoDisplay = ({
             )
         );
     };
+    const adjustedMovement = checkForHalfMovement(character);
     return (
         <>
             <DisplayCell
@@ -202,7 +204,7 @@ export const CombatInfoDisplay = ({
             <DisplayCell
                 variant='body1'
                 cellTitle='Speed:'
-                value={character.movementSpeeds.map(
+                value={adjustedMovement.map(
                     (spd) => ` ${spd.type}(${spd.speed}ft)`
                 )}
                 onClick={() => setOpenSpeed(true)}
