@@ -61,7 +61,6 @@ export const getCurrencyWeight = (coins: Currency): number => {
 export const getTotalCarriedWeight = (character: Character): number => {
     const eqWeight = getTotalEquipmentWeight(character.equipment);
     const currencyWeight = getCurrencyWeight(character.currency);
-    console.log(eqWeight, currencyWeight)
     return Number((eqWeight + currencyWeight).toFixed(2));
 }
 

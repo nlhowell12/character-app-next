@@ -156,40 +156,48 @@ const CurrencyDisplay = ({
     character,
     dispatch,
     open,
-    onClose
+    onClose,
 }: CurrencyDisplayProps) => {
     return (
         <Dialog open={open} onClose={onClose}>
             <Card>
                 <Table>
-                    <TableRow>
-                        {Object.keys(character.currency).map((coin) => {
-                            return (
-                                <TableCell key={coin} sx={{borderBottom: 'none'}}>
-                                    <NumberInput
-                                        label={coin.toUpperCase()}
-                                        value={
-                                            Number(character.currency[
-                                                coin as keyof Currency
-                                            ])
-                                        }
-                                        onChange={(e) =>
-                                            dispatch(
-                                                updateAction(
-                                                    CharacterKeys.currency,
-                                                    {
-                                                        ...character.currency,
-                                                        [coin as keyof Currency]:
-                                                            Number(e.target.value).toFixed(2),
-                                                    }
+                    <TableBody>
+                        <TableRow>
+                            {Object.keys(character.currency).map((coin) => {
+                                return (
+                                    <TableCell
+                                        key={coin}
+                                        sx={{ borderBottom: 'none' }}
+                                    >
+                                        <NumberInput
+                                            label={coin.toUpperCase()}
+                                            value={Number(
+                                                character.currency[
+                                                    coin as keyof Currency
+                                                ]
+                                            )}
+                                            onChange={(e) =>
+                                                dispatch(
+                                                    updateAction(
+                                                        CharacterKeys.currency,
+                                                        {
+                                                            ...character.currency,
+                                                            [coin as keyof Currency]:
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                ).toFixed(2),
+                                                        }
+                                                    )
                                                 )
-                                            )
-                                        }
-                                    />
-                                </TableCell>
-                            );
-                        })}
-                    </TableRow>
+                                            }
+                                        />
+                                    </TableCell>
+                                );
+                            })}
+                        </TableRow>
+                    </TableBody>
                 </Table>
             </Card>
         </Dialog>
@@ -297,7 +305,12 @@ export const EquipmentDisplay = ({
                     onEdit={handleEdit}
                 />
             </Dialog>
-            <CurrencyDisplay character={character} dispatch={dispatch} open={openCurrency} onClose={() => setOpenCurrency(false)}/>
+            <CurrencyDisplay
+                character={character}
+                dispatch={dispatch}
+                open={openCurrency}
+                onClose={() => setOpenCurrency(false)}
+            />
             <Card sx={eqDisplayCardStyle}>
                 <CardContent
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
