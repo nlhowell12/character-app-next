@@ -150,7 +150,7 @@ export const CharacterDisplay = ({
                     </Grid>
                     <Grid
                         item
-                        xs={'auto'}
+                        xs={12}
                         sx={{
                             [theme.breakpoints.up('md')]: {
                                 display: 'none',
