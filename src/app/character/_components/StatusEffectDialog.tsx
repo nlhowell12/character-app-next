@@ -1,6 +1,8 @@
 import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
 import {
     Card,
+    CardContent,
+    CardHeader,
     Dialog,
     IconButton,
     List,
@@ -44,19 +46,20 @@ const StatusEffectRow = ({
             );
         }
     };
+    const textStyle = {marginRight: '.5rem'}
     return (
         <ListItem
             secondaryAction={
                 <IconButton onClick={handleClick}>
                     {hasStatusEffect ? (
-                        <HighlightOffIcon color='error' />
+                        <HighlightOffIcon color='error'/>
                     ) : (
-                        <AddCircleOutlineIcon />
+                        <AddCircleOutlineIcon/>
                     )}
                 </IconButton>
             }
         >
-            <ListItemText primary={effect} />
+            <ListItemText primary={effect} sx={textStyle}/>
         </ListItem>
     );
 };
@@ -73,27 +76,41 @@ export const StatusEffectDialog = ({
     open,
     onClose
 }: StatusEffectDialogProps) => {
+    const statusEffects = Object.keys(StatusEffects);
     return (
         <Dialog open={open} onClose={onClose}>
             <Card>
-                <List
-                    dense
-                    subheader={
-                        <ListSubheader component='div' id='nested-list-subheader'>
-                            Status Effects
-                        </ListSubheader>
-                    }
-                >
-                    {Object.keys(StatusEffects).map((eff) => {
-                        return (
-                            <StatusEffectRow
-                                character={character}
-                                effect={eff}
-                                dispatch={dispatch}
-                            />
-                        );
-                    })}
-                </List>
+                <CardHeader subheader='Status Effects'/>
+                <CardContent  sx={{display: 'flex', flexDirection: 'row'}}>
+                    <List
+                        dense
+                    >
+                        {statusEffects.slice(0, statusEffects.length/2).map((eff) => {
+                            return (
+                                <StatusEffectRow
+                                    key={eff}
+                                    character={character}
+                                    effect={StatusEffects[eff]}
+                                    dispatch={dispatch}
+                                />
+                            );
+                        })}
+                    </List>
+                    <List
+                        dense
+                    >
+                        {statusEffects.slice(-(statusEffects.length/2)).map((eff) => {
+                            return (
+                                <StatusEffectRow
+                                    key={eff}
+                                    character={character}
+                                    effect={StatusEffects[eff]}
+                                    dispatch={dispatch}
+                                />
+                            );
+                        })}
+                    </List>
+                </CardContent>
             </Card>
         </Dialog>
        
