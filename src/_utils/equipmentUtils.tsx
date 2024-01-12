@@ -19,6 +19,7 @@ import { BonusObject } from './defenseUtils';
 import {
     getDazzledModifiers,
     getEntangledModifiers,
+    getFearModifiers,
 } from './statusEffectUtils';
 
 export const getAttributeDamageBonus = (
@@ -78,6 +79,7 @@ export const getAllAttackModifiers = (
     const statusEffectMods = [
         ...getEntangledModifiers(character),
         ...getDazzledModifiers(character),
+        ...getFearModifiers(character)
     ].filter((x) => !!x.attack);
     return [...characterMods, ...weaponMods, ...statusEffectMods];
 };
