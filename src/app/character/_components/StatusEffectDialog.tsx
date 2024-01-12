@@ -90,6 +90,7 @@ export const StatusEffectDialog = ({
                                 <StatusEffectRow
                                     key={eff}
                                     character={character}
+                                    /* @ts-ignore */
                                     effect={StatusEffects[eff]}
                                     dispatch={dispatch}
                                 />
@@ -104,6 +105,7 @@ export const StatusEffectDialog = ({
                                 <StatusEffectRow
                                     key={eff}
                                     character={character}
+                                    /* @ts-ignore */
                                     effect={StatusEffects[eff]}
                                     dispatch={dispatch}
                                 />
