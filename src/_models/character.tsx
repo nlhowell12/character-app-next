@@ -232,6 +232,7 @@ export interface Modifier {
 	damageType?: Damage;
 	damageDice?: Dice;
 	numberOfDice?: number;
+	statusEffect?: StatusEffects;
 	id: string;
 }
 export interface Feat {

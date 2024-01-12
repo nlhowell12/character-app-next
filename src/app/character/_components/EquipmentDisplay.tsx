@@ -36,7 +36,7 @@ import {
     updateAction,
     updateEquipmentAction,
 } from '@/_reducer/characterReducer';
-import React, { Dispatch, useMemo, useRef, useState } from 'react';
+import React, { Dispatch, useMemo, useState } from 'react';
 import { AddEquipmentCard } from './AddEquipmentCard';
 import { iconHoverStyling, numberInputStyling } from '@/_utils/theme';
 import {
@@ -49,7 +49,6 @@ import {
     getEqBonusObject,
     getTotalArmorBonus,
     getTotalCarriedWeight,
-    getTotalEquipmentWeight,
 } from '@/_utils/equipmentUtils';
 import { BonusObject } from '@/_utils/defenseUtils';
 import { DisplayBox } from './DisplayBox';
@@ -258,7 +257,7 @@ export const EquipmentDisplay = ({
             } ${damagePositive} ${Math.abs(damageBonus)} ${bonusDiceString()}`;
         }
     };
-    
+
     const totalWeightCarried = useMemo(() => {
         return getTotalCarriedWeight(character);
     }, [character.equipment.length, character.currency]);

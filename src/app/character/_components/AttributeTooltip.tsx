@@ -14,9 +14,9 @@ export const AttributeTooltip = ({
 				<TableRow>
 					{modifiers.map((mod) => {
 						return (
-							<TableCell key={mod.type + mod.value}>
+							<TableCell key={mod.id}>
 								<DisplayBox
-									displayTitle={mod.type}
+									displayTitle={mod.statusEffect || mod.type}
 									displayValue={mod.value || 0}
 									modifiers={modifiers}
 								/>

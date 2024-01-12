@@ -1,10 +1,10 @@
-import { Modifier } from "@/_models";
+import { Modifier, StatusEffects } from "@/_models";
 import { TextField, Tooltip, Typography } from "@mui/material";
 import { CardTitles, CardTitlesType } from "./AttributeDisplay";
 import { AttributeTooltip } from "./AttributeTooltip";
 
 interface AttributeDisplayProps {
-	displayTitle: CardTitlesType;
+	displayTitle: CardTitlesType | StatusEffects;
 	displayValue: number;
 	modifiers?: Modifier[];
 	icon?: any;
