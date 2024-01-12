@@ -2,7 +2,7 @@
 import { Character, RankedSkill, Equipment, Armor, stackableBonuses } from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
-import { getDazzledModifiers } from './statusEffectUtils';
+import { getDazzledModifiers, getFascinatedModifiers } from './statusEffectUtils';
 
 export const getTotalSkillValue = (
 	character: Character,
@@ -49,7 +49,7 @@ export const getTotalSkillMod = (
 ): number => {
 	const bonuses: BonusObject = {} as BonusObject;
 	const charMods = character.miscModifiers;
-	const statusEffectMods = [...getDazzledModifiers(character)]
+	const statusEffectMods = [...getDazzledModifiers(character), ...getFascinatedModifiers(character, skill.name)]
 	const allMods = [...charMods, ...statusEffectMods];
 	allMods.forEach((mod) => {
 		if (mod.skill === skill.name && !mod.damage) {

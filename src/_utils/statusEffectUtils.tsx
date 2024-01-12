@@ -13,7 +13,11 @@ const getEntangledModifiers = (character: Character): Modifier[] => character.st
 
 const getDazzledModifiers = (character: Character): Modifier[] => character.statusEffects.includes(StatusEffects.Dazzled) ? [
     {id: uuidv4(), type: BonusTypes.Untyped, value: -2, skill: SkillTypes.Perception, statusEffect: StatusEffects.Dazzled},
-    {id: uuidv4(), type: BonusTypes.Untyped, value: -2, attack: true, statusEffect: StatusEffects.Entangled},
+    {id: uuidv4(), type: BonusTypes.Untyped, value: -2, attack: true, statusEffect: StatusEffects.Dazzled},
 ] : [];
 
-export { getExhaustedModifiers, getEntangledModifiers, getDazzledModifiers };
+const getFascinatedModifiers = (character: Character, skill: SkillTypes): Modifier[] => character.statusEffects.includes(StatusEffects.Fascinated) ? [
+    {id: uuidv4(), type: BonusTypes.Untyped, value: -4, skill, statusEffect: StatusEffects.Fascinated},
+] : [];
+
+export { getExhaustedModifiers, getEntangledModifiers, getDazzledModifiers, getFascinatedModifiers };
