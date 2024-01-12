@@ -46,6 +46,7 @@ export const mockCharacters: Character[] = [
             },
         ],
         notes: [],
+        statusEffects: [],
         isPsionic: true,
         powerPoints: 3,
         maxPowerPoints: 3,
