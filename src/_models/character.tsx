@@ -1,6 +1,6 @@
 import { SpellObject } from '.';
 import { Equipment } from './equipment';
-import { AbilityTypes, BonusTypes, Damage, Dice, Sizes } from './gameMechanics';
+import { AbilityTypes, BonusTypes, Damage, Dice, Sizes, StatusEffects } from './gameMechanics';
 
 export enum AttributeNames {
 	Strength = 'Strength',
@@ -169,7 +169,7 @@ export interface Character {
 	spellBook: SpellObject;
 	notes: Note[];
 	heroPoints: number;
-	statusEffects: string[];
+	statusEffects: StatusEffects[];
 }
 export type SkillObject = {
 	[key in SkillTypes]: RankedSkill;
