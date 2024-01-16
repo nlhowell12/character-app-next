@@ -1,4 +1,4 @@
-import { SpellObject } from '.';
+import { ArcaneSchool, DivineDomain, PsionicDiscipline, ShadowPath, SpellObject } from '.';
 import { Equipment } from './equipment';
 import { AbilityTypes, BonusTypes, Damage, Dice, Sizes, StatusEffects } from './gameMechanics';
 
@@ -235,6 +235,7 @@ export interface Modifier {
 	damageDice?: Dice;
 	numberOfDice?: number;
 	statusEffect?: StatusEffects;
+	spellSchool?: ArcaneSchool | PsionicDiscipline | DivineDomain | ShadowPath
 	id: string;
 }
 export interface Feat {

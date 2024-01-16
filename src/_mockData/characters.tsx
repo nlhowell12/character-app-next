@@ -1,4 +1,4 @@
-import { BonusTypes, Damage, Sizes, SpellObject } from '../_models';
+import { ArcaneSchool, BonusTypes, Damage, Sizes, SpellObject } from '../_models';
 import {
     AttributeNames,
     Character,
@@ -237,6 +237,13 @@ export const mockCharacters: Character[] = [
                 attribute: AttributeNames.Intelligence,
                 type: BonusTypes.Untyped,
                 damage: true,
+            },
+            {
+                id: '1111111',
+
+                value: 1,
+                type: BonusTypes.Untyped,
+                spellSchool: ArcaneSchool.Abjuration
             },
         ],
     },

@@ -1,4 +1,16 @@
-import { AnyMagickType, AttributeNames, Character, CharacterClassNames, MagickCategory, SpellObject } from '@/_models';
+import {
+    AnyMagickType,
+    ArcaneSchool,
+    AttributeNames,
+    Character,
+    CharacterClassNames,
+    MagickCategory,
+    Mystery,
+    Power,
+    Prayer,
+    Spell,
+    SpellObject,
+} from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
 
 export const filterSpellObjectByCharacter = (
@@ -36,36 +48,69 @@ export const isCharacterPsionic = (character: Character): boolean => {
     );
 };
 
-export const getSpellDcAttribute = (character: Character, spell: AnyMagickType, useDex?: boolean): number => {
-    const getManeuverMod = () => getTotalAttributeModifier(character, useDex ? AttributeNames.Dexterity : AttributeNames.Strength)
-    switch(spell.class) {
-        case(CharacterClassNames.Cleric):
-        case(CharacterClassNames.Oathsworn):
-        case(CharacterClassNames.PsychicWarrior):
-            if(spell.category === MagickCategory.Maneuver) {
-                return getManeuverMod()
+export const getSpellDcAttribute = (
+    character: Character,
+    spell: AnyMagickType,
+    useDex?: boolean
+): number => {
+    const getManeuverMod = () =>
+        getTotalAttributeModifier(
+            character,
+            useDex ? AttributeNames.Dexterity : AttributeNames.Strength
+        );
+    switch (spell.class) {
+        case CharacterClassNames.Cleric:
+        case CharacterClassNames.Oathsworn:
+        case CharacterClassNames.PsychicWarrior:
+            if (spell.category === MagickCategory.Maneuver) {
+                return getManeuverMod();
             }
             return getTotalAttributeModifier(character, AttributeNames.Wisdom);
-        case(CharacterClassNames.Shadowcaster):
-        case(CharacterClassNames.Hexblade):
-        case(CharacterClassNames.SorcWiz):
-            if(spell.category === MagickCategory.Maneuver) {
-                return getManeuverMod()
+        case CharacterClassNames.Shadowcaster:
+        case CharacterClassNames.Hexblade:
+        case CharacterClassNames.SorcWiz:
+            if (spell.category === MagickCategory.Maneuver) {
+                return getManeuverMod();
             }
-            if(character.classes.some(x => x.name === CharacterClassNames.Wizard)){
-                return getTotalAttributeModifier(character, AttributeNames.Intelligence)
+            if (
+                character.classes.some(
+                    (x) => x.name === CharacterClassNames.Wizard
+                )
+            ) {
+                return getTotalAttributeModifier(
+                    character,
+                    AttributeNames.Intelligence
+                );
             }
-            return getTotalAttributeModifier(character, AttributeNames.Charisma);
-        case(CharacterClassNames.Psion):
-            return getTotalAttributeModifier(character, AttributeNames.Intelligence);
-        case(CharacterClassNames.Fighter):
-        return getManeuverMod()
+            return getTotalAttributeModifier(
+                character,
+                AttributeNames.Charisma
+            );
+        case CharacterClassNames.Psion:
+            return getTotalAttributeModifier(
+                character,
+                AttributeNames.Intelligence
+            );
+        case CharacterClassNames.Fighter:
+            return getManeuverMod();
         default:
-            return 0
+            return 0;
     }
 };
 
-export const getSpellDc = (character: Character, spell: AnyMagickType, useDex?: boolean): number => {
+export const getSpellDc = (
+    character: Character,
+    spell: AnyMagickType,
+    useDex?: boolean
+): number => {
     const attribute = getSpellDcAttribute(character, spell, useDex);
-    return 10 + attribute + spell.level
+    const modsValue = character.miscModifiers.filter(
+        (x) =>
+            !!x.spellSchool &&
+            (x.spellSchool === (spell as Spell).school ||
+            x.spellSchool === (spell as Power).discipline ||
+            x.spellSchool === (spell as Prayer).domain ||
+            x.spellSchool === (spell as Mystery).path)
+    ).reduce((x, y) => x + y.value, 0);
+    return 10 + attribute + spell.level + modsValue;
 };

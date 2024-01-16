@@ -1,4 +1,4 @@
-import { Character, CharacterClass, CharacterClassNames, MagickCategory, Maneuver, Mystery, Power, Prayer, Spell, SpellObject } from "@/_models"
+import { ArcaneSchool, Character, CharacterClass, CharacterClassNames, MagickCategory, Maneuver, Mystery, Power, Prayer, Spell, SpellObject } from "@/_models"
 import { filterSpellObjectByCharacter, getSpellDc, getSpellDcAttribute } from "./spellUtils";
 import { mockCharacters } from "@/_mockData/characters";
 
@@ -37,7 +37,7 @@ const mockSpellObject = {
         { name: 'Maneuver', class: CharacterClassNames.Fighter, category: MagickCategory.Maneuver, level: 1 } as Maneuver,
     ],
     [CharacterClassNames.SorcWiz]: [
-        { name: 'Mage Armor', class: CharacterClassNames.SorcWiz, level: 1} as Spell,
+        { name: 'Mage Armor', class: CharacterClassNames.SorcWiz, level: 1, school: ArcaneSchool.Abjuration} as Spell,
     ],
     [CharacterClassNames.Shadowcaster]: [
         { name: 'Mage Armor', class: CharacterClassNames.Shadowcaster, level: 1} as Mystery,
@@ -84,7 +84,7 @@ describe('spellUtils', () => {
         expect(getSpellDc(mock0, mockSpellObject.Psion[0])).toBe(13)
         expect(getSpellDc(mock0, mockSpellObject["Psychic Warrior"][0])).toBe(12)
         expect(getSpellDc(mock0, mockSpellObject["Psychic Warrior"][1])).toBe(9)
-        expect(getSpellDc({...mock0, classes: [{name: CharacterClassNames.Sorcerer}] as CharacterClass[]}, mockSpellObject["Sorcerer - Wizard"][0])).toBe(11)
-        expect(getSpellDc({...mock0, classes: [{name: CharacterClassNames.Wizard}] as CharacterClass[]}, mockSpellObject["Sorcerer - Wizard"][0])).toBe(13)
+        expect(getSpellDc({...mock0, classes: [{name: CharacterClassNames.Sorcerer}] as CharacterClass[]}, mockSpellObject["Sorcerer - Wizard"][0])).toBe(12)
+        expect(getSpellDc({...mock0, classes: [{name: CharacterClassNames.Wizard}] as CharacterClass[]}, mockSpellObject["Sorcerer - Wizard"][0])).toBe(14)
     })
 })
