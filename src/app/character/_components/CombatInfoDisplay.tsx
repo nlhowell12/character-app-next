@@ -1,13 +1,11 @@
 import {
     AnyMagickType,
-    AttributeNames,
     Character,
     CharacterClassNames,
     CharacterKeys,
     SpellCastingClasses,
     StatusEffects,
 } from '@/_models';
-import { getTotalAttributeModifier } from '@/_utils/attributeUtils';
 import {
     BonusObject,
     getTotalDefense,
@@ -23,7 +21,6 @@ import {
     Typography,
     Button,
     Dialog,
-    Card,
     Grid,
     Alert,
 } from '@mui/material';
@@ -45,7 +42,6 @@ import {
 } from '@/_utils/spellUtils';
 import { SpeedDialog } from './SpeedDialog';
 import { checkForHalfMovement, getInitiativeScore } from '@/_utils/classUtils';
-import { isNumber } from 'util';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
