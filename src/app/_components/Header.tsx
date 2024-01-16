@@ -31,6 +31,8 @@ import { useRouter } from 'next/navigation';
 import useSpellService from '../api/_services/useSpellService';
 import UserContext from '../_auth/UserContext';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import { InitiativeTracker } from './InitiativeTracker';
 
 const drawerWidth = 240;
 
@@ -106,6 +108,7 @@ const Drawer = styled(MuiDrawer, {
 export default function Header() {
 	const [open, setOpen] = useState(false);
 	const [spellOpen, setSpellOpen] = useState<boolean>(false);
+	const [trackerOpen, setTrackerOpen] = useState<boolean>(false);
 	const [warning, setWarning] = useState<string>('');
 	const router = useRouter();
     const { spells } = useSpellService();
@@ -177,6 +180,12 @@ export default function Header() {
 						</ListItemIcon>
 						<ListItemText primary={'Full Spell List'} />
 					</ListItemButton>
+					<ListItemButton  onClick={() => setTrackerOpen(!trackerOpen)}>
+						<ListItemIcon title='Initiative Tracker'>
+							<ListAltIcon />
+						</ListItemIcon>
+						<ListItemText primary={'Initiative Tracker'} />
+					</ListItemButton>
 					<ListItemButton  onClick={logout}>
 						<ListItemIcon title='Logout'>
 							<LogoutIcon />
@@ -195,6 +204,15 @@ export default function Header() {
 			>
 				<SpellTable spells={spells}/>
 			</Dialog> : null}
+			<Dialog
+				open={trackerOpen}
+				onClose={() => setTrackerOpen(false)}
+				fullWidth
+				maxWidth='sm'
+				keepMounted
+			>
+				<InitiativeTracker/>
+			</Dialog>
 			<Dialog
 				open={!!warning}
 				onClose={handleDialogClose}

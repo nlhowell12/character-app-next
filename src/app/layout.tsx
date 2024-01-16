@@ -13,6 +13,9 @@ import useUserService from './api/_services/useUserService';
 import UserContext from './_auth/UserContext';
 import { UserSignIn } from './_components/UserSignIn';
 import {LoadSkeleton} from './_components/LoadSkeleton';
+import * as Ably from 'ably';
+import { AblyProvider } from 'ably/react';
+import { v4 as uuidv4 } from 'uuid';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,6 +30,8 @@ export const initialUser: User = {
     password: '',
     isDm: false,
 };
+
+const client = new Ably.Realtime.Promise({ key: `1ZOkeg.ZOkKzg:dAjzR3Y_22i_NBTizBCBt4AxfO_AcLFCkBTAKVAWi7k`, clientId: uuidv4() });
 
 export default function RootLayout({
     children,
@@ -68,9 +73,11 @@ export default function RootLayout({
         localStorage.removeItem(localStorageKey);
     };
 
+
     return (
         <html lang='en'>
             <body className={inter.className} style={{backgroundColor: 'black'}}>
+            <AblyProvider client={client}>
                 <AppRouterCacheProvider>
                     <ThemeRegistry options={{ key: 'mui-theme' }}>
                         <UserContext.Provider
@@ -95,6 +102,7 @@ export default function RootLayout({
                         </UserContext.Provider>
                     </ThemeRegistry>
                 </AppRouterCacheProvider>
+                </AblyProvider>
             </body>
         </html>
     );
