@@ -40,7 +40,7 @@ export const ModifierDialog = ({
     onClose,
     open,
 }: ModifierDialogProps) => {
-    const initialState = {
+    const initialState: Modifier = {
         id: '',
         value: 0,
         definition: '',
@@ -49,6 +49,7 @@ export const ModifierDialog = ({
         attack: false,
         damage: false,
         defense: false,
+        initiative: false,
         type: BonusTypes.Untyped,
         abilityType: AbilityTypes.Extraordinary,
         resistance: undefined,
@@ -85,6 +86,7 @@ export const ModifierDialog = ({
         boolResistance: false,
         boolImmunity: false,
         boolDamageType: false,
+        boolInit: false
     });
 
     const modifierValueHandler = (e: any) => {
@@ -113,6 +115,7 @@ export const ModifierDialog = ({
         boolImmunity,
         boolDamageType,
         boolDamageDice,
+        boolInit
     } = optionalValues;
 
     const appliedModifier: Modifier = {
@@ -124,6 +127,7 @@ export const ModifierDialog = ({
         damage: boolDamage,
         defense: boolDefense,
         type: bonusType,
+        initiative: boolInit,
         abilityType: !!boolAbilityType ? abilityType : undefined,
         resistance: boolResistance,
         immunity: boolImmunity,
@@ -145,14 +149,16 @@ export const ModifierDialog = ({
         boolDamage ||
         boolDefense ||
         boolSkill ||
-        boolAttribute;
+        boolAttribute ||
+        boolInit;
     const attAssignments = 
         boolResistance ||
         boolAttack ||
         boolDamage ||
         boolDefense ||
         boolSkill ||
-        boolValue;
+        boolValue ||
+        boolInit;
     const noModValue = !!valueAssignments && !valueOptions;
     const noDamageType = !!boolImmunity && !appliedModifier.damageType;
     const noUnassignedValue = boolValue && !valueAssignments;
@@ -224,6 +230,26 @@ export const ModifierDialog = ({
                                 label='Does this affect a skill? (E.g. +2 Acrobatics)'
                             />
 
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={boolInit}
+                                        onChange={optionalValueHandler}
+                                        name='boolInit'
+                                    />
+                                }
+                                label='Does this modify your initiative?'
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={boolAttack}
+                                        onChange={optionalValueHandler}
+                                        name='boolAttack'
+                                    />
+                                }
+                                label='Does this modify your attacks?'
+                            />
                             <FormControlLabel
                                 control={
                                     <Checkbox

@@ -1,4 +1,4 @@
-import { Modifier, BonusTypes } from "@/_models";
+import { Modifier } from "@/_models";
 import { camelToTitle } from "@/_utils/stringUtils";
 import { Chip } from "@mui/material";
 
@@ -25,6 +25,8 @@ const modifierString = (key: keyof Modifier, value: any) => {
         case('defense'):
             return camelToTitle(key);
         case('resistance'):
+            return camelToTitle(key);
+        case('initiative'):
             return camelToTitle(key);
         case('type'):
             return '';

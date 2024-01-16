@@ -44,7 +44,7 @@ import {
     isCharacterPsionic,
 } from '@/_utils/spellUtils';
 import { SpeedDialog } from './SpeedDialog';
-import { checkForHalfMovement } from '@/_utils/classUtils';
+import { checkForHalfMovement, getInitiativeScore } from '@/_utils/classUtils';
 import { isNumber } from 'util';
 interface CombatInfoDisplayProps {
     character: Character;
@@ -278,6 +278,11 @@ export const CombatInfoDisplay = ({
                     }
                 />
             )}
+            <DisplayCell
+                variant='body1'
+                cellTitle='Initiative:'
+                value={getInitiativeScore(character)}
+            />
             {!!character.spellBook && !!spells && hasSpellCastingClass() && (
                 <TableCell sx={cellStylingObject}>
                     <Button

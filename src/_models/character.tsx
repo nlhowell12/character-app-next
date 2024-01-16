@@ -230,6 +230,7 @@ export interface Modifier {
 	abilityType?: AbilityTypes;
 	resistance?: boolean;
 	immunity?: boolean;
+	initiative?: boolean;
 	damageType?: Damage;
 	damageDice?: Dice;
 	numberOfDice?: number;
