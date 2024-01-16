@@ -1,4 +1,4 @@
-import { ArcaneSchool, DivineDomain, PsionicDiscipline, ShadowPath, SpellObject } from '.';
+import { ArcaneSchool, DivineDomain, MartialQueue, PsionicDiscipline, ShadowPath, SpellObject } from '.';
 import { Equipment } from './equipment';
 import { AbilityTypes, BonusTypes, Damage, Dice, Sizes, StatusEffects } from './gameMechanics';
 
@@ -115,6 +115,7 @@ export enum CharacterKeys {
 	experience = 'experience',
 	feats = 'feats',
 	spellBook = 'spellBook',
+	martialQueue = 'martialQueue',
 	notes = 'notes',
 	powerPoints = 'powerPoints',
 	maxPowerPoints = 'maxPowerPoints',
@@ -167,6 +168,7 @@ export interface Character {
 	experience: number;
 	feats: Feat[];
 	spellBook: SpellObject;
+	martialQueue: MartialQueue;
 	notes: Note[];
 	heroPoints: number;
 	statusEffects: StatusEffects[];

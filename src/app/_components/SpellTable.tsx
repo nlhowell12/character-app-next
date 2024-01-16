@@ -26,6 +26,7 @@ import {
     MagickCategory,
     Character,
     Magick,
+    MartialQueue,
 } from '@/_models';
 import { camelToTitle } from '@/_utils/stringUtils';
 import * as R from 'ramda';
@@ -35,19 +36,28 @@ import InfoIcon from '@mui/icons-material/Info';
 import { getSpellDc } from '@/_utils/spellUtils';
 
 interface SpellTableTooltipProps {
-    character?: Character
+    character?: Character;
     spell: AnyMagickType;
     useDex?: boolean;
 }
 const SpellTooltip = ({ character, spell, useDex }: SpellTableTooltipProps) => {
-    const tableCellStyling = { borderBottom: 'none'};
-        return (
+    const tableCellStyling = { borderBottom: 'none' };
+    return (
         <Table>
             <TableRow>
-                {!!character && !!(spell as Magick).savingThrow && <TableCell sx={{...tableCellStyling, borderRight: '1px solid grey'}}>
-                    <Typography>DC</Typography>
-                    <Typography>{getSpellDc(character, spell, useDex)}</Typography>
-                </TableCell>}
+                {!!character && !!(spell as Magick).savingThrow && (
+                    <TableCell
+                        sx={{
+                            ...tableCellStyling,
+                            borderRight: '1px solid grey',
+                        }}
+                    >
+                        <Typography>DC</Typography>
+                        <Typography>
+                            {getSpellDc(character, spell, useDex)}
+                        </Typography>
+                    </TableCell>
+                )}
                 <TableCell sx={tableCellStyling}>
                     <Typography>{spell.description}</Typography>
                 </TableCell>
@@ -59,8 +69,13 @@ export interface SpellTableProps {
     spells: SpellObject;
     characterSpellbook?: boolean;
     character?: Character;
-    onChange?: (spell: AnyMagickType, className: CharacterClassNames) => void;
+    onChange?: (
+        spell: AnyMagickType,
+        className: CharacterClassNames,
+        martial?: boolean
+    ) => void;
     personal?: boolean;
+    martial?: boolean;
 }
 export const SpellTable = ({
     spells,
@@ -68,6 +83,7 @@ export const SpellTable = ({
     onChange,
     character,
     personal,
+    martial,
 }: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
         !!spells
@@ -97,7 +113,7 @@ export const SpellTable = ({
         CharacterClassNames.Hexblade,
         CharacterClassNames.Oathsworn,
         CharacterClassNames.PsychicWarrior,
-        CharacterClassNames.Fighter
+        CharacterClassNames.Fighter,
     ];
     const isHybridClass = maneuverClasses.includes(selectedClass);
 
@@ -209,7 +225,7 @@ export const SpellTable = ({
             }
             if (!!columnFilter.value) {
                 filteredSpells = filteredSpells.filter(
-                /* @ts-ignore */
+                    /* @ts-ignore */
                     (x) => x[columnFilter.column] === columnFilter.value
                 );
             }
@@ -306,6 +322,18 @@ export const SpellTable = ({
                   character.spellBook[selectedClass]
               )
             : false;
+    const inMartialQueue = (spell: AnyMagickType) =>
+        !!character
+            ? R.any(
+                  R.propEq(spell.name, 'name'),
+                  character.martialQueue[selectedClass as keyof MartialQueue]
+              )
+            : false;
+
+    const showPrepareManeuvers =
+        maneuverClasses.includes(selectedClass) &&
+        selectedSubtype === MagickCategory.Maneuver;
+
     return (
         <Paper sx={{ width: '100%', overflow: 'scroll' }}>
             <Select
@@ -323,24 +351,30 @@ export const SpellTable = ({
             </Select>
             {isHybridClass ? (
                 <>
-                 <Select
-                    onChange={handleSubtypeChange}
-                    value={selectedSubtype}
-                    sx={{ marginRight: '1rem' }}
-                >
-                    {spellTypeOptions.map((x) => {
-                        return (
-                            <MenuItem value={x} key={x}>
-                                {x}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-                {selectedSubtype === MagickCategory.Maneuver && 
-                <Button variant='outlined' sx={{marginRight: '1rem'}}onClick={() => setUseDex(!useDex)} color={useDex ? 'success' : undefined}>Use Dex for Maneuver</Button>
-                }
+                    <Select
+                        onChange={handleSubtypeChange}
+                        value={selectedSubtype}
+                        sx={{ marginRight: '1rem' }}
+                    >
+                        {spellTypeOptions.map((x) => {
+                            return (
+                                <MenuItem value={x} key={x}>
+                                    {x}
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                    {selectedSubtype === MagickCategory.Maneuver && (
+                        <Button
+                            variant='outlined'
+                            sx={{ marginRight: '1rem' }}
+                            onClick={() => setUseDex(!useDex)}
+                            color={useDex ? 'success' : undefined}
+                        >
+                            Use Dex for Maneuver
+                        </Button>
+                    )}
                 </>
-               
             ) : null}
             <TextField
                 onChange={handleSearchChange}
@@ -366,7 +400,9 @@ export const SpellTable = ({
                                                     onClick={handleOnlyPrepared}
                                                     sx={iconHoverStyling}
                                                 >
-                                                    Prepared / Used
+                                                    {showPrepareManeuvers
+                                                        ? 'Add to Queue'
+                                                        : 'Prepared / Used'}
                                                     {!!onlyPrepared.length && (
                                                         <Tooltip title='Only Showing Prepared'>
                                                             <InfoIcon
@@ -401,9 +437,7 @@ export const SpellTable = ({
                                                 followCursor
                                                 title={
                                                     <SpellTooltip
-                                                        spell={
-                                                            row
-                                                        }
+                                                        spell={row}
                                                         character={character}
                                                         useDex={useDex}
                                                     />
@@ -421,16 +455,19 @@ export const SpellTable = ({
                                                                             row
                                                                         )}
                                                                         onChange={() =>
-                                                                            !!onChange &&
-                                                                            onChange(
-                                                                                row,
-                                                                                selectedClass
-                                                                            )
+                                                                            !!onChange
+                                                                                ? onChange(
+                                                                                      row,
+                                                                                      selectedClass
+                                                                                  )
+                                                                                : undefined
                                                                         }
-                                                                        name='Known'
+                                                                        name={
+                                                                            'Known'
+                                                                        }
                                                                     />
                                                                 </TableCell>
-                                                            ) : (
+                                                            ) : !showPrepareManeuvers ? (
                                                                 <TableCell>
                                                                     <NumberInput
                                                                         sx={{
@@ -458,6 +495,26 @@ export const SpellTable = ({
                                                                                 },
                                                                                 selectedClass
                                                                             )
+                                                                        }
+                                                                    />
+                                                                </TableCell>
+                                                            ) : (
+                                                                <TableCell>
+                                                                    <Checkbox
+                                                                        checked={inMartialQueue(
+                                                                            row
+                                                                        )}
+                                                                        onChange={() =>
+                                                                            !!onChange
+                                                                                ? onChange(
+                                                                                      row,
+                                                                                      selectedClass,
+                                                                                      true
+                                                                                  )
+                                                                                : undefined
+                                                                        }
+                                                                        name={
+                                                                            'Add To Queue'
                                                                         }
                                                                     />
                                                                 </TableCell>

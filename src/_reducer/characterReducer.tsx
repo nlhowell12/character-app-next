@@ -19,6 +19,8 @@ import {
     Note,
     Movement,
     Currency,
+    MartialQueue,
+    Maneuver,
 } from '@/_models';
 import initialSkillsState from './initialSkillsState';
 import * as R from 'ramda';
@@ -38,6 +40,7 @@ export enum CharacterReducerActions {
     REPLACE_EQUIPMENT = 'REPLACE_EQUIPMENT',
     LEARN_SPELL = 'LEARN_SPELL',
     PREPARE_SPELL = 'PREPARE_SPELL',
+    MARTIAL_QUEUE = 'MARTIAL_QUEUE',
     ADD_NOTE = 'ADD_NOTE',
     UPDATE_NOTE = 'UPDATE_NOTE',
     DELETE_NOTE = 'DELETE_NOTE',
@@ -241,6 +244,19 @@ export const prepareSpellAction = (
         },
     };
 };
+export const martialQueueAction = (
+    value: AnyMagickType,
+    className: CharacterClassNames
+): CharacterAction => {
+    return {
+        type: CharacterReducerActions.MARTIAL_QUEUE,
+        payload: {
+            value,
+            key: CharacterKeys.martialQueue,
+            updateId: className,
+        },
+    };
+};
 
 export const addNoteAction = (value: Note): CharacterAction => {
     return {
@@ -311,6 +327,12 @@ const initialSpellBook: SpellObject = {
     [CharacterClassNames.Shadowcaster]: [],
     [CharacterClassNames.SorcWiz]: [],
 };
+const initialMartialQueue: MartialQueue = {
+    [CharacterClassNames.Fighter]: [],
+    [CharacterClassNames.Hexblade]: [],
+    [CharacterClassNames.Oathsworn]: [],
+    [CharacterClassNames.PsychicWarrior]: [],
+};
 export const initialCharacterState: Character = {
     name: '',
     race: '',
@@ -347,6 +369,7 @@ export const initialCharacterState: Character = {
     feats: [],
     specialAbilities: [],
     spellBook: initialSpellBook,
+    martialQueue: initialMartialQueue,
     notes: [],
     heroPoints: 0,
     statusEffects: []
@@ -472,6 +495,13 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                             state.spellBook[className]
                         ),
                     },
+                    martialQueue: {
+                        ...state.martialQueue,
+                        [className]:R.filter(
+                            filter,
+                            state.martialQueue[className as keyof MartialQueue]
+                        ),
+                    }
                 };
             } else {
                 const newSpellAdded = R.append(
@@ -510,6 +540,17 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                     [classNamePrepare]: updatedClassArray,
                 },
             };
+        case CharacterReducerActions.MARTIAL_QUEUE:
+            const maneuver = value as Maneuver;
+            const martialClass = updateId as keyof MartialQueue;
+            const maneuverIndex = R.findIndex(
+                R.propEq(maneuver.name, 'name')
+            )(state.martialQueue[martialClass]);
+            const filter = (x: Maneuver) => x.name !== maneuver.name
+            if(maneuverIndex !== -1){
+                return {...state, martialQueue: {...state.martialQueue, [martialClass]: R.filter(filter, state.martialQueue[martialClass])}}
+            }
+            return {...state, martialQueue: {...state.martialQueue, [martialClass]: [...state.martialQueue[martialClass], maneuver]}}
         case CharacterReducerActions.ADD_NOTE:
             return { ...state, notes: R.append(value as Note, state.notes) };
         case CharacterReducerActions.UPDATE_NOTE:

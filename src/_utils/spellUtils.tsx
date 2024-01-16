@@ -5,6 +5,7 @@ import {
     Character,
     CharacterClassNames,
     MagickCategory,
+    MartialQueue,
     Mystery,
     Power,
     Prayer,
@@ -15,7 +16,8 @@ import { getTotalAttributeModifier } from './attributeUtils';
 
 export const filterSpellObjectByCharacter = (
     character: Character,
-    spells: SpellObject
+    spells: SpellObject | MartialQueue,
+    martial?: boolean
 ): SpellObject => {
     const filteredSpellObject: SpellObject = {} as SpellObject;
     Object.keys(spells).forEach((x: string) => {
@@ -28,9 +30,10 @@ export const filterSpellObjectByCharacter = (
                 (cls) =>
                     cls.name === CharacterClassNames.Sorcerer ||
                     cls.name === CharacterClassNames.Wizard
-            )
+            ) && !martial
         ) {
             filteredSpellObject[CharacterClassNames.SorcWiz] =
+                /* @ts-ignore */
                 spells[CharacterClassNames.SorcWiz];
         }
     });

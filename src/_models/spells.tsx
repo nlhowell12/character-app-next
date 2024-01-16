@@ -102,7 +102,12 @@ export enum MagickCategory {
     Maneuver = 'Maneuver',
 }
 
-export const AnyMagickSchool = {...ArcaneSchool, ...DivineDomain, ...PsionicDiscipline, ...ShadowPath};
+export const AnyMagickSchool = {
+    ...ArcaneSchool,
+    ...DivineDomain,
+    ...PsionicDiscipline,
+    ...ShadowPath,
+};
 
 export interface Magick {
     name: string;
@@ -139,7 +144,14 @@ export interface SpellObject {
     [CharacterClassNames.Psion]: Power[];
     [CharacterClassNames.Shadowcaster]: Mystery[];
     [CharacterClassNames.SorcWiz]: Spell[];
-}
+};
+
+export interface MartialQueue {
+    [CharacterClassNames.Hexblade]: Maneuver[];
+    [CharacterClassNames.Oathsworn]: Maneuver[];
+    [CharacterClassNames.Fighter]: Maneuver[];
+    [CharacterClassNames.PsychicWarrior]: Maneuver[];
+};
 
 export interface Spell extends Magick {
     school: ArcaneSchool;
@@ -178,7 +190,7 @@ export interface Maneuver {
 }
 
 export type AnyMagickType =
-    Magick
+    | Magick
     | Prayer
     | Spell
     | Maneuver

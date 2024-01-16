@@ -3,6 +3,7 @@ import {
     Character,
     CharacterClassNames,
     CharacterKeys,
+    Maneuver,
     SpellCastingClasses,
     StatusEffects,
 } from '@/_models';
@@ -29,6 +30,7 @@ import { DisplayCell } from './DisplayCell';
 import {
     CharacterAction,
     learnSpellAction,
+    martialQueueAction,
     prepareSpellAction,
     updateAction,
 } from '@/_reducer/characterReducer';
@@ -126,10 +128,16 @@ export const CombatInfoDisplay = ({
 
     const handlePrepareSpell = (
         spell: AnyMagickType,
-        className: CharacterClassNames
+        className: CharacterClassNames,
+        martial?: boolean
     ) => {
-        dispatch(prepareSpellAction(spell, className));
+        if(martial){
+            dispatch(martialQueueAction(spell, className));
+        } else {
+            dispatch(prepareSpellAction(spell, className));
+        }
     };
+
     const hasSpellCastingClass = () => {
         return character.classes.some((r) =>
             Object.values(SpellCastingClasses).includes(
@@ -315,6 +323,18 @@ export const CombatInfoDisplay = ({
                                 personal
                                 character={character}
                                 onChange={handlePrepareSpell}
+                            />
+                            <SpellTable
+                                spells={filterSpellObjectByCharacter(
+                                    character,
+                                    character.martialQueue,
+                                    true
+                                )}
+                                characterSpellbook
+                                personal
+                                character={character}
+                                onChange={handlePrepareSpell}
+                                martial
                             />
                         </SpellbookTabsContainer>
                     </Dialog>

@@ -1,4 +1,4 @@
-import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick, Movement, MovementTypes } from '@/_models';
+import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick, Movement, MovementTypes, Maneuver, MartialQueue } from '@/_models';
 import {
 	CharacterReducerActions,
 	addEquipmentAction,
@@ -7,6 +7,7 @@ import {
 	deleteModAction,
 	initialCharacterState,
 	learnSpellAction,
+	martialQueueAction,
 	prepareSpellAction,
 	removeEquipmentAction,
 	removeMovementAction,
@@ -115,6 +116,17 @@ describe('characterReducer', () => {
 		expect(newState.spellBook[CharacterClassNames.SorcWiz]).toStrictEqual([spellToAdd]);
 		const newState2 = characterReducer(newState, learnSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
 		expect(newState2.spellBook[CharacterClassNames.SorcWiz]).toStrictEqual([]);
+	})
+	it('should add and remove a martial maneuver from the queue', () => {
+		const spellToAdd = {name: 'Blade Dance'} as Maneuver;
+		const martialQueue: Partial<MartialQueue> = {
+			[CharacterClassNames.Fighter]: []
+		};
+		{/* @ts-ignore */}
+		const newState = characterReducer({...mockCharacters[0], martialQueue}, martialQueueAction(spellToAdd, CharacterClassNames.Fighter))
+		expect(newState.martialQueue[CharacterClassNames.Fighter]).toStrictEqual([spellToAdd]);
+		const newState2 = characterReducer(newState, martialQueueAction(spellToAdd, CharacterClassNames.Fighter))
+		expect(newState2.martialQueue[CharacterClassNames.Fighter]).toStrictEqual([]);
 	})
 	it('should prepare and unprepare a spell', () => {
 		const spellToAdd = {name: 'Magic Missile', prepared: 1} as Spell;

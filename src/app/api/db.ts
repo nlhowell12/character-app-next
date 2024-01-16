@@ -75,6 +75,7 @@ function characterModel() {
         experience: { type: Number, required: true },
         feats: [Object],
         spellBook: {type: Map, of: Object},
+        martialQueue: {type: Map, of: Object},
         notes: [Object],
         isPsionic: Boolean,
         powerPoints: { type: Number },
