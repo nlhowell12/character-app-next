@@ -28,6 +28,8 @@ const modifierString = (key: keyof Modifier, value: any) => {
             return camelToTitle(key);
         case('initiative'):
             return camelToTitle(key);
+        case('spellSchool'):
+            return value;
         case('type'):
             return '';
         case('id'):
@@ -41,11 +43,19 @@ const modifierString = (key: keyof Modifier, value: any) => {
     }
 }
 
+const getModType = (mod: Modifier) => {
+    if(!!mod.spellSchool){
+        return 'DC'
+    }
+    if(!mod.numberOfDice) {
+        return mod.type
+    }
+    return ''
+}
 export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     const positive = !!mod.value && mod.value >= 0 ? '+' : ''
     const modValue = !!mod.value ? `${positive}${mod.value}` : '';
     const modDefinition = !!mod.definition ? ` (${mod.definition})` : ''
-    const modType = !mod.numberOfDice ? mod.type : ''
     const bonusDamageDice = !!mod.numberOfDice ? `+${mod.numberOfDice}${mod.damageDice}`: '';
     let assignmentString = '';
     Object.entries(mod).forEach(([key, value]) => {
@@ -56,7 +66,7 @@ export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     return (
         <Chip
             /* @ts-ignore */
-            label={`${bonusDamageDice} ${modValue} ${modType} - ${assignmentString}${modDefinition}`}
+            label={`${bonusDamageDice} ${modValue} ${getModType(mod)} - ${assignmentString}${modDefinition}`}
             variant='outlined'
             onDelete={onDelete}
         />

@@ -1,5 +1,7 @@
 import {
     AbilityTypes,
+    AnyMagickSchool,
+    ArcaneSchool,
     AttributeNames,
     BonusTypes,
     Damage,
@@ -28,7 +30,6 @@ import {
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { NumberInput } from './NumberInput';
-
 interface ModifierDialogProps {
     onAdd: (appliedModifier: Modifier) => void;
     onClose: () => void;
@@ -52,6 +53,7 @@ export const ModifierDialog = ({
         initiative: false,
         type: BonusTypes.Untyped,
         abilityType: AbilityTypes.Extraordinary,
+        spellSchool: ArcaneSchool.Abjuration,
         resistance: undefined,
         immunity: undefined,
         damageType: Damage.Acid,
@@ -71,6 +73,7 @@ export const ModifierDialog = ({
         damageType,
         damageDice,
         numberOfDice,
+        spellSchool
     } = modifier;
 
     const [optionalValues, setOptionalValues] = useState({
@@ -86,7 +89,8 @@ export const ModifierDialog = ({
         boolResistance: false,
         boolImmunity: false,
         boolDamageType: false,
-        boolInit: false
+        boolInit: false,
+        boolSpell: false
     });
 
     const modifierValueHandler = (e: any) => {
@@ -115,7 +119,8 @@ export const ModifierDialog = ({
         boolImmunity,
         boolDamageType,
         boolDamageDice,
-        boolInit
+        boolInit,
+        boolSpell
     } = optionalValues;
 
     const appliedModifier: Modifier = {
@@ -138,6 +143,7 @@ export const ModifierDialog = ({
         damageDice: !!boolDamage && !!boolDamageDice ? damageDice : undefined,
         numberOfDice:
             !!boolDamage && !!boolDamageDice ? Number(numberOfDice) : undefined,
+            spellSchool: !!boolSpell ? spellSchool :  undefined,
         id: uuidv4(),
     };
     const diceAndNumber = !!damageDice && !!numberOfDice;
@@ -150,7 +156,8 @@ export const ModifierDialog = ({
         boolDefense ||
         boolSkill ||
         boolAttribute ||
-        boolInit;
+        boolInit ||
+        boolSpell;
     const attAssignments = 
         boolResistance ||
         boolAttack ||
@@ -229,7 +236,16 @@ export const ModifierDialog = ({
                                 }
                                 label='Does this affect a skill? (E.g. +2 Acrobatics)'
                             />
-
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={boolSpell}
+                                        onChange={optionalValueHandler}
+                                        name='boolSpell'
+                                    />
+                                }
+                                label='Does this affect a spell DC? (E.g. +1 to Conjuration)'
+                            />
                             <FormControlLabel
                                 control={
                                     <Checkbox
@@ -239,16 +255,6 @@ export const ModifierDialog = ({
                                     />
                                 }
                                 label='Does this modify your initiative?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolAttack}
-                                        onChange={optionalValueHandler}
-                                        name='boolAttack'
-                                    />
-                                }
-                                label='Does this modify your attacks?'
                             />
                             <FormControlLabel
                                 control={
@@ -373,6 +379,26 @@ export const ModifierDialog = ({
                             })}
                         </Select>
                     </FormControl>
+                   {!!boolSpell && <FormControl fullWidth sx={formControlStyle}>
+                        <InputLabel id='spell-school-id'>Bonus Type</InputLabel>
+                        <Select
+                            labelId='spell-school-id'
+                            id='spell-school'
+                            label='School/Discipline/Domain/Path'
+                            name='spellSchool'
+                            value={spellSchool}
+                            onChange={modifierValueHandler}
+                        >
+                            {Object.keys(AnyMagickSchool).map((x) => {
+                                return (
+                                    <MenuItem key={x} value={x}>
+                                        {/* @ts-ignore */}
+                                        {AnyMagickSchool[x]}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>}
                     {!!optionalValues.boolDamage && !!boolDamageDice && (
                         <>
                             <FormControl fullWidth sx={formControlStyle}>

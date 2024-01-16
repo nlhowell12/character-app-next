@@ -102,6 +102,8 @@ export enum MagickCategory {
     Maneuver = 'Maneuver',
 }
 
+export const AnyMagickSchool = {...ArcaneSchool, ...DivineDomain, ...PsionicDiscipline, ...ShadowPath};
+
 export interface Magick {
     name: string;
     range: string;
