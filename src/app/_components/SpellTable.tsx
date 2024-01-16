@@ -222,7 +222,7 @@ export const SpellTable = ({
     }, [spells, selectedClass, onlyPrepared, columnFilter]);
 
     useEffect(() => {
-        if (!!rows && isHybridClass && !!spells) {
+        if (!!rows && isHybridClass && !!spells && !initialLoad) {
             const filteredSpells: AnyMagickType[] = filterBySubtype(
                 spells[filterClass]
             );
