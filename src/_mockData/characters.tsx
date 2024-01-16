@@ -1,4 +1,4 @@
-import { ArcaneSchool, BonusTypes, Damage, Sizes, SpellObject } from '../_models';
+import { ArcaneSchool, BonusTypes, Damage, MartialQueue, Sizes, SpellObject } from '../_models';
 import {
     AttributeNames,
     Character,
@@ -115,6 +115,7 @@ export const mockCharacters: Character[] = [
         experience: 0,
         feats: [],
         spellBook: {} as SpellObject,
+        martialQueue: {} as MartialQueue,
         equipment: [
             {
                 id: '123456',
