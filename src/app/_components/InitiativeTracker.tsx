@@ -31,6 +31,7 @@ export const InitiativeTracker = () => {
     const [score, setScore] = useState(0);
     const [hiddenMessages, setHiddenMessages] = useState<string[]>([]);
     const { channel } = useChannel('init-tracker', (message) => {
+        console.log(message)
         if(!!message.data.delete) {
             setHiddenMessages([...hiddenMessages, message.id])
         };
@@ -66,7 +67,6 @@ export const InitiativeTracker = () => {
     };
 
     const handleDelete = (m: TrackerMessage) => {
-        console.log(m)
         setHiddenMessages([...hiddenMessages, m.id])
     };
 
@@ -100,7 +100,7 @@ export const InitiativeTracker = () => {
                     <Grid item xs={6}>
                         {!!messages.length && (
                             <List>
-                                {messages.filter(x => !hiddenMessages.includes(x.id))
+                                {messages.filter(x => !!x.data.value && (!hiddenMessages.includes(x.id) || !x.data.delete))
                                     .sort(
                                         (a, b) =>
                                             Number(b.data) - Number(a.data)
@@ -111,7 +111,7 @@ export const InitiativeTracker = () => {
                                                 <Chip label={`${
                                                     m.name
                                                 } ${Number(
-                                                    m.data
+                                                    m.data.value
                                                 )}`} onClick={() => channel.publish({name: m.name, data: {value: m.data.value, delete: true}, id: m.id, extras: {ref: {type: 'tracker-delete'}}})
                                             }
                                                 sx={{ '&:hover': { opacity: '.6', cursor: 'pointer', textDecoration: 'line-through' },}}/>
@@ -124,7 +124,7 @@ export const InitiativeTracker = () => {
                 </Grid>
             </CardContent>
             <CardActions>
-                <Button onClick={() => channel.publish(name, score)}>
+                <Button onClick={() => channel.publish(name, {value: score, delete: false})}>
                     Update Initiative
                 </Button>
             </CardActions>

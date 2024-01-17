@@ -31,7 +31,7 @@ export const initialUser: User = {
     isDm: false,
 };
 
-const client = new Ably.Realtime.Promise({ key: `1ZOkeg.ZOkKzg:dAjzR3Y_22i_NBTizBCBt4AxfO_AcLFCkBTAKVAWi7k`, clientId: uuidv4() });
+const client = new Ably.Realtime.Promise({ key: '1ZOkeg.ZOkKzg:dAjzR3Y_22i_NBTizBCBt4AxfO_AcLFCkBTAKVAWi7k', clientId: uuidv4() });
 
 export default function RootLayout({
     children,
