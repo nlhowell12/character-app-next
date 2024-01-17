@@ -11,10 +11,10 @@ import {
     List,
     ListItem,
     TextField,
-    Typography,
 } from '@mui/material';
 import { NumberInput } from './NumberInput';
 import * as R from 'ramda';
+import { v4 as uuidv4 } from 'uuid';
 
 interface TrackerMessage {
     name: string;
@@ -29,12 +29,7 @@ export const InitiativeTracker = () => {
     const [messages, updateMessages] = useState<TrackerMessage[]>([]);
     const [name, setName] = useState('');
     const [score, setScore] = useState(0);
-    const [hiddenMessages, setHiddenMessages] = useState<string[]>([]);
     const { channel } = useChannel('init-tracker', (message) => {
-        console.log(message)
-        if(!!message.data.delete) {
-            setHiddenMessages([...hiddenMessages, message.id])
-        };
         const messageIndex = R.findIndex(R.propEq(message.name, 'name'))(
             messages
         );
@@ -67,7 +62,11 @@ export const InitiativeTracker = () => {
     };
 
     const handleDelete = (m: TrackerMessage) => {
-        setHiddenMessages([...hiddenMessages, m.id])
+        const filter = (x: TrackerMessage) => x.id !== m.id;
+        updateMessages(R.filter(filter, messages))
+    };
+    const handleClear = (m: TrackerMessage) => {
+        updateMessages([]);
     };
 
     useEffect(() => {
@@ -76,6 +75,9 @@ export const InitiativeTracker = () => {
 
     useEffect(() => {
         channel.subscribe('tracker-delete', handleDelete)
+    }, [])
+    useEffect(() => {
+        channel.subscribe('tracker-clear', handleClear)
     }, [])
 
     return (
@@ -100,7 +102,7 @@ export const InitiativeTracker = () => {
                     <Grid item xs={6}>
                         {!!messages.length && (
                             <List>
-                                {messages.filter(x => !!x.data.value && (!hiddenMessages.includes(x.id) || !x.data.delete))
+                                {messages.filter(x => !!x.data.value && !x.data.delete)
                                     .sort(
                                         (a, b) =>
                                             Number(b.data) - Number(a.data)
@@ -123,7 +125,10 @@ export const InitiativeTracker = () => {
                     </Grid>
                 </Grid>
             </CardContent>
-            <CardActions>
+            <CardActions sx={{justifyContent: 'flex-end'}}>
+                <Button color='error' onClick={() => channel.publish({name: 'tracker-clear', data: {value: 0, delete: true}, id: uuidv4(), extras: {ref: {type: 'tracker-clear'}}}) }>
+                    Clear Initiative
+                </Button>
                 <Button onClick={() => channel.publish(name, {value: score, delete: false})}>
                     Update Initiative
                 </Button>
