@@ -105,7 +105,7 @@ export const InitiativeTracker = () => {
                                 {messages.filter(x => !!x.data.value && !x.data.delete)
                                     .sort(
                                         (a, b) =>
-                                            Number(b.data) - Number(a.data)
+                                            Number(b.data.value) - Number(a.data.value)
                                     )
                                     .map((m: TrackerMessage) => {
                                         return (
