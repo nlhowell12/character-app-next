@@ -37,6 +37,7 @@ export const filterSpellObjectByCharacter = (
                 spells[CharacterClassNames.SorcWiz];
         }
     });
+    console.log(filteredSpellObject)
     return filteredSpellObject;
 };
 

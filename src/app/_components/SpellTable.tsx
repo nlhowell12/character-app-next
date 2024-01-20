@@ -44,6 +44,7 @@ const SpellTooltip = ({ character, spell, useDex }: SpellTableTooltipProps) => {
     const tableCellStyling = { borderBottom: 'none' };
     return (
         <Table>
+            <TableBody>
             <TableRow>
                 {!!character && !!(spell as Magick).savingThrow && (
                     <TableCell
@@ -62,6 +63,7 @@ const SpellTooltip = ({ character, spell, useDex }: SpellTableTooltipProps) => {
                     <Typography>{spell.description}</Typography>
                 </TableCell>
             </TableRow>
+            </TableBody>
         </Table>
     );
 };
@@ -75,7 +77,6 @@ export interface SpellTableProps {
         martial?: boolean
     ) => void;
     personal?: boolean;
-    martial?: boolean;
 }
 export const SpellTable = ({
     spells,
@@ -83,7 +84,6 @@ export const SpellTable = ({
     onChange,
     character,
     personal,
-    martial,
 }: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
         !!spells
@@ -107,7 +107,6 @@ export const SpellTable = ({
 
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-    let initialLoad = useRef<boolean>(true);
 
     const maneuverClasses: CharacterClassNames[] = [
         CharacterClassNames.Hexblade,
@@ -199,14 +198,18 @@ export const SpellTable = ({
         };
         return R.filter(filter, spells);
     };
-
+    const getColumns = (spells: AnyMagickType[]) => {
+        return spells.length > 0
+        ? Object.keys(spells[0]).filter((x) => filterData(x))
+        : [];
+    };
     const filterClass = selectedClass as keyof SpellObject;
 
     useEffect(() => {
         setSelectedSubtype(MagickCategory.Maneuver);
         if (!!spells) {
             let filteredSpells: AnyMagickType[] = [];
-            if (!!characterSpellbook && !!initialLoad) {
+            if (!!characterSpellbook) {
                 const includedClass = Object.keys(
                     spells
                 )[0] as keyof SpellObject;
@@ -214,7 +217,6 @@ export const SpellTable = ({
                 filteredSpells = !!spells[includedClass].length
                     ? filterBySubtype(spells[includedClass])
                     : [];
-                initialLoad.current = false;
             } else {
                 filteredSpells = !!spells[selectedClass].length
                     ? filterBySubtype(spells[selectedClass])
@@ -229,23 +231,17 @@ export const SpellTable = ({
                     (x) => x[columnFilter.column] === columnFilter.value
                 );
             }
-            const columns = !!filteredSpells.length
-                ? Object.keys(filteredSpells[0]).filter((x) => filterData(x))
-                : [];
             setRows(filteredSpells);
-            setColumns(columns);
+            setColumns(getColumns(filteredSpells));
         }
     }, [spells, selectedClass, onlyPrepared, columnFilter]);
 
     useEffect(() => {
-        if (!!rows && isHybridClass && !!spells && !initialLoad) {
+        if (!!rows && isHybridClass && !!spells) {
             const filteredSpells: AnyMagickType[] = filterBySubtype(
                 spells[filterClass]
             );
-            const columns = Object.keys(filteredSpells[0]).filter((x) =>
-                filterData(x)
-            );
-            setColumns(columns);
+            setColumns(getColumns(filteredSpells));
             setRows(filteredSpells);
         }
     }, [selectedSubtype]);

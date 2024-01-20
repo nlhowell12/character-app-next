@@ -165,7 +165,6 @@ export const EditCharacter = ({
                     item
                     xs={12}
                     xl={2}
-                    direction='row'
                     columns={2}
                     sx={{
                         [theme.breakpoints.down('xl')]: {

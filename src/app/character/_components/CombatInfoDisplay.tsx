@@ -334,7 +334,6 @@ export const CombatInfoDisplay = ({
                                 personal
                                 character={character}
                                 onChange={handlePrepareSpell}
-                                martial
                             />
                         </SpellbookTabsContainer>
                     </Dialog>
