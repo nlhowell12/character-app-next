@@ -6,6 +6,7 @@ import {
     Character,
     SkillTypes,
 } from '@/_models';
+import { chain } from 'ramda';
 import { v4 as uuidv4 } from 'uuid';
 
 const getFatiguedModifiers = (character: Character): Modifier[] =>
@@ -108,8 +109,12 @@ const getFearModifiers = (
     skill?: SkillTypes,
     attribute?: AttributeNames
 ): Modifier[] => {
-    const fearStatuses = [StatusEffects.Shaken, StatusEffects.Frightened, StatusEffects.Panicked];
-    return character.statusEffects.some(x => fearStatuses.includes(x))
+    const fearStatuses = [
+        StatusEffects.Shaken,
+        StatusEffects.Frightened,
+        StatusEffects.Panicked,
+    ];
+    return character.statusEffects.some((x) => fearStatuses.includes(x))
         ? [
               {
                   id: uuidv4(),
@@ -135,14 +140,15 @@ const getFearModifiers = (
               },
           ]
         : [];
-}
+};
+
 const getSickenedModifiers = (
     character: Character,
     skill?: SkillTypes,
     attribute?: AttributeNames
 ): Modifier[] => {
     const fearStatuses = [StatusEffects.Sickened];
-    return character.statusEffects.some(x => fearStatuses.includes(x))
+    return character.statusEffects.some((x) => fearStatuses.includes(x))
         ? [
               {
                   id: uuidv4(),
@@ -175,10 +181,9 @@ const getSickenedModifiers = (
               },
           ]
         : [];
-}
-const getSlowedModifiers = (
-    character: Character,
-): Modifier[] => {
+};
+
+const getSlowedModifiers = (character: Character): Modifier[] => {
     return character.statusEffects.includes(StatusEffects.Slowed)
         ? [
               {
@@ -197,7 +202,52 @@ const getSlowedModifiers = (
               },
           ]
         : [];
-}
+};
+
+const getEnergyDrainedModifiers = (
+    character: Character,
+    skill?: SkillTypes,
+    attribute?: AttributeNames
+): Modifier[] => {
+    const oneDrainedMods = [
+        {
+            id: uuidv4(),
+            type: BonusTypes.Untyped,
+            value: -1,
+            skill,
+            statusEffect: StatusEffects.EnergyDrained,
+        },
+        {
+            id: uuidv4(),
+            type: BonusTypes.Untyped,
+            value: -1,
+            attack: true,
+            statusEffect: StatusEffects.EnergyDrained,
+        },
+        {
+            id: uuidv4(),
+            type: BonusTypes.Untyped,
+            value: -1,
+            save: true,
+            attribute,
+            statusEffect: StatusEffects.EnergyDrained,
+        },
+    ];
+
+    const totalDrained: Modifier[] = [];
+
+    for (let i = getTotalEnergyDrained(character); i > 0; i--) {
+        totalDrained.push(...oneDrainedMods);
+    }
+
+    return character.statusEffects.includes(StatusEffects.EnergyDrained)
+        ? totalDrained
+        : [];
+};
+
+const getTotalEnergyDrained = (character: Character): number =>
+    character.statusEffects.filter((x) => x === StatusEffects.EnergyDrained)
+        .length;
 
 export {
     getExhaustedModifiers,
@@ -207,5 +257,7 @@ export {
     getFatiguedModifiers,
     getFearModifiers,
     getSickenedModifiers,
-    getSlowedModifiers
+    getSlowedModifiers,
+    getEnergyDrainedModifiers,
+    getTotalEnergyDrained,
 };

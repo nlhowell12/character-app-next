@@ -18,6 +18,7 @@ import {
 import { BonusObject } from './defenseUtils';
 import {
     getDazzledModifiers,
+    getEnergyDrainedModifiers,
     getEntangledModifiers,
     getFearModifiers,
     getSickenedModifiers,
@@ -86,7 +87,8 @@ export const getAllAttackModifiers = (
         ...getDazzledModifiers(character),
         ...getFearModifiers(character),
         ...getSickenedModifiers(character),
-        ...getSlowedModifiers(character)
+        ...getSlowedModifiers(character),
+        ...getEnergyDrainedModifiers(character)
     ].filter((x) => !!x.attack);
     return [...characterMods, ...weaponMods, ...statusEffectMods];
 };

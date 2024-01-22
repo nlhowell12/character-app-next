@@ -44,6 +44,7 @@ import {
 } from '@/_utils/spellUtils';
 import { SpeedDialog } from './SpeedDialog';
 import { checkForHalfMovement, getInitiativeScore } from '@/_utils/classUtils';
+import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -167,7 +168,7 @@ export const CombatInfoDisplay = ({
             <DisplayCell
                 variant='body1'
                 cellTitle='Max Hit Points:'
-                value={character.maxHitPoints}
+                value={Number(character.maxHitPoints) - (getTotalEnergyDrained(character) * 5)}
             />
             <DisplayCell
                 variant='body1'
