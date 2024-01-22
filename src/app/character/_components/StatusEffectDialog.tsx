@@ -11,12 +11,14 @@ import {
 } from '@mui/material';
 import { Dispatch } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Character, CharacterKeys, StatusEffects } from '@/_models';
 import * as R from 'ramda';
+import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
 
 interface StatusEffectRowProps {
-    effect: string;
+    effect: StatusEffects;
     dispatch: Dispatch<CharacterAction>;
     character: Character;
 }
@@ -45,9 +47,29 @@ const StatusEffectRow = ({
             );
         }
     };
+    const handleEnergyDrainClick = (increase: boolean) => {
+        if(increase){
+            dispatch(
+                updateAction(
+                    CharacterKeys.statusEffects,
+                    R.append(effect, character.statusEffects)
+                )
+            );
+        } else {
+            const removeIndex = R.findIndex(x => x === StatusEffects.EnergyDrained)(character.statusEffects);
+            dispatch(
+                updateAction(
+                    CharacterKeys.statusEffects,
+                    R.remove(removeIndex, 1, character.statusEffects)
+                )
+            );
+        }
+    };
+
     const textStyle = {marginRight: '.5rem'}
     return (
-        <ListItem
+        (effect as StatusEffects) !== StatusEffects.EnergyDrained ? 
+            <ListItem
             secondaryAction={
                 <IconButton onClick={handleClick}>
                     {hasStatusEffect ? (
@@ -59,7 +81,22 @@ const StatusEffectRow = ({
             }
         >
             <ListItemText primary={effect} sx={textStyle}/>
-        </ListItem>
+        </ListItem> : 
+        <ListItem
+            secondaryAction={
+                <>
+                {hasStatusEffect && 
+                <IconButton onClick={() => handleEnergyDrainClick(false)}>
+                    <RemoveCircleOutlineIcon/>
+                </IconButton>}
+                <IconButton onClick={() => handleEnergyDrainClick(true)}>
+                    <AddCircleOutlineIcon/>
+                </IconButton>
+                </>
+            }
+    >
+        <ListItemText primary={`${effect}${hasStatusEffect ? ` (${getTotalEnergyDrained(character)})` : ''}`} sx={textStyle}/>
+    </ListItem>
     );
 };
 
@@ -78,11 +115,12 @@ export const StatusEffectDialog = ({
     const statusEffects = Object.keys(StatusEffects);
     return (
         <Dialog open={open} onClose={onClose}>
-            <Card sx={{overflow: 'scroll'}}>
+            <Card sx={{overflow: 'scroll', width: '32rem'}}>
                 <CardHeader subheader='Status Effects'/>
                 <CardContent  sx={{display: 'flex', flexDirection: 'row'}}>
                     <List
                         dense
+                        sx={{width: '50%'}}
                     >
                         {statusEffects.slice(0, statusEffects.length/2).map((eff) => {
                             return (
@@ -98,6 +136,7 @@ export const StatusEffectDialog = ({
                     </List>
                     <List
                         dense
+                        sx={{width: '50%'}}
                     >
                         {statusEffects.slice(-(statusEffects.length/2)).map((eff) => {
                             return (
