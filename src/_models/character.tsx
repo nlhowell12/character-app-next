@@ -193,7 +193,6 @@ export interface ClassAbility {
 	level: number;
 	className: Omit<CharacterClassNames, CharacterClassNames.SorcWiz>;
 	description: string;
-	modifiers?: Modifier[];
 	allegianceValue?: number;
 	domain?: DivineDomain;
 }

@@ -1,9 +1,9 @@
 import {
     AnyMagickType,
     Character,
+    CharacterClass,
     CharacterClassNames,
     CharacterKeys,
-    Maneuver,
     SpellCastingClasses,
     StatusEffects,
 } from '@/_models';
@@ -35,6 +35,7 @@ import {
     updateAction,
 } from '@/_reducer/characterReducer';
 import MenuBook from '@mui/icons-material/MenuBook';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { SpellTable } from '@/app/_components/SpellTable';
 import useSpellService from '@/app/api/_services/useSpellService';
 import SpellbookTabsContainer from '@/app/_components/SpellbookTabsContainer';
@@ -45,6 +46,7 @@ import {
 import { SpeedDialog } from './SpeedDialog';
 import { checkForHalfMovement, getInitiativeScore } from '@/_utils/classUtils';
 import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
+import { DomainAspectsTable } from '@/app/_components/DomainAspectsTable';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -116,10 +118,17 @@ export const CombatInfoDisplay = ({
     const defenses = getTotalDefense(character);
     const [openSpellbook, setOpenSpellbook] = useState<boolean>(false);
     const [openSpeed, setOpenSpeed] = useState(false);
+    const [openDomainAspect, setOpenDomainAspect] = useState(false);
     const { spells } = useSpellService();
+
     const handleSpellBookOpen = () => {
         setOpenSpellbook(true);
     };
+
+    const handleDomainAspectOpen = () => {
+        setOpenDomainAspect(true);
+    };
+
     const handleLearnSpell = (
         spell: AnyMagickType,
         className: CharacterClassNames
@@ -132,7 +141,7 @@ export const CombatInfoDisplay = ({
         className: CharacterClassNames,
         martial?: boolean
     ) => {
-        if(martial){
+        if (martial) {
             dispatch(martialQueueAction(spell, className));
         } else {
             dispatch(prepareSpellAction(spell, className));
@@ -163,12 +172,17 @@ export const CombatInfoDisplay = ({
     const cannotMove = character.statusEffects.some((x) =>
         immobilzedStatusEffects.includes(x)
     );
+    const clericClass: CharacterClass | undefined = character.classes.find(x => x.name === CharacterClassNames.Cleric);
+    
     return (
         <>
             <DisplayCell
                 variant='body1'
                 cellTitle='Max Hit Points:'
-                value={Number(character.maxHitPoints) - (getTotalEnergyDrained(character) * 5)}
+                value={
+                    Number(character.maxHitPoints) -
+                    getTotalEnergyDrained(character) * 5
+                }
             />
             <DisplayCell
                 variant='body1'
@@ -338,6 +352,27 @@ export const CombatInfoDisplay = ({
                             />
                         </SpellbookTabsContainer>
                     </Dialog>
+                    {!!clericClass &&
+                    <>
+                    <Button
+                        sx={{ padding: '0 .5rem' }}
+                        variant='outlined'
+                        onClick={handleDomainAspectOpen}
+                    >
+                        <Typography>Domain Aspects</Typography>
+                        <AutoAwesomeIcon sx={{ marginLeft: '.5rem' }} />
+                    </Button>
+                    <Dialog
+                        open={openDomainAspect}
+                        onClose={() => setOpenDomainAspect(false)}
+                        fullWidth
+                        maxWidth='lg'
+                        keepMounted
+                    >
+                        <DomainAspectsTable classInfo={clericClass} dispatch={dispatch}/>
+                    </Dialog>
+                    </>
+                    }
                 </TableCell>
             )}
         </>

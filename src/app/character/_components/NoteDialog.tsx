@@ -1,6 +1,5 @@
-import { Character, CharacterKeys, Magick, Note } from '@/_models';
+import { Character, CharacterKeys, Note } from '@/_models';
 import {
-    Grid,
     Typography,
     List,
     ListItem,

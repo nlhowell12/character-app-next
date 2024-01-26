@@ -22,6 +22,7 @@ import { ModChipStack } from '@/app/_components/ModChipStack';
 import { FeatDisplay } from './FeatDisplay';
 import { NoteDialog } from './NoteDialog';
 import NotesIcon from '@mui/icons-material/Notes';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -32,7 +33,7 @@ interface CharacterInfoDisplayProps {
 export const CharacterInfoDisplay = ({
     character,
     dispatch,
-    onEdit
+    onEdit,
 }: CharacterInfoDisplayProps) => {
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
     const { updateCharacter } = useCharacterService();
@@ -114,20 +115,21 @@ export const CharacterInfoDisplay = ({
                 />
                 <Button
                     variant='outlined'
+                    onClick={() => onEdit(true)}
+                    sx={buttonStlying}
+                >
+                    <Typography>Edit Character</Typography>
+                    <EditIcon sx={{ marginLeft: '.5rem' }} />
+                </Button>
+                <Button
+                    variant='outlined'
                     onClick={handleUpdate}
                     sx={buttonStlying}
                 >
                     <Typography>Save Character</Typography>
                     <SaveIcon sx={{ marginLeft: '.5rem' }} />
                 </Button>
-                <Button
-                    variant='outlined'
-                    onClick={() => onEdit(true)}
-                    sx={buttonStlying}
-                >
-                    <Typography>Edit Character</Typography>
-                    <SaveIcon sx={{ marginLeft: '.5rem' }} />
-                </Button>
+
                 <Snackbar
                     open={openSuccess}
                     autoHideDuration={3000}

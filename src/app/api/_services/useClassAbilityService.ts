@@ -27,7 +27,7 @@ export default () => {
     
         if(!!classAbilities){
             setClassAbilities({
-                [CharacterClassNames.Cleric]: clericDomainAspects
+                [CharacterClassNames.Cleric]: {domainAspects: clericDomainAspects}
             });
         }
     }
