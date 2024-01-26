@@ -1,6 +1,6 @@
-import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes } from '@/_models';
+import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility } from '@/_models';
 import { User } from '@/_models/user';
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 
 const Schema = mongoose.Schema;
 const dbPw = process.env.MONGO_PW;
@@ -15,7 +15,8 @@ mongoose.Promise = global.Promise;
 export const db = {
     Spell: spellModel(),
     Character: characterModel(),
-    User: userModel()
+    User: userModel(),
+    ClassAbility: classAbilityModel()
 };
 
 function userModel(){
@@ -84,5 +85,17 @@ function characterModel() {
         statusEffects: {type: [String], required: true}
     })
     return mongoose.models.Character || mongoose.model('Character', characterSchema, 'characters');
+}
 
+function classAbilityModel() {
+    const classAbilitySchema = new Schema<ClassAbility>({
+        name: { type: String, required: true },
+        level: { type: Number, required: true },
+        className: { type: String, required: true },
+        description: { type: String, required: true },
+        modifiers: [Object],
+        allegianceValue: { type: Number },
+        domain: { type: String },
+    })
+    return mongoose.models.ClassAbility || mongoose.model('ClassAbility', classAbilitySchema, 'class_abilities')
 }

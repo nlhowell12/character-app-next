@@ -191,9 +191,11 @@ export interface Movement {
 export interface ClassAbility {
 	name: string;
 	level: number;
-	source?: AbilityTypes;
-	description?: string;
+	className: Omit<CharacterClassNames, CharacterClassNames.SorcWiz>;
+	description: string;
 	modifiers?: Modifier[];
+	allegianceValue?: number;
+	domain?: DivineDomain;
 }
 
 export interface ArchetypeAbility {
