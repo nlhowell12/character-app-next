@@ -30,12 +30,13 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 interface AddClassAbilityProps {
     addAbility: (ability: ClassAbility) => void;
     handleClose: Dispatch<SetStateAction<HTMLButtonElement | null | undefined>>;
+    className: CharacterClassNames;
 }
 
 const textFieldStyling = { marginTop: '.5rem' };
 const formControlStyling = { marginLeft: '.5rem' };
 
-const AddClassAbility = ({ handleClose, addAbility }: AddClassAbilityProps) => {
+const AddClassAbility = ({ handleClose, addAbility, className }: AddClassAbilityProps) => {
     const [name, setName] = useState('');
     const [level, setLevel] = useState(1);
     const [description, setDescription] = useState('');
@@ -65,7 +66,7 @@ const AddClassAbility = ({ handleClose, addAbility }: AddClassAbilityProps) => {
                     <CancelRounded />
                 </Button>
                 <Button
-                    onClick={() => addAbility({ name, level, description })}
+                    onClick={() => addAbility({ name, level, description, className })}
                 >
                     <CheckCircle />
                 </Button>
@@ -304,6 +305,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                     <AddClassAbility
                         addAbility={handleAddAbility}
                         handleClose={setAnchorEl}
+                        className={className}
                     />
                 </Popover>
                 {classAbilities.map((abl: ClassAbility) => {
