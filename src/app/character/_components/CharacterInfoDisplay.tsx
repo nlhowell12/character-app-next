@@ -16,7 +16,7 @@ import {
     deleteModAction,
     updateAction,
 } from '@/_reducer/characterReducer';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { ModifierDialog } from '@/app/_components/ModifierDialog';
 import { Add } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
@@ -28,6 +28,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useRouter } from 'next/navigation';
+import UserContext from '@/app/_auth/UserContext';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -46,7 +47,8 @@ export const CharacterInfoDisplay = ({
     const [openFeats, setOpenFeats] = useState<boolean>(false);
     const [openNotes, setOpenNotes] = useState<boolean>(false);
     const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-
+    const {user} = useContext(UserContext);
+    
     const router = useRouter();
 
     const handleAddModifier = (appliedModifier: Modifier) => {
@@ -77,6 +79,7 @@ export const CharacterInfoDisplay = ({
     const buttonStlying = {
         margin: '.25rem',
     };
+    const userAdminPrivelages = !!user && (user.isDm || user.name === character.playerName);
     return (
         <>
             <DisplayCell
@@ -132,6 +135,7 @@ export const CharacterInfoDisplay = ({
                     variant='outlined'
                     onClick={() => onEdit(true)}
                     sx={buttonStlying}
+                    disabled={!userAdminPrivelages}
                 >
                     <Typography>Edit Character</Typography>
                     <EditIcon sx={{ marginLeft: '.5rem' }} />
@@ -140,10 +144,13 @@ export const CharacterInfoDisplay = ({
                     variant='outlined'
                     onClick={handleUpdate}
                     sx={buttonStlying}
+                    disabled={!userAdminPrivelages}
                 >
                     <Typography>Save Character</Typography>
                     <SaveIcon sx={{ marginLeft: '.5rem' }} />
                 </Button>
+                {userAdminPrivelages &&
+                <>
                 <Button
                     variant='outlined'
                     onClick={() => setOpenDeleteDialog(true)}
@@ -162,6 +169,8 @@ export const CharacterInfoDisplay = ({
                         </CardActions>
                     </Card>
                 </Dialog>
+                </>
+                }
                 <Snackbar
                     open={openSuccess}
                     autoHideDuration={3000}
