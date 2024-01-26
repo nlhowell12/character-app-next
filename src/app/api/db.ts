@@ -93,7 +93,6 @@ function classAbilityModel() {
         level: { type: Number, required: true },
         className: { type: String, required: true },
         description: { type: String, required: true },
-        modifiers: [Object],
         allegianceValue: { type: Number },
         domain: { type: String },
     })
