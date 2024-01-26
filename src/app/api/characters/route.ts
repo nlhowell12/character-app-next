@@ -34,3 +34,13 @@ export async function PUT(request: Request) {
         return NextResponse.json(e, {status: 500});
     }
 }
+
+export async function DELETE(request: Request) {
+    try{
+        const body = await request.json();
+        await characterRepo.remove(body);
+        return NextResponse.json('Character Deleted', {status: 200});
+    } catch(e) {
+        return NextResponse.json(e, {status: 500});
+    }
+}

@@ -39,10 +39,19 @@ const update = async (params: any) => {
     }
 };
 
+const remove = async (params: any) => {
+    try {
+        await Character.findOneAndDelete({name: params.name}, params);
+    } catch(e) {
+        throw 'Failed to delete character'
+    }
+};
+
 export const characterRepo = {
     getAll,
     getUser,
     create,
     update,
-    getChar
+    getChar,
+    remove
 };

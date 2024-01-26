@@ -1,6 +1,9 @@
 import {
     Alert,
     Button,
+    Card,
+    CardActions,
+    CardHeader,
     Dialog,
     Grid,
     Snackbar,
@@ -23,6 +26,8 @@ import { FeatDisplay } from './FeatDisplay';
 import { NoteDialog } from './NoteDialog';
 import NotesIcon from '@mui/icons-material/Notes';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { useRouter } from 'next/navigation';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -36,10 +41,13 @@ export const CharacterInfoDisplay = ({
     onEdit,
 }: CharacterInfoDisplayProps) => {
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
-    const { updateCharacter } = useCharacterService();
+    const { updateCharacter, deleteCharacter } = useCharacterService();
     const [openSuccess, setOpenSuccess] = useState<boolean>(false);
     const [openFeats, setOpenFeats] = useState<boolean>(false);
     const [openNotes, setOpenNotes] = useState<boolean>(false);
+    const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+
+    const router = useRouter();
 
     const handleAddModifier = (appliedModifier: Modifier) => {
         // set up on close
@@ -57,6 +65,13 @@ export const CharacterInfoDisplay = ({
         const res: Response = await updateCharacter(character);
         if (res.ok) {
             setOpenSuccess(true);
+        }
+    };
+    const handleDelete = async () => {
+        const res: Response = await deleteCharacter(character);
+        if (res.ok) {
+            setOpenSuccess(true);
+            router.push('/')
         }
     };
     const buttonStlying = {
@@ -129,7 +144,24 @@ export const CharacterInfoDisplay = ({
                     <Typography>Save Character</Typography>
                     <SaveIcon sx={{ marginLeft: '.5rem' }} />
                 </Button>
-
+                <Button
+                    variant='outlined'
+                    onClick={() => setOpenDeleteDialog(true)}
+                    sx={buttonStlying}
+                    color='error'
+                >
+                    <Typography>Delete Character</Typography>
+                    <DeleteForeverIcon sx={{ marginLeft: '.5rem' }} />
+                </Button>
+                <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+                    <Card>
+                        <CardHeader title='This will permanently delete this character, it cannot be recovered!'/>
+                        <CardActions sx={{justifyContent: 'flex-end'}}>
+                            <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
+                            <Button color='error' onClick={handleDelete}>Delete</Button>
+                        </CardActions>
+                    </Card>
+                </Dialog>
                 <Snackbar
                     open={openSuccess}
                     autoHideDuration={3000}

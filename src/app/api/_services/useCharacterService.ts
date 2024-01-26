@@ -66,5 +66,16 @@ export default () => {
         return res;
     }
 
-    return { characters, createCharacter, updateCharacter, getAllCharacters, char, getOneCharacter }
+    const deleteCharacter = async (character: Character) => {
+        const res = await fetch('/api/characters', {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(character)
+        })
+        return res;
+    }
+
+    return { characters, createCharacter, updateCharacter, getAllCharacters, char, getOneCharacter, deleteCharacter }
 }
