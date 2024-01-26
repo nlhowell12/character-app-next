@@ -436,7 +436,7 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                 const characterClass = R.find(R.propEq(className, 'name'))(state.classes) as CharacterClass;
                 const characterClassIndex = R.findIndex(R.propEq(className, 'name'))(state.classes)
                 const classAbilityIndex = !!characterClass && R.findIndex(R.propEq(updateAbility.description, 'description'))(characterClass.classAbilities);
-                if(!!classAbilityIndex && classAbilityIndex > -1){
+                if(classAbilityIndex > -1){
                     const updateAbilities: ClassAbility[] = R.reject(R.propEq(updateAbility.description, 'description'))(characterClass.classAbilities);
                     return {
                         ...state,
