@@ -1,6 +1,8 @@
-import { CharacterClass, CharacterClassNames } from '@/_models';
+import { CharacterClass, CharacterClassNames, DivineDomain } from '@/_models';
 import {
+    Card,
     Checkbox,
+    Grid,
     Table,
     TableBody,
     TableCell,
@@ -45,8 +47,34 @@ export const DomainAspectsTable = ({
         setPage(newPage);
     };
 
+    const getAllegianceTotal = useMemo(() => {
+        const allegianceObject: {[key in DivineDomain]: number} = {
+            [DivineDomain.Air]: 0,
+            [DivineDomain.Earth]: 0,
+            [DivineDomain.Fire]: 0,
+            [DivineDomain.Water]: 0,
+            [DivineDomain.Deception]: 0,
+            [DivineDomain.Truth]: 0,
+            [DivineDomain.Magic]: 0,
+            [DivineDomain.Mind]: 0,
+            [DivineDomain.War]: 0,
+            [DivineDomain.Peace]: 0,
+            [DivineDomain.Life]: 0,
+            [DivineDomain.Death]: 0,
+            [DivineDomain.Cosmic]: 0
+        };
+
+        classInfo.classAbilities.filter(x => !!x.allegianceValue && !!x.domain).forEach(abl => {
+            /* @ts-ignore */
+            allegianceObject[abl.domain] += abl.allegianceValue
+        });
+        return allegianceObject;
+    }, [classInfo]);
+
     return (
-        <>
+        <Grid container direction='row'>
+        <Grid item xs={10}>
+            <Card>
             <Table stickyHeader size='small'>
                 <TableHead>
                     <TableRow>
@@ -111,6 +139,19 @@ export const DomainAspectsTable = ({
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </>
+            </Card>
+        </Grid>
+        <Grid item xs={2}>
+            <Card sx={{height: '100%'}} variant='outlined'>
+                <Table size='small'>
+                    {Object.keys(DivineDomain).sort((a,b) => getAllegianceTotal[b as DivineDomain] - getAllegianceTotal[a as DivineDomain]).map(dom => {
+                        /* @ts-ignore */
+                        return dom !== DivineDomain.Cosmic && <TableRow><TableCell>{DivineDomain[dom]}</TableCell><TableCell>{getAllegianceTotal[dom]}</TableCell></TableRow>
+                    })}
+                </Table>
+            </Card>            
+        </Grid>
+        </Grid>
+        
     );
 };
