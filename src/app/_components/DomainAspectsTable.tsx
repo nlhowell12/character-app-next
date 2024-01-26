@@ -11,7 +11,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import useClassAbilityService from '../api/_services/useClassAbilityService';
 import { Dispatch, useMemo } from 'react';
-import { CharacterAction } from '@/_reducer/characterReducer';
+import { CharacterAction, updateClassAbilityAction } from '@/_reducer/characterReducer';
 import * as R from 'ramda';
 
 interface DomainAspectsTableProps {
@@ -47,7 +47,7 @@ export const DomainAspectsTable = ({ classInfo, dispatch }: DomainAspectsTablePr
                                     <TableCell>
                                         <Checkbox
                                             checked={isSelected}
-                                            onChange={() => {}}
+                                            onChange={() => dispatch(updateClassAbilityAction(CharacterClassNames.Cleric, asp))}
                                             name='Selected'
                                             sx={{padding: 0}}
                                         />

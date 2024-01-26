@@ -169,7 +169,6 @@ export const CharacterDisplay = ({
                             <Grid
                                 item
                                 xs={12}
-                                direction='row'
                                 columns={2}
                                 sx={{
                                     [theme.breakpoints.down('md')]: {
@@ -196,7 +195,6 @@ export const CharacterDisplay = ({
                         item
                         xs={12}
                         xl={2}
-                        direction='row'
                         columns={2}
                         sx={{
                             [theme.breakpoints.down('xl')]: {

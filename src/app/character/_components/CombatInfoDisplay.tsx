@@ -108,7 +108,8 @@ const ResistImmuneTooltip = ({ character }: ResistImmuneTooltipProps) => {
 };
 const cellStylingObject = {
     borderBottom: 'none',
-    padding: '0 .5rem .5rem 0',
+    height: 'fit-content',
+    margin: '.25rem 0 .5rem .5rem',
 };
 
 export const CombatInfoDisplay = ({
@@ -172,8 +173,10 @@ export const CombatInfoDisplay = ({
     const cannotMove = character.statusEffects.some((x) =>
         immobilzedStatusEffects.includes(x)
     );
-    const clericClass: CharacterClass | undefined = character.classes.find(x => x.name === CharacterClassNames.Cleric);
-    
+    const clericClass: CharacterClass | undefined = character.classes.find(
+        (x) => x.name === CharacterClassNames.Cleric
+    );
+
     return (
         <>
             <DisplayCell
@@ -303,7 +306,7 @@ export const CombatInfoDisplay = ({
                 value={getInitiativeScore(character)}
             />
             {!!character.spellBook && !!spells && hasSpellCastingClass() && (
-                <TableCell sx={cellStylingObject}>
+                <Grid item xs={4} sx={cellStylingObject}>
                     <Button
                         sx={{ padding: '0 .5rem' }}
                         variant='outlined'
@@ -352,8 +355,10 @@ export const CombatInfoDisplay = ({
                             />
                         </SpellbookTabsContainer>
                     </Dialog>
-                    {!!clericClass &&
-                    <>
+                </Grid>
+            )}
+            {!!clericClass && (
+                <Grid item xs={4} sx={cellStylingObject}>
                     <Button
                         sx={{ padding: '0 .5rem' }}
                         variant='outlined'
@@ -369,11 +374,12 @@ export const CombatInfoDisplay = ({
                         maxWidth='lg'
                         keepMounted
                     >
-                        <DomainAspectsTable classInfo={clericClass} dispatch={dispatch}/>
+                        <DomainAspectsTable
+                            classInfo={clericClass}
+                            dispatch={dispatch}
+                        />
                     </Dialog>
-                    </>
-                    }
-                </TableCell>
+                </Grid>
             )}
         </>
     );
