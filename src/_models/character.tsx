@@ -189,7 +189,7 @@ export interface Movement {
 }
 
 export interface ClassAbility {
-	name: string;
+	name?: string;
 	level: number;
 	className: Omit<CharacterClassNames, CharacterClassNames.SorcWiz>;
 	description: string;
@@ -208,7 +208,7 @@ export interface Archetype {
 }
 
 export interface CharacterClass {
-	name: string;
+	name: CharacterClassNames;
 	primarySave: AttributeNames;
 	classSkills: SkillTypes[];
 	classAbilities: ClassAbility[];

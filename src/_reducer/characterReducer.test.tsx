@@ -16,6 +16,7 @@ import {
 	toggleEquippedAction,
 	updateAction,
 	updateAttributeAction,
+	updateClassAbilityAction,
 	updateEquipmentAction,
 	updateSkillAction,
 } from './characterReducer';
@@ -62,6 +63,18 @@ describe('characterReducer', () => {
 			initialCharacterState.skills.Perception
 		);
 	});
+	it('should update class abilities correctly', () => {
+		const newState = characterReducer(
+			mockCharacters[0],
+			updateClassAbilityAction(CharacterClassNames.Rogue, {description: 'This is a test', level: 1, className: CharacterClassNames.Rogue})
+		);
+		const newState2 = characterReducer(
+			newState,
+			updateClassAbilityAction(CharacterClassNames.Rogue, {description: 'This is a test', level: 1, className: CharacterClassNames.Rogue})
+		);
+		expect(newState.classes[0].classAbilities.some(x => x.description === 'This is a test'))
+		expect(newState2.classes[0].classAbilities.some(x => x.description === 'This is a test')).toBeFalsy()
+	})
 	it('should equip/unequip items', () => {
 		const initStateWithArmor = {...initialCharacterState, equipment: [{name: 'Armor', equipped: false} as Armor]}
 		let newState = characterReducer(initStateWithArmor, toggleEquippedAction({name: 'Armor'} as Armor))

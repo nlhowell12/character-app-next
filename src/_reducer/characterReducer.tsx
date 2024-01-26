@@ -21,6 +21,7 @@ import {
     Currency,
     MartialQueue,
     Maneuver,
+    ClassAbility,
 } from '@/_models';
 import initialSkillsState from './initialSkillsState';
 import * as R from 'ramda';
@@ -31,6 +32,7 @@ export enum CharacterReducerActions {
     UPDATE = 'UPDATE',
     UPDATEATTRIBUTE = 'UPDATEATTRIBUTE',
     UPDATESKILL = 'UPDATESKILL',
+    UPDATECLASSABILITIES = 'UPDATECLASSABILITIES',
     RESET = 'RESET',
     DELETE_MOD = 'DELETE_MOD',
     TOGGLE_EQUIPPED = 'TOGGLE_EQUIPPED',
@@ -84,7 +86,8 @@ type AcceptedUpdateValues =
     | AnyMagickType
     | Note
     | Movement
-    | Currency;
+    | Currency
+    | ClassAbility;
 
 export type CharacterAction = {
     type: CharacterReducerActions;
@@ -92,6 +95,7 @@ export type CharacterAction = {
         key: CharacterKeys | keyof Equipment | keyof Weapon | keyof Armor;
         updateId?: string;
         attribute?: AttributeNames;
+        className?: CharacterClassNames;
         skill?: SkillTypes;
         value: AcceptedUpdateValues;
     };
@@ -144,6 +148,20 @@ export const updateSkillAction = (
             key: CharacterKeys.skills,
             value,
             skill,
+        },
+    };
+};
+
+export const updateClassAbilityAction = (
+    className: CharacterClassNames,
+    value: ClassAbility
+): CharacterAction => {
+    return {
+        type: CharacterReducerActions.UPDATECLASSABILITIES,
+        payload: {
+            key: CharacterKeys.classes,
+            className,
+            value,
         },
     };
 };
@@ -380,7 +398,7 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
     action
 ): Character => {
     const { payload } = action;
-    const { value, updateId, key, attribute, skill } = payload;
+    const { value, updateId, key, attribute, skill, className } = payload;
     switch (action.type) {
         case CharacterReducerActions.SET_CHARACTER:
             const newChar = value as Character;
@@ -411,6 +429,26 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                         },
                     },
                 };
+            }
+        case CharacterReducerActions.UPDATECLASSABILITIES:
+            const updateAbility = value as ClassAbility;
+            if(!!className){
+                const characterClass = R.find(R.propEq(className, 'name'))(state.classes) as CharacterClass;
+                const characterClassIndex = R.findIndex(R.propEq(className, 'name'))(state.classes)
+                const classAbilityIndex = !!characterClass && R.findIndex(R.propEq(updateAbility.description, 'description'))(characterClass.classAbilities);
+                if(!!classAbilityIndex && classAbilityIndex > -1){
+                    const updateAbilities: ClassAbility[] = R.reject(R.propEq(updateAbility.description, 'description'))(characterClass.classAbilities);
+                    return {
+                        ...state,
+                        classes: R.update(characterClassIndex, {...state.classes[characterClassIndex], classAbilities: updateAbilities}, state.classes)
+                    }
+                } else {
+                    const updateAbilities: ClassAbility[] = [...characterClass.classAbilities, updateAbility];
+                    return {
+                        ...state,
+                        classes: R.update(characterClassIndex, {...state.classes[characterClassIndex], classAbilities: updateAbilities}, state.classes)
+                    }
+                }
             }
         case CharacterReducerActions.DELETE_MOD:
             if (value) {
@@ -483,36 +521,36 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
             const spellAlreadyKnown = R.findIndex(R.propEq(spell.name, 'name'))(
                 state.spellBook[updateId as keyof SpellObject]
             );
-            const className = updateId as keyof SpellObject;
+            const spellClassName = updateId as keyof SpellObject;
             if (spellAlreadyKnown != -1) {
                 const filter = (x: AnyMagickType) => x.name !== spell.name;
                 return {
                     ...state,
                     spellBook: {
                         ...state.spellBook,
-                        [className]: R.filter(
+                        [spellClassName]: R.filter(
                             filter,
-                            state.spellBook[className]
+                            state.spellBook[spellClassName]
                         ),
                     },
-                    martialQueue: {
+                    martialQueue: Object.keys(state.martialQueue).includes(spellClassName) ? {
                         ...state.martialQueue,
-                        [className]:R.filter(
+                        [spellClassName]: R.filter(
                             filter,
                             state.martialQueue[className as keyof MartialQueue]
                         ),
-                    }
+                    } : state.martialQueue
                 };
             } else {
                 const newSpellAdded = R.append(
                     value,
-                    state.spellBook[className]
+                    state.spellBook[spellClassName]
                 );
                 return {
                     ...state,
                     spellBook: {
                         ...state.spellBook,
-                        [className]: newSpellAdded,
+                        [spellClassName]: newSpellAdded,
                     },
                 };
             }

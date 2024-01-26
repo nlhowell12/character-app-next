@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import useClassAbilityService from '../api/_services/useClassAbilityService';
-import { Dispatch } from 'react';
+import { Dispatch, useMemo } from 'react';
 import { CharacterAction } from '@/_reducer/characterReducer';
 import * as R from 'ramda';
 
@@ -21,7 +21,7 @@ interface DomainAspectsTableProps {
 
 export const DomainAspectsTable = ({ classInfo, dispatch }: DomainAspectsTableProps) => {
     const { classAbilities } = useClassAbilityService();
-    const sortByDomain = R.sortBy(R.prop('domain'));
+    const sortByDomain = useMemo(() => R.sortBy(R.prop('domain')), []);
     return (
         <Table stickyHeader size='small'>
             <TableHead>

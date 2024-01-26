@@ -1,7 +1,15 @@
-import { ArcaneSchool, BonusTypes, Damage, MartialQueue, Sizes, SpellObject } from '../_models';
+import {
+    ArcaneSchool,
+    BonusTypes,
+    Damage,
+    MartialQueue,
+    Sizes,
+    SpellObject,
+} from '../_models';
 import {
     AttributeNames,
     Character,
+    CharacterClassNames,
     ModifierSource,
     MovementTypes,
     SkillTypes,
@@ -54,13 +62,13 @@ export const mockCharacters: Character[] = [
             cp: 0,
             sp: 0,
             gp: 0,
-            pp: 0
+            pp: 0,
         },
         specialAbilities: [],
         proficiencies: [],
         classes: [
             {
-                name: 'Rogue',
+                name: CharacterClassNames.Rogue,
                 level: 1,
                 BAB: 0,
                 primarySave: AttributeNames.Dexterity,
@@ -82,22 +90,30 @@ export const mockCharacters: Character[] = [
                         name: 'Lethality - Mien of Despair',
                         description: '',
                         level: 1,
+                        className: CharacterClassNames.Rogue,
                     },
-                    { name: 'Quick to Act +1', description: '', level: 1 },
-                    { name: 'Sneak Attack +1d6', description: '', level: 1 },
+                    {
+                        name: 'Quick to Act +1',
+                        description: '',
+                        level: 1,
+                        className: CharacterClassNames.Rogue,
+                    },
+                    {
+                        name: 'Sneak Attack +1d6',
+                        description: '',
+                        level: 1,
+                        className: CharacterClassNames.Rogue,
+                    },
                 ],
             },
             {
-                name: 'Oathsworn',
+                name: CharacterClassNames.Oathsworn,
                 level: 1,
                 BAB: 1,
                 primarySave: AttributeNames.Dexterity,
                 secondarySave: AttributeNames.Intelligence,
-                classSkills: [
-                ],
-                classAbilities: [
-                    
-                ],
+                classSkills: [],
+                classAbilities: [],
             },
         ],
         maxHitPoints: 8,
@@ -134,16 +150,15 @@ export const mockCharacters: Character[] = [
                 maxDexBonus: 8,
                 spellFailure: 0,
                 hardness: 50,
-                amount: 1
+                amount: 1,
             },
         ],
         miscModifiers: [
-
             {
                 id: '0',
                 value: -4,
                 type: BonusTypes.Racial,
-                attribute: AttributeNames.Strength
+                attribute: AttributeNames.Strength,
             },
             {
                 id: '1',
@@ -244,7 +259,7 @@ export const mockCharacters: Character[] = [
 
                 value: 1,
                 type: BonusTypes.Untyped,
-                spellSchool: ArcaneSchool.Abjuration
+                spellSchool: ArcaneSchool.Abjuration,
             },
         ],
     },
