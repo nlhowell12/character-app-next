@@ -236,7 +236,7 @@ export const AddEquipmentCard = ({
             <ModChipStack mods={!selectedEquipment ? newEq.modifiers : newEq.modifiers.filter(x => !x.defense)} onDelete={handleDeleteModifier}/>
 
             </CardActions>
-            {equipmentType === EquipmentTypeOptions.Custom ? 
+            {showCustomFields ? 
             <CardContent>
                 <TextField
                     value={newEq.name}
