@@ -19,54 +19,35 @@ use('character_sheet');
 //     'Oathsworn': []
 // }}})
 
-// db.getCollection('equipment').update({},
-//   [
-//     {
-//       $set: { modifiers: [ "$modifiers" ] },
-//     }
-//   ],
-//   {
-//     multi: true
-//   })
+db.getCollection('equipment').update({
+  damageTypes: {
+    $type: 'string'
+  }
+},
+  [
+    {
+      $set: { damageTypes: [ "$damageTypes" ] },
+    }
+  ],
+  {
+    multi: true
+  })
 
-//   db.getCollection('equipment').update({},
-//     [
-//       {
-//         "$set": {
-//           "modifiers": {
-//             $map: {
-//               input: "$modifiers",
-//               in: {
-//                 "order_chem": 50,
-//                 "order_bio": 50,
-//                 "order_science": 50,
-//                 "order_school": 50,
-//                 value: "$$this"
-//               }
-//             }
+//setting modifiers on equipment
+// db.getCollection('equipment').update({},
+//   [{
+//     $set: {
+//       modifiers: {
+//         $map: {
+//           input: "$modifiers",
+//           in: {
+//             defense: true,
+//             value: "$$this.value",
+//             type: "$$this.type"
 //           }
 //         }
 //       }
-//     ],
-//     {
-//       multi: true
-//     })
-
-//setting modifiers on equipment
-db.getCollection('equipment').update({},
-  [{
-    $set: {
-      modifiers: {
-        $map: {
-          input: "$modifiers",
-          in: {
-            defense: true,
-            value: "$$this.value",
-            type: "$$this.type"
-          }
-        }
-      }
-    }
-  }],
-  { multi: true }
-)
+//     }
+//   }],
+//   { multi: true }
+// )

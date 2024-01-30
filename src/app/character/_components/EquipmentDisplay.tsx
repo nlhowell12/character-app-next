@@ -299,7 +299,10 @@ export const EquipmentDisplay = ({
                     <Button onClick={() => setOpen(true)}>Add</Button>
                 </CardActions>
             </div>
-            <Dialog open={open || !!editEq}>
+            <Dialog open={open || !!editEq} maxWidth={false} onClose={() => {
+                setOpen(false);
+                setEditEq(undefined);
+            }}>
                 <AddEquipmentCard
                     onAdd={handleAdd}
                     onClose={handleClose}

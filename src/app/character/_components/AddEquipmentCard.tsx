@@ -167,16 +167,16 @@ export const AddEquipmentCard = ({
         [EquipmentTypeOptions.Weapons]: (x: Weapon) => {return {
             col1: x.name,
             col2: x.cost,
-            col3: `${x.numberOfDice}${x.damage}`,
+            col3: !!x.numberOfDice ? `${x.numberOfDice}${x.damage}` : '-',
             col4: `${x.criticalRange > 20 ? `${x.criticalRange}-20` : ''}x${x.criticalMultiplier}`,
-            col5: x.rangeIncrement,
-            col6: x.weight,
+            col5: !!x.rangeIncrement ? `${x.rangeIncrement} ft` : '-',
+            col6: `${x.weight} lbs`,
             col7: x.damageTypes.join(', '),
         }},
         [EquipmentTypeOptions.Other]:  (x: Equipment) => {return {
             col1: x.name,
             col2: x.cost,
-            col3: x.weight,
+            col3: `${x.weight} lbs`,
         }},
     };
 
@@ -461,7 +461,7 @@ export const AddEquipmentCard = ({
                 ) : null}
             </CardContent> : 
             <CardContent>
-            <TableContainer>
+            <TableContainer sx={{height: '24rem'}}>
                 <Table size='small'>
                     <TableHead>
                         <TableRow>
