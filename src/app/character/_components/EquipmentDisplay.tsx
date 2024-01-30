@@ -56,6 +56,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { camelToTitle } from '@/_utils/stringUtils';
 import PaidIcon from '@mui/icons-material/Paid';
 import { NumberInput } from '@/app/_components/NumberInput';
+import { v4 as uuidv4 } from 'uuid';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -344,7 +345,7 @@ export const EquipmentDisplay = ({
                                     ? `${weapon.criticalRange}-20`
                                     : 20;
                             return (
-                                <TableRow key={weapon.name}>
+                                <TableRow key={uuidv4()}>
                                     <TableCell>{weapon.name}</TableCell>
                                     <TableCell>
                                         <OutlinedInput
@@ -458,7 +459,7 @@ export const EquipmentDisplay = ({
                         {armor.map((eq) => {
                             const armor = eq as Armor;
                             return (
-                                <TableRow key={armor.name}>
+                                <TableRow key={uuidv4()}>
                                     <TableCell>{armor.name}</TableCell>
                                     <TableCell>
                                         <Tooltip
@@ -582,7 +583,7 @@ export const EquipmentDisplay = ({
                         </TableRow>
                         {otherEq.map((eq) => {
                             return (
-                                <TableRow key={eq.name}>
+                                <TableRow key={uuidv4()}>
                                     <TableCell>{eq.name}</TableCell>
                                     <TableCell>
                                         <OutlinedInput

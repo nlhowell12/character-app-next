@@ -151,6 +151,8 @@ export const mockCharacters: Character[] = [
                 spellFailure: 0,
                 hardness: 50,
                 amount: 1,
+                isArmor: true, 
+                cost: '8gp'
             },
         ],
         miscModifiers: [

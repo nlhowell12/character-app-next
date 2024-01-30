@@ -474,7 +474,7 @@ export const AddEquipmentCard = ({
                         {(!!selectedEquipment ? [selectedEquipment] : equipment[equipmentType]).map(eq => {
                             /* @ts-ignore */
                             const values = columnValuesByType[equipmentType](eq);
-                            return <TableRow hover onClick={() => handleTableClick(eq)}>
+                            return <TableRow key={eq.name} hover onClick={() => handleTableClick(eq)}>
                                 {Object.keys(values).map(x => {
                                     /* @ts-ignore */
                                     return <TableCell key={`${eq.name}${x}`} align='center'>{values[x]}</TableCell>
