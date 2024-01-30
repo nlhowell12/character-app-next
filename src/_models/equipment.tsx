@@ -15,22 +15,20 @@ export enum BodySlot {
     None = 'None',
 }
 
-export type Equipment = BaseEquipment | Weapon | Armor;
+export interface Equipment extends BaseEquipment, Weapon, Armor {};
 
 export interface BaseEquipment {
     id: string;
     name: string;
     weight: number;
-    magical?: boolean;
-    masterwork?: boolean;
     modifiers: Modifier[];
     size?: Sizes;
     bodySlot?: BodySlot;
     amount: number;
-}
+    category?: string;
 
+}
 export interface Weapon extends BaseEquipment {
-    category: string;
     numberOfDice: number;
     damage: Dice;
     damageTypes: Damage[];

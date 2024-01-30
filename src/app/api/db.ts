@@ -1,4 +1,4 @@
-import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility } from '@/_models';
+import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility, Equipment, BodySlot, Dice, Weapon, Armor } from '@/_models';
 import { User } from '@/_models/user';
 import mongoose, { mongo } from 'mongoose';
 
@@ -16,7 +16,8 @@ export const db = {
     Spell: spellModel(),
     Character: characterModel(),
     User: userModel(),
-    ClassAbility: classAbilityModel()
+    ClassAbility: classAbilityModel(),
+    Equipment: equipmentModel(),
 };
 
 function userModel(){
@@ -83,7 +84,7 @@ function characterModel() {
         maxPowerPoints: { type: Number },
         heroPoints: { type: Number },
         statusEffects: {type: [String], required: true}
-    })
+    });
     return mongoose.models.Character || mongoose.model('Character', characterSchema, 'characters');
 }
 
@@ -95,6 +96,33 @@ function classAbilityModel() {
         description: { type: String, required: true },
         allegianceValue: { type: Number },
         domain: { type: String },
-    })
+    });
     return mongoose.models.ClassAbility || mongoose.model('ClassAbility', classAbilitySchema, 'class_abilities')
+}
+
+function equipmentModel() {
+    const equipmentSchema = new Schema<Equipment>({
+        id: { type: String, required: true },
+        name: { type: String, required: true },
+        weight: { type: Number, required: true },
+        modifiers: [Object],
+        bodySlot: { type: String, enum: BodySlot },
+        armorCheckPenalty: { type: Number },
+        maxDexBonus: { type: Number },
+        spellFailure: { type: Number },
+        hardness: { type: Number },
+        isArmor: Boolean,
+        category: { type: String },
+        numberOfDice: { type: Number },
+        damage: { type: String, enum: Dice },
+        damageTypes: [String],
+        twoHanded: Boolean,
+        criticalRange: { type: Number, required: true },
+        criticalMultiplier: { type: Number, required: true },
+        rangeIncrement: { type: Number, required: true },
+        dexBasedAttack: Boolean,
+        dexBasedDamage: Boolean,
+        isWeapon: Boolean,
+    });
+    return mongoose.models.Equipment || mongoose.model('Equipment', equipmentSchema, 'equipment');
 }
