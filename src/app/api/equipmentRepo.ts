@@ -1,4 +1,3 @@
-import { Equipment } from '@/_models';
 import { db } from "./db";
 
 const Equipment = db.Equipment;

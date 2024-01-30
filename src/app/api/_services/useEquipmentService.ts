@@ -1,4 +1,4 @@
-import { Equipment, Armor, Weapon } from "@/_models";
+import { Equipment, Armor, Weapon, DBEquipment } from "@/_models";
 import { useEffect, useState } from "react";
 
 interface EquipmentObject {
@@ -22,7 +22,7 @@ export default () => {
 
     const getEquipment = async () => {
         const res = await fetch('/api/equipment')
-        const eq: Equipment[] = await res.json();
+        const eq: DBEquipment[] = await res.json();
         setEquipment({
             Armor:  eq.filter(x => x.isArmor),
             Weapons: eq.filter(x => x.isWeapon),

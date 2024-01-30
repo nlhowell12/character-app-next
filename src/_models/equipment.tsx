@@ -15,7 +15,9 @@ export enum BodySlot {
     None = 'None',
 }
 
-export interface Equipment extends BaseEquipment, Weapon, Armor {};
+export interface DBEquipment extends BaseEquipment, Weapon, Armor {};
+
+export type Equipment  = BaseEquipment | Armor | Weapon;
 
 export interface BaseEquipment {
     id: string;

@@ -12,9 +12,60 @@
 // Select the database to use.
 use('character_sheet');
 
-db.getCollection('characters').updateMany({}, {$set: {martialQueue: {
-    'Fighter': [],
-    'Hexblade': [],
-    'Psychic Warrior': [],
-    'Oathsworn': []
-}}})
+// db.getCollection('characters').updateMany({}, {$set: {martialQueue: {
+//     'Fighter': [],
+//     'Hexblade': [],
+//     'Psychic Warrior': [],
+//     'Oathsworn': []
+// }}})
+
+// db.getCollection('equipment').update({},
+//   [
+//     {
+//       $set: { modifiers: [ "$modifiers" ] },
+//     }
+//   ],
+//   {
+//     multi: true
+//   })
+
+//   db.getCollection('equipment').update({},
+//     [
+//       {
+//         "$set": {
+//           "modifiers": {
+//             $map: {
+//               input: "$modifiers",
+//               in: {
+//                 "order_chem": 50,
+//                 "order_bio": 50,
+//                 "order_science": 50,
+//                 "order_school": 50,
+//                 value: "$$this"
+//               }
+//             }
+//           }
+//         }
+//       }
+//     ],
+//     {
+//       multi: true
+//     })
+
+db.getCollection('equipment').update({},
+  [{
+    $set: {
+      modifiers: {
+        $map: {
+          input: "$modifiers",
+          in: {
+            defense: "$$this.armor",
+            value: "$$this.value",
+            bonusType: "$$this.bonusType"
+          }
+        }
+      }
+    }
+  }],
+  { multi: true }
+)

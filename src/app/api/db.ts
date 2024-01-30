@@ -1,4 +1,4 @@
-import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility, Equipment, BodySlot, Dice, Weapon, Armor } from '@/_models';
+import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility, BodySlot, Dice, DBEquipment } from '@/_models';
 import { User } from '@/_models/user';
 import mongoose, { mongo } from 'mongoose';
 
@@ -101,7 +101,7 @@ function classAbilityModel() {
 }
 
 function equipmentModel() {
-    const equipmentSchema = new Schema<Equipment>({
+    const equipmentSchema = new Schema<DBEquipment>({
         id: { type: String, required: true },
         name: { type: String, required: true },
         weight: { type: Number, required: true },
