@@ -176,7 +176,7 @@ export const AddEquipmentCard = ({
         [EquipmentTypeOptions.Other]:  (x: Equipment) => {return {
             col1: x.name,
             col2: x.cost,
-            col3: `${x.weight} lbs`,
+            col3: !!x.weight ? `${x.weight} lbs` : '-',
         }},
     };
 
