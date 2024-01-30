@@ -1,7 +1,7 @@
 import { Equipment, Armor, Weapon, DBEquipment } from "@/_models";
 import { useEffect, useState } from "react";
 
-interface EquipmentObject {
+export interface EquipmentObject {
     Armor: Armor[],
     Weapons: Weapon[],
     Other: Equipment[]

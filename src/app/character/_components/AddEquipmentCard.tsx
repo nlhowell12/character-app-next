@@ -21,6 +21,12 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
     TextField,
     Typography,
 } from '@mui/material';
@@ -29,6 +35,8 @@ import { Add } from '@mui/icons-material';
 import { ModChipStack } from '@/app/_components/ModChipStack';
 import * as R from 'ramda';
 import { v4 as uuidv4 } from 'uuid';
+import useEquipmentService, { EquipmentObject } from '@/app/api/_services/useEquipmentService';
+import { camelToTitle } from '@/_utils/stringUtils';
 
 interface AddEquipmentCardProps {
     onAdd: (newEq: Equipment) => void;
@@ -43,6 +51,14 @@ export const AddEquipmentCard = ({
     onEdit
 }: AddEquipmentCardProps) => {
     const [modOpen, setModOpen] = useState<boolean>(false);
+    enum EquipmentTypeOptions {
+        Armor = 'Armor',
+        Weapons = 'Weapons',
+        Other = 'Other',
+        Custom = 'Custom'
+    }
+    const [equipmentType, setEquipmentType] = useState<EquipmentTypeOptions>(EquipmentTypeOptions.Armor);
+
     const initialEquipmentState: Equipment = {
         id: uuidv4(),
         name: '',
@@ -65,7 +81,9 @@ export const AddEquipmentCard = ({
         bodySlot: BodySlot.None,
         amount: 1,
         isArmor: false,
-        isWeapon: false
+        isWeapon: false,
+        twoHanded: false,
+        cost: '0gp'
     };
 
     useEffect(() => {
@@ -96,6 +114,23 @@ export const AddEquipmentCard = ({
             [key]: e.target.checked
         });
     };
+
+    const [selectedEquipment, setSelectedEquipment] = useState<Equipment>();
+
+    const handleTableClick = (eq: Equipment) => {
+        if(selectedEquipment && selectedEquipment.id === eq.id){
+            setSelectedEquipment(undefined);
+            setNewObject(initialEquipmentState);
+        } else {
+            setSelectedEquipment(eq);
+            setNewObject({
+                ...newEq,
+                ...eq,
+                modifiers: [...newEq.modifiers, ...eq.modifiers]
+            })
+        }
+       
+    }
     const textFieldStyling = {
         marginBottom: '.5rem',
     };
@@ -109,42 +144,99 @@ export const AddEquipmentCard = ({
         const filter = (x: Modifier) => x.id !== mod.id;
         const filteredMods = R.filter(filter, newEq.modifiers);
         handleChange({target: {value: filteredMods}}, 'modifiers')};
+
+    const { equipment } = useEquipmentService();
+    const showCustomFields = equipmentType === EquipmentTypeOptions.Custom || !!edit;
+    
+    const columnsByType = {
+        [EquipmentTypeOptions.Armor]: ['Name', 'Cost', 'Armor Bonus', 'Max Dex Bonus', 'Armor Check Penalty', 'Spell Failure', 'Weight', 'Category'],
+        [EquipmentTypeOptions.Weapons]: ['Name', 'Cost', 'Damage', 'Critical', 'Range Increment', 'Weight', 'Damage Types'],
+        [EquipmentTypeOptions.Other]: ['Name', 'Cost', 'Weight'],
+    };
+    const columnValuesByType = {
+        [EquipmentTypeOptions.Armor]: (x: Armor) => {return {
+            col1: x.name,
+            col2: x.cost,
+            col3: `+${x.modifiers[0].value}`,
+            col4: x.maxDexBonus ? `+${x.maxDexBonus}` : '-',
+            col5: x.armorCheckPenalty ? `-${x.armorCheckPenalty}` : '-',
+            col6: `${x.spellFailure}%`,
+            col7: `${x.weight} lbs`,
+            col8: x.category
+        }},
+        [EquipmentTypeOptions.Weapons]: (x: Weapon) => {return {
+            col1: x.name,
+            col2: x.cost,
+            col3: `${x.numberOfDice}${x.damage}`,
+            col4: `${x.criticalRange > 20 ? `${x.criticalRange}-20` : ''}x${x.criticalMultiplier}`,
+            col5: x.rangeIncrement,
+            col6: x.weight,
+            col7: x.damageTypes.join(', '),
+        }},
+        [EquipmentTypeOptions.Other]:  (x: Equipment) => {return {
+            col1: x.name,
+            col2: x.cost,
+            col3: x.weight,
+        }},
+    };
+
     return (
         <Card sx={{overflow: 'scroll'}}>
             <CardActions>
-                <FormGroup sx={{ display: 'flex', flexDirection: 'row' }}>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={(newEq as Weapon).isWeapon}
-                                onChange={(e) => handleCheck(e, 'isWeapon')}
-                            />
-                        }
-                        label='Is this a Weapon?'
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={(newEq as Armor).isArmor}
-                                onChange={(e) => handleCheck(e, 'isArmor')}
-                            />
-                        }
-                        label='Is this Armor?'
-                    />
-                    <Button
-                        variant='outlined'
-                        onClick={() => setModOpen(true)}
+                <FormControl sx={{width: '25%'}}>
+                    <InputLabel id='type-id'>Equipment Type</InputLabel>
+                    <Select
+                        labelId='type-id'
+                        id='type'
+                        label='Equipment Type'
+                        name='type'
+                        value={equipmentType}
+                        onChange={(e: any) => setEquipmentType(e.target.value)}
                     >
-                        <Typography>Add Modifier</Typography>
-                        <Add sx={{ marginLeft: '.5rem' }} />
-                    </Button>
-                    <ModifierDialog
+                        {Object.keys(EquipmentTypeOptions).map((x) => {
+                            /* @ts-ignore */
+                            return <MenuItem key={x} value={x}>{EquipmentTypeOptions[x]}</MenuItem>
+                        })}
+                    </Select>
+                </FormControl>
+                <Button
+                    variant='outlined'
+                    onClick={() => setModOpen(true)}
+                >
+                    <Typography>Add Modifier</Typography>
+                    <Add sx={{ marginLeft: '.5rem' }} />
+                </Button>
+                <ModifierDialog
                         onAdd={handleAddModifier}
                         onClose={() => setModOpen(false)}
                         open={modOpen}
                     />
-                </FormGroup>
+                {showCustomFields &&
+                    <FormGroup sx={{ display: 'flex', flexDirection: 'row' }}>
+                            <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={(newEq as Weapon).isWeapon}
+                                    onChange={(e) => handleCheck(e, 'isWeapon')}
+                                />
+                            }
+                            label='Is this a Weapon?'
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={(newEq as Armor).isArmor}
+                                    onChange={(e) => handleCheck(e, 'isArmor')}
+                                />
+                            }
+                            label='Is this Armor?'
+                        />
+                    </FormGroup>
+                }
+            <ModChipStack mods={!selectedEquipment ? newEq.modifiers : newEq.modifiers.filter(x => !x.defense)} onDelete={handleDeleteModifier}/>
+
             </CardActions>
+            {equipmentType === EquipmentTypeOptions.Custom ? 
             <CardContent>
                 <TextField
                     value={newEq.name}
@@ -367,11 +459,35 @@ export const AddEquipmentCard = ({
                         />
                     </>
                 ) : null}
-                <ModChipStack mods={newEq.modifiers} onDelete={handleDeleteModifier}/>
-            </CardContent>
-            <CardActions>
-                <Button onClick={() => !!edit ? onEdit(newEq) : onAdd(newEq)}>{!!edit ? `Update Equipment` :`Add to Equipment`}</Button>
+            </CardContent> : 
+            <CardContent>
+            <TableContainer>
+                <Table size='small'>
+                    <TableHead>
+                        <TableRow>
+                            {columnsByType[equipmentType].map(x => {
+                                return <TableCell key={x} align='center'>{camelToTitle(x)}</TableCell>
+                            })}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {(!!selectedEquipment ? [selectedEquipment] : equipment[equipmentType]).map(eq => {
+                            /* @ts-ignore */
+                            const values = columnValuesByType[equipmentType](eq);
+                            return <TableRow hover onClick={() => handleTableClick(eq)}>
+                                {Object.keys(values).map(x => {
+                                    /* @ts-ignore */
+                                    return <TableCell key={`${eq.name}${x}`} align='center'>{values[x]}</TableCell>
+                                })}
+                            </TableRow>
+                        })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </CardContent>}
+            <CardActions sx={{justifyContent: 'flex-end'}}>
                 <Button onClick={() => onClose()}>Cancel</Button>
+                <Button onClick={() => !!edit ? onEdit(newEq) : onAdd(newEq)}>{!!edit ? `Update Equipment` :`Add to Equipment`}</Button>
             </CardActions>
         </Card>
     );

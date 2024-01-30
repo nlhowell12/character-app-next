@@ -52,6 +52,7 @@ use('character_sheet');
 //       multi: true
 //     })
 
+//setting modifiers on equipment
 db.getCollection('equipment').update({},
   [{
     $set: {
@@ -59,9 +60,9 @@ db.getCollection('equipment').update({},
         $map: {
           input: "$modifiers",
           in: {
-            defense: "$$this.armor",
+            defense: true,
             value: "$$this.value",
-            bonusType: "$$this.bonusType"
+            type: "$$this.type"
           }
         }
       }

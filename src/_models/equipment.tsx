@@ -28,6 +28,7 @@ export interface BaseEquipment {
     bodySlot?: BodySlot;
     amount: number;
     category?: string;
+    cost: string;
 
 }
 export interface Weapon extends BaseEquipment {
