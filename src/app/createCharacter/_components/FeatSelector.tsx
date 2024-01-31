@@ -11,6 +11,8 @@ import {
     CardContent,
     TextField,
     CardActions,
+    Alert,
+    Snackbar,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import * as R from 'ramda';
@@ -26,7 +28,9 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const [openRequiredOption, setOpenRequiredOption] = useState<boolean>(false);
     const [selectedFeat, setSelectedFeat] = useState<Feat>();
-    
+    const [addConfirm, setAddConfirm] = useState<string>();
+    const [deleteConfirm, setDeleteConfirm] = useState<string>();
+
     const handleClose = (event: any, reason: any) => {
             setOpen(false);
     };
@@ -43,6 +47,8 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
                 setOpenRequiredOption(false)
             }
             dispatch(updateAction(CharacterKeys.feats, [...character.feats, feat]));
+            setAddConfirm(`${feat.name} has been added!`)
+
         }
     };
     const handleDelete = (feat: Feat) => {
@@ -57,6 +63,7 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
                 updateAction(CharacterKeys.feats, R.reject(filter, character.feats))
             );
         }
+        setDeleteConfirm(`${feat.name} has been deleted!`)
     };
     const { feats } = useFeatsService();
 
@@ -77,6 +84,34 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
                 margin: '0 .5rem',
             }}
         >
+             <Snackbar
+                open={!!addConfirm}
+                autoHideDuration={2000}
+                onClose={() => setAddConfirm(undefined)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => setAddConfirm(undefined)}
+                    severity='success'
+                    sx={{ width: '100%' }}
+                >
+                    {addConfirm}
+                </Alert>
+            </Snackbar>
+             <Snackbar
+                open={!!deleteConfirm}
+                autoHideDuration={2000}
+                onClose={() => setDeleteConfirm(undefined)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => setDeleteConfirm(undefined)}
+                    severity='error'
+                    sx={{ width: '100%' }}
+                >
+                    {deleteConfirm}
+                </Alert>
+            </Snackbar>
             <Button variant='outlined' onClick={() => setOpen(true)}>
                 <Typography>Add Feat</Typography>
                 <Add />
