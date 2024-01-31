@@ -9,7 +9,7 @@ export const getClassAbilities = (character: Character): ClassAbility[] => {
 	return abilities.flat();
 };
 
-export const reduceSpeed = (moveSpeeds: Movement[], reduction: 'half' | 'quarter') => {
+export const reduceSpeed = (moveSpeeds: Movement[], reduction: 'half' | 'quarter'): Movement[] => {
 	const returnMoves: Movement[] = [];
 	switch(reduction){
 		case 'half':
@@ -27,12 +27,12 @@ export const reduceSpeed = (moveSpeeds: Movement[], reduction: 'half' | 'quarter
 	}
 }
 
-export const checkForHalfMovement = (character: Character) => {
+export const checkForHalfMovement = (character: Character): Movement[] => {
 	const speedReductionStatusEffects = [StatusEffects.Blinded, StatusEffects.Exhausted, StatusEffects.Slowed]
     return character.statusEffects.some(x => speedReductionStatusEffects.includes(x)) ? reduceSpeed(character.movementSpeeds, 'half') : character.movementSpeeds;
 }
 
-export const getInitiativeScore = (character: Character) => {
+export const getInitiativeScore = (character: Character): string => {
 	const attBonus = getTotalAttributeModifier(character, AttributeNames.Dexterity);
 	const modValue = character.miscModifiers.filter(x => !!x.initiative).reduce((x,y) => x + y.value, 0);
 	const total = attBonus + modValue;
