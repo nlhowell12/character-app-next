@@ -11,12 +11,13 @@ import {
     getDamageBonus,
     getDiceDamageModifiers,
     getEqBonusObject,
+    getEquipmentWeightBySize,
     getTotalArmorBonus,
     getTotalBAB,
     getTotalEquipmentWeight,
     getTotalModifierBonus,
 } from './equipmentUtils';
-import { Armor, BonusTypes, Character, Currency, Damage, Dice, Sizes, Weapon } from '@/_models';
+import { Armor, BaseEquipment, BonusTypes, Currency, Damage, Dice, Equipment, Sizes, Weapon } from '@/_models';
 
 export const dagger: Weapon = {
     id: '12345',
@@ -32,6 +33,7 @@ export const dagger: Weapon = {
     criticalMultiplier: 2,
     criticalRange: 19,
     isWeapon: true,
+    cost: '',
     amount: 5,
     modifiers: [
         {
@@ -79,6 +81,7 @@ export const sword: Weapon = {
     criticalRange: 19,
     isWeapon: true, 
     amount: 1,
+    cost: '',
     modifiers: [
         {
             id: '123',
@@ -104,15 +107,24 @@ export const magicLeather: Armor = {
     spellFailure: 0,
     hardness: 50,
     weight: 4,
-    magical: true,
     isArmor: true,
     amount: 1,
+    cost: '',
     modifiers: [
         {            id: '123',
         type: BonusTypes.Armor, value: 2, defense: true},
         {            id: '1234',
         type: BonusTypes.Enhancement, value: 2, defense: true},
     ],
+};
+
+const otherEquipment: BaseEquipment = {
+    id: '32456',
+    name: 'Thieves Tools',
+    weight: 1,
+    cost: '1gp',
+    modifiers: [],
+    amount: 1
 };
 
 describe('Equipment Utils', () => {
@@ -145,9 +157,17 @@ describe('Equipment Utils', () => {
         expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 24}}})).toStrictEqual({light: 133, med: 266, heavy: 400})
         expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Small, attributes:{...mockCharacters[0].attributes, Strength: {value: 24}}})).toStrictEqual({light: 100, med: 200, heavy: 300})
     });
+    it('should modify equipment weight by size of equipment', () => {
+        expect(getEquipmentWeightBySize(dagger)).toBe(dagger.weight);
+        expect(getEquipmentWeightBySize(otherEquipment)).toBe(otherEquipment.weight);
+        expect(getEquipmentWeightBySize({...otherEquipment, size: Sizes.Small})).toBe(otherEquipment.weight * .25);
+        expect(getEquipmentWeightBySize({...otherEquipment, size: Sizes.Large})).toBe(otherEquipment.weight * 2);
+        expect(getEquipmentWeightBySize({...dagger, size: Sizes.Small})).toBe(dagger.weight * .5);
+        expect(getEquipmentWeightBySize({...dagger, size: Sizes.Large})).toBe(dagger.weight * 2);
+    })
     it('should return total weight of carried equipment', () => {
-        expect(getTotalEquipmentWeight(mockCharacters[0].equipment)).toBe(7)
-        expect(getTotalEquipmentWeight([...mockCharacters[0].equipment, dagger])).toBe(9.5)
+        expect(getTotalEquipmentWeight(mockCharacters[0])).toBe(7)
+        expect(getTotalEquipmentWeight({...mockCharacters[0], equipment: [...mockCharacters[0].equipment, dagger]})).toBe(9.5)
     });
     it('should get total BAB from all classes', () => {
         expect(getTotalBAB(mockCharacters[0])).toBe(1)

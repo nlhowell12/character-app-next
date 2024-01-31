@@ -93,8 +93,45 @@ export const getAllAttackModifiers = (
     return [...characterMods, ...weaponMods, ...statusEffectMods];
 };
 
-export const getTotalEquipmentWeight = (eq: Equipment[]) => {
-    return eq.reduce((x, y) => x + y.weight * y.amount, 0);
+export const getEquipmentWeightBySize = (eq: Equipment): number => {
+    const eqWeightSizeMod = {
+        [Sizes.ColossalPlus]: 16,
+        [Sizes.Colossal]: 16,
+        [Sizes.Gargantuan]: 8,
+        [Sizes.Huge]: 4,
+        [Sizes.Large]: 2,
+        [Sizes.Medium]: 1,
+        [Sizes.Small]: 0.5,
+        [Sizes.Tiny]: 0.25,
+        [Sizes.Diminutive]: 0.125,
+        [Sizes.Fine]: 0.0625,
+    };
+
+    const otherEqWeightSizeMod = {
+        [Sizes.ColossalPlus]: 16,
+        [Sizes.Colossal]: 16,
+        [Sizes.Gargantuan]: 8,
+        [Sizes.Huge]: 4,
+        [Sizes.Large]: 2,
+        [Sizes.Medium]: 1,
+        [Sizes.Small]: 0.25,
+        [Sizes.Tiny]: 0.125,
+        [Sizes.Diminutive]: 0.0625,
+        [Sizes.Fine]: 0.03125,
+    };
+    if(!!eq.size){
+        /* @ts-ignore */
+        if(eq.isArmor || eq.isWeapon){
+            return eq.weight * eqWeightSizeMod[eq.size]
+        } else {
+            return eq.weight * otherEqWeightSizeMod[eq.size]
+        }
+    }
+    return eq.weight;
+};
+
+export const getTotalEquipmentWeight = (character: Character) => {
+    return character.equipment.reduce((x, y) => x + getEquipmentWeightBySize(y) * y.amount, 0);
 };
 
 export const getCurrencyWeight = (coins: Currency): number => {
@@ -102,7 +139,7 @@ export const getCurrencyWeight = (coins: Currency): number => {
 };
 
 export const getTotalCarriedWeight = (character: Character): number => {
-    const eqWeight = getTotalEquipmentWeight(character.equipment);
+    const eqWeight = getTotalEquipmentWeight(character);
     const currencyWeight = getCurrencyWeight(character.currency);
     return Number((eqWeight + currencyWeight).toFixed(2));
 };
