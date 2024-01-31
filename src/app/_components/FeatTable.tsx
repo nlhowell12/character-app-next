@@ -1,5 +1,9 @@
 import {
     Card,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
     Table,
     TableBody,
     TableCell,
@@ -9,9 +13,9 @@ import {
     TextField,
     Tooltip,
 } from '@mui/material';
-import { Feat } from '@/_models';
+import { Feat, FeatCategory } from '@/_models';
 import { useEffect, useState } from 'react';
-
+import * as R from 'ramda';
 interface FeatTableProps {
     feats: Feat[];
     handleClick?: (feat: Feat) => void;
@@ -19,6 +23,7 @@ interface FeatTableProps {
 export const FeatTable = ({ feats, handleClick }: FeatTableProps) => {
     const [searchValue, setSearchValue] = useState<string>('');
     const [filteredRows, setFilteredRows] = useState<Feat[]>([]);
+    const [columnFilter, setColumnFilter] = useState<FeatCategory>();
 
     useEffect(() => {
         const filteredRows = feats.filter((x: Feat) =>
@@ -29,15 +34,21 @@ export const FeatTable = ({ feats, handleClick }: FeatTableProps) => {
         }
     }, [searchValue]);
 
+    useEffect(() => {
+        const filter = (x: Feat) =>  x.category === columnFilter;
+        const filteredRows = R.filter(filter, feats)
+        setFilteredRows(filteredRows);
+    }, [columnFilter]);
+
     return (
-        <Card>
+        <Card sx={{overflow: 'scroll'}}>
             <TextField
                 onChange={(e) => setSearchValue(e.target.value)}
                 value={searchValue}
                 placeholder={'Search by Name'}
             />
             <TableContainer>
-                <Table>
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
@@ -45,7 +56,22 @@ export const FeatTable = ({ feats, handleClick }: FeatTableProps) => {
                                 <TableCell>Selected Option</TableCell>
                             )}
                             <TableCell>Prerequisites</TableCell>
-                            <TableCell>Category</TableCell>
+                            <TableCell>
+                            <FormControl sx={{ width: '100%' }}>
+                            <InputLabel>Category</InputLabel>
+                            <Select
+                                variant='standard'
+                                label='Category'
+                                onChange={(e) => setColumnFilter(!!e.target.value ? e.target.value as FeatCategory : undefined)}
+                                fullWidth
+                                value={columnFilter}
+                            >
+                                <MenuItem value={undefined}>Reset</MenuItem>
+                                {Object.keys(FeatCategory).map(x => {
+                                    return <MenuItem key={x} value={x}>{x}</MenuItem>
+                                })}
+                            </Select>
+                        </FormControl></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
