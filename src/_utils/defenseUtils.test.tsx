@@ -1,6 +1,6 @@
 
 import { mockCharacters } from '@/_mockData/characters';
-import { AttributeNames, BonusTypes } from '@/_models';
+import { AttributeNames, BonusTypes, StatusEffects } from '@/_models';
 import * as defenseUtils from './defenseUtils';
 import { getTotalAttributeModifier } from './attributeUtils';
 
@@ -40,6 +40,14 @@ describe('Defense Utilities', () => {
 	test('getTotalDefense', () => {
 		expect(defenseUtils.getTotalDefense(mock0)).toStrictEqual({
 			dsBonus: 16,
+			drBonus: 3,
+		});
+		expect(defenseUtils.getTotalDefense({...mock0, statusEffects: [StatusEffects.Blinded]})).toStrictEqual({
+			dsBonus: 10,
+			drBonus: 3,
+		});
+		expect(defenseUtils.getTotalDefense({...mock0, statusEffects: [StatusEffects.Frightened]})).toStrictEqual({
+			dsBonus: 12,
 			drBonus: 3,
 		});
 	});

@@ -1,5 +1,5 @@
 import { ArcaneSchool, Character, CharacterClass, CharacterClassNames, MagickCategory, Maneuver, Mystery, Power, Prayer, Spell, SpellObject } from "@/_models"
-import { filterSpellObjectByCharacter, getSpellDc, getSpellDcAttribute } from "./spellUtils";
+import { filterSpellObjectByCharacter, getSpellDc, getSpellDcAttribute, isCharacterPsionic } from "./spellUtils";
 import { mockCharacters } from "@/_mockData/characters";
 
 const mockSorc = {
@@ -30,8 +30,8 @@ const mockSpellObject = {
         { name: 'Maneuver', class: CharacterClassNames.PsychicWarrior, category: MagickCategory.Maneuver, level: 1 } as Maneuver,
     ],
     [CharacterClassNames.Hexblade]: [
-        { name: 'Bless', class: CharacterClassNames.PsychicWarrior, category: MagickCategory.Psionic, level: 1 } as Spell,
-        { name: 'Maneuver', class: CharacterClassNames.PsychicWarrior, category: MagickCategory.Maneuver, level: 1 } as Maneuver,
+        { name: 'Bless', class: CharacterClassNames.Hexblade, category: MagickCategory.Psionic, level: 1 } as Spell,
+        { name: 'Maneuver', class: CharacterClassNames.Hexblade, category: MagickCategory.Maneuver, level: 1 } as Maneuver,
     ],
     [CharacterClassNames.Fighter]: [
         { name: 'Maneuver', class: CharacterClassNames.Fighter, category: MagickCategory.Maneuver, level: 1 } as Maneuver,
@@ -64,7 +64,7 @@ describe('spellUtils', () => {
         expect(getSpellDcAttribute(mock0, mockSpellObject.Oathsworn[0])).toBe(1)
         expect(getSpellDcAttribute(mock0, mockSpellObject.Cleric[0])).toBe(1)
         expect(getSpellDcAttribute(mock0, mockSpellObject.Oathsworn[1])).toBe(-2)
-        expect(getSpellDcAttribute(mock0, mockSpellObject.Hexblade[0])).toBe(1)
+        expect(getSpellDcAttribute(mock0, mockSpellObject.Hexblade[0])).toBe(0)
         expect(getSpellDcAttribute(mock0, mockSpellObject.Hexblade[1])).toBe(-2)
         expect(getSpellDcAttribute(mock0, mockSpellObject.Fighter[0])).toBe(-2)
         expect(getSpellDcAttribute(mock0, mockSpellObject.Psion[0])).toBe(2)
@@ -72,12 +72,13 @@ describe('spellUtils', () => {
         expect(getSpellDcAttribute(mock0, mockSpellObject["Psychic Warrior"][1])).toBe(-2)
         expect(getSpellDcAttribute({...mock0, classes: [{name: CharacterClassNames.Sorcerer}] as CharacterClass[]}, mockSpellObject["Sorcerer - Wizard"][0])).toBe(0)
         expect(getSpellDcAttribute({...mock0, classes: [{name: CharacterClassNames.Wizard}] as CharacterClass[]}, mockSpellObject["Sorcerer - Wizard"][0])).toBe(2)
+        expect(getSpellDcAttribute({...mock0, classes: [{name: CharacterClassNames.Hexblade}] as CharacterClass[]}, mockSpellObject[CharacterClassNames.Hexblade][1])).toBe(-2)
     })
     it('should return the correct dc for a spell', () => {
         expect(getSpellDc(mock0, mockSpellObject.Oathsworn[0])).toBe(12)
         expect(getSpellDc(mock0, mockSpellObject.Cleric[0])).toBe(12)
         expect(getSpellDc(mock0, mockSpellObject.Oathsworn[1])).toBe(9)
-        expect(getSpellDc(mock0, mockSpellObject.Hexblade[0])).toBe(12)
+        expect(getSpellDc(mock0, mockSpellObject.Hexblade[0])).toBe(11)
         expect(getSpellDc(mock0, mockSpellObject.Hexblade[1])).toBe(9)
         expect(getSpellDc(mock0, mockSpellObject.Fighter[0])).toBe(9)
         expect(getSpellDc(mock0, mockSpellObject.Fighter[0], true)).toBe(15)
@@ -86,5 +87,10 @@ describe('spellUtils', () => {
         expect(getSpellDc(mock0, mockSpellObject["Psychic Warrior"][1])).toBe(9)
         expect(getSpellDc({...mock0, classes: [{name: CharacterClassNames.Sorcerer}] as CharacterClass[]}, mockSpellObject["Sorcerer - Wizard"][0])).toBe(12)
         expect(getSpellDc({...mock0, classes: [{name: CharacterClassNames.Wizard}] as CharacterClass[]}, mockSpellObject["Sorcerer - Wizard"][0])).toBe(14)
+    })
+    it('should return if character is psionic', () => {
+        expect(isCharacterPsionic(mock0)).toBeTruthy()
+        expect(isCharacterPsionic({...mock0, isPsionic: false, classes: [{name: CharacterClassNames.Psion} as CharacterClass]})).toBeTruthy()
+        expect(isCharacterPsionic({...mock0, isPsionic: false, classes: [{name: CharacterClassNames.PsychicWarrior} as CharacterClass]})).toBeTruthy()
     })
 })

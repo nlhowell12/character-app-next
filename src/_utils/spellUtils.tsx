@@ -54,7 +54,7 @@ export const getSpellDcAttribute = (
     character: Character,
     spell: AnyMagickType,
     useDex?: boolean
-): number => {
+): number | undefined => {
     const getManeuverMod = () =>
         getTotalAttributeModifier(
             character,
@@ -95,8 +95,6 @@ export const getSpellDcAttribute = (
             );
         case CharacterClassNames.Fighter:
             return getManeuverMod();
-        default:
-            return 0;
     }
 };
 
@@ -114,5 +112,5 @@ export const getSpellDc = (
             x.spellSchool === (spell as Prayer).domain ||
             x.spellSchool === (spell as Mystery).path)
     ).reduce((x, y) => x + y.value, 0);
-    return 10 + attribute + spell.level + modsValue;
+    return 10 + (attribute || 0) + spell.level + modsValue;
 };

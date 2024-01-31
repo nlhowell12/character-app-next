@@ -95,7 +95,7 @@ export const getLowestEqDexMod = (eq: Equipment[]): number | null => {
             mod = armor.maxDexBonus;
         }
     });
-    return mod || null;
+    return mod;
 };
 
 export const getMiscAcBonuses = (character: Character): Modifier[] => {
