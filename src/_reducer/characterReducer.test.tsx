@@ -1,16 +1,19 @@
-import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick, Movement, MovementTypes, Maneuver, MartialQueue } from '@/_models';
+import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick, Movement, MovementTypes, Maneuver, MartialQueue, Note } from '@/_models';
 import {
 	CharacterReducerActions,
 	addEquipmentAction,
 	addMovementActions,
+	addNoteAction,
 	characterReducer,
 	deleteModAction,
+	deleteNoteAction,
 	initialCharacterState,
 	learnSpellAction,
 	martialQueueAction,
 	prepareSpellAction,
 	removeEquipmentAction,
 	removeMovementAction,
+	replaceEquipmentAction,
 	resetAction,
 	setCharacterAction,
 	toggleEquippedAction,
@@ -18,6 +21,7 @@ import {
 	updateAttributeAction,
 	updateClassAbilityAction,
 	updateEquipmentAction,
+	updateNoteAction,
 	updateSkillAction,
 } from './characterReducer';
 import { mockCharacters } from '@/_mockData/characters';
@@ -63,6 +67,19 @@ describe('characterReducer', () => {
 			initialCharacterState.skills.Perception
 		);
 	});
+	it('should add/remove notes correctly', () => {
+		const note: Note = {id: '12345', title: 'New Note', note: 'This is a new note.'};
+		const newState = characterReducer(
+			initialCharacterState,
+			addNoteAction(note)
+		);
+		expect(newState.notes.findIndex(x => x.id === note.id)).toBe(0)
+		const updateValue = 'I have updated the note'
+		const newState2 = characterReducer(newState, updateNoteAction(updateValue, note.id))
+		expect(newState2.notes[0].note).toBe(updateValue)
+		const newState3 = characterReducer(newState2, deleteNoteAction(note.id))
+		expect(newState3.notes.length).toBe(0);
+	})
 	it('should update class abilities correctly', () => {
 		const newState = characterReducer(
 			mockCharacters[0],
@@ -112,6 +129,11 @@ describe('characterReducer', () => {
 		const newState = characterReducer({...mockCharacters[0], equipment: [magicLeather, dagger, sword]}, updateEquipmentAction(magicLeather.id, updatedHardness, 'hardness'))
 		expect(newState.equipment).toStrictEqual([{...magicLeather, hardness: updatedHardness}, dagger, sword])
 	});
+	it('should replace equipment correctly', () => {
+		const replaceMagicLeather = {...magicLeather, name: 'Magic Leather +1', weight: 1}
+		const newState = characterReducer({...mockCharacters[0], equipment: [magicLeather, dagger, sword]}, replaceEquipmentAction(magicLeather.id, replaceMagicLeather))
+		expect(newState.equipment).toStrictEqual([replaceMagicLeather, dagger, sword])
+	})
 	it('should delete mod from character modifiers', () => {
 		const modToDelete = mockCharacters[0].miscModifiers[0];
 		const newState = characterReducer(mockCharacters[0], deleteModAction(modToDelete))
@@ -121,14 +143,27 @@ describe('characterReducer', () => {
 	});
 	it('should add and remove a spell to a class spellbook', () => {
 		const spellToAdd = {name: 'Magic Missile'} as Spell;
+		const martialManeuver = {name: 'Cool shit'} as Maneuver;
+
 		const spellBook: Partial<SpellObject> = {
-			[CharacterClassNames.SorcWiz]: []
+			[CharacterClassNames.SorcWiz]: [],
+			[CharacterClassNames.Fighter]: [martialManeuver],
 		};
+		const martialQueue: MartialQueue = {
+			[CharacterClassNames.Fighter]: [martialManeuver],
+			[CharacterClassNames.Hexblade]: [],
+			[CharacterClassNames.Oathsworn]:[],
+			[CharacterClassNames.PsychicWarrior]: [],
+		}
 		{/* @ts-ignore */}
 		const newState = characterReducer({...mockCharacters[0], spellBook}, learnSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
 		expect(newState.spellBook[CharacterClassNames.SorcWiz]).toStrictEqual([spellToAdd]);
 		const newState2 = characterReducer(newState, learnSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
 		expect(newState2.spellBook[CharacterClassNames.SorcWiz]).toStrictEqual([]);
+		{/* @ts-ignore */}
+		const fighterState = characterReducer({...mockCharacters[0], spellBook, martialQueue}, learnSpellAction(martialManeuver, CharacterClassNames.Fighter))
+		expect(fighterState.spellBook[CharacterClassNames.Fighter]).toStrictEqual([])
+		expect(fighterState.martialQueue[CharacterClassNames.Fighter]).toStrictEqual([])
 	})
 	it('should add and remove a martial maneuver from the queue', () => {
 		const spellToAdd = {name: 'Blade Dance'} as Maneuver;

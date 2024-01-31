@@ -515,7 +515,6 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                     equipment: R.update(index, replaceEq, state.equipment),
                 };
             }
-            return { ...state };
         case CharacterReducerActions.LEARN_SPELL:
             const spell = value as AnyMagickType;
             const spellAlreadyKnown = R.findIndex(R.propEq(spell.name, 'name'))(
@@ -537,7 +536,7 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                         ...state.martialQueue,
                         [spellClassName]: R.filter(
                             filter,
-                            state.martialQueue[className as keyof MartialQueue]
+                            state.martialQueue[spellClassName as keyof MartialQueue]
                         ),
                     } : state.martialQueue
                 };

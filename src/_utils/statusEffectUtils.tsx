@@ -6,7 +6,6 @@ import {
     Character,
     SkillTypes,
 } from '@/_models';
-import { chain } from 'ramda';
 import { v4 as uuidv4 } from 'uuid';
 
 const getFatiguedModifiers = (character: Character): Modifier[] =>
