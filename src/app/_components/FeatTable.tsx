@@ -23,21 +23,31 @@ interface FeatTableProps {
 export const FeatTable = ({ feats, handleClick }: FeatTableProps) => {
     const [searchValue, setSearchValue] = useState<string>('');
     const [filteredRows, setFilteredRows] = useState<Feat[]>([]);
-    const [columnFilter, setColumnFilter] = useState<FeatCategory>();
+    const [columnFilter, setColumnFilter] = useState<FeatCategory | string>('');
 
     useEffect(() => {
-        const filteredRows = feats.filter((x: Feat) =>
+        if(!!columnFilter){
+            setColumnFilter('');
+        }
+        if(!!searchValue){
+            const rows = feats.filter((x: Feat) =>
             x.name.toLowerCase().includes(searchValue.toLowerCase())
-        );
-        if (!!filteredRows && !!filteredRows.length) {
-            setFilteredRows(filteredRows);
+            );
+            if (!!rows && !!rows.length) {
+                setFilteredRows(rows);
+            }
         }
     }, [searchValue]);
 
     useEffect(() => {
-        const filter = (x: Feat) =>  x.category === columnFilter;
-        const filteredRows = R.filter(filter, feats)
-        setFilteredRows(filteredRows);
+        if(!!searchValue){
+            setSearchValue('');
+        }
+        if(!!columnFilter) {
+            const filter = (x: Feat) =>  x.category === columnFilter;
+            const rows = R.filter(filter, feats)
+            setFilteredRows(rows);
+        }
     }, [columnFilter]);
 
     return (
@@ -62,11 +72,11 @@ export const FeatTable = ({ feats, handleClick }: FeatTableProps) => {
                             <Select
                                 variant='standard'
                                 label='Category'
-                                onChange={(e) => setColumnFilter(!!e.target.value ? e.target.value as FeatCategory : undefined)}
+                                onChange={(e) => setColumnFilter(e.target.value)}
                                 fullWidth
                                 value={columnFilter}
                             >
-                                <MenuItem value={undefined}>Reset</MenuItem>
+                                <MenuItem value={''}>Reset</MenuItem>
                                 {Object.keys(FeatCategory).map(x => {
                                     return <MenuItem key={x} value={x}>{x}</MenuItem>
                                 })}
