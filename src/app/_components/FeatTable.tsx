@@ -20,8 +20,8 @@ export const FeatTable = ({feats, handleClick}: FeatTableProps) => {
             <TableBody>
                 {feats.map(feat => {
                     return (
-                        <Tooltip title={feat.definition}>
-                            <TableRow key={feat.name} hover={!!handleClick} onClick={!!handleClick ? () => handleClick(feat) : undefined}>
+                        <Tooltip title={feat.definition} key={feat.name}>
+                            <TableRow hover={!!handleClick} onClick={!!handleClick ? () => handleClick(feat) : undefined}>
                                 <TableCell>{feat.name}</TableCell>
                                 {!handleClick && <TableCell>{!!feat.selectedOption ? feat.selectedOption : ''}</TableCell>}
                                 <TableCell>{!!feat.prerequisites ? feat.prerequisites : ''}</TableCell>
