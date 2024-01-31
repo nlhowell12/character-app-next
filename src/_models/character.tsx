@@ -258,6 +258,10 @@ export interface Feat {
 	name: string;
 	definition: string;
 	category: string;
+	stackable: boolean;
+	requiredOption: boolean;
+	selectedOption?: string;
+	source?: string;
 }
 
 interface SkillSynergy {

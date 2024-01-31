@@ -1,6 +1,6 @@
 import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility, BodySlot, Dice, DBEquipment, Feat } from '@/_models';
 import { User } from '@/_models/user';
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 const dbPw = process.env.MONGO_PW;
@@ -135,6 +135,8 @@ function featModel() {
         name: { type: String, required: true },
         definition: { type: String, required: true },
         category: { type: String, required: true },
+        stackable: Boolean,
+        requiredOption: Boolean
     })
     return mongoose.models.Feat || mongoose.model('Feat', featSchema, 'feats');
 }

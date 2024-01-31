@@ -2,7 +2,7 @@ import { Feat } from "@/_models";
 import { useEffect, useState } from "react";
 
 export default () => {
-    const [feats, setFeats] = useState<Feat[]>();
+    const [feats, setFeats] = useState<Feat[]>([]);
 
     useEffect(() => {
         getFeats();

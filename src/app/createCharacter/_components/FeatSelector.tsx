@@ -6,19 +6,12 @@ import {
     Typography,
     Dialog,
     Grid,
-    Card,
-    CardHeader,
-    CardContent,
-    List,
-    ListItem,
-    ListItemText,
-    Tooltip,
-    Chip,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
-import { AddFeatCard } from './AddFeatCard';
 import * as R from 'ramda';
 import { FeatDisplay } from '@/app/character/_components/FeatDisplay';
+import useFeatsService from '@/app/api/_services/useFeatsService';
+import { FeatTable } from '@/app/_components/FeatTable';
 interface FeatSelectorProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -28,11 +21,9 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
     const [open, setOpen] = useState<boolean>(false);
 
     const handleClose = (event: any, reason: any) => {
-        if (reason !== 'backdropClick') {
             setOpen(false);
-        }
     };
-    const handleSubmit = (feat: Feat) => {
+    const handleAdd = (feat: Feat) => {
         dispatch(updateAction(CharacterKeys.feats, [...character.feats, feat]));
     };
     const handleDelete = (feat: Feat) => {
@@ -41,6 +32,15 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
             updateAction(CharacterKeys.feats, R.reject(filter, character.feats))
         );
     };
+    const { feats } = useFeatsService();
+
+    const handleRowClick = (feat: Feat) => {
+        if(character.feats.some(x => x.name === feat.name)){
+            handleDelete(feat)
+        } else {
+            handleAdd(feat)
+        }
+    }
     return (
         <div
             style={{
@@ -51,8 +51,8 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
                 <Typography>Add Feat</Typography>
                 <Add />
             </Button>
-            <Dialog open={open} onClose={handleClose}>
-                <AddFeatCard onClose={handleClose} onSubmit={handleSubmit} />
+            <Dialog open={open} onClose={handleClose} maxWidth={false}>
+                <FeatTable feats={feats} handleClick={handleRowClick}/>
             </Dialog>
             {!!character.feats.length && (
                 <Grid

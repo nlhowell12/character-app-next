@@ -22,13 +22,13 @@ import { Add } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import useCharacterService from '@/app/api/_services/useCharacterService';
 import { ModChipStack } from '@/app/_components/ModChipStack';
-import { FeatDisplay } from './FeatDisplay';
 import { NoteDialog } from './NoteDialog';
 import NotesIcon from '@mui/icons-material/Notes';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useRouter } from 'next/navigation';
 import UserContext from '@/app/_auth/UserContext';
+import { FeatTable } from '@/app/_components/FeatTable';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -115,7 +115,7 @@ export const CharacterInfoDisplay = ({
                     <Add sx={{ marginLeft: '.5rem' }} />
                 </Button>
                 <Dialog open={openFeats} onClose={() => setOpenFeats(false)}>
-                    <FeatDisplay feats={character.feats} />
+                    <FeatTable feats={character.feats} />
                 </Dialog>
                 <Button
                     variant='outlined'
