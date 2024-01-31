@@ -86,13 +86,13 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
             </Dialog>
             <Dialog open={openRequiredOption} onClose={handleCloseRequiredOption}>
                 <Card>
-                    <CardHeader>Add Required Selections for thie Feat</CardHeader>
+                    <CardHeader title='Feat Option Selection'/>
                     {!!selectedFeat &&
                     <>
                     <CardContent>
-                        <TextField label='Required Feat Option' value={selectedFeat?.selectedOption} onChange={(e) => setSelectedFeat({...selectedFeat, selectedOption: e.target.value})}/>
+                        <TextField label='Required Option' value={selectedFeat?.selectedOption} onChange={(e) => setSelectedFeat({...selectedFeat, selectedOption: e.target.value})}/>
                     </CardContent>
-                    <CardActions>
+                    <CardActions sx={{justifyContent: 'flex-end'}}>
                         <Button disabled={!selectedFeat || !selectedFeat.selectedOption} onClick={() => handleAdd(selectedFeat)}>Set Option</Button>
                     </CardActions>
                     </>
