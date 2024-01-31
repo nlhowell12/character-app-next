@@ -149,11 +149,9 @@ describe('characterReducer', () => {
 			[CharacterClassNames.SorcWiz]: [],
 			[CharacterClassNames.Fighter]: [martialManeuver],
 		};
-		const martialQueue: MartialQueue = {
+		const martialQueue: Partial<MartialQueue> = {
 			[CharacterClassNames.Fighter]: [martialManeuver],
-			[CharacterClassNames.Hexblade]: [],
-			[CharacterClassNames.Oathsworn]:[],
-			[CharacterClassNames.PsychicWarrior]: [],
+
 		}
 		{/* @ts-ignore */}
 		const newState = characterReducer({...mockCharacters[0], spellBook}, learnSpellAction(spellToAdd, CharacterClassNames.SorcWiz))
