@@ -105,6 +105,7 @@ function equipmentModel() {
         id: { type: String, required: true },
         name: { type: String, required: true },
         weight: { type: Number, required: true },
+        size: { type: String, required: true },
         modifiers: [Object],
         bodySlot: { type: String, enum: BodySlot },
         armorCheckPenalty: { type: Number },

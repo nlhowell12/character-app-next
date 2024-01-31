@@ -5,6 +5,7 @@ import {
     Dice,
     Equipment,
     Modifier,
+    Sizes,
     Weapon,
 } from '@/_models';
 import { ModifierDialog } from '@/app/_components/ModifierDialog';
@@ -35,7 +36,7 @@ import { Add } from '@mui/icons-material';
 import { ModChipStack } from '@/app/_components/ModChipStack';
 import * as R from 'ramda';
 import { v4 as uuidv4 } from 'uuid';
-import useEquipmentService, { EquipmentObject } from '@/app/api/_services/useEquipmentService';
+import useEquipmentService from '@/app/api/_services/useEquipmentService';
 import { camelToTitle } from '@/_utils/stringUtils';
 
 interface AddEquipmentCardProps {
@@ -71,6 +72,7 @@ export const AddEquipmentCard = ({
         criticalMultiplier: 2,
         criticalRange: 20,
         category: '',
+        size: Sizes.Medium,
         damageTypes: [],
         dexBasedAttack: false,
         dexBasedDamage: false,
@@ -255,25 +257,45 @@ export const AddEquipmentCard = ({
                     ) => handleChange(e, 'weight')}
                 />
                  <FormControl fullWidth sx={formControlStyle}>
-                            <InputLabel id='body-slot-id'>Body Slot</InputLabel>
-                            <Select
-                                labelId='body-slot-id'
-                                id='body-slot'
-                                label='Body Slot'
-                                name='bodySlot'
-                                value={(newEq as Armor).bodySlot}
-                                onChange={(e: any) => handleChange(e, 'bodySlot')}
-                            >
-                                {Object.keys(BodySlot).map((slot) => {
-                                    return (
-                                        <MenuItem key={slot} value={slot}>
-                                            {/* @ts-ignore */}
-                                            {BodySlot[slot]}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
+                    <InputLabel id='body-slot-id'>Body Slot</InputLabel>
+                    <Select
+                        labelId='body-slot-id'
+                        id='body-slot'
+                        label='Body Slot'
+                        name='bodySlot'
+                        value={(newEq as Armor).bodySlot}
+                        onChange={(e: any) => handleChange(e, 'bodySlot')}
+                    >
+                        {Object.keys(BodySlot).map((slot) => {
+                            return (
+                                <MenuItem key={slot} value={slot}>
+                                    {/* @ts-ignore */}
+                                    {BodySlot[slot]}
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
+                 <FormControl fullWidth sx={formControlStyle}>
+                    <InputLabel id='size-id'>Equipment Size</InputLabel>
+                    <Select
+                        labelId='size-id'
+                        id='size'
+                        label='Equipment Size'
+                        name='size'
+                        value={newEq.size}
+                        onChange={(e: any) => handleChange(e, 'size')}
+                    >
+                        {Object.keys(Sizes).map((size) => {
+                            return (
+                                <MenuItem key={size} value={size}>
+                                    {/* @ts-ignore */}
+                                    {Sizes[size]}
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
                 {!!(newEq as Weapon).isWeapon ? (
                     <>
                         <Typography sx={{ margin: '.5rem 0' }}>

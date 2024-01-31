@@ -19,14 +19,10 @@ use('character_sheet');
 //     'Oathsworn': []
 // }}})
 
-db.getCollection('equipment').update({
-  damageTypes: {
-    $type: 'string'
-  }
-},
+db.getCollection('equipment').update({},
   [
     {
-      $set: { damageTypes: [ "$damageTypes" ] },
+      $set: { size: 'Medium' },
     }
   ],
   {

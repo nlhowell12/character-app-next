@@ -261,7 +261,7 @@ export const EquipmentDisplay = ({
 
     const totalWeightCarried = useMemo(() => {
         return getTotalCarriedWeight(character);
-    }, [character.equipment.length, character.currency]);
+    }, [character.equipment, character.currency]);
 
     const carryingCap = useMemo(() => {
         return determineCarryingCapacity(character);
