@@ -12,6 +12,7 @@ export const FeatTable = ({feats, handleClick}: FeatTableProps) => {
             <TableHead>
                 <TableRow>
                     <TableCell>Name</TableCell>
+                    {!handleClick && <TableCell>Selected Option</TableCell>}
                     <TableCell>Prerequisites</TableCell>
                     <TableCell>Category</TableCell>
                 </TableRow>
@@ -22,6 +23,7 @@ export const FeatTable = ({feats, handleClick}: FeatTableProps) => {
                         <Tooltip title={feat.definition}>
                             <TableRow key={feat.name} hover={!!handleClick} onClick={!!handleClick ? () => handleClick(feat) : undefined}>
                                 <TableCell>{feat.name}</TableCell>
+                                {!handleClick && <TableCell>{!!feat.selectedOption ? feat.selectedOption : ''}</TableCell>}
                                 <TableCell>{!!feat.prerequisites ? feat.prerequisites : ''}</TableCell>
                                 <TableCell>{feat.category}</TableCell>
                             </TableRow>

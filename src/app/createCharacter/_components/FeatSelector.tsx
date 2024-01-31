@@ -6,6 +6,10 @@ import {
     Typography,
     Dialog,
     Grid,
+    CardHeader,
+    Card,
+    CardContent,
+    TextField,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import * as R from 'ramda';
@@ -19,24 +23,49 @@ interface FeatSelectorProps {
 
 export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
     const [open, setOpen] = useState<boolean>(false);
-
+    const [openRequiredOption, setOpenRequiredOption] = useState<boolean>(false);
+    const [selectedFeat, setSelectedFeat] = useState<Feat>();
+    
     const handleClose = (event: any, reason: any) => {
             setOpen(false);
     };
+    const handleCloseRequiredOption = () => {
+        setOpenRequiredOption(false);
+        setSelectedFeat(undefined);
+    }
     const handleAdd = (feat: Feat) => {
-        dispatch(updateAction(CharacterKeys.feats, [...character.feats, feat]));
+        if(feat.requiredOption && !feat.selectedOption){
+            setSelectedFeat(feat)
+            setOpenRequiredOption(true)
+        } else {
+            if(openRequiredOption){
+                setOpenRequiredOption(false)
+            }
+            dispatch(updateAction(CharacterKeys.feats, [...character.feats, feat]));
+        }
     };
     const handleDelete = (feat: Feat) => {
-        const filter = R.propEq(feat.name, 'name');
-        dispatch(
-            updateAction(CharacterKeys.feats, R.reject(filter, character.feats))
-        );
+        const filter = (x: Feat) => feat.name === x.name && feat.selectedOption === x.selectedOption;
+        if(feat.stackable && !feat.requiredOption){
+            const index = R.findIndex(R.propEq(feat.name, 'name'))(character.feats);
+            !!index && dispatch(
+                updateAction(CharacterKeys.feats, R.remove(index, 1, character.feats))
+            );
+        } else {
+            dispatch(
+                updateAction(CharacterKeys.feats, R.reject(filter, character.feats))
+            );
+        }
     };
     const { feats } = useFeatsService();
 
     const handleRowClick = (feat: Feat) => {
         if(character.feats.some(x => x.name === feat.name)){
-            handleDelete(feat)
+            if(feat.stackable){
+                handleAdd(feat);
+            } else {
+                handleDelete(feat);
+            }
         } else {
             handleAdd(feat)
         }
@@ -53,6 +82,16 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
             </Button>
             <Dialog open={open} onClose={handleClose} maxWidth={false}>
                 <FeatTable feats={feats} handleClick={handleRowClick}/>
+            </Dialog>
+            <Dialog open={openRequiredOption} onClose={handleCloseRequiredOption}>
+                <Card>
+                    <CardHeader>Add Required Selections for thie Feat</CardHeader>
+                    {!!selectedFeat &&
+                    <CardContent>
+                        <TextField label='Required Feat Option' value={selectedFeat?.selectedOption} onChange={(e) => setSelectedFeat({...selectedFeat, selectedOption: e.target.value})}/>
+                        <Button disabled={!selectedFeat || !selectedFeat.selectedOption} onClick={() => handleAdd(selectedFeat)}>Set Option</Button>
+                    </CardContent>}
+                </Card>
             </Dialog>
             {!!character.feats.length && (
                 <Grid

@@ -19,15 +19,7 @@ use('character_sheet');
 //     'Oathsworn': []
 // }}})
 
-db.getCollection('equipment').update({},
-  [
-    {
-      $set: { size: 'Medium' },
-    }
-  ],
-  {
-    multi: true
-  })
+db.getCollection('feats').deleteMany({})
 
 //setting modifiers on equipment
 // db.getCollection('equipment').update({},

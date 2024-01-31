@@ -114,7 +114,7 @@ export const CharacterInfoDisplay = ({
                     <Typography>View Feats</Typography>
                     <Add sx={{ marginLeft: '.5rem' }} />
                 </Button>
-                <Dialog open={openFeats} onClose={() => setOpenFeats(false)}>
+                <Dialog open={openFeats} onClose={() => setOpenFeats(false)} maxWidth={false}>
                     <FeatTable feats={character.feats} />
                 </Dialog>
                 <Button

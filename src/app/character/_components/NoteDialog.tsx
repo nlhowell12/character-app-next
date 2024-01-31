@@ -315,7 +315,7 @@ export const NoteDialog = ({
         );
     };
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={onClose} maxWidth={false}>
             <Card
                 sx={{
                     width: '20rem',
