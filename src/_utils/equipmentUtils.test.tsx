@@ -14,6 +14,7 @@ import {
     getEquipmentWeightBySize,
     getTotalArmorBonus,
     getTotalBAB,
+    getTotalCarriedWeight,
     getTotalEquipmentWeight,
     getTotalModifierBonus,
 } from './equipmentUtils';
@@ -168,6 +169,9 @@ describe('Equipment Utils', () => {
     it('should return total weight of carried equipment', () => {
         expect(getTotalEquipmentWeight(mockCharacters[0])).toBe(7)
         expect(getTotalEquipmentWeight({...mockCharacters[0], equipment: [...mockCharacters[0].equipment, dagger]})).toBe(9.5)
+    });
+    it('should get total weight of equipment and currency', () => {
+        expect(getTotalCarriedWeight({...mockCharacters[0], currency: {cp: 0, sp: 0, gp: 150, pp: 0}})).toBe(10)
     });
     it('should get total BAB from all classes', () => {
         expect(getTotalBAB(mockCharacters[0])).toBe(1)
