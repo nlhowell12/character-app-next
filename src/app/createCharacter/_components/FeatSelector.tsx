@@ -10,6 +10,7 @@ import {
     Card,
     CardContent,
     TextField,
+    CardActions,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import * as R from 'ramda';
@@ -87,10 +88,15 @@ export const FeatSelector = ({ character, dispatch }: FeatSelectorProps) => {
                 <Card>
                     <CardHeader>Add Required Selections for thie Feat</CardHeader>
                     {!!selectedFeat &&
+                    <>
                     <CardContent>
                         <TextField label='Required Feat Option' value={selectedFeat?.selectedOption} onChange={(e) => setSelectedFeat({...selectedFeat, selectedOption: e.target.value})}/>
+                    </CardContent>
+                    <CardActions>
                         <Button disabled={!selectedFeat || !selectedFeat.selectedOption} onClick={() => handleAdd(selectedFeat)}>Set Option</Button>
-                    </CardContent>}
+                    </CardActions>
+                    </>
+                    }
                 </Card>
             </Dialog>
             {!!character.feats.length && (
