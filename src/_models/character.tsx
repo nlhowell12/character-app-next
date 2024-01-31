@@ -241,10 +241,23 @@ export interface Modifier {
 	spellSchool?: ArcaneSchool | PsionicDiscipline | DivineDomain | ShadowPath
 	id: string;
 }
+
+export enum FeatCategory {
+	Channeling = 'Channeling',
+	Combative = 'Combative',
+	Composition = 'Composition',
+	General = 'General',
+	Metamagick = 'Metamagick',
+	Psionic = 'Psionic',
+	Racial = 'Racial',
+	ShadowEssence = 'Shadow Essence',
+	Spellcasting = 'Spellcasting'
+}
 export interface Feat {
-	prerequisites?: Feat[] | string[];
+	prerequisites?: string;
 	name: string;
-	definition?: string;
+	definition: string;
+	category: string;
 }
 
 interface SkillSynergy {

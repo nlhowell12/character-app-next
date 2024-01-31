@@ -1,4 +1,4 @@
-import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility, BodySlot, Dice, DBEquipment } from '@/_models';
+import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility, BodySlot, Dice, DBEquipment, Feat } from '@/_models';
 import { User } from '@/_models/user';
 import mongoose, { mongo } from 'mongoose';
 
@@ -18,6 +18,7 @@ export const db = {
     User: userModel(),
     ClassAbility: classAbilityModel(),
     Equipment: equipmentModel(),
+    Feat: featModel()
 };
 
 function userModel(){
@@ -126,4 +127,14 @@ function equipmentModel() {
         isWeapon: Boolean,
     });
     return mongoose.models.Equipment || mongoose.model('Equipment', equipmentSchema, 'equipment');
+}
+
+function featModel() {
+    const featSchema = new Schema<Feat>({
+        prerequisites: { type: String },
+        name: { type: String, required: true },
+        definition: { type: String, required: true },
+        category: { type: String, required: true },
+    })
+    return mongoose.models.Feat || mongoose.model('Feat', featSchema, 'feats');
 }
