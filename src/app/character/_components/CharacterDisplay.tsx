@@ -164,7 +164,7 @@ export const CharacterDisplay = ({
                             />
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} xl={5} sx={{ margin: '0 .5rem' }}>
+                    <Grid item xs={12} xl={7} sx={{ margin: '0 .5rem' }}>
                         <Grid container display={'flex'} flexDirection='row'>
                             <Grid
                                 item
@@ -194,8 +194,7 @@ export const CharacterDisplay = ({
                     <Grid
                         item
                         xs={12}
-                        xl={2}
-                        columns={2}
+                        xl={1}
                         sx={{
                             [theme.breakpoints.down('xl')]: {
                                 display: 'none',
