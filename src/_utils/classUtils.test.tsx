@@ -11,7 +11,11 @@ describe('Class Utils', () => {
 			{className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 1, domain: DivineDomain.Air},
 			{className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 3, domain: DivineDomain.Death},
 			{className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 2, domain: DivineDomain.Fire},
-		]
+		],
+		rebukeDomain: DivineDomain.Deception,
+		turnDomain: DivineDomain.Peace,
+		spontaneousChannelDomain: DivineDomain.Life,
+		preferredDomains: [DivineDomain.Life]
 	};
 	const mock0WithCleric = {...mock0, classes: [...mock0.classes, mockCleric as CharacterClass]};
 	it('should get all class abilities', () => {
@@ -44,20 +48,20 @@ describe('Class Utils', () => {
 			[DivineDomain.Earth]: 0,
 			[DivineDomain.Fire]: 3,
 			[DivineDomain.Water]: 0,
-			[DivineDomain.Deception]: 0,
+			[DivineDomain.Deception]: 2,
 			[DivineDomain.Truth]: 0,
 			[DivineDomain.Magic]: 0,
 			[DivineDomain.Mind]: 0,
 			[DivineDomain.War]: 0,
-			[DivineDomain.Peace]: 0,
-			[DivineDomain.Life]: 0,
+			[DivineDomain.Peace]: 3,
+			[DivineDomain.Life]: 1,
 			[DivineDomain.Death]: 3,
 			[DivineDomain.Cosmic]: 0
 		}
 		expect(classUtils.getAllegianceTotal({...mock0WithCleric, feats: [...mock0.feats, {name: DomainAspectFeats.ImprovedCounterchannel, selectedOption: DivineDomain.Fire, requiredOption: true} as Feat]})).toStrictEqual(mockAllegianceObject)
 	})
 	it('should sort divine domains by value', () => {
-		expect(classUtils.getAlignedDomainAspects(mock0WithCleric)).toStrictEqual(['Death', 'Fire', 'Air', 'Deception', 'Earth'])
+		expect(classUtils.getAlignedDomainAspects(mock0WithCleric)).toStrictEqual([DivineDomain.Death, DivineDomain.Peace, DivineDomain.Deception, DivineDomain.Fire, DivineDomain.Life])
 	});
 	it('should return orisons related to the allegiant domains', () => {
 		const mockOrisonList: ClassAbility[] = [
@@ -66,13 +70,18 @@ describe('Class Utils', () => {
 			{level: 0, domain: DivineDomain.Death, className: CharacterClassNames.Cleric, description: ''},
 			{level: 0, domain: DivineDomain.War, className: CharacterClassNames.Cleric, description: ''},
 			{level: 0, domain: DivineDomain.Peace, className: CharacterClassNames.Cleric, description: ''},
+			{level: 0, domain: DivineDomain.Life, className: CharacterClassNames.Cleric, description: ''},
+			{level: 0, domain: DivineDomain.Deception, className: CharacterClassNames.Cleric, description: ''},
 		]
 		const expectObject = [
 			{level: 0, domain: DivineDomain.Fire, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Air, className: CharacterClassNames.Cleric, description: ''},
 			{level: 0, domain: DivineDomain.Death, className: CharacterClassNames.Cleric, description: ''},
+			{level: 0, domain: DivineDomain.Peace, className: CharacterClassNames.Cleric, description: ''},
+			{level: 0, domain: DivineDomain.Life, className: CharacterClassNames.Cleric, description: ''},
+			{level: 0, domain: DivineDomain.Deception, className: CharacterClassNames.Cleric, description: ''},
+
 		]
-		expect(classUtils.getAlignedOrisons(mock0, mockOrisonList).length).toBe(3);
-		expect(classUtils.getAlignedOrisons(mock0, mockOrisonList)).toStrictEqual(expectObject);
+		expect(classUtils.getAlignedOrisons(mock0WithCleric, mockOrisonList).length).toBe(5);
+		expect(classUtils.getAlignedOrisons(mock0WithCleric, mockOrisonList)).toStrictEqual(expectObject);
 	});
 });

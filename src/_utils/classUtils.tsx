@@ -1,5 +1,6 @@
 import { AttributeNames, Character, CharacterClass, CharacterClassNames, ClassAbility, DivineDomain, Movement, StatusEffects } from "@/_models";
 import { getTotalAttributeModifier } from "./attributeUtils";
+import * as R from 'ramda';
 
 type ClassAbilityObject =  {
 	[key in CharacterClassNames]: ClassAbility[]
@@ -75,12 +76,41 @@ export const getAllegianceTotal = (character: Character) => {
 			allegianceObject[x.selectedOption as DivineDomain] += 1
 		}
 	})
+	character.classes.forEach(cls => {
+		if(cls.name === CharacterClassNames.Cleric){
+			if(!!cls.turnDomain){
+				allegianceObject[cls.turnDomain] += 3;
+			}
+			if(!!cls.rebukeDomain){
+				allegianceObject[cls.rebukeDomain] += 2;
+			}
+			if(!!cls.spontaneousChannelDomain){
+				allegianceObject[cls.spontaneousChannelDomain] += 1;
+			}
+		};
+	})
 	return allegianceObject;
 };
 
 export const sortDomainAspects = (character: Character) => {
 	const allegianceTotals = getAllegianceTotal(character);
-	return Object.keys(DivineDomain).sort((a,b) => allegianceTotals[b as DivineDomain] - allegianceTotals[a as DivineDomain])
+	const diff = (a: DivineDomain, b: DivineDomain) => {
+		if (allegianceTotals[a] > allegianceTotals[b]){
+			return -1
+		}
+		else if (allegianceTotals[a] < allegianceTotals[b]){
+			return 1
+		}
+		const cleric = character.classes.filter(x => x.name === CharacterClassNames.Cleric)[0];
+		const preferredDomain = cleric.preferredDomains?.includes(a);
+		if(preferredDomain){
+			return -1
+		} else if (!preferredDomain) {
+			return 1
+		}
+		return 0
+	}
+	return R.sort(diff, Object.keys(DivineDomain) as DivineDomain[])
 }
 
 export const getAlignedDomainAspects = (character: Character) => {

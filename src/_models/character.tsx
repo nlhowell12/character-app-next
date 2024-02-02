@@ -216,6 +216,10 @@ export interface CharacterClass {
 	level: number;
 	secondarySave: AttributeNames;
 	BAB: number;
+	turnDomain?: DivineDomain;
+	rebukeDomain?: DivineDomain;
+	spontaneousChannelDomain?: DivineDomain;
+	preferredDomains?: DivineDomain[];
 }
 
 export enum ModifierSource {
