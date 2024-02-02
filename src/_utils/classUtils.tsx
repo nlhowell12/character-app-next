@@ -1,4 +1,4 @@
-import { AttributeNames, Character, ClassAbility, Movement, StatusEffects } from "@/_models";
+import { AttributeNames, Character, CharacterClass, ClassAbility, DivineDomain, Movement, StatusEffects } from "@/_models";
 import { getTotalAttributeModifier } from "./attributeUtils";
 
 export const getClassAbilities = (character: Character): ClassAbility[] => {
@@ -37,4 +37,28 @@ export const getInitiativeScore = (character: Character): string => {
 	const modValue = character.miscModifiers.filter(x => !!x.initiative).reduce((x,y) => x + y.value, 0);
 	const total = attBonus + modValue;
     return `${total > 0 ? '+': ''}${total}`;
+};
+
+export const getAllegianceTotal = (classInfo: CharacterClass) => {
+	const allegianceObject: {[key in DivineDomain]: number} = {
+		[DivineDomain.Air]: 0,
+		[DivineDomain.Earth]: 0,
+		[DivineDomain.Fire]: 0,
+		[DivineDomain.Water]: 0,
+		[DivineDomain.Deception]: 0,
+		[DivineDomain.Truth]: 0,
+		[DivineDomain.Magic]: 0,
+		[DivineDomain.Mind]: 0,
+		[DivineDomain.War]: 0,
+		[DivineDomain.Peace]: 0,
+		[DivineDomain.Life]: 0,
+		[DivineDomain.Death]: 0,
+		[DivineDomain.Cosmic]: 0
+	};
+
+	classInfo.classAbilities.filter(x => !!x.allegianceValue && !!x.domain).forEach(abl => {
+		/* @ts-ignore */
+		allegianceObject[abl.domain] += abl.allegianceValue
+	});
+	return allegianceObject;
 };

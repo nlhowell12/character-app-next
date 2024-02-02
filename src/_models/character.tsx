@@ -195,6 +195,7 @@ export interface ClassAbility {
 	description: string;
 	allegianceValue?: number;
 	domain?: DivineDomain;
+	school?: ArcaneSchool;
 }
 
 export interface ArchetypeAbility {

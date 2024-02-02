@@ -97,6 +97,7 @@ function classAbilityModel() {
         description: { type: String, required: true },
         allegianceValue: { type: Number },
         domain: { type: String },
+        school: { type: String },
     });
     return mongoose.models.ClassAbility || mongoose.model('ClassAbility', classAbilitySchema, 'class_abilities')
 }

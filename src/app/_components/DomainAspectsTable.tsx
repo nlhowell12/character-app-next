@@ -19,6 +19,7 @@ import {
     updateClassAbilityAction,
 } from '@/_reducer/characterReducer';
 import * as R from 'ramda';
+import { getAllegianceTotal } from '@/_utils/classUtils';
 
 interface DomainAspectsTableProps {
     classInfo: CharacterClass;
@@ -47,29 +48,7 @@ export const DomainAspectsTable = ({
         setPage(newPage);
     };
 
-    const getAllegianceTotal = useMemo(() => {
-        const allegianceObject: {[key in DivineDomain]: number} = {
-            [DivineDomain.Air]: 0,
-            [DivineDomain.Earth]: 0,
-            [DivineDomain.Fire]: 0,
-            [DivineDomain.Water]: 0,
-            [DivineDomain.Deception]: 0,
-            [DivineDomain.Truth]: 0,
-            [DivineDomain.Magic]: 0,
-            [DivineDomain.Mind]: 0,
-            [DivineDomain.War]: 0,
-            [DivineDomain.Peace]: 0,
-            [DivineDomain.Life]: 0,
-            [DivineDomain.Death]: 0,
-            [DivineDomain.Cosmic]: 0
-        };
-
-        classInfo.classAbilities.filter(x => !!x.allegianceValue && !!x.domain).forEach(abl => {
-            /* @ts-ignore */
-            allegianceObject[abl.domain] += abl.allegianceValue
-        });
-        return allegianceObject;
-    }, [classInfo]);
+    const allegianceTotals = useMemo(() => getAllegianceTotal(classInfo), [classInfo]);
 
     return (
         <Grid container direction='row'>
@@ -144,10 +123,12 @@ export const DomainAspectsTable = ({
         <Grid item xs={2}>
             <Card sx={{height: '100%'}} variant='outlined'>
                 <Table size='small'>
-                    {Object.keys(DivineDomain).sort((a,b) => getAllegianceTotal[b as DivineDomain] - getAllegianceTotal[a as DivineDomain]).map(dom => {
+                <TableBody>
+                {Object.keys(DivineDomain).sort((a,b) => allegianceTotals[b as DivineDomain] - allegianceTotals[a as DivineDomain]).map(dom => {
                         /* @ts-ignore */
-                        return dom !== DivineDomain.Cosmic && <TableRow><TableCell>{DivineDomain[dom]}</TableCell><TableCell>{getAllegianceTotal[dom]}</TableCell></TableRow>
+                        return dom !== DivineDomain.Cosmic && <TableRow key={dom}><TableCell>{DivineDomain[dom]}</TableCell><TableCell>{allegianceTotals[dom]}</TableCell></TableRow>
                     })}
+                </TableBody> 
                 </Table>
             </Card>            
         </Grid>
