@@ -102,10 +102,11 @@ export const sortDomainAspects = (character: Character) => {
 			return 1
 		}
 		const cleric = character.classes.filter(x => x.name === CharacterClassNames.Cleric)[0];
-		const preferredDomain = cleric.preferredDomains?.includes(a);
-		if(preferredDomain){
+		const preferredDomainA = cleric.preferredDomains?.includes(a);
+		const preferredDomainB = cleric.preferredDomains?.includes(b);
+		if(preferredDomainA && !preferredDomainB){
 			return -1
-		} else if (!preferredDomain) {
+		} else if (!preferredDomainA && preferredDomainB) {
 			return 1
 		}
 		return 0

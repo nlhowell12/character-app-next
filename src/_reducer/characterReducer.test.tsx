@@ -1,4 +1,4 @@
-import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick, Movement, MovementTypes, Maneuver, MartialQueue, Note } from '@/_models';
+import { CharacterKeys, AttributeNames, SkillTypes, Armor, Weapon, Dice, Spell, CharacterClassNames, SpellObject, Magick, Movement, MovementTypes, Maneuver, MartialQueue, Note, DivineDomain, CharacterClass } from '@/_models';
 import {
 	CharacterReducerActions,
 	addEquipmentAction,
@@ -17,6 +17,7 @@ import {
 	resetAction,
 	setCharacterAction,
 	toggleEquippedAction,
+	togglePreferredDomainAction,
 	updateAction,
 	updateAttributeAction,
 	updateClassAbilityAction,
@@ -193,6 +194,14 @@ describe('characterReducer', () => {
 		expect(newState.movementSpeeds.includes(newMovement)).toBeTruthy()
 		const newState2 = characterReducer(newState, removeMovementAction(newMovement));
 		expect(newState2.movementSpeeds.includes(newMovement)).toBeFalsy();
+	})
+	it('should add and remove preferred domains', () => {
+		const mock0WithCleric = {...mockCharacters[0], classes: [{name: CharacterClassNames.Cleric} as CharacterClass]};
+		const newState = characterReducer(mock0WithCleric, togglePreferredDomainAction(DivineDomain.Fire));
+		expect(newState.classes[0].preferredDomains?.includes(DivineDomain.Fire)).toBeTruthy();
+		const newState2 = characterReducer(newState, togglePreferredDomainAction(DivineDomain.Fire));
+		expect(newState2.classes[0].preferredDomains?.includes(DivineDomain.Fire)).toBeFalsy();
+
 	})
 	it('should reset to initial', () => {
 		const name = 'Kyrin';

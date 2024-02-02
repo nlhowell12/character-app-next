@@ -22,6 +22,7 @@ import {
     MartialQueue,
     Maneuver,
     ClassAbility,
+    DivineDomain,
 } from '@/_models';
 import initialSkillsState from './initialSkillsState';
 import * as R from 'ramda';
@@ -43,6 +44,7 @@ export enum CharacterReducerActions {
     LEARN_SPELL = 'LEARN_SPELL',
     PREPARE_SPELL = 'PREPARE_SPELL',
     MARTIAL_QUEUE = 'MARTIAL_QUEUE',
+    TOGGLE_PREFERRED_DOMAIN = 'TOGGLE_PREFERRED_DOMAIN',
     ADD_NOTE = 'ADD_NOTE',
     UPDATE_NOTE = 'UPDATE_NOTE',
     DELETE_NOTE = 'DELETE_NOTE',
@@ -87,6 +89,7 @@ type AcceptedUpdateValues =
     | Note
     | Movement
     | Currency
+    | DivineDomain
     | ClassAbility;
 
 export type CharacterAction = {
@@ -318,6 +321,16 @@ export const addMovementActions = (value: Movement): CharacterAction => {
     };
 };
 
+export const togglePreferredDomainAction = (value: DivineDomain): CharacterAction => {
+    return {
+        type: CharacterReducerActions.TOGGLE_PREFERRED_DOMAIN,
+        payload: {
+            value,
+            key: CharacterKeys.classes
+        }
+    }
+};
+
 export const removeMovementAction = (value: Movement): CharacterAction => {
     return {
         type: CharacterReducerActions.REMOVE_MOVEMENT,
@@ -429,6 +442,23 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                         },
                     },
                 };
+            }
+        case CharacterReducerActions.TOGGLE_PREFERRED_DOMAIN:
+            const domain = value as DivineDomain;
+            if (!!domain) {
+                const index = R.findIndex(R.propEq(CharacterClassNames.Cleric, 'name'))(state.classes);
+                const cleric = state.classes[index];
+                const preferredDomains = !!cleric.preferredDomains ? cleric.preferredDomains : [];
+                    if(state.classes[index].preferredDomains?.includes(domain)){
+                        return {
+                            ...state,
+                            classes: R.update(index, {...cleric, preferredDomains: R.reject(x => x === domain, preferredDomains)}, state.classes)
+                        };
+                    }
+                    return {
+                        ...state,
+                        classes: R.update(index, {...cleric, preferredDomains: R.append(domain, !!preferredDomains ? preferredDomains : [])}, state.classes)
+                    };
             }
         case CharacterReducerActions.UPDATECLASSABILITIES:
             const updateAbility = value as ClassAbility;
