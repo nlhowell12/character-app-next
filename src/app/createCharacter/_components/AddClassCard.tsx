@@ -3,6 +3,7 @@ import {
     CharacterClass,
     CharacterClassNames,
     ClassAbility,
+    DivineDomain,
     SkillTypes,
 } from '@/_models';
 import { NumberInput } from '@/app/_components/NumberInput';
@@ -110,6 +111,9 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
     const [BAB, setBAB] = useState<number>(0);
     const [classAbilities, setClassAbilities] = useState<ClassAbility[]>([]);
     const [classSkills, setClassSkills] = useState<string[]>([]);
+    const [turnDomain, setTurnDomain] = useState<DivineDomain>(DivineDomain.Air);
+    const [rebukeDomain, setRebukeDomain] = useState<DivineDomain>(DivineDomain.Air);
+    const [sponDomain, setSponDomain] = useState<DivineDomain>(DivineDomain.Air);
 
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>();
 
@@ -120,7 +124,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
 
     useEffect(() => {
         if(!!editClass) {
-            const {name, level, primarySave, secondarySave, classAbilities, classSkills, BAB} = editClass;
+            const {name, level, primarySave, secondarySave, classAbilities, classSkills, BAB, turnDomain, rebukeDomain, spontaneousChannelDomain} = editClass;
             setClassName(name as CharacterClassNames);
             setLevel(level)
             setPrimarySave(primarySave)
@@ -128,6 +132,9 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
             setClassAbilities(classAbilities)
             setClassSkills(classSkills)
             setBAB(BAB)
+            !!turnDomain && setTurnDomain(turnDomain)
+            !!rebukeDomain && setRebukeDomain(rebukeDomain)
+            !!spontaneousChannelDomain && setSponDomain(spontaneousChannelDomain)
         }
     },[editClass])
     
@@ -139,6 +146,9 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
             primarySave,
             secondarySave,
             classAbilities,
+            turnDomain: className === CharacterClassNames.Cleric ? turnDomain : undefined,
+            rebukeDomain: className === CharacterClassNames.Cleric ? rebukeDomain : undefined,
+            spontaneousChannelDomain: className === CharacterClassNames.Cleric ? sponDomain : undefined,
             classSkills: classSkills.map((x) => {
                 return x as SkillTypes;
             }),
@@ -290,6 +300,67 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                         })}
                     </Select>
                 </FormControl>
+                {className === CharacterClassNames.Cleric &&
+                <>
+                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                    <InputLabel id='turn-label'>Turn Domain</InputLabel>
+                    <Select
+                        labelId='turn-label'
+                        id='turn'
+                        label='Turn Domain'
+                        value={turnDomain}
+                        onChange={(e) => setTurnDomain(e.target.value as DivineDomain)}
+                    >
+                        {Object.keys(DivineDomain).map((dom) => {
+                            return (
+                                <MenuItem key={dom} value={dom}>
+                                    {/* @ts-ignore */}
+                                    <ListItemText primary={DivineDomain[dom]} />
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                    <InputLabel id='rebuke-label'>Rebuke Domain</InputLabel>
+                    <Select
+                        labelId='rebuke-label'
+                        id='rebuke'
+                        label='Rebuke Domain'
+                        value={rebukeDomain}
+                        onChange={(e) => setRebukeDomain(e.target.value as DivineDomain)}
+                    >
+                        {Object.keys(DivineDomain).map((dom) => {
+                            return (
+                                <MenuItem key={dom} value={dom}>
+                                    {/* @ts-ignore */}
+                                    <ListItemText primary={DivineDomain[dom]} />
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                    <InputLabel id='spon-label'>Spontaneous Casting Domain</InputLabel>
+                    <Select
+                        labelId='spon-label'
+                        id='spontCast'
+                        label='Spontaneous Casting Domain'
+                        value={sponDomain}
+                        onChange={(e) => setSponDomain(e.target.value as DivineDomain)}
+                    >
+                        {Object.keys(DivineDomain).map((dom) => {
+                            return (
+                                <MenuItem key={dom} value={dom}>
+                                    {/* @ts-ignore */}
+                                    <ListItemText primary={DivineDomain[dom]} />
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
+                </>
+                }
                 <Button sx={{ margin: '.5rem 0' }} onClick={handleClick}>
                     <Typography>Add Class Ability</Typography>
                     <Add />
