@@ -5,6 +5,10 @@ type ClassAbilityObject =  {
 	[key in CharacterClassNames]: ClassAbility[]
 };
 
+export enum DomainAspectFeats {
+	ImprovedCounterchannel = 'Improved Counterchannel'
+};
+
 export const getAllClassAbilities = (character: Character): ClassAbility[] => {
 	const abilities: ClassAbility[][] = [];
 	character.classes.forEach((cls) => {
@@ -67,7 +71,7 @@ export const getAllegianceTotal = (character: Character) => {
 		});
 	}
 	character.feats.forEach(x => {
-		if(x.name === 'Improved Counterchannel' && !!x.selectedOption){
+		if(x.name === DomainAspectFeats.ImprovedCounterchannel && !!x.selectedOption){
 			allegianceObject[x.selectedOption as DivineDomain] += 1
 		}
 	})

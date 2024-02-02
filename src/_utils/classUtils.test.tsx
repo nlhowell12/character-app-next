@@ -1,6 +1,7 @@
 import { mockCharacters } from '@/_mockData/characters';
 import * as classUtils from './classUtils';
 import { CharacterClass, CharacterClassNames, ClassAbility, DivineDomain, Feat, StatusEffects } from '@/_models';
+import { DomainAspectFeats } from './classUtils';
 
 describe('Class Utils', () => {
 	const mock0 = mockCharacters[0];
@@ -53,7 +54,7 @@ describe('Class Utils', () => {
 			[DivineDomain.Death]: 3,
 			[DivineDomain.Cosmic]: 0
 		}
-		expect(classUtils.getAllegianceTotal({...mock0WithCleric, feats: [...mock0.feats, {name: 'Improved Counterchannel', selectedOption: DivineDomain.Fire, requiredOption: true} as Feat]})).toStrictEqual(mockAllegianceObject)
+		expect(classUtils.getAllegianceTotal({...mock0WithCleric, feats: [...mock0.feats, {name: DomainAspectFeats.ImprovedCounterchannel, selectedOption: DivineDomain.Fire, requiredOption: true} as Feat]})).toStrictEqual(mockAllegianceObject)
 	})
 	it('should sort divine domains by value', () => {
 		expect(classUtils.getAlignedDomainAspects(mock0WithCleric)).toStrictEqual(['Death', 'Fire', 'Air', 'Deception', 'Earth'])
