@@ -72,6 +72,7 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                 container
             >
                 {character.classes.map((cls) => {
+                    console.log(cls)
                     return (
                         <Card
                             sx={{
@@ -101,13 +102,14 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                                 {!!cls.classAbilities.length && (
                                     <List subheader={'Class Abilities:'}>
                                         {cls.classAbilities.map((abl) => {
+                                            const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name
                                             return (
-                                                <ListItem key={abl.name}>
+                                                <ListItem key={name}>
                                                     <ListItemText
                                                         primary={`Level ${abl.level}`}
                                                     />
                                                     <ListItemText
-                                                        primary={abl.name}
+                                                        primary={name}
                                                     />
                                                 </ListItem>
                                             );

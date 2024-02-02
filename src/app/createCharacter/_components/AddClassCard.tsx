@@ -79,13 +79,14 @@ interface ClassAbilityCardProps {
     abl: ClassAbility
 };
 const ClassAbilityCard = ({abl}: ClassAbilityCardProps) => {
+    const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name
     return (
         <Card sx={{ padding: '0 0 0 .5rem', margin: '0 0 .25rem 0' }}>
             <Typography
                 variant='caption'
                 align='right'
             >{`Level: ${abl.level}`}</Typography>
-            <Typography>{abl.name}</Typography>
+            <Typography>{name}</Typography>
         </Card>
     )
 }
@@ -309,12 +310,13 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                     />
                 </Popover>
                 {classAbilities.map((abl: ClassAbility) => {
+                    const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name
                     return !!abl.description ? (
-                        <Tooltip title={abl.description} key={abl.name}>
+                        <Tooltip title={abl.description} key={name}>
                             <ClassAbilityCard abl={abl}/>
                         </Tooltip>
                     ) : (
-                        <ClassAbilityCard abl={abl} key={abl.name}/>
+                        <ClassAbilityCard abl={abl} key={name}/>
                     );
                 })}
             </CardContent>
