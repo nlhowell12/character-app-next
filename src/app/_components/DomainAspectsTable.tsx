@@ -16,10 +16,12 @@ import useClassAbilityService from '../api/_services/useClassAbilityService';
 import { Dispatch, useMemo, useState } from 'react';
 import {
     CharacterAction,
+    togglePreferredDomainAction,
     updateClassAbilityAction,
 } from '@/_reducer/characterReducer';
 import * as R from 'ramda';
 import { getAllegianceTotal, getClassAbilities, sortDomainAspects } from '@/_utils/classUtils';
+import { CheckCircle } from '@mui/icons-material';
 
 interface DomainAspectsTableProps {
     character: Character;
@@ -127,8 +129,9 @@ export const DomainAspectsTable = ({
                 <Table size='small'>
                 <TableBody>
                 {sortedDomains.map(dom => {
+                        const preferredDomain = character.classes.filter(x => x.name === CharacterClassNames.Cleric)[0].preferredDomains?.includes(dom);
                         /* @ts-ignore */
-                        return dom !== DivineDomain.Cosmic && <TableRow key={dom}><TableCell>{DivineDomain[dom]}</TableCell><TableCell>{allegianceTotals[dom]}</TableCell></TableRow>
+                        return dom !== DivineDomain.Cosmic && <TableRow key={dom} hover onClick={() => dispatch(togglePreferredDomainAction(dom))}><TableCell>{!!preferredDomain ? <Tooltip title='Preferred Domain'><CheckCircle color='primary' sx={{width: '1rem'}}/></Tooltip> : ''}</TableCell><TableCell>{DivineDomain[dom]}</TableCell><TableCell>{allegianceTotals[dom]}</TableCell></TableRow>
                     })}
                 </TableBody> 
                 </Table>
