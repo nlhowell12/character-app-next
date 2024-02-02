@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 interface ClassAbilityObject {
     [CharacterClassNames.Cleric]: {
         domainAspects: ClassAbility[];
+        orisons: ClassAbility[];
     }
 }
 
 const initialClassAbilityState: ClassAbilityObject = {
     [CharacterClassNames.Cleric]: {
-        domainAspects: []
+        domainAspects: [],
+        orisons: []
     }
 };
 
@@ -23,11 +25,12 @@ export default () => {
     const getClassAbilties = async () => {
         const res = await fetch('/api/classAbilities')
         const classAbilities = await res.json();
-        const clericDomainAspects = classAbilities.filter((x: ClassAbility) => x.className === CharacterClassNames.Cleric && !!x.domain && !!x.allegianceValue);
+        const clericDomainAspects: ClassAbility[] = classAbilities.filter((x: ClassAbility) => x.className === CharacterClassNames.Cleric && !!x.domain && !!x.allegianceValue);
+        const clericOrisons: ClassAbility[] = classAbilities.filter((x: ClassAbility) => x.className === CharacterClassNames.Cleric && !!x.domain && !x.level);
     
         if(!!classAbilities){
             setClassAbilities({
-                [CharacterClassNames.Cleric]: {domainAspects: clericDomainAspects}
+                [CharacterClassNames.Cleric]: {domainAspects: clericDomainAspects, orisons: clericOrisons}
             });
         }
     }
