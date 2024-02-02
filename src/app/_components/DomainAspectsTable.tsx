@@ -1,6 +1,5 @@
 import {
     Character,
-    CharacterClass,
     CharacterClassNames,
     DivineDomain,
 } from '@/_models';

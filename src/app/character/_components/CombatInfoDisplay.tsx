@@ -24,6 +24,11 @@ import {
     Dialog,
     Grid,
     Alert,
+    Box,
+    Tab,
+    Tabs,
+    TableHead,
+    Card,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import { DisplayCell } from './DisplayCell';
@@ -38,15 +43,17 @@ import MenuBook from '@mui/icons-material/MenuBook';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { SpellTable } from '@/app/_components/SpellTable';
 import useSpellService from '@/app/api/_services/useSpellService';
-import SpellbookTabsContainer from '@/app/_components/SpellbookTabsContainer';
+import SpellbookTabsContainer, { CustomTabPanel } from '@/app/_components/SpellbookTabsContainer';
 import {
     filterSpellObjectByCharacter,
     isCharacterPsionic,
 } from '@/_utils/spellUtils';
 import { SpeedDialog } from './SpeedDialog';
-import { checkForHalfMovement, getInitiativeScore } from '@/_utils/classUtils';
+import { checkForHalfMovement, getAlignedOrisons, getInitiativeScore } from '@/_utils/classUtils';
 import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
 import { DomainAspectsTable } from '@/app/_components/DomainAspectsTable';
+import { list } from 'postcss';
+import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -120,10 +127,17 @@ export const CombatInfoDisplay = ({
     const [openSpellbook, setOpenSpellbook] = useState<boolean>(false);
     const [openSpeed, setOpenSpeed] = useState(false);
     const [openDomainAspect, setOpenDomainAspect] = useState(false);
+    const [domainTabValue, setDomainTabValue] = useState<number>(0);
+
     const { spells } = useSpellService();
+    const { classAbilities } = useClassAbilityService();
 
     const handleSpellBookOpen = () => {
         setOpenSpellbook(true);
+    };
+
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        setDomainTabValue(newValue);
     };
 
     const handleDomainAspectOpen = () => {
@@ -374,10 +388,42 @@ export const CombatInfoDisplay = ({
                         maxWidth='lg'
                         keepMounted
                     >
-                        <DomainAspectsTable
-                            character={character}
-                            dispatch={dispatch}
-                        />
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={domainTabValue} onChange={handleTabChange}>
+                                    <Tab label='Domain Aspects' />
+                                    <Tab label='Orisons' />
+                                </Tabs>
+                            </Box>
+                            <CustomTabPanel value={domainTabValue} index={0}>
+                            <DomainAspectsTable
+                                character={character}
+                                dispatch={dispatch}
+                            />
+                            </CustomTabPanel>
+                            <CustomTabPanel value={domainTabValue} index={1}>
+                                <Card>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Domain</TableCell>
+                                                <TableCell>Description</TableCell>
+                                            </TableRow>   
+                                        </TableHead>
+                                        <TableBody>
+                                                {getAlignedOrisons(character, classAbilities.Cleric.orisons).map(ori => {
+                                                    return (
+                                                    <TableRow key={ori.domain}>
+                                                        <TableCell>{ori.domain}</TableCell>
+                                                        <TableCell><Typography whiteSpace='pre-line'>{ori.description}</Typography></TableCell>
+                                                    </TableRow>)
+                                                })}
+                                            </TableBody>
+                                    </Table>
+                                </Card>  
+                            </CustomTabPanel>
+                        </Box>
+                        
                     </Dialog>
                 </Grid>
             )}
