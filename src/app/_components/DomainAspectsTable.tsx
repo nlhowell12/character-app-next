@@ -19,7 +19,7 @@ import {
     updateClassAbilityAction,
 } from '@/_reducer/characterReducer';
 import * as R from 'ramda';
-import { getAllegianceTotal } from '@/_utils/classUtils';
+import { getAllegianceTotal, sortDomainAspects } from '@/_utils/classUtils';
 
 interface DomainAspectsTableProps {
     classInfo: CharacterClass;
@@ -49,6 +49,7 @@ export const DomainAspectsTable = ({
     };
 
     const allegianceTotals = useMemo(() => getAllegianceTotal(classInfo), [classInfo]);
+    const sortedDomains = useMemo(() => sortDomainAspects(classInfo), [classInfo]);
 
     return (
         <Grid container direction='row'>
@@ -124,7 +125,7 @@ export const DomainAspectsTable = ({
             <Card sx={{height: '100%'}} variant='outlined'>
                 <Table size='small'>
                 <TableBody>
-                {Object.keys(DivineDomain).sort((a,b) => allegianceTotals[b as DivineDomain] - allegianceTotals[a as DivineDomain]).map(dom => {
+                {sortedDomains.map(dom => {
                         /* @ts-ignore */
                         return dom !== DivineDomain.Cosmic && <TableRow key={dom}><TableCell>{DivineDomain[dom]}</TableCell><TableCell>{allegianceTotals[dom]}</TableCell></TableRow>
                     })}

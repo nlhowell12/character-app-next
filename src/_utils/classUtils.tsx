@@ -62,3 +62,8 @@ export const getAllegianceTotal = (classInfo: CharacterClass) => {
 	});
 	return allegianceObject;
 };
+
+export const sortDomainAspects = (classInfo: CharacterClass) => {
+	const allegianceTotals = getAllegianceTotal(classInfo);
+	return Object.keys(DivineDomain).sort((a,b) => allegianceTotals[b as DivineDomain] - allegianceTotals[a as DivineDomain])
+}
