@@ -375,7 +375,7 @@ export const CombatInfoDisplay = ({
                         keepMounted
                     >
                         <DomainAspectsTable
-                            classInfo={clericClass}
+                            character={character}
                             dispatch={dispatch}
                         />
                     </Dialog>

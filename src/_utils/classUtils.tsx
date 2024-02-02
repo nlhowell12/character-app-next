@@ -1,7 +1,11 @@
-import { AttributeNames, Character, CharacterClass, ClassAbility, DivineDomain, Movement, StatusEffects } from "@/_models";
+import { AttributeNames, Character, CharacterClass, CharacterClassNames, ClassAbility, DivineDomain, Movement, StatusEffects } from "@/_models";
 import { getTotalAttributeModifier } from "./attributeUtils";
 
-export const getClassAbilities = (character: Character): ClassAbility[] => {
+type ClassAbilityObject =  {
+	[key in CharacterClassNames]: ClassAbility[]
+};
+
+export const getAllClassAbilities = (character: Character): ClassAbility[] => {
 	const abilities: ClassAbility[][] = [];
 	character.classes.forEach((cls) => {
 		abilities.push(cls.classAbilities);
@@ -39,7 +43,7 @@ export const getInitiativeScore = (character: Character): string => {
     return `${total > 0 ? '+': ''}${total}`;
 };
 
-export const getAllegianceTotal = (classInfo: CharacterClass) => {
+export const getAllegianceTotal = (character: Character) => {
 	const allegianceObject: {[key in DivineDomain]: number} = {
 		[DivineDomain.Air]: 0,
 		[DivineDomain.Earth]: 0,
@@ -55,15 +59,47 @@ export const getAllegianceTotal = (classInfo: CharacterClass) => {
 		[DivineDomain.Death]: 0,
 		[DivineDomain.Cosmic]: 0
 	};
-
-	classInfo.classAbilities.filter(x => !!x.allegianceValue && !!x.domain).forEach(abl => {
-		/* @ts-ignore */
-		allegianceObject[abl.domain] += abl.allegianceValue
-	});
+	const clericClassAbilities = getClassAbilities(character.classes)[CharacterClassNames.Cleric];
+	if(clericClassAbilities){
+		clericClassAbilities.filter(x => !!x.allegianceValue && !!x.domain).forEach(abl => {
+			/* @ts-ignore */
+			allegianceObject[abl.domain] += abl.allegianceValue
+		});
+	}
+	character.feats.forEach(x => {
+		if(x.name === 'Improved Counterchannel' && !!x.selectedOption){
+			allegianceObject[x.selectedOption as DivineDomain] += 1
+		}
+	})
 	return allegianceObject;
 };
 
-export const sortDomainAspects = (classInfo: CharacterClass) => {
-	const allegianceTotals = getAllegianceTotal(classInfo);
+export const sortDomainAspects = (character: Character) => {
+	const allegianceTotals = getAllegianceTotal(character);
 	return Object.keys(DivineDomain).sort((a,b) => allegianceTotals[b as DivineDomain] - allegianceTotals[a as DivineDomain])
+}
+
+export const getAlignedDomainAspects = (character: Character) => {
+	return sortDomainAspects(character).slice(0, 5);
+};
+
+export const getAlignedOrisons = (character: Character, abilities: ClassAbility[]) => {
+	const orisons = abilities.filter(x => !!x.domain && x.level === 0 && x.className === CharacterClassNames.Cleric);
+	const alignedDomains = getAlignedDomainAspects(character);
+	return orisons.filter(abl => !!abl.domain && alignedDomains.includes(abl.domain));
+};
+
+export const getClassAbilities = (classes: CharacterClass[]): Partial<ClassAbilityObject> => {
+	type ClassAbilityObject =  {
+		[key in CharacterClassNames]: ClassAbility[]
+	};
+	let classAbilityObject: Partial<ClassAbilityObject> = {};
+	classes.forEach(cls => {
+		if(cls.name === CharacterClassNames.Cleric){
+			classAbilityObject[cls.name] = [...cls.classAbilities]
+		} else {
+			classAbilityObject[cls.name] = cls.classAbilities
+		}
+	})
+	return classAbilityObject;
 }

@@ -1,4 +1,4 @@
-import { CharacterClass, CharacterClassNames, DivineDomain } from '@/_models';
+import { Character, CharacterClass, CharacterClassNames, DivineDomain } from '@/_models';
 import {
     Card,
     Checkbox,
@@ -19,15 +19,15 @@ import {
     updateClassAbilityAction,
 } from '@/_reducer/characterReducer';
 import * as R from 'ramda';
-import { getAllegianceTotal, sortDomainAspects } from '@/_utils/classUtils';
+import { getAllegianceTotal, getClassAbilities, sortDomainAspects } from '@/_utils/classUtils';
 
 interface DomainAspectsTableProps {
-    classInfo: CharacterClass;
+    character: Character;
     dispatch: Dispatch<CharacterAction>;
 }
 
 export const DomainAspectsTable = ({
-    classInfo,
+    character,
     dispatch,
 }: DomainAspectsTableProps) => {
     const { classAbilities } = useClassAbilityService();
@@ -48,10 +48,11 @@ export const DomainAspectsTable = ({
         setPage(newPage);
     };
 
-    const allegianceTotals = useMemo(() => getAllegianceTotal(classInfo), [classInfo]);
-    const sortedDomains = useMemo(() => sortDomainAspects(classInfo), [classInfo]);
-
+    const allegianceTotals = useMemo(() => getAllegianceTotal(character), [character]);
+    const sortedDomains = useMemo(() => sortDomainAspects(character), [character]);
+    const clericClassAbilities = getClassAbilities(character.classes)[CharacterClassNames.Cleric];
     return (
+        !!clericClassAbilities && 
         <Grid container direction='row'>
         <Grid item xs={10}>
             <Card>
@@ -71,7 +72,7 @@ export const DomainAspectsTable = ({
                             page * rowsPerPage + rowsPerPage
                         )
                         .map((asp) => {
-                            const isSelected = classInfo.classAbilities.some(
+                            const isSelected = clericClassAbilities.some(
                                 (x) =>
                                     x.domain === asp.domain &&
                                     x.level === asp.level
@@ -134,6 +135,5 @@ export const DomainAspectsTable = ({
             </Card>            
         </Grid>
         </Grid>
-        
     );
 };
