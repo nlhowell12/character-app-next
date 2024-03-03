@@ -37,7 +37,7 @@ export const reduceSpeed = (moveSpeeds: Movement[], reduction: 'half' | 'quarter
 }
 
 export const checkForHalfMovement = (character: Character): Movement[] => {
-	const speedReductionStatusEffects = [StatusEffects.Blinded, StatusEffects.Exhausted, StatusEffects.Slowed]
+	const speedReductionStatusEffects = [StatusEffects.Blinded, StatusEffects.Exhausted, StatusEffects.Slowed, StatusEffects.Entangled]
     return character.statusEffects.some(x => speedReductionStatusEffects.includes(x)) ? reduceSpeed(character.movementSpeeds, 'half') : character.movementSpeeds;
 }
 
