@@ -48,6 +48,11 @@ export const getInitiativeScore = (character: Character): string => {
     return `${total > 0 ? '+': ''}${total}`;
 };
 
+export const hasMartialClass = (character: Character): boolean => {
+	const martialClasses = [CharacterClassNames.Fighter, CharacterClassNames.Hexblade, CharacterClassNames.Oathsworn, CharacterClassNames.PsychicWarrior];
+	return character.classes.some(x => martialClasses.includes(x.name));
+};
+
 export const getAllegianceTotal = (character: Character) => {
 	const allegianceObject: {[key in DivineDomain]: number} = {
 		[DivineDomain.Air]: 0,

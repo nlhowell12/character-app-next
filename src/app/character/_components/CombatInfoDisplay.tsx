@@ -49,10 +49,10 @@ import {
     isCharacterPsionic,
 } from '@/_utils/spellUtils';
 import { SpeedDialog } from './SpeedDialog';
-import { checkForHalfMovement, getAlignedOrisons, getInitiativeScore } from '@/_utils/classUtils';
+import { checkForHalfMovement, getAlignedOrisons, getInitiativeScore, hasMartialClass } from '@/_utils/classUtils';
 import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
 import { DomainAspectsTable } from '@/app/_components/DomainAspectsTable';
-import { list } from 'postcss';
+
 import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
 interface CombatInfoDisplayProps {
     character: Character;
@@ -190,7 +190,7 @@ export const CombatInfoDisplay = ({
     const clericClass: CharacterClass | undefined = character.classes.find(
         (x) => x.name === CharacterClassNames.Cleric
     );
-
+    
     return (
         <>
             <DisplayCell
@@ -356,6 +356,7 @@ export const CombatInfoDisplay = ({
                                 character={character}
                                 onChange={handlePrepareSpell}
                             />
+                            {hasMartialClass(character) &&
                             <SpellTable
                                 spells={filterSpellObjectByCharacter(
                                     character,
@@ -366,7 +367,7 @@ export const CombatInfoDisplay = ({
                                 personal
                                 character={character}
                                 onChange={handlePrepareSpell}
-                            />
+                            />}
                         </SpellbookTabsContainer>
                     </Dialog>
                 </Grid>

@@ -35,6 +35,7 @@ export default function SpellbookTabsContainer({ children }: BasicTabsProps) {
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+    const showMartial = list.length > 2;
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -42,7 +43,7 @@ export default function SpellbookTabsContainer({ children }: BasicTabsProps) {
                 <Tabs value={value} onChange={handleChange}>
                     <Tab label='Class Spells' />
                     <Tab label='Spell Book' />
-                    <Tab label='Martial Queue' />
+                    {showMartial && <Tab label='Martial Queue' />}
                 </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
@@ -51,9 +52,9 @@ export default function SpellbookTabsContainer({ children }: BasicTabsProps) {
             <CustomTabPanel value={value} index={1}>
                 {list[1]}
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
+            {showMartial && <CustomTabPanel value={value} index={2}>
                 {list[2]}
-            </CustomTabPanel>
+            </CustomTabPanel>}
         </Box>
     );
 }
