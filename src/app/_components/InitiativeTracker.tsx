@@ -21,6 +21,7 @@ interface TrackerMessage {
     data: {
         value: string;
         delete: boolean;
+        id: string;
     };
     id: string;
 }
@@ -35,6 +36,10 @@ export const InitiativeTracker = () => {
         );
         if (messageIndex === -1) {
             updateMessages([...messages, message]);
+        } else if(message.name === 'tracker-delete') {
+            handleDelete(message)
+        } else if(message.name === 'tracker-clear') {
+            handleClear(message);
         } else {
             updateMessages(
                 R.update(messageIndex, message as TrackerMessage, messages)
@@ -62,7 +67,7 @@ export const InitiativeTracker = () => {
     };
 
     const handleDelete = (m: TrackerMessage) => {
-        const filter = (x: TrackerMessage) => x.id !== m.id;
+        const filter = (x: TrackerMessage) => x.id !== m.data.id;
         updateMessages(R.filter(filter, messages))
     };
     const handleClear = (m: TrackerMessage) => {
@@ -72,13 +77,6 @@ export const InitiativeTracker = () => {
     useEffect(() => {
         getTrackerHistory();
     }, []);
-
-    useEffect(() => {
-        channel.subscribe('tracker-delete', handleDelete)
-    }, [])
-    useEffect(() => {
-        channel.subscribe('tracker-clear', handleClear)
-    }, [])
 
     return (
         <Card>
@@ -114,7 +112,7 @@ export const InitiativeTracker = () => {
                                                     m.name
                                                 } ${Number(
                                                     m.data.value
-                                                )}`} onClick={() => channel.publish({name: m.name, data: {value: m.data.value, delete: true}, id: m.id, extras: {ref: {type: 'tracker-delete'}}})
+                                                )}`} onClick={() => channel.publish('tracker-delete', {data: {value: m.data.value, delete: true}, id: m.id, extras: {ref: {type: 'tracker-delete'}}})
                                             }
                                                 sx={{ '&:hover': { opacity: '.6', cursor: 'pointer', textDecoration: 'line-through' },}}/>
                                             </ListItem>
@@ -126,7 +124,7 @@ export const InitiativeTracker = () => {
                 </Grid>
             </CardContent>
             <CardActions sx={{justifyContent: 'flex-end'}}>
-                <Button color='error' onClick={() => channel.publish({name: 'tracker-clear', data: {value: 0, delete: true}, id: uuidv4(), extras: {ref: {type: 'tracker-clear'}}}) }>
+                <Button color='error' onClick={() => channel.publish('tracker-clear', {data: {value: 0, delete: true}, id: uuidv4(), extras: {ref: {type: 'tracker-clear'}}}) }>
                     Clear Initiative
                 </Button>
                 <Button onClick={() => channel.publish(name, {value: score, delete: false})}>
