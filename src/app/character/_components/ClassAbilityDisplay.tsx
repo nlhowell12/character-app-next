@@ -10,7 +10,7 @@ import {
 	Typography,
     useTheme,
 } from '@mui/material';
-import { getAllClassAbilities } from '@/_utils/classUtils';
+import { getAllClassAbilities, getHexbladeCurseDC } from '@/_utils/classUtils';
 
 export enum CardTitles {
 	Total = 'Total',
@@ -58,7 +58,7 @@ export const ClassAbilityDisplay = ({
 } : ClassAbilityDisplayProps) => {
 	const abilities = getAllClassAbilities(character);
     const theme = useTheme();
-
+	const hexbladeDC = getHexbladeCurseDC(character);
 	return (
 		<Card sx={{
 			width: '100%',
@@ -72,6 +72,11 @@ export const ClassAbilityDisplay = ({
 				border: '1px solid gray',
 			}}>
 				<TableBody>
+					{!!hexbladeDC && 
+					<TableRow>
+						<TableCell><Typography>Hexblade Curse DC</Typography></TableCell>
+						<TableCell><Typography>{hexbladeDC}</Typography></TableCell>
+					</TableRow>}
 					{abilities.map((ability) => {
 						return (
 							<AbilityRow key={ability.className + ability.description} ability={ability}/>

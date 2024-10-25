@@ -152,5 +152,6 @@ export const getHexbladeCurseDC = (character: Character) => {
 	const isHexblade = character.classes.some(x => x.name === CharacterClassNames.Hexblade);
 	const charismaMod  = getAttributeModifier(getBaseAttributeScore(character, AttributeNames.Charisma))
 	const characterLevel = getTotalClassLevels(character);
-	return isHexblade ? 10 + (characterLevel / 2) + charismaMod : null;
+	const hexbladeDC = Math.floor(10 + (characterLevel / 2) + charismaMod);
+	return isHexblade ? hexbladeDC : null;
 };

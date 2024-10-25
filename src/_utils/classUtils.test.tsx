@@ -87,9 +87,11 @@ describe('Class Utils', () => {
 	it('should correctly determine a hexblades curse DC', () => {
 		const hexblade = {...mock0, classes: [...mock0.classes, {name: CharacterClassNames.Hexblade, level: 10}]} as Character;
 		const hexblade2 = {...mock0, attributes: {...mock0.attributes, [AttributeNames.Charisma]: {value: 20}}, classes: [...mock0.classes, {name: CharacterClassNames.Hexblade, level: 10}]} as Character;
+		const hexblade3 = {...mock0, attributes: {...mock0.attributes, [AttributeNames.Charisma]: {value: 20}}, classes: [...mock0.classes, {name: CharacterClassNames.Hexblade, level: 1}]} as Character;
 		expect(classUtils.getHexbladeCurseDC(mock0)).toStrictEqual(null); //Not a hexblade
 		expect(classUtils.getHexbladeCurseDC(hexblade)).toBe(16);
 		expect(classUtils.getHexbladeCurseDC(hexblade2)).toBe(21);
+		expect(classUtils.getHexbladeCurseDC(hexblade3)).toBe(16);
 	})
 	it('should get total class levels correctly', () => {
 		const mock1 = {...mock0, classes: [...mock0.classes, {name: CharacterClassNames.Shadowcaster, level: 23}]} as Character;
