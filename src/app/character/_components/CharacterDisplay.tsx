@@ -16,6 +16,8 @@ import {
     useTheme,
 } from '@mui/material';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import { ClassAbilityDisplay } from './ClassAbilityDisplay';
+import { Class } from '@mui/icons-material';
 
 interface CharacterDisplayProps {
     character: Character;
@@ -29,6 +31,7 @@ export const CharacterDisplay = ({
 }: CharacterDisplayProps) => {
     const [openSkillDrawer, setOpenSkillDrawer] = useState(false);
     const [openAttDrawer, setOpenAttDrawer] = useState(false);
+    const [openAbilityDrawer, setOpenAbilityDrawer] = useState(false);
     const theme = useTheme();
 
     return (
@@ -83,6 +86,30 @@ export const CharacterDisplay = ({
                         </Typography>
                         <ArrowDropUpIcon sx={{ margin: 0 }} />
                     </Button>
+                    <Button
+                        variant='outlined'
+                        onClick={() => setOpenAbilityDrawer(true)}
+                        color='primary'
+                        sx={{
+                            position: 'absolute',
+                            transform: 'rotate(90deg)',
+                            left: '-5rem',
+                            top: '12rem',
+                            borderRadius: '1rem 1rem 0 0',
+                            padding: '0 .5rem 0 .5rem',
+                            margin: 0,
+                            textTransform: 'none',
+                            alignContent: 'center',
+                            [theme.breakpoints.up('xl')]: {
+                                display: 'none',
+                            },
+                        }}
+                    >
+                        <Typography variant='body1' textTransform='none'>
+                            Class Abilities
+                        </Typography>
+                        <ArrowDropUpIcon sx={{ margin: 0 }} />
+                    </Button>
                     <SwipeableDrawer
                         PaperProps={{
                             sx: {
@@ -97,6 +124,21 @@ export const CharacterDisplay = ({
                         onOpen={() => setOpenAttDrawer(true)}
                     >
                         <AttributeDisplay character={character} />
+                    </SwipeableDrawer>
+                    <SwipeableDrawer
+                        PaperProps={{
+                            sx: {
+                                marginTop: '15%',
+                                height: 'fit-content',
+                            },
+                        }}
+                        keepMounted
+                        anchor={'left'}
+                        open={openAbilityDrawer}
+                        onClose={() => setOpenAbilityDrawer(false)}
+                        onOpen={() => setOpenAbilityDrawer(true)}
+                    >
+                        <ClassAbilityDisplay character={character} />
                     </SwipeableDrawer>
                     <Button
                         variant='outlined'
@@ -147,6 +189,7 @@ export const CharacterDisplay = ({
                         }}
                     >
                         <AttributeDisplay character={character} />
+                        <ClassAbilityDisplay character={character}/>
                     </Grid>
                     <Grid
                         item
