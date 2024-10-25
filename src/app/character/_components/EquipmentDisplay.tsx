@@ -203,6 +203,46 @@ const CurrencyDisplay = ({
         </Dialog>
     );
 };
+interface EquipmentInputProps {
+    id: string;
+    value: string | number;
+    dispatch: Dispatch<CharacterAction>
+    eqKey: keyof Equipment | keyof Weapon | keyof Armor;
+};
+
+const EquipmentInput = ({id, value, dispatch, eqKey} : EquipmentInputProps) => {
+    const [updateValue, setUpdateValue] = useState(value);
+    const [isFocused, setFocused] = useState(false);
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setFocused(true);
+        setUpdateValue(e.target.value)
+    }
+    const dispatchChange = () => {
+        dispatch(
+            updateEquipmentAction(
+                id,
+                updateValue,
+                eqKey
+            )
+        );
+        setFocused(false);
+    }
+ return ( 
+    <OutlinedInput
+        type='number'
+        sx={{
+            ...numberInputStyling,
+            width: '4rem',
+        }}
+        value={isFocused ? updateValue : value}
+        onChange={handleChange}
+        onBlur={() => dispatchChange()}
+        inputProps={{
+            min: 0,
+        }}
+    />
+    )
+};
 
 export const EquipmentDisplay = ({
     character,
@@ -348,26 +388,7 @@ export const EquipmentDisplay = ({
                                 <TableRow key={uuidv4()}>
                                     <TableCell>{weapon.name}</TableCell>
                                     <TableCell>
-                                        <OutlinedInput
-                                            type='number'
-                                            sx={{
-                                                ...numberInputStyling,
-                                                width: '4rem',
-                                            }}
-                                            value={weapon.amount}
-                                            onChange={(e) => {
-                                                dispatch(
-                                                    updateEquipmentAction(
-                                                        weapon.id,
-                                                        Number(e.target.value),
-                                                        'amount'
-                                                    )
-                                                );
-                                            }}
-                                            inputProps={{
-                                                min: 0,
-                                            }}
-                                        />
+                                        <EquipmentInput id={weapon.id} value={weapon.amount} dispatch={dispatch} eqKey={'amount'}/>
                                     </TableCell>
                                     <TableCell align='center'>
                                         <Typography>{`${getAttackBonus(
@@ -489,26 +510,7 @@ export const EquipmentDisplay = ({
                                     }${armor.armorCheckPenalty}`}</TableCell>
                                     <TableCell align='center'>{`${armor.spellFailure}%`}</TableCell>
                                     <TableCell>
-                                        <OutlinedInput
-                                            type='number'
-                                            sx={{
-                                                ...numberInputStyling,
-                                                width: '4rem',
-                                            }}
-                                            value={armor.hardness}
-                                            onChange={(e) => {
-                                                dispatch(
-                                                    updateEquipmentAction(
-                                                        armor.id,
-                                                        e.target.value,
-                                                        'hardness'
-                                                    )
-                                                );
-                                            }}
-                                            inputProps={{
-                                                min: 0,
-                                            }}
-                                        />
+                                        <EquipmentInput id={armor.id} value={armor.hardness} dispatch={dispatch} eqKey={'hardness'}/>
                                     </TableCell>
                                     <TableCell align='center'>
                                         {armor.equipped ? (
@@ -586,26 +588,7 @@ export const EquipmentDisplay = ({
                                 <TableRow key={uuidv4()}>
                                     <TableCell>{eq.name}</TableCell>
                                     <TableCell>
-                                        <OutlinedInput
-                                            type='number'
-                                            sx={{
-                                                ...numberInputStyling,
-                                                width: '4rem',
-                                            }}
-                                            value={eq.amount}
-                                            onChange={(e) => {
-                                                dispatch(
-                                                    updateEquipmentAction(
-                                                        eq.id,
-                                                        Number(e.target.value),
-                                                        'amount'
-                                                    )
-                                                );
-                                            }}
-                                            inputProps={{
-                                                min: 0,
-                                            }}
-                                        />
+                                        <EquipmentInput id={eq.id} value={eq.amount} dispatch={dispatch} eqKey={'amount'}/>
                                     </TableCell>
                                     <TableCell align='center'>
                                         {eq.bodySlot}
