@@ -74,7 +74,7 @@ export const ClassAbilityDisplay = ({
 				<TableBody>
 					{abilities.map((ability) => {
 						return (
-							<AbilityRow ability={ability}/>
+							<AbilityRow key={ability.className + ability.description} ability={ability}/>
 						);
 					})}
 				</TableBody>
