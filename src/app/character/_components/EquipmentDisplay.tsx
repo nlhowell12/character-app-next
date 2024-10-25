@@ -240,6 +240,7 @@ const EquipmentInput = ({id, value, dispatch, eqKey} : EquipmentInputProps) => {
         inputProps={{
             min: 0,
         }}
+        onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
     />
     )
 };
