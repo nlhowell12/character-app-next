@@ -1,6 +1,6 @@
 import { mockCharacters } from '@/_mockData/characters';
 import * as classUtils from './classUtils';
-import { CharacterClass, CharacterClassNames, ClassAbility, DivineDomain, Feat, StatusEffects } from '@/_models';
+import { AttributeNames, Character, CharacterClass, CharacterClassNames, ClassAbility, DivineDomain, Feat, StatusEffects } from '@/_models';
 import { DomainAspectFeats } from './classUtils';
 
 describe('Class Utils', () => {
@@ -84,4 +84,29 @@ describe('Class Utils', () => {
 		expect(classUtils.getAlignedOrisons(mock0WithCleric, mockOrisonList).length).toBe(5);
 		expect(classUtils.getAlignedOrisons(mock0WithCleric, mockOrisonList)).toStrictEqual(expectObject);
 	});
+	it('should correctly determine a hexblades curse DC', () => {
+		const hexblade = {...mock0, classes: [...mock0.classes, {name: CharacterClassNames.Hexblade, level: 10}]} as Character;
+		const hexblade2 = {...mock0, attributes: {...mock0.attributes, [AttributeNames.Charisma]: {value: 20}}, classes: [...mock0.classes, {name: CharacterClassNames.Hexblade, level: 10}]} as Character;
+		expect(classUtils.getHexbladeCurseDC(mock0)).toStrictEqual(null); //Not a hexblade
+		expect(classUtils.getHexbladeCurseDC(hexblade)).toBe(16);
+		expect(classUtils.getHexbladeCurseDC(hexblade2)).toBe(21);
+	})
+	it('should get total class levels correctly', () => {
+		const mock1 = {...mock0, classes: [...mock0.classes, {name: CharacterClassNames.Shadowcaster, level: 23}]} as Character;
+		expect(classUtils.getTotalClassLevels(mock0)).toBe(2)
+		expect(classUtils.getTotalClassLevels(mock1)).toBe(25)
+	})
+	it('should find if a character has a martial class', () => {
+		const rogue = {...mock0, classes: [mock0.classes[0]]} as Character;
+		const hexblade = {...mock0, classes: [...mock0.classes, {name: CharacterClassNames.Hexblade, level: 10}]} as Character;
+		const oathsworn = {...mock0, classes: [...mock0.classes, {name: CharacterClassNames.Oathsworn, level: 10}]} as Character;
+		const fighter = {...mock0, classes: [...mock0.classes, {name: CharacterClassNames.Fighter, level: 10}]} as Character;
+		const psyWar = {...mock0, classes: [...mock0.classes, {name: CharacterClassNames.PsychicWarrior, level: 10}]} as Character;
+
+		expect(classUtils.hasMartialClass(rogue)).toBeFalsy();
+		expect(classUtils.hasMartialClass(hexblade)).toBeTruthy()
+		expect(classUtils.hasMartialClass(oathsworn)).toBeTruthy()
+		expect(classUtils.hasMartialClass(fighter)).toBeTruthy()
+		expect(classUtils.hasMartialClass(psyWar)).toBeTruthy()
+	})
 });

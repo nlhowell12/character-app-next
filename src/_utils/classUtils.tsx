@@ -1,5 +1,5 @@
 import { AttributeNames, Character, CharacterClass, CharacterClassNames, ClassAbility, DivineDomain, Movement, StatusEffects } from "@/_models";
-import { getTotalAttributeModifier } from "./attributeUtils";
+import { getAttributeModifier, getBaseAttributeScore, getTotalAttributeModifier } from "./attributeUtils";
 import * as R from 'ramda';
 
 type ClassAbilityObject =  {
@@ -142,4 +142,15 @@ export const getClassAbilities = (classes: CharacterClass[]): Partial<ClassAbili
 		}
 	})
 	return classAbilityObject;
-}
+};
+
+export const getTotalClassLevels = (character: Character) => {
+	return character.classes.reduce((x: number, y: CharacterClass) => x + y.level, 0)
+};
+
+export const getHexbladeCurseDC = (character: Character) => {
+	const isHexblade = character.classes.some(x => x.name === CharacterClassNames.Hexblade);
+	const charismaMod  = getAttributeModifier(getBaseAttributeScore(character, AttributeNames.Charisma))
+	const characterLevel = getTotalClassLevels(character);
+	return isHexblade ? 10 + (characterLevel / 2) + charismaMod : null;
+};
