@@ -24,6 +24,7 @@ import {
     Character,
     CharacterKeys,
     Currency,
+    Dice,
     Equipment,
     Weapon,
 } from '@/_models';
@@ -292,7 +293,7 @@ export const EquipmentDisplay = ({
             });
             return string;
         };
-        if (!weapon.numberOfDice) {
+        if (!weapon.numberOfDice || Dice[weapon.damage as keyof typeof Dice] === Dice.Minimum) {
             return `${1 + damageBonus}`;
         } else {
             return `${Number(weapon.numberOfDice.toString())}${
