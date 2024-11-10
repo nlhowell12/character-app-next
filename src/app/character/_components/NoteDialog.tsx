@@ -20,6 +20,7 @@ import {
     CardActions,
     Stack,
     Chip,
+    TableBody,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Dispatch, useState } from 'react';
@@ -60,6 +61,7 @@ const OtherInfoTooltip = ({ display}: OtherInfoTooltipProps) => {
     const tableCellStyling = { borderBottom: 'none' };
     return (
         <Table size='small'>
+            <TableBody>
             {display.map((x) => {
                 return (
                     <TableRow key={x}>
@@ -69,6 +71,7 @@ const OtherInfoTooltip = ({ display}: OtherInfoTooltipProps) => {
                     </TableRow>
                 );
             })}
+            </TableBody>   
         </Table>
     );
 };
@@ -80,9 +83,10 @@ interface OtherInfoListItemProps {
 };
 
 const OtherInfoListItem = ({display, onEdit, title}: OtherInfoListItemProps) => {
-    return <Tooltip
+    return display.length ? <Tooltip
                 title={<OtherInfoTooltip display={display} />}
                 followCursor
+                placement='left'
             >
                 <ListItem
                     secondaryAction={
@@ -93,7 +97,16 @@ const OtherInfoListItem = ({display, onEdit, title}: OtherInfoListItemProps) => 
                 >
                     <ListItemText primary={title} />
                 </ListItem>
-            </Tooltip>
+            </Tooltip> : 
+            <ListItem
+            secondaryAction={
+                <IconButton onClick={onEdit}>
+                    <EditIcon />
+                </IconButton>
+            }
+        >
+            <ListItemText primary={title} />
+        </ListItem>
 };
 
 const NoteItem = ({ note, dispatch }: NoteItemProps) => {
