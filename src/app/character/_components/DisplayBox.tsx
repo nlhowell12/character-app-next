@@ -1,4 +1,4 @@
-import { Modifier, StatusEffects } from "@/_models";
+import { BonusTypes, Modifier, StatusEffects } from "@/_models";
 import { OutlinedInput, TextField, Tooltip, Typography } from "@mui/material";
 import { CardTitles, CardTitlesType } from "./AttributeDisplay";
 import { AttributeTooltip } from "./AttributeTooltip";
@@ -25,7 +25,7 @@ export const DisplayBox = ({
 	onChange,
 	dispatchChange
 }: AttributeDisplayProps) => {
-	return !!modifiers?.length && displayTitle === CardTitles.Total ? (
+	return !!modifiers?.filter(x => x.type !== BonusTypes.Racial)?.length && displayTitle === CardTitles.Total ? (
 		<Tooltip
 			title={<AttributeTooltip modifiers={modifiers} />}
 			placement='right'
