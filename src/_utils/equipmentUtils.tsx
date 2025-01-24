@@ -1,6 +1,7 @@
 import {
     Armor,
     AttributeNames,
+    BonusTypes,
     CarryingCapacityObject,
     Character,
     Currency,
@@ -15,7 +16,7 @@ import {
     getTotalAttributeModifier,
     totalAttributeValue,
 } from './attributeUtils';
-import { BonusObject } from './defenseUtils';
+import { BonusObject, getCombatSizeBonus } from './defenseUtils';
 import {
     getDazzledModifiers,
     getEnergyDrainedModifiers,
@@ -82,6 +83,12 @@ export const getAllAttackModifiers = (
 ): Modifier[] => {
     const characterMods = character.miscModifiers.filter((x) => !!x.attack);
     const weaponMods = weapon.modifiers.filter((x) => !!x.attack);
+    const sizeBonus = getCombatSizeBonus(character);
+    const sizeBonusMod: Modifier = {
+        attack: true,
+        value: sizeBonus, 
+        type: BonusTypes.Size
+    } as Modifier;
     const statusEffectMods = [
         ...getEntangledModifiers(character),
         ...getDazzledModifiers(character),
@@ -90,7 +97,7 @@ export const getAllAttackModifiers = (
         ...getSlowedModifiers(character),
         ...getEnergyDrainedModifiers(character)
     ].filter((x) => !!x.attack);
-    return [...characterMods, ...weaponMods, ...statusEffectMods];
+    return [...characterMods, ...weaponMods, ...statusEffectMods, sizeBonusMod];
 };
 
 export const getEquipmentWeightBySize = (eq: Equipment): number => {

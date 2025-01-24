@@ -7,6 +7,7 @@ import {
     Damage,
     Equipment,
     Modifier,
+    SizeModifiers,
     StatusEffects,
     stackableBonuses,
 } from '@/_models';
@@ -122,12 +123,19 @@ export type BonusObject = {
     [key in BonusTypes]: number;
 };
 
+export const getCombatSizeBonus = (character: Character) => {
+    return SizeModifiers[character.size].combatModifier;
+};
+
 export const getDefenseBonuses = (character: Character): BonusObject => {
     const miscMods = getMiscAcBonuses(character);
     const equipmentMods = getEquipmentWithAcBonuses(character);
 	const statusEffectMods = [...getSlowedModifiers(character)].filter(x => !!x.defense);
+    const sizeBonus = getCombatSizeBonus(character);
     const mods = [...miscMods, ...equipmentMods, ...statusEffectMods];
-    const defenseBonuses: BonusObject = {} as BonusObject;
+    const defenseBonuses: BonusObject = {
+        Size: sizeBonus
+    } as BonusObject;
     mods.forEach((mod) => {
         if (!mod.value && !!mod.attribute) {
             mod.value = getTotalAttributeModifier(character, mod.attribute);

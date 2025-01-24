@@ -70,7 +70,57 @@ export enum Sizes {
     Gargantuan = 'Gargantuan',
     Colossal = 'Colossal',
     ColossalPlus = 'Colossal+',
-}
+};
+
+type SizeModiferObject = {
+    [key in Sizes]: {
+        combatModifier: number;
+        stealthModifier: number;
+    }
+};
+
+export const SizeModifiers: SizeModiferObject = {
+    'Fine': {
+        combatModifier: 8,
+        stealthModifier: 16
+    },
+    'Diminutive': {
+        combatModifier: 4,
+        stealthModifier: 12
+    },
+    'Tiny': {
+        combatModifier: 2,
+        stealthModifier: 8
+    },
+    'Small': {
+        combatModifier: 1,
+        stealthModifier: 4
+    },
+    'Medium': {
+        combatModifier: 0,
+        stealthModifier: 0
+    },
+    'Large': {
+        combatModifier: -1,
+        stealthModifier: -4
+    },
+    'Huge': {
+        combatModifier: -2,
+        stealthModifier: -8
+    },
+    'Gargantuan': {
+        combatModifier: -4,
+        stealthModifier: -12
+    },
+    'Colossal': {
+        combatModifier: -8,
+        stealthModifier: -16
+    },
+    'Colossal+': {
+        combatModifier: -8,
+        stealthModifier: -16
+    },
+};
 
 export enum AbilityTypes {
     SpellLike = 'Spell-Like',

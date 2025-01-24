@@ -1,5 +1,5 @@
 
-import { Character, RankedSkill, Equipment, Armor, stackableBonuses } from '@/_models';
+import { Character, RankedSkill, Equipment, Armor, stackableBonuses, SizeModifiers, Modifier, BonusTypes, SkillTypes } from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
 import { getDazzledModifiers, getEnergyDrainedModifiers, getFascinatedModifiers, getFearModifiers, getSickenedModifiers } from './statusEffectUtils';
@@ -43,14 +43,24 @@ export const getArmorCheckPenalties = (equipment: Equipment[]): number => {
 // 	return synergies.reduce((x, y) => x + y.value, 0);
 // };
 
+export const getSkillSizeBonus = (character: Character) => {
+	return SizeModifiers[character.size].stealthModifier;
+};
+
 export const getTotalSkillMod = (
 	skill: RankedSkill,
 	character: Character
 ): number => {
 	const bonuses: BonusObject = {} as BonusObject;
 	const charMods = character.miscModifiers;
+	const sizeBonus = getSkillSizeBonus(character);
+	const sizeMod: Modifier = {
+		value: sizeBonus,
+		type: BonusTypes.Size,
+		skill: SkillTypes.Stealth
+	} as Modifier;
 	const statusEffectMods = [...getDazzledModifiers(character), ...getFascinatedModifiers(character, skill.name), ...getFearModifiers(character, skill.name), ...getSickenedModifiers(character, skill.name), ...getEnergyDrainedModifiers(character, skill.name)]
-	const allMods = [...charMods, ...statusEffectMods];
+	const allMods = [...charMods, ...statusEffectMods, sizeMod];
 	allMods.forEach((mod) => {
 		if (mod.skill === skill.name && !mod.damage) {
 			if (!bonuses[mod.type]) {
