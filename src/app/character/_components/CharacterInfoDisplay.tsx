@@ -10,7 +10,7 @@ import {
     Typography,
 } from '@mui/material';
 import { DisplayCell } from './DisplayCell';
-import { Character, CharacterKeys, Modifier } from '@/_models';
+import { Character, CharacterKeys, Modifier, StatusEffects, unableToActStatus } from '@/_models';
 import {
     CharacterAction,
     deleteModAction,
@@ -30,12 +30,65 @@ import { useRouter } from 'next/navigation';
 import UserContext from '@/app/_auth/UserContext';
 import { FeatTable } from '@/app/_components/FeatTable';
 import { StatusEffectDialog } from './StatusEffectDialog';
+import * as R from 'ramda';
 
 interface CharacterInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
     onEdit: Dispatch<SetStateAction<boolean>>;
 }
+
+interface StatusSnackbarProps {
+    character: Character;
+    statusOpen: boolean;
+};
+
+const StatusSnackbar = ({character, statusOpen}: StatusSnackbarProps) => {
+    const statusEffects = R.join(', ', character.statusEffects);
+    const unableToAct = character.statusEffects.some(x => unableToActStatus.includes(x))
+    const concentrationCheckRequired = character.statusEffects.includes(StatusEffects.Entangled);
+    const deafenedCasting = character.statusEffects.includes(StatusEffects.Deafened);
+    const missChance = character.statusEffects.includes(StatusEffects.Blinded);
+    return (
+    <Snackbar 
+        open={statusOpen}
+        anchorOrigin={{horizontal: 'center', vertical: 'top'}}
+        sx={{cursor: 'pointer'}}
+    >
+        <div>
+            <Alert
+                severity='info'
+            >
+                <p>You are currently affected by: {statusEffects}</p>
+            </Alert>
+            {unableToAct && 
+            <Alert
+                severity='error'
+            >
+                <p>You cannot take any actions!</p>
+            </Alert>}
+            {concentrationCheckRequired && 
+            <Alert
+                severity='error'
+            >
+                <p>Concentration check (DC15 + Spell Level) required for all spells</p>
+            </Alert>}
+            {deafenedCasting && 
+            <Alert
+                severity='error'
+            >
+                <p>20% chance of magick failure when wielding magick with verbal components</p>
+            </Alert>}
+            {missChance && 
+            <Alert
+                severity='error'
+            >
+                <p>All opponents have Total Concealment (50% miss chance)</p>
+            </Alert>}
+        </div>
+        
+    </Snackbar>
+)};
 
 export const CharacterInfoDisplay = ({
     character,
@@ -82,8 +135,10 @@ export const CharacterInfoDisplay = ({
         margin: '.25rem',
     };
     const userAdminPrivelages = !!user && (user.isDm || user.name === character.playerName);
+    const openStatusSnackbar = !!character.statusEffects.length;
     return (
         <>
+            <StatusSnackbar character={character} statusOpen={openStatusSnackbar}/>
             <DisplayCell
                 variant='body1'
                 cellTitle='Name:'

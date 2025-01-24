@@ -44,7 +44,8 @@ export const checkForHalfMovement = (character: Character): Movement[] => {
 export const getInitiativeScore = (character: Character): string => {
 	const attBonus = getTotalAttributeModifier(character, AttributeNames.Dexterity);
 	const modValue = character.miscModifiers.filter(x => !!x.initiative).reduce((x,y) => x + y.value, 0);
-	const total = attBonus + modValue;
+	const deafened = character.statusEffects.includes(StatusEffects.Deafened) ? -4 : 0
+	const total = attBonus + modValue + deafened;
     return `${total > 0 ? '+': ''}${total}`;
 };
 
