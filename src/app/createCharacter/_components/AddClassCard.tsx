@@ -35,12 +35,13 @@ interface AddClassAbilityProps {
     handleClose: Dispatch<SetStateAction<boolean>>;
     className: CharacterClassNames;
     editAbility?: ClassAbility;
+    handleDelete: (abl: ClassAbility) => void;
 }
 
 const textFieldStyling = { marginTop: '.5rem' };
 const formControlStyling = { marginLeft: '.5rem' };
 
-const AddClassAbility = ({ handleClose, addAbility, className, editAbility, updateAbility }: AddClassAbilityProps) => {
+const AddClassAbility = ({ handleClose, addAbility, className, editAbility, updateAbility, handleDelete }: AddClassAbilityProps) => {
     const [name, setName] = useState(editAbility && editAbility.name || '');
     const [level, setLevel] = useState(editAbility && editAbility.level ||1);
     const [description, setDescription] = useState(editAbility && editAbility.description ||'');
@@ -68,19 +69,27 @@ const AddClassAbility = ({ handleClose, addAbility, className, editAbility, upda
                 />
             </CardContent>
             <CardActions sx={{ justifyContent: 'right' }}>
+                {!!editAbility && 
+                <Button onClick={() => handleDelete(editAbility)} color='error'>
+                    Delete
+                </Button>}
                 <Button onClick={(e) => handleClose(false)}>
-                    <CancelRounded />
+                    <Tooltip title='Close'>
+                        <CancelRounded />
+                    </Tooltip>
                 </Button>
-                <Button
-                    onClick={() =>
-                        !!editAbility ? 
-                        updateAbility(editAbility, { name, level, description, className })
-                        : 
-                        addAbility({ name, level, description, className })
-                    }
-                >
-                    <CheckCircle />
-                </Button>
+                <Tooltip title='Submit'>
+                    <Button
+                        onClick={() =>
+                            !!editAbility ? 
+                            updateAbility(editAbility, { name, level, description, className })
+                            : 
+                            addAbility({ name, level, description, className })
+                        }
+                    >
+                        <CheckCircle />
+                    </Button>
+                </Tooltip>
             </CardActions>
         </Card>
     );
@@ -182,6 +191,12 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
         setEditClassAbility(abl);
         setOpen(true);
     }
+    const handleDeleteClassAbility = (abl: ClassAbility) => {
+        const filter = (x:ClassAbility) => x.name === abl.name && x.level === abl.level
+        const updatedClassAbilities = R.reject(filter, classAbilities);
+        setClassAbilities(updatedClassAbilities);
+        setOpen(false);
+    };  
     const handleChangeClassSkill = (
         event: SelectChangeEvent<typeof classSkills>
     ) => {
@@ -190,7 +205,8 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
         } = event;
         setClassSkills(typeof value === 'string' ? value.split(',') : value);
     };
-    const addClassButton = useRef(null);
+
+    const addClassButtonRef = useRef(null);
     
     return (
         <Card variant='outlined' sx={{overflow: 'scroll'}}>
@@ -382,14 +398,14 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                 </FormControl>
                 </>
                 }
-                <Button  ref={addClassButton} sx={{ margin: '.5rem 0' }} onClick={handleClick}>
+                <Button  ref={addClassButtonRef} sx={{ margin: '.5rem 0' }} onClick={handleClick}>
                     <Typography>Add Class Ability</Typography>
                     <Add />
                 </Button>
                 <Popover
                     open={open}
                     onClose={() => setOpen(false)}
-                    anchorEl={addClassButton.current}
+                    anchorEl={addClassButtonRef.current}
                     anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'left',
@@ -401,6 +417,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                         editAbility={editClassAbility}
                         handleClose={setOpen}
                         className={className}
+                        handleDelete={handleDeleteClassAbility}
                     />
                 </Popover>
                 {classAbilities.map((abl: ClassAbility) => {
