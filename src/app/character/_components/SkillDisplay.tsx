@@ -62,7 +62,7 @@ const SkillsTooltip = (
                     ) : null} */}
                     {Object.entries(skillMods).map(([key, value]) => {
                         return (
-                            <SkillCell>
+                            <SkillCell key={key + value}>
                                 <Typography>{key}</Typography>
                                 <Typography>{value}</Typography>
                             </SkillCell>
