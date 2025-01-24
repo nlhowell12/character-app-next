@@ -6,11 +6,12 @@ import {
     TableRow,
     Typography,
 } from '@mui/material';
-import React, { Dispatch } from 'react';
+import React, { Dispatch, useState } from 'react';
 
 import {
     CharacterAction,
     updateAttributeAction,
+    updateAttributeRacialAction,
 } from '../../../_reducer/characterReducer';
 import { Modifier, Character, AttributeNames } from '@/_models';
 import {
@@ -37,6 +38,38 @@ const AttributeRow = ({
     dispatch,
 }: AttributeRowProps) => {
     const totalValue = totalAttributeValue(character, attribute);
+    const [updateAttributeValue, setUpdateAtrtibuteValue] = useState<string | number>(character.attributes[attribute].value);
+    const [updateRacialValue, setUpdateRacialValue] = useState<string | number>(character.attributes[attribute].racialBonus || 0);
+        const [isAttributeFocused, setAttributeFocused] = useState(false);
+        const [isRacialFocused, setRacialFocused] = useState(false);
+        const handleAttributeChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+            setAttributeFocused(true);
+            setUpdateAtrtibuteValue(e.target.value)
+        }
+        const handleRacialChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+            setRacialFocused(true);
+            setUpdateRacialValue(e.target.value)
+        }
+        const dispatchAttributeChange = () => {
+            !!dispatch &&
+            dispatch(
+                updateAttributeAction(
+                    AttributeNames[attribute],
+                    Number(updateAttributeValue)
+                )
+            )
+            setAttributeFocused(false);
+        }
+        const dispatchRacialChange = () => {
+            !!dispatch &&
+            dispatch(
+                updateAttributeRacialAction(
+                    AttributeNames[attribute],
+                    Number(updateRacialValue)
+                )
+            )
+            setRacialFocused(false);
+        }
     return (
         <TableRow
             sx={{
@@ -58,21 +91,21 @@ const AttributeRow = ({
             <TableCell>
                 <DisplayBox
                     displayTitle={CardTitles.Base}
-                    displayValue={getBaseAttributeScore(character, attribute)}
+                    displayValue={updateAttributeValue}
                     editable={true}
-                    onChange={(
-                        e: React.ChangeEvent<
-                            HTMLInputElement | HTMLTextAreaElement
-                        >
-                    ) =>
-                        !!dispatch &&
-                        dispatch(
-                            updateAttributeAction(
-                                AttributeNames[attribute],
-                                Number(e.target.value)
-                            )
-                        )
-                    }
+                    onChange={handleAttributeChange}
+                    isFocused={isAttributeFocused}
+                    dispatchChange={dispatchAttributeChange}
+                />
+            </TableCell>
+            <TableCell>
+                <DisplayBox
+                    displayTitle={CardTitles.Racial}
+                    displayValue={updateRacialValue}
+                    editable={true}
+                    onChange={handleRacialChange}
+                    isFocused={isRacialFocused}
+                    dispatchChange={dispatchRacialChange}
                 />
             </TableCell>
             <TableCell>

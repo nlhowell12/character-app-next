@@ -18,6 +18,7 @@ export enum CardTitles {
 	Base = 'Base',
 	Modifier = 'Modifier',
 	Save = 'Save',
+	Racial = 'Racial'
 }
 
 export type CardTitlesType = BonusTypes | CardTitles;
@@ -46,6 +47,12 @@ const AttributeRow = ({ character, attribute, modifiers } : AttributeRowProps) =
 				<DisplayBox
 					displayTitle={CardTitles.Base}
 					displayValue={getBaseAttributeScore(character, attribute)}
+				/>
+			</TableCell>
+			<TableCell>
+				<DisplayBox
+					displayTitle={CardTitles.Racial}
+					displayValue={character.attributes[attribute].racialBonus || 0}
 				/>
 			</TableCell>
 			<TableCell>

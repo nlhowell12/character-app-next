@@ -84,6 +84,7 @@ export enum CharacterClassNames {
 
 export type Attribute = {
 	value: number;
+	racialBonus?: number;
 };
 
 export type CharacterAttributes = { [key in AttributeNames]: Attribute };

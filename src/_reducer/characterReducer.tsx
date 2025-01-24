@@ -32,6 +32,7 @@ export enum CharacterReducerActions {
     SET_CHARACTER = 'SET_CHARACTER',
     UPDATE = 'UPDATE',
     UPDATEATTRIBUTE = 'UPDATEATTRIBUTE',
+    UPDATEATTRIBUTERACIAL = 'UPDATEATTRIBUTERACIAL',
     UPDATESKILL = 'UPDATESKILL',
     UPDATECLASSABILITIES = 'UPDATECLASSABILITIES',
     RESET = 'RESET',
@@ -133,6 +134,20 @@ export const updateAttributeAction = (
 ): CharacterAction => {
     return {
         type: CharacterReducerActions.UPDATEATTRIBUTE,
+        payload: {
+            key: CharacterKeys.attributes,
+            value,
+            attribute,
+        },
+    };
+};
+
+export const updateAttributeRacialAction = (
+    attribute: AttributeNames,
+    value: number
+): CharacterAction => {
+    return {
+        type: CharacterReducerActions.UPDATEATTRIBUTERACIAL,
         payload: {
             key: CharacterKeys.attributes,
             value,
@@ -425,7 +440,21 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                     attributes: {
                         ...state.attributes,
                         [attribute]: {
-                            value: Number(payload.value),
+                            ...state.attributes[attribute],
+                            value: Number(payload.value)
+                        },
+                    },
+                };
+            }
+        case CharacterReducerActions.UPDATEATTRIBUTERACIAL:
+            if (!!attribute) {
+                return {
+                    ...state,
+                    attributes: {
+                        ...state.attributes,
+                        [attribute]: {
+                            ...state.attributes[attribute],
+                            racialBonus: Number(payload.value),
                         },
                     },
                 };
