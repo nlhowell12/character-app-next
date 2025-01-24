@@ -4,8 +4,10 @@ import {
     CharacterClass,
     CharacterClassNames,
     CharacterKeys,
+    immobilzedStatusEffects,
     SpellCastingClasses,
     StatusEffects,
+    unableToActStatus,
 } from '@/_models';
 import {
     BonusObject,
@@ -29,6 +31,7 @@ import {
     Tabs,
     TableHead,
     Card,
+    Snackbar,
 } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import { DisplayCell } from './DisplayCell';
@@ -54,6 +57,8 @@ import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
 import { DomainAspectsTable } from '@/app/_components/DomainAspectsTable';
 
 import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
+
+import * as R from 'ramda';
 interface CombatInfoDisplayProps {
     character: Character;
     dispatch: Dispatch<CharacterAction>;
@@ -119,6 +124,34 @@ const cellStylingObject = {
     margin: '.25rem 0 .5rem .5rem',
 };
 
+interface StatusSnackbarProps {
+    character: Character;
+    statusOpen: boolean;
+};
+
+const StatusSnackbar = ({character, statusOpen}: StatusSnackbarProps) => {
+    const statusEffects = R.join(', ', character.statusEffects);
+    const unableToAct = character.statusEffects.some(x => unableToActStatus.includes(x))
+    return (
+    <Snackbar 
+        open={statusOpen} anchorOrigin={{horizontal: 'center', vertical: 'top'}}
+    >
+        <div>
+            <Alert
+                severity='info'
+            >
+                <p>You are currently affected by: {statusEffects}</p>
+            </Alert>
+            {unableToAct && 
+            <Alert
+                severity='error'
+            >
+                <p>You cannot take any actions!</p>
+            </Alert>}
+        </div>
+        
+    </Snackbar>
+)};
 export const CombatInfoDisplay = ({
     character,
     dispatch,
@@ -171,28 +204,18 @@ export const CombatInfoDisplay = ({
         );
     };
     const adjustedMovement = checkForHalfMovement(character);
-    const immobilzedStatusEffects = [
-        StatusEffects.Dying,
-        StatusEffects.Stunned,
-        StatusEffects.Unconscious,
-        StatusEffects.Pinned,
-        StatusEffects.Petrified,
-        StatusEffects.Paralyzed,
-        StatusEffects.Held,
-        StatusEffects.Helpless,
-        StatusEffects.Grappled,
-        StatusEffects.Fascinated,
-        StatusEffects.Cowering,
-    ];
+
     const cannotMove = character.statusEffects.some((x) =>
         immobilzedStatusEffects.includes(x)
     );
     const clericClass: CharacterClass | undefined = character.classes.find(
         (x) => x.name === CharacterClassNames.Cleric
     );
-    
+    const openStatusSnackbar = !!character.statusEffects.length;
     return (
         <>
+            <StatusSnackbar character={character} statusOpen={openStatusSnackbar}/>
+
             <DisplayCell
                 variant='body1'
                 cellTitle='Max Hit Points:'

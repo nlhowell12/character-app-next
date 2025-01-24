@@ -29,6 +29,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useRouter } from 'next/navigation';
 import UserContext from '@/app/_auth/UserContext';
 import { FeatTable } from '@/app/_components/FeatTable';
+import { StatusEffectDialog } from './StatusEffectDialog';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -48,7 +49,8 @@ export const CharacterInfoDisplay = ({
     const [openNotes, setOpenNotes] = useState<boolean>(false);
     const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
     const {user} = useContext(UserContext);
-    
+    const [openStatus, setOpenStatus] = useState(false);
+
     const router = useRouter();
 
     const handleAddModifier = (appliedModifier: Modifier) => {
@@ -113,6 +115,13 @@ export const CharacterInfoDisplay = ({
                 >
                     <Typography>View Feats</Typography>
                     <Add sx={{ marginLeft: '.5rem' }} />
+                </Button>
+                <Button
+                    variant='outlined'
+                    onClick={() => setOpenStatus(true)}
+                    sx={buttonStlying}
+                >
+                    <Typography>Status Effects</Typography>
                 </Button>
                 <Dialog open={openFeats} onClose={() => setOpenFeats(false)} maxWidth={false}>
                     <FeatTable feats={character.feats} />
@@ -254,6 +263,7 @@ export const CharacterInfoDisplay = ({
                 mods={character.miscModifiers}
                 onDelete={handleDeleteMod}
             />
+            <StatusEffectDialog open={openStatus} character={character} dispatch={dispatch} onClose={() => setOpenStatus(false)}/>
         </>
     );
 };

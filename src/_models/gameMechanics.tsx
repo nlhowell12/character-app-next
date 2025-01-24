@@ -174,3 +174,27 @@ export enum StatusEffects {
     Turned = 'Turned',
     Unconscious = 'Unconscious'
 }
+
+export const unableToActStatus = [
+ StatusEffects.Dazed,
+ StatusEffects.Disabled,
+ StatusEffects.Dying,
+ StatusEffects.Helpless,
+ StatusEffects.Petrified,
+ StatusEffects.Stunned,
+ StatusEffects.Unconscious,
+];
+
+export const immobilzedStatusEffects = [
+    StatusEffects.Dying,
+    StatusEffects.Stunned,
+    StatusEffects.Unconscious,
+    StatusEffects.Pinned,
+    StatusEffects.Petrified,
+    StatusEffects.Paralyzed,
+    StatusEffects.Held,
+    StatusEffects.Helpless,
+    StatusEffects.Grappled,
+    StatusEffects.Fascinated,
+    StatusEffects.Cowering,
+];
