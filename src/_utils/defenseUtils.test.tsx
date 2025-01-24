@@ -20,13 +20,17 @@ describe('Defense Utilities', () => {
 		expect(defenseUtils.getDefenseBonuses(mock0)).toStrictEqual({
 			[BonusTypes.Racial]: 1,
 			[BonusTypes.Armor]: 2,
-			[BonusTypes.Untyped]: 2
+			[BonusTypes.Untyped]: 2,
+			[BonusTypes.Size]: 1,
+
 		});
 		expect(defenseUtils.getDefenseBonuses({...mock0, miscModifiers: [...mock0.miscModifiers, {id: '10',value: 0, attribute: AttributeNames.Wisdom, type: BonusTypes.Enhancement, defense: true}]})).toStrictEqual({
 			[BonusTypes.Racial]: 1,
 			[BonusTypes.Armor]: 2,
 			[BonusTypes.Untyped]: 2,
-			[BonusTypes.Enhancement]: getTotalAttributeModifier(mock0, AttributeNames.Wisdom)
+			[BonusTypes.Enhancement]: getTotalAttributeModifier(mock0, AttributeNames.Wisdom),
+			[BonusTypes.Size]: 1,
+
 		});
 	});
 	it('should get correct maximum dex mod from equipment', () => {
@@ -39,15 +43,15 @@ describe('Defense Utilities', () => {
 	})
 	test('getTotalDefense', () => {
 		expect(defenseUtils.getTotalDefense(mock0)).toStrictEqual({
-			dsBonus: 16,
+			dsBonus: 17,
 			drBonus: 3,
 		});
 		expect(defenseUtils.getTotalDefense({...mock0, statusEffects: [StatusEffects.Blinded]})).toStrictEqual({
-			dsBonus: 10,
+			dsBonus: 11,
 			drBonus: 3,
 		});
 		expect(defenseUtils.getTotalDefense({...mock0, statusEffects: [StatusEffects.Frightened]})).toStrictEqual({
-			dsBonus: 12,
+			dsBonus: 13,
 			drBonus: 3,
 		});
 	});

@@ -147,7 +147,7 @@ describe('Equipment Utils', () => {
         expect(getDiceDamageModifiers(mockCharacters[0], dagger)[0].damageType).toBe(Damage.Fire);
     });
     it('should get all attack mods', () => {
-        expect(getAllAttackModifiers(mockCharacters[0], sword).length).toBe(5);
+        expect(getAllAttackModifiers(mockCharacters[0], sword).length).toBe(6);
     });
     it('should return the correct carrying capacity', () => {
         expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium})).toStrictEqual({light: 23, med: 46, heavy: 70})
@@ -186,7 +186,7 @@ describe('Equipment Utils', () => {
             8
         );
         expect(getTotalModifierBonus(mockCharacters[0], attackModifiers)).toBe(
-            5
+            6
         );
     });
     it('should get the damage bonus', () => {
@@ -194,8 +194,8 @@ describe('Equipment Utils', () => {
         expect(getDamageBonus(mockCharacters[0], sword)).toBe(2);
     });
     it('should get the attack bonus', () => {
-        expect(getAttackBonus(mockCharacters[0], sword)).toBe('+4');
-        expect(getAttackBonus(mockCharacters[0], dagger)).toBe('+9');
+        expect(getAttackBonus(mockCharacters[0], sword)).toBe('+5');
+        expect(getAttackBonus(mockCharacters[0], dagger)).toBe('+10');
     });
     it('should return an attack bonus object', () => {
         expect(
@@ -205,6 +205,7 @@ describe('Equipment Utils', () => {
             )
         ).toStrictEqual({
             [BonusTypes.Morale]: 3,
+            [BonusTypes.Size]: 1,
             [BonusTypes.Untyped]: 2,
         });
         expect(

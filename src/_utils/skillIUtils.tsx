@@ -46,11 +46,10 @@ export const getArmorCheckPenalties = (equipment: Equipment[]): number => {
 export const getSkillSizeBonus = (character: Character) => {
 	return SizeModifiers[character.size].stealthModifier;
 };
-
-export const getTotalSkillMod = (
+export const getAllSkillBonuses = (	
 	skill: RankedSkill,
 	character: Character
-): number => {
+): BonusObject => {
 	const bonuses: BonusObject = {} as BonusObject;
 	const charMods = character.miscModifiers;
 	const sizeBonus = getSkillSizeBonus(character);
@@ -75,5 +74,13 @@ export const getTotalSkillMod = (
 			}
 		}
 	});
+	return bonuses
+};
+
+export const getTotalSkillMod = (
+	skill: RankedSkill,
+	character: Character
+): number => {
+	const bonuses = getAllSkillBonuses(skill, character);
 	return Object.entries(bonuses).reduce((x, [_, value]) => x + value, 0);
 };
