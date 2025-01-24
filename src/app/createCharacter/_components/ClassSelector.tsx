@@ -72,7 +72,6 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                 container
             >
                 {character.classes.map((cls) => {
-                    console.log(cls)
                     return (
                         <Card
                             sx={{

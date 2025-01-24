@@ -56,7 +56,6 @@ export const InitiativeTracker = () => {
         const messages = await channel.history();
         const turns = await turnChannel.history();
         const sortedFilteredMessages: TrackerMessage[] = [];
-        console.log(messages)
         const lastTrackerClearTimestamp = R.last(messages.items.sort((a, b) => a.timestamp - b.timestamp).filter(x => x.name === 'tracker-clear'))?.timestamp;
         messages.items.forEach((m) => {
             const messageIndex = R.findIndex(R.propEq(m.name, 'name'))(

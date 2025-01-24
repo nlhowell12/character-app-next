@@ -26,48 +26,58 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import * as R from 'ramda';
 
 interface AddClassAbilityProps {
     addAbility: (ability: ClassAbility) => void;
-    handleClose: Dispatch<SetStateAction<HTMLButtonElement | null | undefined>>;
+    updateAbility: (priorAbility: ClassAbility, ability: ClassAbility) => void;
+    handleClose: Dispatch<SetStateAction<boolean>>;
     className: CharacterClassNames;
+    editAbility?: ClassAbility;
 }
 
 const textFieldStyling = { marginTop: '.5rem' };
 const formControlStyling = { marginLeft: '.5rem' };
 
-const AddClassAbility = ({ handleClose, addAbility, className }: AddClassAbilityProps) => {
-    const [name, setName] = useState('');
-    const [level, setLevel] = useState(1);
-    const [description, setDescription] = useState('');
-
+const AddClassAbility = ({ handleClose, addAbility, className, editAbility, updateAbility }: AddClassAbilityProps) => {
+    const [name, setName] = useState(editAbility && editAbility.name || '');
+    const [level, setLevel] = useState(editAbility && editAbility.level ||1);
+    const [description, setDescription] = useState(editAbility && editAbility.description ||'');
     return (
         <Card variant='outlined'>
             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
                 <TextField
                     sx={textFieldStyling}
+                    value={name}
                     label='Name'
                     onChange={(e) => setName(e.target.value)}
                 />
                 <TextField
                     sx={textFieldStyling}
+                    value={level}
                     label='Level'
                     onChange={(e) => setLevel(Number(e.target.value))}
                 />
                 <TextField
                     sx={textFieldStyling}
+                    value={description}
                     multiline
                     placeholder='Description (optional)...'
                     onChange={(e) => setDescription(e.target.value)}
                 />
             </CardContent>
             <CardActions sx={{ justifyContent: 'right' }}>
-                <Button onClick={(e) => handleClose(null)}>
+                <Button onClick={(e) => handleClose(false)}>
                     <CancelRounded />
                 </Button>
                 <Button
-                    onClick={() => addAbility({ name, level, description, className })}
+                    onClick={() =>
+                        !!editAbility ? 
+                        updateAbility(editAbility, { name, level, description, className })
+                        : 
+                        addAbility({ name, level, description, className })
+                    }
                 >
                     <CheckCircle />
                 </Button>
@@ -115,12 +125,12 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
     const [rebukeDomain, setRebukeDomain] = useState<DivineDomain>(DivineDomain.Air);
     const [sponDomain, setSponDomain] = useState<DivineDomain>(DivineDomain.Air);
 
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>();
+    const [open, setOpen] = useState<boolean>(false);
+    const [editClassAbility, setEditClassAbility] = useState<ClassAbility | undefined>(undefined)
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
+        setOpen(!open);
     };
-    const open = Boolean(anchorEl);
 
     useEffect(() => {
         if(!!editClass) {
@@ -159,9 +169,19 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
 
     const handleAddAbility = (ability: ClassAbility) => {
         setClassAbilities([...classAbilities, ability]);
-        setAnchorEl(null);
+        setOpen(false);
     };
-
+    const handleUpdateAbility = (priorAbility: ClassAbility, ability: ClassAbility) => {
+        const updateIndex = R.findIndex(R.propEq(priorAbility.name, 'name'))(classAbilities);
+        const updatedClassAbilities = R.update(updateIndex, ability, classAbilities);
+        setClassAbilities(updatedClassAbilities);
+        setEditClassAbility(undefined);
+        setOpen(false);
+    };
+    const triggerAbilityUpdate = (abl: ClassAbility) => {
+        setEditClassAbility(abl);
+        setOpen(true);
+    }
     const handleChangeClassSkill = (
         event: SelectChangeEvent<typeof classSkills>
     ) => {
@@ -170,7 +190,8 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
         } = event;
         setClassSkills(typeof value === 'string' ? value.split(',') : value);
     };
-
+    const addClassButton = useRef(null);
+    
     return (
         <Card variant='outlined' sx={{overflow: 'scroll'}}>
             <CardHeader title={!!editClass ? 'Update Class' : 'Add New Class'} />
@@ -361,14 +382,14 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                 </FormControl>
                 </>
                 }
-                <Button sx={{ margin: '.5rem 0' }} onClick={handleClick}>
+                <Button  ref={addClassButton} sx={{ margin: '.5rem 0' }} onClick={handleClick}>
                     <Typography>Add Class Ability</Typography>
                     <Add />
                 </Button>
                 <Popover
                     open={open}
-                    anchorEl={anchorEl}
-                    onClose={() => setAnchorEl(null)}
+                    onClose={() => setOpen(false)}
+                    anchorEl={addClassButton.current}
                     anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'left',
@@ -376,7 +397,9 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                 >
                     <AddClassAbility
                         addAbility={handleAddAbility}
-                        handleClose={setAnchorEl}
+                        updateAbility={handleUpdateAbility}
+                        editAbility={editClassAbility}
+                        handleClose={setOpen}
                         className={className}
                     />
                 </Popover>
@@ -384,10 +407,14 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                     const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name
                     return !!abl.description ? (
                         <Tooltip title={abl.description} key={name}>
-                            <ClassAbilityCard abl={abl}/>
+                            <div key={name }onClick={() => triggerAbilityUpdate(abl)}>
+                                <ClassAbilityCard abl={abl}/>
+                            </div>
                         </Tooltip>
                     ) : (
-                        <ClassAbilityCard abl={abl} key={name}/>
+                        <div key={name} onClick={() => triggerAbilityUpdate(abl)}>
+                            <ClassAbilityCard abl={abl}/>
+                        </div>
                     );
                 })}
             </CardContent>

@@ -189,7 +189,7 @@ export interface Movement {
 }
 
 export interface ClassAbility {
-	name?: string;
+	name: string;
 	level: number;
 	className: Omit<CharacterClassNames, CharacterClassNames.SorcWiz>;
 	description: string;
