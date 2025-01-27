@@ -225,10 +225,16 @@ export interface CharacterClass {
 
 export enum ModifierSource {
 	attributeScoreIncrease = 'Attribute Score Increase',
+	trait = 'Trait',
+	synergy = 'Synergy',
+	classAbility = 'Class Ability',
+	otherAbility = 'Other Ability',
+	spell = 'Spell',
+	other = 'Other'
 }
 export interface Modifier {
 	value: number;
-	definition?: string | ModifierSource;
+	definition?: string;
 	skill?: SkillTypes;
 	attribute?: AttributeNames;
 	attack?: boolean;
@@ -246,6 +252,7 @@ export interface Modifier {
 	statusEffect?: StatusEffects;
 	spellSchool?: ArcaneSchool | PsionicDiscipline | DivineDomain | ShadowPath
 	id: string;
+	source: ModifierSource;
 }
 
 export enum FeatCategory {

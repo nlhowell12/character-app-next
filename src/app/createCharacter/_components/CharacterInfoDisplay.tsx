@@ -338,6 +338,7 @@ export const CharacterInfoDisplay = ({
                 <ModChipStack
                     mods={character.miscModifiers}
                     onDelete={handleDeleteMod}
+                    edit
                 />
             </Grid>
         </>

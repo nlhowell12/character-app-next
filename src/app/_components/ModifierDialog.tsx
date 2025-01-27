@@ -7,6 +7,7 @@ import {
     Damage,
     Dice,
     Modifier,
+    ModifierSource,
     SkillTypes,
 } from '@/_models';
 import {
@@ -59,6 +60,7 @@ export const ModifierDialog = ({
         damageType: Damage.Acid,
         damageDice: Dice.d4,
         numberOfDice: 0,
+        source: ModifierSource.spell
     };
     
     const [modifier, setModifier] = useState<Modifier>(initialState);
@@ -73,7 +75,8 @@ export const ModifierDialog = ({
         damageType,
         damageDice,
         numberOfDice,
-        spellSchool
+        spellSchool,
+        source
     } = modifier;
 
     const [optionalValues, setOptionalValues] = useState({
@@ -94,16 +97,49 @@ export const ModifierDialog = ({
     });
 
     const modifierValueHandler = (e: any) => {
-        setModifier({
-            ...modifier,
-            [e.target.name]: e.target.value,
-        });
+        const { value, name } = e.target;
+        
+        if(value === ModifierSource.synergy){
+            setOptionalValues({
+                ...optionalValues,
+                boolValue: true,
+                boolSkill: true,
+                boolAttribute: false,
+                boolAttack: false,
+                boolDamage: false,
+                boolDamageDice: false,
+                boolDefense: false,
+                boolAbilityType: false,
+                boolResistance: false,
+                boolImmunity: false,
+                boolDamageType: false,
+                boolInit: false,
+                boolSpell: false
+            })
+            setModifier({
+                ...modifier,
+                [name]: value,
+                type: BonusTypes.Untyped,
+            });
+        } else {
+            setModifier({
+                ...modifier,
+                [name]: value,
+            });
+        }
     };
 
     const optionalValueHandler = (e: any) => {
+        const { name, checked } = e.target;
+        if(name === 'boolSkill' && !checked && source === ModifierSource.synergy) {
+            setModifier({
+                ...modifier,
+                source: ModifierSource.other
+            })
+        }
         setOptionalValues({
             ...optionalValues,
-            [e.target.name]: e.target.checked,
+            [name]: checked,
         });
     };
     const {
@@ -114,7 +150,6 @@ export const ModifierDialog = ({
         boolAttack,
         boolDamage,
         boolDefense,
-        boolAbilityType,
         boolResistance,
         boolImmunity,
         boolDamageType,
@@ -122,6 +157,9 @@ export const ModifierDialog = ({
         boolInit,
         boolSpell
     } = optionalValues;
+
+    {/* @ts-ignore */}
+    const abilityTypeRequired = ModifierSource[source] === ModifierSource.classAbility || ModifierSource[source] === ModifierSource.otherAbility;
 
     const appliedModifier: Modifier = {
         value: !!boolValue ? Number(modValue) : 0,
@@ -133,7 +171,7 @@ export const ModifierDialog = ({
         defense: boolDefense,
         type: bonusType,
         initiative: boolInit,
-        abilityType: !!boolAbilityType ? abilityType : undefined,
+        abilityType: !!abilityTypeRequired ? abilityType : undefined,
         resistance: boolResistance,
         immunity: boolImmunity,
         damageType:
@@ -145,6 +183,7 @@ export const ModifierDialog = ({
             !!boolDamage && !!boolDamageDice ? Number(numberOfDice) : undefined,
             spellSchool: !!boolSpell ? spellSchool :  undefined,
         id: uuidv4(),
+        source: source
     };
     const diceAndNumber = !!damageDice && !!numberOfDice;
     const valueOptions =
@@ -191,6 +230,8 @@ export const ModifierDialog = ({
         }
     };
     const dividerStyling = {margin: '.5rem 0'}
+    const disableSynergy = source === ModifierSource.synergy;
+
     return (
         <Dialog open={open} onClose={onClose}>
             <Card sx={{ overflow: 'scroll' }}>
@@ -221,6 +262,7 @@ export const ModifierDialog = ({
                                         checked={boolAttribute}
                                         onChange={optionalValueHandler}
                                         name='boolAttribute'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this modify an attribute or is it derived from one? (do not add a value if derived)' 
@@ -242,6 +284,7 @@ export const ModifierDialog = ({
                                         checked={boolSpell}
                                         onChange={optionalValueHandler}
                                         name='boolSpell'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this affect a spell DC? (E.g. +1 to Conjuration)'
@@ -252,6 +295,7 @@ export const ModifierDialog = ({
                                         checked={boolInit}
                                         onChange={optionalValueHandler}
                                         name='boolInit'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this modify your initiative?'
@@ -262,6 +306,7 @@ export const ModifierDialog = ({
                                         checked={boolAttack}
                                         onChange={optionalValueHandler}
                                         name='boolAttack'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this modify your attacks?'
@@ -272,6 +317,7 @@ export const ModifierDialog = ({
                                         checked={boolDamage}
                                         onChange={optionalValueHandler}
                                         name='boolDamage'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this modify your damage?'
@@ -282,6 +328,7 @@ export const ModifierDialog = ({
                                         checked={boolDamageDice}
                                         onChange={optionalValueHandler}
                                         name='boolDamageDice'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this add additional dice to your damage?'
@@ -292,9 +339,10 @@ export const ModifierDialog = ({
                                         checked={boolDefense}
                                         onChange={optionalValueHandler}
                                         name='boolDefense'
+                                        disabled={disableSynergy}
                                     />
                                 }
-                                label='Does this modifier your Defense (Armor, Shield, and Racial for DR)?'
+                                label='Does this modify your Defense (Armor, Shield, and Racial for DR)?'
                             />
                             <Divider sx={dividerStyling}/>
                             <FormControlLabel
@@ -303,6 +351,7 @@ export const ModifierDialog = ({
                                         checked={boolResistance}
                                         onChange={optionalValueHandler}
                                         name='boolResistance'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this confer resistance to damage?'
@@ -313,6 +362,7 @@ export const ModifierDialog = ({
                                         checked={boolImmunity}
                                         onChange={optionalValueHandler}
                                         name='boolImmunity'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this confer immunity to damage?'
@@ -323,21 +373,12 @@ export const ModifierDialog = ({
                                         checked={boolDamageType}
                                         onChange={optionalValueHandler}
                                         name='boolDamageType'
+                                        disabled={disableSynergy}
                                     />
                                 }
                                 label='Does this have a specific damage type?'
                             />
                             <Divider sx={dividerStyling}/>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolAbilityType}
-                                        onChange={optionalValueHandler}
-                                        name='boolAbilityType'
-                                    />
-                                }
-                                label='Does this have an ability type specified? (Ex, Psi, Spell, Sup)'
-                            />
                             <FormControlLabel
                                 control={
                                     <Checkbox
@@ -360,6 +401,25 @@ export const ModifierDialog = ({
                         </FormHelperText>
                     </FormControl>
                     <FormControl fullWidth sx={formControlStyle}>
+                        <InputLabel id='source-id'>Source</InputLabel>
+                        <Select
+                            labelId='source-id'
+                            id='source'
+                            label='Source'
+                            name='source'
+                            value={source}
+                            onChange={modifierValueHandler}
+                        >
+                            {Object.values(ModifierSource).map((source) => {
+                                return (
+                                    <MenuItem key={source} value={source}>
+                                        {source}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                    <FormControl fullWidth sx={formControlStyle}>
                         <InputLabel id='bonus-type-id'>Bonus Type</InputLabel>
                         <Select
                             labelId='bonus-type-id'
@@ -368,6 +428,7 @@ export const ModifierDialog = ({
                             name='type'
                             value={bonusType}
                             onChange={modifierValueHandler}
+                            disabled={disableSynergy}
                         >
                             {Object.keys(BonusTypes).map((bon) => {
                                 return (
@@ -494,7 +555,7 @@ export const ModifierDialog = ({
                             </Select>
                         </FormControl>
                     )}
-                    {!!optionalValues.boolAbilityType && (
+                    {!!abilityTypeRequired && (
                         <FormControl fullWidth sx={formControlStyle}>
                             <InputLabel id='attribute-id'>
                                 Ability Type
