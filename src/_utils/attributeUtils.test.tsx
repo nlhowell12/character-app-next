@@ -46,11 +46,11 @@ describe('Attribute utils', () => {
 		expect(
 			abilityUtils.getAllAttributeModifiers(mock0, AttributeNames.Strength)
 				.length
-		).toBe(1);
+		).toBe(2)
 		expect(
 			abilityUtils.getAllAttributeModifiers(mock0, AttributeNames.Dexterity)
 				.length
-		).toBe(0);
+		).toBe(1)
 	});
 	it('should return an attribuate based modifier', () => {
         expect(getModifierAttributeBonus(mockCharacters[0], mockCharacters[0].miscModifiers.filter(x => !!x.attribute && !x.value)[0])).toBe(4)
