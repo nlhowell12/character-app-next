@@ -34,7 +34,6 @@ import {
     removeEquipmentAction,
     replaceEquipmentAction,
     toggleEquippedAction,
-    updateAction,
     updateEquipmentAction,
 } from '@/_reducer/characterReducer';
 import React, { Dispatch, useMemo, useState } from 'react';
@@ -56,8 +55,8 @@ import { DisplayBox } from './DisplayBox';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { camelToTitle } from '@/_utils/stringUtils';
 import PaidIcon from '@mui/icons-material/Paid';
-import { NumberInput } from '@/app/_components/NumberInput';
 import { v4 as uuidv4 } from 'uuid';
+import CurrencyDisplay from './CurrencyDisplay';
 
 interface EquipmentDisplayProps {
     character: Character;
@@ -147,63 +146,6 @@ const WeaponDamageTooltip = ({
     );
 };
 
-interface CurrencyDisplayProps {
-    character: Character;
-    dispatch: Dispatch<CharacterAction>;
-    open: boolean;
-    onClose: () => void;
-}
-const CurrencyDisplay = ({
-    character,
-    dispatch,
-    open,
-    onClose,
-}: CurrencyDisplayProps) => {
-    return (
-        <Dialog open={open} onClose={onClose}>
-            <Card>
-                <Table>
-                    <TableBody>
-                        <TableRow>
-                            {Object.keys(character.currency).map((coin) => {
-                                return (
-                                    <TableCell
-                                        key={coin}
-                                        sx={{ borderBottom: 'none' }}
-                                    >
-                                        <NumberInput
-                                            label={coin.toUpperCase()}
-                                            value={Number(
-                                                character.currency[
-                                                    coin as keyof Currency
-                                                ]
-                                            )}
-                                            onChange={(e) =>
-                                                dispatch(
-                                                    updateAction(
-                                                        CharacterKeys.currency,
-                                                        {
-                                                            ...character.currency,
-                                                            [coin as keyof Currency]:
-                                                                Number(
-                                                                    e.target
-                                                                        .value
-                                                                ).toFixed(2),
-                                                        }
-                                                    )
-                                                )
-                                            }
-                                        />
-                                    </TableCell>
-                                );
-                            })}
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </Card>
-        </Dialog>
-    );
-};
 interface EquipmentInputProps {
     id: string;
     value: string | number;
