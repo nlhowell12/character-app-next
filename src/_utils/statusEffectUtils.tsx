@@ -5,6 +5,7 @@ import {
     AttributeNames,
     Character,
     SkillTypes,
+    ModifierSource,
 } from '@/_models';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,6 +18,7 @@ const getFatiguedModifiers = (character: Character): Modifier[] =>
                   value: -2,
                   attribute: AttributeNames.Dexterity,
                   statusEffect: StatusEffects.Fatigued,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -24,6 +26,7 @@ const getFatiguedModifiers = (character: Character): Modifier[] =>
                   value: -2,
                   attribute: AttributeNames.Strength,
                   statusEffect: StatusEffects.Fatigued,
+                  source: ModifierSource.statusEffect
               },
           ]
         : [];
@@ -36,6 +39,7 @@ const getExhaustedModifiers = (character: Character): Modifier[] =>
                   value: -6,
                   attribute: AttributeNames.Dexterity,
                   statusEffect: StatusEffects.Exhausted,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -43,6 +47,7 @@ const getExhaustedModifiers = (character: Character): Modifier[] =>
                   value: -6,
                   attribute: AttributeNames.Strength,
                   statusEffect: StatusEffects.Exhausted,
+                  source: ModifierSource.statusEffect
               },
           ]
         : [];
@@ -56,6 +61,7 @@ const getEntangledModifiers = (character: Character): Modifier[] =>
                   value: -4,
                   attribute: AttributeNames.Dexterity,
                   statusEffect: StatusEffects.Entangled,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -63,6 +69,7 @@ const getEntangledModifiers = (character: Character): Modifier[] =>
                   value: -2,
                   attack: true,
                   statusEffect: StatusEffects.Entangled,
+                  source: ModifierSource.statusEffect
               },
           ]
         : [];
@@ -76,6 +83,7 @@ const getDazzledModifiers = (character: Character): Modifier[] =>
                   value: -2,
                   skill: SkillTypes.Perception,
                   statusEffect: StatusEffects.Dazzled,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -83,6 +91,7 @@ const getDazzledModifiers = (character: Character): Modifier[] =>
                   value: -2,
                   attack: true,
                   statusEffect: StatusEffects.Dazzled,
+                  source: ModifierSource.statusEffect
               },
           ]
         : [];
@@ -99,6 +108,7 @@ const getFascinatedModifiers = (
                   value: -4,
                   skill,
                   statusEffect: StatusEffects.Fascinated,
+                  source: ModifierSource.statusEffect
               },
           ]
         : [];
@@ -121,6 +131,7 @@ const getFearModifiers = (
                   value: -2,
                   skill,
                   statusEffect: StatusEffects.Shaken,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -128,6 +139,7 @@ const getFearModifiers = (
                   value: -2,
                   attack: true,
                   statusEffect: StatusEffects.Shaken,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -136,6 +148,7 @@ const getFearModifiers = (
                   save: true,
                   attribute,
                   statusEffect: StatusEffects.Shaken,
+                  source: ModifierSource.statusEffect
               },
           ]
         : [];
@@ -155,6 +168,7 @@ const getSickenedModifiers = (
                   value: -2,
                   skill,
                   statusEffect: StatusEffects.Sickened,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -162,6 +176,7 @@ const getSickenedModifiers = (
                   value: -2,
                   attack: true,
                   statusEffect: StatusEffects.Sickened,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -169,6 +184,7 @@ const getSickenedModifiers = (
                   value: -2,
                   damage: true,
                   statusEffect: StatusEffects.Sickened,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -177,6 +193,7 @@ const getSickenedModifiers = (
                   save: true,
                   attribute,
                   statusEffect: StatusEffects.Sickened,
+                  source: ModifierSource.statusEffect
               },
           ]
         : [];
@@ -191,6 +208,7 @@ const getSlowedModifiers = (character: Character): Modifier[] => {
                   value: -1,
                   attack: true,
                   statusEffect: StatusEffects.Slowed,
+                  source: ModifierSource.statusEffect
               },
               {
                   id: uuidv4(),
@@ -198,6 +216,7 @@ const getSlowedModifiers = (character: Character): Modifier[] => {
                   value: -1,
                   defense: true,
                   statusEffect: StatusEffects.Slowed,
+                  source: ModifierSource.statusEffect
               },
           ]
         : [];
@@ -215,6 +234,7 @@ const getEnergyDrainedModifiers = (
             value: -1,
             skill,
             statusEffect: StatusEffects.EnergyDrained,
+            source: ModifierSource.statusEffect
         },
         {
             id: uuidv4(),
@@ -222,6 +242,7 @@ const getEnergyDrainedModifiers = (
             value: -1,
             attack: true,
             statusEffect: StatusEffects.EnergyDrained,
+            source: ModifierSource.statusEffect
         },
         {
             id: uuidv4(),
@@ -230,6 +251,7 @@ const getEnergyDrainedModifiers = (
             save: true,
             attribute,
             statusEffect: StatusEffects.EnergyDrained,
+            source: ModifierSource.statusEffect
         },
     ];
 

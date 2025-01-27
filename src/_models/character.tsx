@@ -230,7 +230,8 @@ export enum ModifierSource {
 	otherAbility = 'Other Ability',
 	spell = 'Spell',
 	feat = 'Feat',
-	other = 'Other'
+	other = 'Other',
+	statusEffect = 'Status Effect'
 }
 export interface Modifier {
 	value: number;

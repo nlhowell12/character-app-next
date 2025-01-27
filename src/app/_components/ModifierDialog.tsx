@@ -414,7 +414,7 @@ export const ModifierDialog = ({
                             onChange={modifierValueHandler}
                             disabled={!edit}
                         >
-                            {!!edit ? Object.values(ModifierSource).map((source) => {
+                            {!!edit ? Object.values(ModifierSource).filter(x => x !== ModifierSource.statusEffect).map((source) => {
                                 return (
                                     <MenuItem key={source} value={source}>
                                         {source}
