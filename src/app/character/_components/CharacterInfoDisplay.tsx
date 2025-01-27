@@ -96,15 +96,12 @@ export const CharacterInfoDisplay = ({
     onEdit,
 }: CharacterInfoDisplayProps) => {
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
-    const { updateCharacter, deleteCharacter } = useCharacterService();
+    const { updateCharacter } = useCharacterService();
     const [openSuccess, setOpenSuccess] = useState<boolean>(false);
     const [openFeats, setOpenFeats] = useState<boolean>(false);
     const [openNotes, setOpenNotes] = useState<boolean>(false);
-    const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
     const {user} = useContext(UserContext);
     const [openStatus, setOpenStatus] = useState(false);
-
-    const router = useRouter();
 
     const handleAddModifier = (appliedModifier: Modifier) => {
         // set up on close
@@ -122,13 +119,6 @@ export const CharacterInfoDisplay = ({
         const res: Response = await updateCharacter(character);
         if (res.ok) {
             setOpenSuccess(true);
-        }
-    };
-    const handleDelete = async () => {
-        const res: Response = await deleteCharacter(character);
-        if (res.ok) {
-            setOpenSuccess(true);
-            router.push('/')
         }
     };
     const buttonStlying = {
@@ -213,28 +203,6 @@ export const CharacterInfoDisplay = ({
                     <Typography>Save Character</Typography>
                     <SaveIcon sx={{ marginLeft: '.5rem' }} />
                 </Button>
-                {userAdminPrivelages &&
-                <>
-                <Button
-                    variant='outlined'
-                    onClick={() => setOpenDeleteDialog(true)}
-                    sx={buttonStlying}
-                    color='error'
-                >
-                    <Typography>Delete Character</Typography>
-                    <DeleteForeverIcon sx={{ marginLeft: '.5rem' }} />
-                </Button>
-                <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-                    <Card>
-                        <CardHeader title='This will permanently delete this character, it cannot be recovered!'/>
-                        <CardActions sx={{justifyContent: 'flex-end'}}>
-                            <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-                            <Button color='error' onClick={handleDelete}>Delete</Button>
-                        </CardActions>
-                    </Card>
-                </Dialog>
-                </>
-                }
                 <Snackbar
                     open={openSuccess}
                     autoHideDuration={3000}

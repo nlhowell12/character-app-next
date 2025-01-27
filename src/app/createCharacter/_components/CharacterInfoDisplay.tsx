@@ -11,8 +11,12 @@ import {
     FormControlLabel,
     Snackbar,
     Alert,
+    Dialog,
+    Card,
+    CardActions,
+    CardHeader,
 } from '@mui/material';
-import { Dispatch, useState } from 'react';
+import { Dispatch, useContext, useState } from 'react';
 import {
     CharacterAction,
     deleteModAction,
@@ -28,6 +32,8 @@ import { ModChipStack } from '@/app/_components/ModChipStack';
 import { isCharacterPsionic } from '@/_utils/spellUtils';
 import { useRouter } from 'next/navigation';
 import { DisplayCell } from '@/app/character/_components/DisplayCell';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import UserContext from '@/app/_auth/UserContext';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -35,19 +41,6 @@ interface CharacterInfoDisplayProps {
     onUpdate?: () => void;
 }
 
-interface DisplayCellProps {
-    label: string;
-    value: string | number;
-    onChange?: (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => void;
-    disabled?: boolean;
-}
-
-const cellStylingObject = {
-    borderBottom: 'none',
-    padding: '0 .5rem .5rem 0',
-};
 
 export const CharacterInfoDisplay = ({
     character,
@@ -55,7 +48,10 @@ export const CharacterInfoDisplay = ({
     onUpdate,
 }: CharacterInfoDisplayProps) => {
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
-    const { createCharacter, updateCharacter } = useCharacterService();
+    const { createCharacter, updateCharacter, deleteCharacter } = useCharacterService();
+    const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+    const {user} = useContext(UserContext);
+
     const [error, setError] = useState(false);
     const router = useRouter();
     const handleSizeChange = (e: SelectChangeEvent<string>) => {
@@ -65,6 +61,13 @@ export const CharacterInfoDisplay = ({
         dispatch(updateAction(CharacterKeys.size, value));
     };
 
+    const handleDelete = async () => {
+        const res: Response = await deleteCharacter(character);
+        if (res.ok) {
+            router.push('/')
+        }
+    };
+    
     const handleSave = async () => {
         const validateSubmit = true;
         if (!!validateSubmit) {
@@ -98,6 +101,12 @@ export const CharacterInfoDisplay = ({
     const handleDeleteMod = (mod: Modifier) => {
         dispatch(deleteModAction(mod));
     };
+
+    const buttonStlying = {
+        margin: '.25rem',
+    };
+    const userAdminPrivelages = !!user && (user.isDm || user.name === character.playerName);
+
     return (
         <>
             <Grid container>
@@ -130,6 +139,28 @@ export const CharacterInfoDisplay = ({
                     value={character.playerName}
                     disabled
                 />
+                {userAdminPrivelages &&
+                        <>
+                            <Button
+                                variant='outlined'
+                                onClick={() => setOpenDeleteDialog(true)}
+                                sx={buttonStlying}
+                                color='error'
+                            >
+                                <Typography>Delete Character</Typography>
+                                <DeleteForeverIcon sx={{ marginLeft: '.5rem' }} />
+                            </Button>
+                            <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+                                <Card>
+                                    <CardHeader title='This will permanently delete this character, it cannot be recovered!'/>
+                                    <CardActions sx={{justifyContent: 'flex-end'}}>
+                                        <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
+                                        <Button color='error' onClick={handleDelete}>Delete</Button>
+                                    </CardActions>
+                                </Card>
+                            </Dialog>
+                        </>
+                    }
                 <Grid item xs={12} sx={{ margin: '.25rem .5rem' }}>
                     <Button
                         variant='outlined'
@@ -152,6 +183,7 @@ export const CharacterInfoDisplay = ({
                         </Typography>
                         <SaveIcon sx={{ marginLeft: '.5rem' }} />
                     </Button>
+                    
                 </Grid>
                 <DisplayCell
                     editable
