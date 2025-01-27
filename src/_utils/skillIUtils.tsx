@@ -34,20 +34,29 @@ export const getArmorCheckPenalties = (equipment: Equipment[]): number => {
 export const getSkillSizeBonus = (character: Character) => {
 	return SizeModifiers[character.size].stealthModifier;
 };
-export const getAllSkillBonuses = (	
+
+export const getModsForSkill = (
+	skill: RankedSkill,
+	character: Character
+) => {
+	const skillsAffectedBySize = [SkillTypes.Stealth];
+	const skillMods = character.miscModifiers.filter(x => x.skill === skill.name);
+	const sizeBonus = getSkillSizeBonus(character);
+	const sizeMod: Modifier[] = skillsAffectedBySize.includes(skill.name) ? [{
+		value: sizeBonus,
+		type: BonusTypes.Size,
+		skill: SkillTypes.Stealth
+	} as Modifier] : []
+	const statusEffectMods = [...getDazzledModifiers(character), ...getFascinatedModifiers(character, skill.name), ...getFearModifiers(character, skill.name), ...getSickenedModifiers(character, skill.name), ...getEnergyDrainedModifiers(character, skill.name)];
+	return [...skillMods, ...sizeMod, ...statusEffectMods]
+};
+
+export const getSkillBonusObject = (	
 	skill: RankedSkill,
 	character: Character
 ): BonusObject => {
 	const bonuses: BonusObject = {} as BonusObject;
-	const charMods = character.miscModifiers;
-	const sizeBonus = getSkillSizeBonus(character);
-	const sizeMod: Modifier = {
-		value: sizeBonus,
-		type: BonusTypes.Size,
-		skill: SkillTypes.Stealth
-	} as Modifier;
-	const statusEffectMods = [...getDazzledModifiers(character), ...getFascinatedModifiers(character, skill.name), ...getFearModifiers(character, skill.name), ...getSickenedModifiers(character, skill.name), ...getEnergyDrainedModifiers(character, skill.name)]
-	const allMods = [...charMods, ...statusEffectMods, sizeMod];
+	const allMods = getModsForSkill(skill, character);
 	allMods.forEach((mod) => {
 		if (mod.skill === skill.name && !mod.damage) {
 			if (!bonuses[mod.type]) {
@@ -69,6 +78,6 @@ export const getTotalSkillMod = (
 	skill: RankedSkill,
 	character: Character
 ): number => {
-	const bonuses = getAllSkillBonuses(skill, character);
+	const bonuses = getSkillBonusObject(skill, character);
 	return Object.entries(bonuses).reduce((x, [_, value]) => x + value, 0);
 };

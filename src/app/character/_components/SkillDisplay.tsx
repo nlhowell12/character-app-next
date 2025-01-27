@@ -1,5 +1,5 @@
-import { Character, RankedSkill } from '@/_models';
-import { getArmorCheckPenalties, getTotalSkillValue, getAllSkillBonuses } from '@/_utils/skillIUtils';
+import { BonusTypes, Character, RankedSkill } from '@/_models';
+import { getArmorCheckPenalties, getTotalSkillValue, getSkillBonusObject, getModsForSkill } from '@/_utils/skillIUtils';
 import {
     Card,
     Table,
@@ -35,8 +35,8 @@ const SkillsTooltip = (
         character
     }: SkillsTooltipProps
 ) => {
-    const skillMods = getAllSkillBonuses(skill, character);
-
+    const skillMods = getSkillBonusObject(skill, character);
+    const untypedMods = getModsForSkill(skill, character).filter(x => x.type === BonusTypes.Untyped);
     return (
         <Table>
             <TableBody>
@@ -55,11 +55,19 @@ const SkillsTooltip = (
                     ) : null}
                     {Object.entries(skillMods).map(([key, value]) => {
                         return (
+                            key !== BonusTypes.Untyped && 
                             <SkillCell key={key + value}>
                                 <Typography>{key}</Typography>
                                 <Typography>{value}</Typography>
                             </SkillCell>
                         )
+                    })}
+                    {untypedMods.map(mod => {
+                        return (
+                        <SkillCell key={mod.source}>
+                            <Typography>{mod.source}</Typography>
+                            <Typography>{mod.value}</Typography>
+                        </SkillCell>)
                     })}
                 </TableRow>
             </TableBody>
