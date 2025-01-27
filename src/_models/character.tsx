@@ -230,6 +230,7 @@ export enum ModifierSource {
 	classAbility = 'Class Ability',
 	otherAbility = 'Other Ability',
 	spell = 'Spell',
+	feat = 'Feat',
 	other = 'Other'
 }
 export interface Modifier {

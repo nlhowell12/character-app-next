@@ -1,4 +1,4 @@
-import { BonusTypes, Modifier, ModifierSource } from '@/_models';
+import { Modifier, ModifierSource } from '@/_models';
 import { Stack } from '@mui/material';
 import * as R from 'ramda';
 import { ModChip } from './ModChip';
@@ -13,19 +13,14 @@ interface ModChipStackProps {
 export const ModChipStack = ({ mods, onDelete, edit = false }: ModChipStackProps) => {
     const showMod = (x: Modifier) => {
         if(edit) return true;
-        switch(x.type){
-            case BonusTypes.Racial:
-                return false;
-        }
         switch(x.source){
-            case ModifierSource.trait:
-                return false
-            case ModifierSource.synergy:
-                return false
-            case ModifierSource.classAbility:
-                return false
+            case ModifierSource.spell:
+                return true
+            case ModifierSource.other:
+                return true
+
         }
-        return true;
+        return false;
     }
     return (
         <Stack direction='row' spacing={1} flexWrap='wrap' justifyContent='flex-end'>

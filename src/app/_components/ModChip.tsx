@@ -1,6 +1,6 @@
-import { Modifier } from "@/_models";
+import { BonusTypes, Modifier, SkillTypes } from "@/_models";
 import { camelToTitle } from "@/_utils/stringUtils";
-import { Chip } from "@mui/material";
+import { Chip, Tooltip } from "@mui/material";
 
 interface ModCardProps {
     mod: Modifier;
@@ -9,7 +9,8 @@ interface ModCardProps {
 const modifierString = (key: keyof Modifier, value: any) => {
     switch(key) {
         case('skill'):
-            return value;
+            {/* @ts-ignore */}
+            return SkillTypes[value];
         case('attribute'):
             return value;
         case('definition'):
@@ -38,6 +39,8 @@ const modifierString = (key: keyof Modifier, value: any) => {
             return '';
         case('numberOfDice'):
             return '';
+        case('source'):
+            return '';
         default:
             return key
     }
@@ -55,8 +58,8 @@ const getModType = (mod: Modifier) => {
 export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     const positive = !!mod.value && mod.value >= 0 ? '+' : ''
     const modValue = !!mod.value ? `${positive}${mod.value}` : '';
-    const modDefinition = !!mod.definition ? ` (${mod.definition})` : ''
     const bonusDamageDice = !!mod.numberOfDice ? `+${mod.numberOfDice}${mod.damageDice}`: '';
+    const modSource = mod.type !== BonusTypes.Racial ? `(${mod.source})` : ''
     let assignmentString = '';
     Object.entries(mod).forEach(([key, value]) => {
         if(!!value){
@@ -64,9 +67,18 @@ export const ModChip = ({ mod, onDelete }: ModCardProps) => {
         }
     })
     return (
+        !!mod.definition ? 
+            <Tooltip title={mod.definition}>
+            <Chip
+                /* @ts-ignore */
+                label={`${bonusDamageDice} ${modValue} ${getModType(mod)} - ${assignmentString}(${mod.source})`}
+                variant='outlined'
+                onDelete={onDelete}
+            />
+        </Tooltip> : 
         <Chip
             /* @ts-ignore */
-            label={`${bonusDamageDice} ${modValue} ${getModType(mod)} - ${assignmentString}${modDefinition}`}
+            label={`${bonusDamageDice} ${modValue} ${getModType(mod)} - ${assignmentString}${modSource}`}
             variant='outlined'
             onDelete={onDelete}
         />
