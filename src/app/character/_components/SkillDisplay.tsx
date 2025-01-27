@@ -1,4 +1,5 @@
-import { BonusTypes, Character, RankedSkill } from '@/_models';
+import { BonusTypes, Character, Modifier, RankedSkill } from '@/_models';
+import { ModiferSourceBonusObject } from '@/_utils/defenseUtils';
 import { getArmorCheckPenalties, getTotalSkillValue, getSkillBonusObject, getModsForSkill } from '@/_utils/skillIUtils';
 import {
     Card,
@@ -7,9 +8,13 @@ import {
     TableCell,
     TableRow,
     Tooltip,
+    tooltipClasses,
+    TooltipProps,
     Typography,
     useTheme
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
 interface SkillDisplayProps {
     character: Character;
 };
@@ -29,6 +34,13 @@ const SkillCell = ({children}: SkillCellProps) => {
         </TableCell>
     );
 };
+const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 'none',
+    },
+  });
 const SkillsTooltip = (
     {
         skill,
@@ -37,6 +49,14 @@ const SkillsTooltip = (
 ) => {
     const skillMods = getSkillBonusObject(skill, character);
     const untypedMods = getModsForSkill(skill, character).filter(x => x.type === BonusTypes.Untyped);
+    const untypedBonusObject: ModiferSourceBonusObject = {} as ModiferSourceBonusObject;;
+    untypedMods.forEach((mod: Modifier) => {
+            if(!untypedBonusObject[mod.source]) {
+                untypedBonusObject[mod.source] = mod.value
+            } else {
+                untypedBonusObject[mod.source] += mod.value
+            }
+        });
     return (
         <Table>
             <TableBody>
@@ -62,11 +82,11 @@ const SkillsTooltip = (
                             </SkillCell>
                         )
                     })}
-                    {untypedMods.map(mod => {
+                     {Object.entries(untypedBonusObject).map(([key, value]) => {
                         return (
-                        <SkillCell key={mod.source}>
-                            <Typography>{mod.source}</Typography>
-                            <Typography>{mod.value}</Typography>
+                        <SkillCell key={key + value}>
+                            <Typography>{key}</Typography>
+                            <Typography>{value}</Typography>
                         </SkillCell>)
                     })}
                 </TableRow>
@@ -74,7 +94,6 @@ const SkillsTooltip = (
         </Table>
     );
 };
-
 export const SkillDisplay = ({ character }: SkillDisplayProps) => {
     const theme = useTheme();
     return (
@@ -88,7 +107,7 @@ export const SkillDisplay = ({ character }: SkillDisplayProps) => {
                     {Object.entries(character.skills).map(
                         ([skillName, skill]) => {
                             return (
-                                <Tooltip
+                                <NoMaxWidthTooltip
                                     key={skillName}
                                     followCursor
                                     title={
@@ -125,7 +144,7 @@ export const SkillDisplay = ({ character }: SkillDisplayProps) => {
                                             </Typography>
                                         </SkillCell>
                                     </TableRow>
-                                </Tooltip>
+                                </NoMaxWidthTooltip>
                             );
                         }
                     )}

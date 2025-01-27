@@ -7,6 +7,7 @@ import {
     Damage,
     Equipment,
     Modifier,
+    ModifierSource,
     SizeModifiers,
     StatusEffects,
     stackableBonuses,
@@ -122,7 +123,9 @@ export const getEquipmentWithAcBonuses = (character: Character): Modifier[] => {
 export type BonusObject = {
     [key in BonusTypes]: number;
 };
-
+ export type ModiferSourceBonusObject = {
+    [key in ModifierSource]: number
+ }
 export const getCombatSizeBonus = (character: Character) => {
     return SizeModifiers[character.size].combatModifier;
 };

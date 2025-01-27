@@ -47,7 +47,7 @@ export const getModsForSkill = (
 		type: BonusTypes.Size,
 		skill: SkillTypes.Stealth
 	} as Modifier] : []
-	const statusEffectMods = [...getDazzledModifiers(character), ...getFascinatedModifiers(character, skill.name), ...getFearModifiers(character, skill.name), ...getSickenedModifiers(character, skill.name), ...getEnergyDrainedModifiers(character, skill.name)];
+	const statusEffectMods = [...getDazzledModifiers(character), ...getFascinatedModifiers(character, skill.name), ...getFearModifiers(character, skill.name), ...getSickenedModifiers(character, skill.name), ...getEnergyDrainedModifiers(character, skill.name)].filter(x => x.skill === skill.name);
 	return [...skillMods, ...sizeMod, ...statusEffectMods]
 };
 
