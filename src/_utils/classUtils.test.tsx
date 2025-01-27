@@ -8,9 +8,9 @@ describe('Class Utils', () => {
 	const mockCleric: Partial<CharacterClass> = {
 		name: CharacterClassNames.Cleric,
 		classAbilities: [
-			{className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 1, domain: DivineDomain.Air},
-			{className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 3, domain: DivineDomain.Death},
-			{className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 2, domain: DivineDomain.Fire},
+			{name: '', className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 1, domain: DivineDomain.Air},
+			{name: '', className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 3, domain: DivineDomain.Death},
+			{name: '', className: CharacterClassNames.Cleric, level: 1, description: '', allegianceValue: 2, domain: DivineDomain.Fire},
 		],
 		rebukeDomain: DivineDomain.Deception,
 		turnDomain: DivineDomain.Peace,
@@ -38,9 +38,9 @@ describe('Class Utils', () => {
 		expect(classUtils.checkForHalfMovement(mock0)).toStrictEqual([{type: 'Land', speed: 20}, {type: 'Climb', speed: 20}])
 	})
 	it('should get the correct initiative score', () => {
-		expect(classUtils.getInitiativeScore(mock0)).toBe('+4')
+		expect(classUtils.getInitiativeScore(mock0)).toBe('+3')
 		expect(classUtils.getInitiativeScore({...mock0, attributes: {...mock0.attributes, Dexterity: {value: 10}}})).toBe('0')
-		expect(classUtils.getInitiativeScore({...mock0, attributes: {...mock0.attributes, Dexterity: {value: 7}}})).toBe('-1')
+		expect(classUtils.getInitiativeScore({...mock0, attributes: {...mock0.attributes, Dexterity: {value: 7}}})).toBe('-2')
 	})
 	it('should get correct allegiance for cleric domains', () => {
 		const mockAllegianceObject = {
@@ -65,20 +65,20 @@ describe('Class Utils', () => {
 	});
 	it('should return orisons related to the allegiant domains', () => {
 		const mockOrisonList: ClassAbility[] = [
-			{level: 0, domain: DivineDomain.Fire, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Air, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Death, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.War, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Peace, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Life, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Deception, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Fire, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Air, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Death, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.War, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Peace, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Life, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Deception, className: CharacterClassNames.Cleric, description: ''},
 		]
 		const expectObject = [
-			{level: 0, domain: DivineDomain.Fire, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Death, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Peace, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Life, className: CharacterClassNames.Cleric, description: ''},
-			{level: 0, domain: DivineDomain.Deception, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Fire, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Death, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Peace, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Life, className: CharacterClassNames.Cleric, description: ''},
+			{name: '', level: 0, domain: DivineDomain.Deception, className: CharacterClassNames.Cleric, description: ''},
 
 		]
 		expect(classUtils.getAlignedOrisons(mock0WithCleric, mockOrisonList).length).toBe(5);

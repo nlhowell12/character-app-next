@@ -224,7 +224,6 @@ export interface CharacterClass {
 }
 
 export enum ModifierSource {
-	attributeScoreIncrease = 'Attribute Score Increase',
 	trait = 'Trait',
 	synergy = 'Synergy',
 	classAbility = 'Class Ability',

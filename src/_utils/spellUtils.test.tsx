@@ -81,7 +81,7 @@ describe('spellUtils', () => {
         expect(getSpellDc(mock0, mockSpellObject.Hexblade[0])).toBe(11)
         expect(getSpellDc(mock0, mockSpellObject.Hexblade[1])).toBe(9)
         expect(getSpellDc(mock0, mockSpellObject.Fighter[0])).toBe(9)
-        expect(getSpellDc(mock0, mockSpellObject.Fighter[0], true)).toBe(15)
+        expect(getSpellDc(mock0, mockSpellObject.Fighter[0], true)).toBe(14)
         expect(getSpellDc(mock0, mockSpellObject.Psion[0])).toBe(13)
         expect(getSpellDc(mock0, mockSpellObject["Psychic Warrior"][0])).toBe(12)
         expect(getSpellDc(mock0, mockSpellObject["Psychic Warrior"][1])).toBe(9)

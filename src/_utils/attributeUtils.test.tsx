@@ -10,13 +10,15 @@ const mockRacialModifiers: Modifier[] = [
 		value: 2,
 		type: BonusTypes.Racial,
 		attribute: AttributeNames.Intelligence,
+		source: ModifierSource.other
 	},
-	{ id: '1111',value: 2, type: BonusTypes.Racial, attribute: AttributeNames.Dexterity },
+	{ id: '1111',value: 2, type: BonusTypes.Racial, attribute: AttributeNames.Dexterity,source: ModifierSource.other },
 	{
 		id: '12345',
 		value: -2,
 		type: BonusTypes.Racial,
 		attribute: AttributeNames.Constitution,
+		source: ModifierSource.other
 	},
 ];
 
@@ -53,24 +55,21 @@ describe('Attribute utils', () => {
 		).toBe(1)
 	});
 	it('should return an attribuate based modifier', () => {
-        expect(getModifierAttributeBonus(mockCharacters[0], mockCharacters[0].miscModifiers.filter(x => !!x.attribute && !x.value)[0])).toBe(4)
+        expect(getModifierAttributeBonus(mockCharacters[0], mockCharacters[0].miscModifiers.filter(x => !!x.attribute && !x.value)[0])).toBe(2)
     })
 	test('getBaseAttributeScore', () => {
 		expect(
 			abilityUtils.getBaseAttributeScore(mock0, AttributeNames.Dexterity)
-		).toBe(18);
-		expect(
-			abilityUtils.getBaseAttributeScore({...mock0, miscModifiers: [{id: '12345678', value: 0, definition: ModifierSource.attributeScoreIncrease, attribute: AttributeNames.Strength, type: BonusTypes.Racial}]}, AttributeNames.Dexterity)
 		).toBe(17);
 	});
 	test('totalAttributeValue', () => {
 		expect(
 			abilityUtils.totalAttributeValue(mock0, AttributeNames.Dexterity)
-		).toBe(18);
+		).toBe(17);
 	});
 	test('getTotalAttributeModifier', () => {
 		expect(
 			abilityUtils.getTotalAttributeModifier(mock0, AttributeNames.Dexterity)
-		).toBe(4);
+		).toBe(3);
 	});
 });

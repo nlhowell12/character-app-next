@@ -142,6 +142,7 @@ export const CharacterInfoDisplay = ({
                         onAdd={handleAddModifier}
                         onClose={() => setOpenModifers(false)}
                         open={openModifiers}
+                        edit
                     />
                     <Button variant='outlined' onClick={handleSave}>
                         <Typography>

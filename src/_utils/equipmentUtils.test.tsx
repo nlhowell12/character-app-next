@@ -18,7 +18,7 @@ import {
     getTotalEquipmentWeight,
     getTotalModifierBonus,
 } from './equipmentUtils';
-import { Armor, BaseEquipment, BonusTypes, Currency, Damage, Dice, Equipment, Sizes, Weapon } from '@/_models';
+import { Armor, BaseEquipment, BonusTypes, Currency, Damage, Dice, Equipment, ModifierSource, Sizes, Weapon } from '@/_models';
 
 export const dagger: Weapon = {
     id: '12345',
@@ -42,18 +42,21 @@ export const dagger: Weapon = {
             type: BonusTypes.Paranormal,
             value: 2,
             damage: true,
+            source: ModifierSource.spell
         },
         {
             id: '1234',
             type: BonusTypes.Untyped,
             value: 1,
             damage: true,
+            source: ModifierSource.spell
         },
         {
             id: '12345',
             type: BonusTypes.Untyped,
             value: 1,
             damage: true,
+            source: ModifierSource.spell
         },
         {
             id: '123456',
@@ -62,7 +65,8 @@ export const dagger: Weapon = {
             damageDice: Dice.d6,
             value: 0,
             damage: true,
-            damageType: Damage.Fire
+            damageType: Damage.Fire,
+            source: ModifierSource.spell
         },
     ],
     rangeIncrement: 10,
@@ -89,12 +93,15 @@ export const sword: Weapon = {
             type: BonusTypes.Morale,
             value: 2,
             attack: true,
+            source: ModifierSource.spell
         },
         {
             id: '1234',
             type: BonusTypes.Morale,
             value: 3,
             attack: true,
+            source: ModifierSource.spell
+
         },
     ],
     rangeIncrement: 0,
@@ -112,10 +119,15 @@ export const magicLeather: Armor = {
     amount: 1,
     cost: '',
     modifiers: [
-        {            id: '123',
-        type: BonusTypes.Armor, value: 2, defense: true},
-        {            id: '1234',
-        type: BonusTypes.Enhancement, value: 2, defense: true},
+        { 
+            id: '123',
+            type: BonusTypes.Armor, value: 2, defense: true, source: ModifierSource.spell
+        },
+        {
+            id: '1234',
+            type: BonusTypes.Enhancement, value: 2, defense: true,
+            source: ModifierSource.spell
+        },
     ],
 };
 
@@ -130,11 +142,11 @@ const otherEquipment: BaseEquipment = {
 
 describe('Equipment Utils', () => {
     it('should return correct damage based on attribute', () => {
-        expect(getAttributeDamageBonus(mockCharacters[0], dagger)).toBe(4);
+        expect(getAttributeDamageBonus(mockCharacters[0], dagger)).toBe(3);
         expect(getAttributeDamageBonus(mockCharacters[0], sword)).toBe(-2);
     });
     it('should return correct attack mod based on attribute', () => {
-        expect(getAttributeAttackBonus(mockCharacters[0], dagger)).toBe(4);
+        expect(getAttributeAttackBonus(mockCharacters[0], dagger)).toBe(3);
         expect(getAttributeAttackBonus(mockCharacters[0], sword)).toBe(-2);
     });
     it('should get all damage mods', () => {
@@ -190,12 +202,12 @@ describe('Equipment Utils', () => {
         );
     });
     it('should get the damage bonus', () => {
-        expect(getDamageBonus(mockCharacters[0], dagger)).toBe(12);
+        expect(getDamageBonus(mockCharacters[0], dagger)).toBe(11);
         expect(getDamageBonus(mockCharacters[0], sword)).toBe(2);
     });
     it('should get the attack bonus', () => {
         expect(getAttackBonus(mockCharacters[0], sword)).toBe('+5');
-        expect(getAttackBonus(mockCharacters[0], dagger)).toBe('+10');
+        expect(getAttackBonus(mockCharacters[0], dagger)).toBe('+9');
     });
     it('should return an attack bonus object', () => {
         expect(

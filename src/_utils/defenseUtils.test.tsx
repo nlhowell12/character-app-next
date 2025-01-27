@@ -1,6 +1,6 @@
 
 import { mockCharacters } from '@/_mockData/characters';
-import { AttributeNames, BonusTypes, StatusEffects } from '@/_models';
+import { AttributeNames, BonusTypes, ModifierSource, StatusEffects } from '@/_models';
 import * as defenseUtils from './defenseUtils';
 import { getTotalAttributeModifier } from './attributeUtils';
 
@@ -24,7 +24,7 @@ describe('Defense Utilities', () => {
 			[BonusTypes.Size]: 1,
 
 		});
-		expect(defenseUtils.getDefenseBonuses({...mock0, miscModifiers: [...mock0.miscModifiers, {id: '10',value: 0, attribute: AttributeNames.Wisdom, type: BonusTypes.Enhancement, defense: true}]})).toStrictEqual({
+		expect(defenseUtils.getDefenseBonuses({...mock0, miscModifiers: [...mock0.miscModifiers, {id: '10',value: 0, attribute: AttributeNames.Wisdom, type: BonusTypes.Enhancement, defense: true, source: ModifierSource.spell}]})).toStrictEqual({
 			[BonusTypes.Racial]: 1,
 			[BonusTypes.Armor]: 2,
 			[BonusTypes.Untyped]: 2,
@@ -38,12 +38,12 @@ describe('Defense Utilities', () => {
 		expect(defenseUtils.getLowestEqDexMod([...mock0.equipment, {...mock0.equipment[0], maxDexBonus: 2}])).toBe(2);
 	})
 	it('should get edjusted adjusted dex mod', () => {
-		expect(defenseUtils.getAdjustedMaxDexMod(mock0)).toBe(4)
+		expect(defenseUtils.getAdjustedMaxDexMod(mock0)).toBe(3)
 		expect(defenseUtils.getAdjustedMaxDexMod({...mock0, equipment: [...mock0.equipment, {...mock0.equipment[0], maxDexBonus: 2}]})).toBe(2)
 	})
 	test('getTotalDefense', () => {
 		expect(defenseUtils.getTotalDefense(mock0)).toStrictEqual({
-			dsBonus: 17,
+			dsBonus: 16,
 			drBonus: 3,
 		});
 		expect(defenseUtils.getTotalDefense({...mock0, statusEffects: [StatusEffects.Blinded]})).toStrictEqual({
@@ -73,6 +73,6 @@ describe('Defense Utilities', () => {
 		expect(defenseUtils.getSaveBonus(false, 15)).toBe(5);
 	});
 	test('getTotalSaveBonus', () => {
-		expect(defenseUtils.getTotalSaveBonus(mock0, AttributeNames.Dexterity)).toBe(8)
+		expect(defenseUtils.getTotalSaveBonus(mock0, AttributeNames.Dexterity)).toBe(7)
 	});
 });

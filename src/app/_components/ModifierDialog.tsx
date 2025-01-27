@@ -35,12 +35,14 @@ interface ModifierDialogProps {
     onAdd: (appliedModifier: Modifier) => void;
     onClose: () => void;
     open: boolean;
+    edit?: boolean;
 }
 
 export const ModifierDialog = ({
     onAdd,
     onClose,
     open,
+    edit = false
 }: ModifierDialogProps) => {
     const initialState: Modifier = {
         id: '',
@@ -99,7 +101,7 @@ export const ModifierDialog = ({
     const modifierValueHandler = (e: any) => {
         const { value, name } = e.target;
         
-        if(value === ModifierSource.synergy){
+        if(value === ModifierSource.synergy || value === ModifierSource.trait){
             setOptionalValues({
                 ...optionalValues,
                 boolValue: true,
@@ -131,7 +133,7 @@ export const ModifierDialog = ({
 
     const optionalValueHandler = (e: any) => {
         const { name, checked } = e.target;
-        if(name === 'boolSkill' && !checked && source === ModifierSource.synergy) {
+        if(name === 'boolSkill' && !checked && (source === ModifierSource.synergy || source === ModifierSource.trait)) {
             setModifier({
                 ...modifier,
                 source: ModifierSource.other
@@ -230,7 +232,7 @@ export const ModifierDialog = ({
         }
     };
     const dividerStyling = {margin: '.5rem 0'}
-    const disableSynergy = source === ModifierSource.synergy;
+    const disableNonSkillOptions = source === ModifierSource.synergy || source === ModifierSource.trait;
 
     return (
         <Dialog open={open} onClose={onClose}>
@@ -262,7 +264,7 @@ export const ModifierDialog = ({
                                         checked={boolAttribute}
                                         onChange={optionalValueHandler}
                                         name='boolAttribute'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this modify an attribute or is it derived from one? (do not add a value if derived)' 
@@ -274,6 +276,7 @@ export const ModifierDialog = ({
                                         checked={boolSkill}
                                         onChange={optionalValueHandler}
                                         name='boolSkill'
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this affect a skill? (E.g. +2 Acrobatics)'
@@ -284,7 +287,7 @@ export const ModifierDialog = ({
                                         checked={boolSpell}
                                         onChange={optionalValueHandler}
                                         name='boolSpell'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this affect a spell DC? (E.g. +1 to Conjuration)'
@@ -295,7 +298,7 @@ export const ModifierDialog = ({
                                         checked={boolInit}
                                         onChange={optionalValueHandler}
                                         name='boolInit'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this modify your initiative?'
@@ -306,7 +309,7 @@ export const ModifierDialog = ({
                                         checked={boolAttack}
                                         onChange={optionalValueHandler}
                                         name='boolAttack'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this modify your attacks?'
@@ -317,7 +320,7 @@ export const ModifierDialog = ({
                                         checked={boolDamage}
                                         onChange={optionalValueHandler}
                                         name='boolDamage'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this modify your damage?'
@@ -328,7 +331,7 @@ export const ModifierDialog = ({
                                         checked={boolDamageDice}
                                         onChange={optionalValueHandler}
                                         name='boolDamageDice'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this add additional dice to your damage?'
@@ -339,7 +342,7 @@ export const ModifierDialog = ({
                                         checked={boolDefense}
                                         onChange={optionalValueHandler}
                                         name='boolDefense'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this modify your Defense (Armor, Shield, and Racial for DR)?'
@@ -351,7 +354,7 @@ export const ModifierDialog = ({
                                         checked={boolResistance}
                                         onChange={optionalValueHandler}
                                         name='boolResistance'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this confer resistance to damage?'
@@ -362,7 +365,7 @@ export const ModifierDialog = ({
                                         checked={boolImmunity}
                                         onChange={optionalValueHandler}
                                         name='boolImmunity'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this confer immunity to damage?'
@@ -373,7 +376,7 @@ export const ModifierDialog = ({
                                         checked={boolDamageType}
                                         onChange={optionalValueHandler}
                                         name='boolDamageType'
-                                        disabled={disableSynergy}
+                                        disabled={disableNonSkillOptions}
                                     />
                                 }
                                 label='Does this have a specific damage type?'
@@ -409,14 +412,19 @@ export const ModifierDialog = ({
                             name='source'
                             value={source}
                             onChange={modifierValueHandler}
+                            disabled={!edit}
                         >
-                            {Object.values(ModifierSource).map((source) => {
+                            {!!edit ? Object.values(ModifierSource).map((source) => {
                                 return (
                                     <MenuItem key={source} value={source}>
                                         {source}
                                     </MenuItem>
                                 );
-                            })}
+                            }) :
+                            <MenuItem key={ModifierSource.spell} value={ModifierSource.spell}>
+                                {ModifierSource.spell}
+                            </MenuItem>
+                        }
                         </Select>
                     </FormControl>
                     <FormControl fullWidth sx={formControlStyle}>
@@ -428,7 +436,7 @@ export const ModifierDialog = ({
                             name='type'
                             value={bonusType}
                             onChange={modifierValueHandler}
-                            disabled={disableSynergy}
+                            disabled={disableNonSkillOptions}
                         >
                             {Object.keys(BonusTypes).map((bon) => {
                                 return (
