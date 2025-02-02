@@ -144,6 +144,7 @@ export const SpellTable = ({
             } = e;
             if (!!value) {
                 setColumnFilter({ column, value });
+                setPage(0)
             } else {
                 resetColumnFilter();
             }
@@ -249,7 +250,7 @@ export const SpellTable = ({
     useEffect(() => {
         const filteredRows = rows.filter((x: AnyMagickType) =>
             x.name.toLowerCase().includes(searchValue.toLowerCase())
-        );
+        ).sort((a,b) => a.level - b.level);
         if (!!filteredRows && !!filteredRows.length) {
             setFilteredRows(filteredRows);
         }
@@ -260,8 +261,10 @@ export const SpellTable = ({
     };
 
     const handleClassChange = (event: SelectChangeEvent) => {
+        setSearchValue('')
         setSelectedSubtype(MagickCategory.Maneuver);
         resetColumnFilter();
+        setPage(0)
         setSelectedClass(event.target.value as keyof SpellObject);
     };
 
@@ -273,6 +276,7 @@ export const SpellTable = ({
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         setSearchValue(event.target.value as string);
+        setPage(0);
     };
 
     const handleChangeRowsPerPage = (
@@ -360,7 +364,7 @@ export const SpellTable = ({
                             );
                         })}
                     </Select>
-                    {selectedSubtype === MagickCategory.Maneuver && (
+                    {selectedSubtype === MagickCategory.Maneuver && !!characterSpellbook && (
                         <Button
                             variant='outlined'
                             sx={{ marginRight: '1rem' }}
