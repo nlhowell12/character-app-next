@@ -81,8 +81,8 @@ export const InitiativeTracker = () => {
                 }
             }
         });
-        // updateMessages(sortedFilteredMessages);
-        updateMessages(mockInitiative)
+        updateMessages(sortedFilteredMessages);
+        // updateMessages(mockInitiative)
         const lastTurn = R.last(turns.items.sort((a, b) => a.timestamp - b.timestamp))
         !!lastTurn && setTurn(lastTurn.data.value);
         const lastCurrent = R.last(currentCharacter.items.sort((a, b) => a.timestamp - b.timestamp))
