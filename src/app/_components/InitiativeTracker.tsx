@@ -63,6 +63,7 @@ export const InitiativeTracker = () => {
     const getTrackerHistory = async () => {
         const messages = await channel.history();
         const turns = await turnChannel.history();
+        const currentCharacter = await currentCharChannel.history();
         const sortedFilteredMessages: TrackerMessage[] = [];
         const lastTrackerClearTimestamp = R.last(messages.items.sort((a, b) => a.timestamp - b.timestamp).filter(x => x.name === 'tracker-clear'))?.timestamp;
         messages.items.forEach((m) => {
@@ -80,10 +81,12 @@ export const InitiativeTracker = () => {
                 }
             }
         });
-        updateMessages(sortedFilteredMessages);
-        // updateMessages(mockInitiative)
+        // updateMessages(sortedFilteredMessages);
+        updateMessages(mockInitiative)
         const lastTurn = R.last(turns.items.sort((a, b) => a.timestamp - b.timestamp))
         !!lastTurn && setTurn(lastTurn.data.value);
+        const lastCurrent = R.last(currentCharacter.items.sort((a, b) => a.timestamp - b.timestamp))
+        !!lastCurrent && setCurrentCharacter(lastCurrent?.data.value);
     };
 
     const updateTurn = () => {
@@ -105,6 +108,7 @@ export const InitiativeTracker = () => {
     };
     const deleteChip = (m: TrackerMessage) => {
         channel.publish('tracker-delete', {data: {value: m.data.value, delete: true}, id: m.id, extras: {ref: {type: 'tracker-delete'}}})
+        handleDelete(m);
     };
     const handleDelete = (m: TrackerMessage) => {
         const filter = (x: TrackerMessage) => x.id !== m.data.id;
