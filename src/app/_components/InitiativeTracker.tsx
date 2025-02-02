@@ -28,6 +28,12 @@ export interface TrackerMessage {
     id: string;
 }
 
+const statusMessageNames = {
+    trackerDelete: 'tracker-delete',
+    trackerClear: 'tracker-clear',
+    currentChar: 'currentChar',
+    turnUpdate: 'turn-update'
+}
 export const InitiativeTracker = () => {
     const [messages, updateMessages] = useState<TrackerMessage[]>([]);
     const [name, setName] = useState('');
@@ -39,16 +45,21 @@ export const InitiativeTracker = () => {
         const messageIndex = R.findIndex(R.propEq(message.name, 'name'))(
             messages
         );
-        if (messageIndex === -1) {
-            updateMessages([...messages, message]);
-        } else if(message.name === 'tracker-delete') {
-            handleDelete(message)
-        } else if(message.name === 'tracker-clear') {
-            updateMessages([]);
-        } else {
-            updateMessages(
-                R.update(messageIndex, message as TrackerMessage, messages)
-            );
+        switch(message.name){
+            case statusMessageNames.trackerDelete:
+                handleDelete(message)
+                return
+            case statusMessageNames.trackerClear:
+                updateMessages([]);
+                return
+            default:
+                if (messageIndex === -1) {
+                    updateMessages([...messages, message]);
+                } else {
+                    updateMessages(
+                        R.update(messageIndex, message as TrackerMessage, messages)
+                    );
+                }
         }
     });
 
@@ -60,12 +71,13 @@ export const InitiativeTracker = () => {
         setCurrentCharacter(message.data.value);
     });
 
+    const isStatusMessage = (m: TrackerMessage) => Object.values(statusMessageNames).some(x => x === m.name);
     const getTrackerHistory = async () => {
         const messages = await channel.history();
         const turns = await turnChannel.history();
         const currentCharacter = await currentCharChannel.history();
         const sortedFilteredMessages: TrackerMessage[] = [];
-        const lastTrackerClearTimestamp = R.last(messages.items.sort((a, b) => a.timestamp - b.timestamp).filter(x => x.name === 'tracker-clear'))?.timestamp;
+        const lastTrackerClearTimestamp = R.last(messages.items.sort((a, b) => a.timestamp - b.timestamp).filter(x => x.name === statusMessageNames.trackerClear))?.timestamp;
         messages.items.forEach((m) => {
             const messageIndex = R.findIndex(R.propEq(m.name, 'name'))(
                 sortedFilteredMessages
@@ -76,23 +88,24 @@ export const InitiativeTracker = () => {
                         .filter((x) => x.name === m.name)
                         .sort((a, b) => a.timestamp - b.timestamp)
                 );
-                if(!!lastTrackerClearTimestamp && !!lastMessage && (lastMessage.timestamp > lastTrackerClearTimestamp)){
+                const isDeleted = !!lastMessage && messages.items.some(x => x.name === statusMessageNames.trackerDelete && x.data.id === lastMessage.id && x.timestamp > lastMessage.timestamp);
+                if(!!lastTrackerClearTimestamp && !!lastMessage && (lastMessage.timestamp > lastTrackerClearTimestamp) && !isDeleted && !isStatusMessage(m)){
                     sortedFilteredMessages.push(lastMessage as TrackerMessage);
                 }
             }
         });
         updateMessages(sortedFilteredMessages);
-        // updateMessages(mockInitiative)
         const lastTurn = R.last(turns.items.sort((a, b) => a.timestamp - b.timestamp))
         !!lastTurn && setTurn(lastTurn.data.value);
         const lastCurrent = R.last(currentCharacter.items.sort((a, b) => a.timestamp - b.timestamp))
-        !!lastCurrent && setCurrentCharacter(lastCurrent?.data.value);
+        const lastCurrentIndex = !!lastCurrent && lastCurrent.data.value < sortedFilteredMessages.length ? lastCurrent.data.value : 0
+        setCurrentCharacter(lastCurrentIndex);
     };
 
     const updateTurn = () => {
         const newTurn = turn + 1;
         setTurn(newTurn)
-        turnChannel.publish('turn-update', {value: newTurn, delete: true})
+        turnChannel.publish(statusMessageNames.turnUpdate, {value: newTurn, delete: true})
     }
     const nextCharacter = () => {
         const sortedMessages = getSortedMessages();
@@ -103,27 +116,37 @@ export const InitiativeTracker = () => {
         } else {
             nextCharacter = currentCharacter + 1
         }
-        currentCharChannel.publish('currentChar', {value: nextCharacter, delete: true})
+        currentCharChannel.publish(statusMessageNames.currentChar, {value: nextCharacter, delete: true})
         setCurrentCharacter(nextCharacter)
     };
     const deleteChip = (m: TrackerMessage) => {
-        channel.publish('tracker-delete', {data: {value: m.data.value, delete: true}, id: m.id, extras: {ref: {type: 'tracker-delete'}}})
+        channel.publish(statusMessageNames.trackerDelete, {value: m.data.value, delete: true, id: m.id})
         handleDelete(m);
     };
     const handleDelete = (m: TrackerMessage) => {
-        const filter = (x: TrackerMessage) => x.id !== m.data.id;
-        updateMessages(R.filter(filter, messages))
+        const filter = (x: TrackerMessage) => m.name === statusMessageNames.trackerDelete ? m.data.id !== x.id : x.id !== m.id;
+        const filteredMessages = R.filter(filter, messages)
+        console.log(filteredMessages)
+        if(!filteredMessages.filter(x => !isStatusMessage(x)).length){
+            setCurrentCharacter(0)
+            setTurn(1)
+        }
+        updateMessages(filteredMessages);
     };
     const handleClear = () => {
         updateMessages([]);
-        channel.publish('tracker-clear', {data: {value: 0, delete: true}, id: uuidv4(), extras: {ref: {type: 'tracker-clear'}}}) 
+        channel.publish(statusMessageNames.trackerClear, {value: 0, delete: true, id: uuidv4()}) 
         setTurn(1);
-        turnChannel.publish('turn-update', {value: 1})
+        turnChannel.publish(statusMessageNames.turnUpdate, {value: 1})
+        currentCharChannel.publish(statusMessageNames.currentChar, {value: 0, delete: true});
     };
 
     const getIsCurrentCharacterChip = (m: TrackerMessage) => {
         const sortedMessages = getSortedMessages();
-        const isCurrent = m.id === sortedMessages[currentCharacter].id
+        let isCurrent = false;
+        if(!!sortedMessages.length && currentCharacter < sortedMessages.length && m.id === sortedMessages[currentCharacter].id) {
+            isCurrent = true;
+        }
         return !!isCurrent ? { backgroundColor: '#092e01' } : {}
     };
 
@@ -132,7 +155,7 @@ export const InitiativeTracker = () => {
     }, []);
 
     const getSortedMessages = () => {
-        return [...messages].filter(x => !!x.data.value).map(x => {return {...x, data: {...x.data, value: +x.data.value}}}).sort(
+        return messages.filter(m => !!m.data.value && !isStatusMessage(m)).map(x => {return {...x, data: {...x.data, value: +x.data.value}}}).sort(
             (a, b) =>
                 b.data.value - a.data.value
         );
@@ -141,7 +164,7 @@ export const InitiativeTracker = () => {
     const splitTrackerChips = useMemo(() => {
         const sortedMessages = getSortedMessages();
         const displayArrays = [];
-        const columnSize = (messages.length / 3);
+        const columnSize = 6;
         while(!!sortedMessages.length) {
             displayArrays.push(sortedMessages.splice(0, columnSize))
         }
