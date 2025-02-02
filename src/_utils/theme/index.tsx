@@ -28,4 +28,17 @@ export const iconHoverStyling = {
 
 export default createTheme({
   palette,
+  components: {
+    MuiDialog: {
+        styleOverrides: {
+          // Name of the slot
+          paper: {
+            // Some CSS
+            maxWidth: 'fit-content',
+            height: 'fit-content',
+            maxHeight: '100vh'
+          },
+        },
+      },
+  }
 });

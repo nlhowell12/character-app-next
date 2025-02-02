@@ -210,6 +210,7 @@ export default function Header() {
 				fullWidth
 				maxWidth='sm'
 				keepMounted
+				style={{maxWidth: '100%'}}
 			>
 				<InitiativeTracker/>
 			</Dialog>

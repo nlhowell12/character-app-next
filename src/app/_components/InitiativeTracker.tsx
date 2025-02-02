@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useChannel } from 'ably/react';
 import {
     Button,
@@ -19,7 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface TrackerMessage {
     name: string;
     data: {
-        value: string;
+        value: string | number;
         delete: boolean;
         id: string;
     };
@@ -97,8 +97,20 @@ export const InitiativeTracker = () => {
         getTrackerHistory();
     }, []);
 
+    const splitTrackerChips = useMemo(() => {
+        const messageArray = [...messages].filter(x => !!x.data.value).map(x => {return {...x, data: {...x.data, value: +x.data.value}}}).sort(
+            (a, b) =>
+                b.data.value - a.data.value
+        );
+        const displayArrays = [];
+        const columnSize = (messages.length / 3);
+        while(!!messageArray.length) {
+            displayArrays.push(messageArray.splice(0, columnSize))
+        }
+        return displayArrays;
+    }, [messages])
     return (
-        <Card>
+        <Card sx={{root: {maxWidth: 'fit-content'}, overflowY: 'scroll'}}>
             <CardHeader title='Initiative Tracker' />
            
             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -112,7 +124,7 @@ export const InitiativeTracker = () => {
                 </Button>
                 </div>
                 <Grid container>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                         <TextField
                             value={name}
                             label='Name'
@@ -126,28 +138,31 @@ export const InitiativeTracker = () => {
                             onChange={(e) => setScore(e.target.value)}
                         />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                         {!!messages.length && (
-                            <List>
-                                {messages.filter(x => !!x.data.value && !x.data.delete)
-                                    .sort(
-                                        (a, b) =>
-                                            Number(b.data.value) - Number(a.data.value)
+                            <div style={{display: 'flex'}}>
+                                {splitTrackerChips.map((display) => {
+                                    return(
+                                        <List key={uuidv4()}>
+                                        {display.filter(x => !!x.data.value && !x.data.delete)
+                                            .map((m: TrackerMessage) => {
+                                                return (
+                                                    <ListItem key={m.name} sx={{justifyContent: 'center'}}>
+                                                        <Chip label={`${
+                                                            m.name
+                                                        } ${Number(
+                                                            m.data.value
+                                                        )}`} onClick={() => channel.publish('tracker-delete', {data: {value: m.data.value, delete: true}, id: m.id, extras: {ref: {type: 'tracker-delete'}}})
+                                                    }
+                                                        sx={{ '&:hover': { opacity: '.6', cursor: 'pointer', textDecoration: 'line-through' },}}/>
+                                                    </ListItem>
+                                                );
+                                            })}
+                                        </List>
                                     )
-                                    .map((m: TrackerMessage) => {
-                                        return (
-                                            <ListItem key={m.name} sx={{justifyContent: 'center'}}>
-                                                <Chip label={`${
-                                                    m.name
-                                                } ${Number(
-                                                    m.data.value
-                                                )}`} onClick={() => channel.publish('tracker-delete', {data: {value: m.data.value, delete: true}, id: m.id, extras: {ref: {type: 'tracker-delete'}}})
-                                            }
-                                                sx={{ '&:hover': { opacity: '.6', cursor: 'pointer', textDecoration: 'line-through' },}}/>
-                                            </ListItem>
-                                        );
-                                    })}
-                            </List>
+                                })}
+                            </div>
+                            
                         )}
                     </Grid>
                 </Grid>
