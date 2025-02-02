@@ -1,9 +1,6 @@
 import {
     Alert,
     Button,
-    Card,
-    CardActions,
-    CardHeader,
     Dialog,
     Grid,
     Snackbar,
@@ -25,8 +22,6 @@ import { ModChipStack } from '@/app/_components/ModChipStack';
 import { NoteDialog } from './NoteDialog';
 import NotesIcon from '@mui/icons-material/Notes';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { useRouter } from 'next/navigation';
 import UserContext from '@/app/_auth/UserContext';
 import { FeatTable } from '@/app/_components/FeatTable';
 import { StatusEffectDialog } from './StatusEffectDialog';
