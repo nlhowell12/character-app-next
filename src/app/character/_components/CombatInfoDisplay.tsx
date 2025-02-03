@@ -76,7 +76,6 @@ const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
     const dsBonuses = Object.entries(acBonuses).filter(([key, _]) => {
         return !drBonusTypes.some(x => x === key)
     })
-    console.log(acBonuses, drBonuses, dsBonuses)
     return (
         <Table>
             <TableBody>

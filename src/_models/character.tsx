@@ -237,6 +237,8 @@ export interface Modifier {
 	value: number;
 	definition?: string;
 	skill?: SkillTypes;
+	allSkills?: boolean;
+	allSaves?: boolean;
 	attribute?: AttributeNames;
 	attack?: boolean;
 	damage?: boolean;

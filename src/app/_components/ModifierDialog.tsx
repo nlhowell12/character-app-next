@@ -49,6 +49,9 @@ export const ModifierDialog = ({
         value: 0,
         definition: '',
         skill: SkillTypes.Acrobatics,
+        save: false,
+        allSkills: false,
+        allSaves: false,
         attribute: AttributeNames.Strength,
         attack: false,
         damage: false,
@@ -85,6 +88,9 @@ export const ModifierDialog = ({
         boolValue: false,
         boolDefinition: false,
         boolSkill: false,
+        boolSave: false,
+        boolAllSkills: false,
+        boolAllSaves: false,
         boolAttribute: false,
         boolAttack: false,
         boolDamage: false,
@@ -106,6 +112,9 @@ export const ModifierDialog = ({
                 ...optionalValues,
                 boolValue: true,
                 boolSkill: true,
+                boolSave: false,
+                boolAllSaves: false,
+                boolAllSkills: false,
                 boolAttribute: false,
                 boolAttack: false,
                 boolDamage: false,
@@ -139,15 +148,37 @@ export const ModifierDialog = ({
                 source: ModifierSource.other
             })
         }
-        setOptionalValues({
-            ...optionalValues,
-            [name]: checked,
-        });
+        if(name === 'boolAllSkills' || name === 'boolAllSaves'){
+            setOptionalValues({
+                ...optionalValues,
+                boolValue: true,
+                boolSkill: false,
+                boolSave: false,
+                boolAttribute: false,
+                boolDamageDice: false,
+                boolDefense: false,
+                boolAbilityType: false,
+                boolResistance: false,
+                boolImmunity: false,
+                boolDamageType: false,
+                boolInit: false,
+                boolSpell: false,
+                [name]: checked,
+            });
+        } else {
+            setOptionalValues({
+                ...optionalValues,
+                [name]: checked,
+            });
+        }
     };
     const {
         boolValue,
         boolDefinition,
         boolSkill,
+        boolSave,
+        boolAllSkills,
+        boolAllSaves,
         boolAttribute,
         boolAttack,
         boolDamage,
@@ -167,7 +198,10 @@ export const ModifierDialog = ({
         value: !!boolValue ? Number(modValue) : 0,
         definition: !!boolDefinition || !!definition ? definition : undefined,
         skill: !!boolSkill ? skill : undefined,
-        attribute: !!boolAttribute ? attribute : undefined,
+        save: boolSave,
+        allSkills: boolAllSkills,
+        allSaves: boolAllSaves,
+        attribute: !!boolAttribute || !!boolSave ? attribute : undefined,
         attack: boolAttack,
         damage: boolDamage,
         defense: boolDefense,
@@ -194,13 +228,17 @@ export const ModifierDialog = ({
         boolResistance ||
         boolAttack ||
         boolDamage ||
+        boolSave || 
         boolDefense ||
         boolSkill ||
+        boolAllSaves ||
+        boolAllSkills ||
         boolAttribute ||
         boolInit ||
         boolSpell;
     const attAssignments = 
         boolResistance ||
+        boolSave ||
         boolAttack ||
         boolDamage ||
         boolDefense ||
@@ -233,6 +271,7 @@ export const ModifierDialog = ({
     };
     const dividerStyling = {margin: '.5rem 0'}
     const disableNonSkillOptions = source === ModifierSource.synergy || source === ModifierSource.trait;
+    const disableIfNotMultipleOption = boolAllSaves || boolAllSkills;
 
     return (
         <Dialog open={open} onClose={onClose}>
@@ -264,7 +303,7 @@ export const ModifierDialog = ({
                                         checked={boolAttribute}
                                         onChange={optionalValueHandler}
                                         name='boolAttribute'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this modify an attribute or is it derived from one? (do not add a value if derived)' 
@@ -276,7 +315,7 @@ export const ModifierDialog = ({
                                         checked={boolSkill}
                                         onChange={optionalValueHandler}
                                         name='boolSkill'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this affect a skill? (E.g. +2 Acrobatics)'
@@ -284,10 +323,41 @@ export const ModifierDialog = ({
                             <FormControlLabel
                                 control={
                                     <Checkbox
+                                        checked={boolSave}
+                                        onChange={optionalValueHandler}
+                                        name='boolSave'
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
+                                    />
+                                }
+                                label='Does this affect a save? (E.g. +2 Strength Saves)'
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={boolAllSkills}
+                                        onChange={optionalValueHandler}
+                                        name='boolAllSkills'
+                                    />
+                                }
+                                label='Does this affect all skills?'
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={boolAllSaves}
+                                        onChange={optionalValueHandler}
+                                        name='boolAllSaves'
+                                    />
+                                }
+                                label='Does this affect all saves?'
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
                                         checked={boolSpell}
                                         onChange={optionalValueHandler}
                                         name='boolSpell'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this affect a spell DC? (E.g. +1 to Conjuration)'
@@ -298,7 +368,7 @@ export const ModifierDialog = ({
                                         checked={boolInit}
                                         onChange={optionalValueHandler}
                                         name='boolInit'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this modify your initiative?'
@@ -331,7 +401,7 @@ export const ModifierDialog = ({
                                         checked={boolDamageDice}
                                         onChange={optionalValueHandler}
                                         name='boolDamageDice'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this add additional dice to your damage?'
@@ -342,7 +412,7 @@ export const ModifierDialog = ({
                                         checked={boolDefense}
                                         onChange={optionalValueHandler}
                                         name='boolDefense'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this modify your Defense (Armor, Shield, and Racial for DR)?'
@@ -354,7 +424,7 @@ export const ModifierDialog = ({
                                         checked={boolResistance}
                                         onChange={optionalValueHandler}
                                         name='boolResistance'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this confer resistance to damage?'
@@ -365,7 +435,7 @@ export const ModifierDialog = ({
                                         checked={boolImmunity}
                                         onChange={optionalValueHandler}
                                         name='boolImmunity'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this confer immunity to damage?'
@@ -376,7 +446,7 @@ export const ModifierDialog = ({
                                         checked={boolDamageType}
                                         onChange={optionalValueHandler}
                                         name='boolDamageType'
-                                        disabled={disableNonSkillOptions}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
                                     />
                                 }
                                 label='Does this have a specific damage type?'
@@ -449,7 +519,7 @@ export const ModifierDialog = ({
                         </Select>
                     </FormControl>
                    {!!boolSpell && <FormControl fullWidth sx={formControlStyle}>
-                        <InputLabel id='spell-school-id'>Bonus Type</InputLabel>
+                        <InputLabel id='spell-school-id'>School/Discipline/Domain/Path</InputLabel>
                         <Select
                             labelId='spell-school-id'
                             id='spell-school'
@@ -540,10 +610,10 @@ export const ModifierDialog = ({
                             </Select>
                         </FormControl>
                     )}
-                    {!!optionalValues.boolAttribute && (
+                    {!!optionalValues.boolAttribute || !!optionalValues.boolSave && (
                         <FormControl fullWidth sx={formControlStyle}>
                             <InputLabel id='attribute-id'>
-                                Attribute Modified
+                                {boolSave ? 'Save' : 'Attribute'} Modified
                             </InputLabel>
                             <Select
                                 label='Attribute'

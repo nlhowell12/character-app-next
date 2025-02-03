@@ -41,6 +41,12 @@ const modifierString = (key: keyof Modifier, value: any) => {
             return '';
         case('source'):
             return '';
+        case('save'):
+            return 'Save';
+        case('allSaves'):
+            return 'All Saves';
+        case('allSkills'):
+            return 'All Skills';
         default:
             return key
     }

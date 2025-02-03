@@ -202,7 +202,7 @@ export const getSaveModifiers = (
     saveName: AttributeNames
 ) => {
     const miscMods = character.miscModifiers.filter(
-        (x) => x.save && x.attribute === saveName
+        (x) => (x.save && x.attribute === saveName) || x.allSaves
     );
     const statusEffectMods = [
         ...getFearModifiers(character, undefined, saveName),

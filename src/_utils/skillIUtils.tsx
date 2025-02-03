@@ -40,7 +40,7 @@ export const getModsForSkill = (
 	character: Character
 ) => {
 	const skillsAffectedBySize = [SkillTypes.Stealth];
-	const skillMods = character.miscModifiers.filter(x => x.skill === skill.name);
+	const skillMods = character.miscModifiers.filter(x => x.skill === skill.name || !!x.allSkills);
 	const sizeBonus = getSkillSizeBonus(character);
 	const sizeMod: Modifier[] = skillsAffectedBySize.includes(skill.name) ? [{
 		value: sizeBonus,
@@ -58,7 +58,7 @@ export const getSkillBonusObject = (
 	const bonuses: BonusObject = {} as BonusObject;
 	const allMods = getModsForSkill(skill, character);
 	allMods.forEach((mod) => {
-		if (mod.skill === skill.name && !mod.damage) {
+		if (mod.skill === skill.name || mod.allSkills) {
 			if (!bonuses[mod.type]) {
 				bonuses[mod.type] = 0;
 			}

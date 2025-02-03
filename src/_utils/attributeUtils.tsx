@@ -28,8 +28,9 @@ export const getAllAttributeModifiers = (
 		type: BonusTypes.Racial,
 		attribute: attributeName
 	} as Modifier;
+	const attributeModifiers = character.miscModifiers.filter(x => x.attribute === attributeName && !x.save)
 	const miscAttributeMods: Modifier[] =
-		[...character.miscModifiers, ...exhausted, ...entangled, ...fatigue, racialModifier].filter((mod) => mod.attribute === attributeName && !mod.damage);
+		[...attributeModifiers, ...exhausted, ...entangled, ...fatigue, racialModifier].filter((mod) => mod.attribute === attributeName && !mod.damage);
 	
 	return miscAttributeMods;
 };
