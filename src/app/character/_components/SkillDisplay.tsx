@@ -1,4 +1,4 @@
-import { BonusTypes, Character, Modifier, RankedSkill } from '@/_models';
+import { BonusTypes, Character, Modifier, RankedSkill, SkillTypes } from '@/_models';
 import { ModiferSourceBonusObject } from '@/_utils/defenseUtils';
 import { getArmorCheckPenalties, getTotalSkillValue, getSkillBonusObject, getModsForSkill } from '@/_utils/skillIUtils';
 import {
@@ -68,7 +68,7 @@ const SkillsTooltip = (
                     {!!skill.armorCheckPenalty ? (
                         <SkillCell>
                             <Typography>Armor Penalty</Typography>
-                            <Typography variant='caption'>Double for Swimming</Typography>
+                            {skill.name === SkillTypes.Athletics && <Typography variant='caption'>Double for Swimming</Typography>}
                             <Typography>
                                 {getArmorCheckPenalties(character.equipment)}
                             </Typography>
