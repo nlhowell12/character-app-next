@@ -17,8 +17,6 @@ import {
     FormControl,
     InputLabel,
     Select,
-    Checkbox,
-    FormControlLabel,
     FormGroup,
     FormLabel,
     MenuItem,
@@ -27,6 +25,7 @@ import {
     FormHelperText,
     Dialog,
     Divider,
+    Tooltip,
 } from '@mui/material';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -84,9 +83,8 @@ export const ModifierDialog = ({
         source
     } = modifier;
 
-    const [optionalValues, setOptionalValues] = useState({
+    const initialOptionalValues = {
         boolValue: false,
-        boolDefinition: false,
         boolSkill: false,
         boolSave: false,
         boolAllSkills: false,
@@ -102,46 +100,33 @@ export const ModifierDialog = ({
         boolDamageType: false,
         boolInit: false,
         boolSpell: false
-    });
+    };
+
+    const [optionalValues, setOptionalValues] = useState(initialOptionalValues);
 
     const modifierValueHandler = (e: any) => {
         const { value, name } = e.target;
         
         if(value === ModifierSource.synergy || value === ModifierSource.trait){
             setOptionalValues({
-                ...optionalValues,
+                ...initialOptionalValues,
                 boolValue: true,
                 boolSkill: true,
-                boolSave: false,
-                boolAllSaves: false,
-                boolAllSkills: false,
-                boolAttribute: false,
-                boolAttack: false,
-                boolDamage: false,
-                boolDamageDice: false,
-                boolDefense: false,
-                boolAbilityType: false,
-                boolResistance: false,
-                boolImmunity: false,
-                boolDamageType: false,
-                boolInit: false,
-                boolSpell: false
             })
             setModifier({
                 ...modifier,
                 [name]: value,
                 type: BonusTypes.Untyped,
             });
-        } else {
-            setModifier({
-                ...modifier,
-                [name]: value,
-            });
+            return
         }
+        setModifier({
+            ...modifier,
+            [name]: value,
+        });
     };
 
-    const optionalValueHandler = (e: any) => {
-        const { name, checked } = e.target;
+    const optionalValueHandler = (checked: boolean, name: string) => {
         if(name === 'boolSkill' && !checked && (source === ModifierSource.synergy || source === ModifierSource.trait)) {
             setModifier({
                 ...modifier,
@@ -150,31 +135,53 @@ export const ModifierDialog = ({
         }
         if(name === 'boolAllSkills' || name === 'boolAllSaves'){
             setOptionalValues({
-                ...optionalValues,
+                ...initialOptionalValues,
                 boolValue: true,
-                boolSkill: false,
-                boolSave: false,
-                boolAttribute: false,
-                boolDamageDice: false,
-                boolDefense: false,
-                boolAbilityType: false,
-                boolResistance: false,
-                boolImmunity: false,
-                boolDamageType: false,
-                boolInit: false,
-                boolSpell: false,
-                [name]: checked,
+                boolAllSaves: name === 'boolAllSaves' ? checked : boolAllSaves,
+                boolAllSkills: name === 'boolAllSkills' ? checked : boolAllSkills,
+                boolAttack,
+                boolDamage
             });
-        } else {
+            return
+        } 
+        if(name === 'boolDamageDice'){
             setOptionalValues({
-                ...optionalValues,
+                ...initialOptionalValues,
+                boolDamageDice: checked,
+              
+            });
+            return
+        }
+        if(name === 'boolImmunity') {
+            setModifier({
+                ...modifier,
+                type: BonusTypes.Untyped,
+            });
+            setOptionalValues({
+                ...initialOptionalValues,
                 [name]: checked,
             });
+            return
         }
+        if(name === 'boolResistance') {
+            setModifier({
+                ...modifier,
+                type: BonusTypes.Untyped,
+            });
+            setOptionalValues({
+                ...initialOptionalValues,
+                boolValue: checked,
+                [name]: checked,
+            });
+            return
+        }
+        setOptionalValues({
+            ...optionalValues,
+            [name]: checked,
+        });
     };
     const {
         boolValue,
-        boolDefinition,
         boolSkill,
         boolSave,
         boolAllSkills,
@@ -196,9 +203,9 @@ export const ModifierDialog = ({
 
     const appliedModifier: Modifier = {
         value: !!boolValue ? Number(modValue) : 0,
-        definition: !!boolDefinition || !!definition ? definition : undefined,
-        skill: !!boolSkill ? skill : undefined,
-        save: boolSave,
+        definition: !!definition ? definition : undefined,
+        skill: !!boolSkill && !boolAllSkills ? skill : undefined,
+        save: boolSave && !boolAllSaves,
         allSkills: boolAllSkills,
         allSaves: boolAllSaves,
         attribute: !!boolAttribute || !!boolSave ? attribute : undefined,
@@ -264,6 +271,14 @@ export const ModifierDialog = ({
         marginBottom: '.5rem',
     };
 
+    const buttonStyle = {
+        margin: '1rem'
+    }
+    const buttonContainerStyling = {
+        'display': 'flex',
+        'flex-wrap': 'wrap'
+    };
+
     const handleAdd = () => {
         if (formValidation) {
             onAdd(appliedModifier);
@@ -272,10 +287,11 @@ export const ModifierDialog = ({
     const dividerStyling = {margin: '.5rem 0'}
     const disableNonSkillOptions = source === ModifierSource.synergy || source === ModifierSource.trait;
     const disableIfNotMultipleOption = boolAllSaves || boolAllSkills;
+    const disabledIfModifyingAttribute = boolValue && boolAttribute;
 
     return (
         <Dialog open={open} onClose={onClose}>
-            <Card sx={{ overflow: 'scroll' }}>
+            <Card sx={{ overflow: 'scroll', width: 'fit-content', maxWidth: '50rem' }}>
                 <CardHeader title='Add Modifiers' subheader='Bonus Type is required, use Untyped if one is not specified'/>
                 <CardContent>
                     <FormControl
@@ -284,184 +300,192 @@ export const ModifierDialog = ({
                         error={!formValidation}
                     >
                         <FormLabel component='legend'>
-                            Check applicable:
+                            Modifier Value (if you select both you will be modifying an attribute)
                         </FormLabel>
                         <FormGroup>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolValue}
-                                        onChange={optionalValueHandler}
-                                        name='boolValue'
-                                    />
-                                }
-                                label='Does it have a numerical value? (E.g. +2)'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolAttribute}
-                                        onChange={optionalValueHandler}
-                                        name='boolAttribute'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this modify an attribute or is it derived from one? (do not add a value if derived)' 
-                            />
+                            <div style={buttonContainerStyling}>
+                            <Tooltip title={'This modifier has a numerical value (E.g. +2)' } placement='top'>
+                                <Button
+                                    color={boolValue ? 'success' : 'info'}
+                                    onClick={() => optionalValueHandler(!boolValue, 'boolValue')}
+                                    variant='outlined'
+                                    sx={buttonStyle}
+                                    disabled={boolDamageDice || disableIfNotMultipleOption || boolImmunity}
+
+                                >
+                                    Value
+                                </Button>
+                            </Tooltip>
+                            <Tooltip title={'This modifier is derived from an attribute (E.g. Add your Strength to something)' } placement='top'>
+                                <Button
+                                    color={boolAttribute ? 'success' : 'info'}
+                                    onClick={() => optionalValueHandler(!boolAttribute, 'boolAttribute')}
+                                    variant='outlined'
+                                    sx={buttonStyle}
+                                    disabled={disableIfNotMultipleOption || boolDamageDice || boolImmunity || boolResistance}
+                                >
+                                    Attribute
+                                </Button>
+                            </Tooltip>
+                            </div>
+                            
                             <Divider sx={dividerStyling}/>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolSkill}
-                                        onChange={optionalValueHandler}
-                                        name='boolSkill'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this affect a skill? (E.g. +2 Acrobatics)'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolSave}
-                                        onChange={optionalValueHandler}
-                                        name='boolSave'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this affect a save? (E.g. +2 Strength Saves)'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolAllSkills}
-                                        onChange={optionalValueHandler}
-                                        name='boolAllSkills'
-                                    />
-                                }
-                                label='Does this affect all skills?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolAllSaves}
-                                        onChange={optionalValueHandler}
-                                        name='boolAllSaves'
-                                    />
-                                }
-                                label='Does this affect all saves?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolSpell}
-                                        onChange={optionalValueHandler}
-                                        name='boolSpell'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this affect a spell DC? (E.g. +1 to Conjuration)'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolInit}
-                                        onChange={optionalValueHandler}
-                                        name='boolInit'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this modify your initiative?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolAttack}
-                                        onChange={optionalValueHandler}
-                                        name='boolAttack'
-                                        disabled={disableNonSkillOptions}
-                                    />
-                                }
-                                label='Does this modify your attacks?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolDamage}
-                                        onChange={optionalValueHandler}
-                                        name='boolDamage'
-                                        disabled={disableNonSkillOptions}
-                                    />
-                                }
-                                label='Does this modify your damage?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolDamageDice}
-                                        onChange={optionalValueHandler}
-                                        name='boolDamageDice'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this add additional dice to your damage?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolDefense}
-                                        onChange={optionalValueHandler}
-                                        name='boolDefense'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this modify your Defense (Armor, Shield, and Racial for DR)?'
-                            />
+
+                            <FormLabel component='legend'>
+                                Modifier Target (Where you want the modifier applied)
+                            </FormLabel>
+                            <div style={buttonContainerStyling}>
+                                <Tooltip title={'This will apply to a skill (E.g. +2 Acrobatics)' } placement='top'>
+                                    <Button
+                                        color={boolSkill ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolSkill, 'boolSkill')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Skill
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. +2 Stength Saves)' } placement='top'>
+                                    <Button
+                                        color={boolSave ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolSave, 'boolSave')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Save
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. +2 to skill checks)' } placement='top'>
+                                    <Button
+                                        color={boolAllSkills ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolAllSkills, 'boolAllSkills')}
+                                        variant='outlined'
+                                        sx={{margin: '1rem'}}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        All Skills
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. +2 to saves)' } placement='top'>
+                                    <Button
+                                        color={boolAllSaves ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolAllSaves, 'boolAllSaves')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        All Saves
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. +1 to Conjuration)' } placement='top'>
+                                    <Button
+                                        color={boolSpell ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolSpell, 'boolSpell')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Spell School DC
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. +4 to Initiative)' } placement='top'>
+                                    <Button
+                                        color={boolInit ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolInit, 'boolInit')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Initiative
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. +1 to Attack)' } placement='top'>
+                                    <Button
+                                        color={boolAttack ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolAttack, 'boolAttack')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Attack
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. +1 to Damage)' } placement='top'>
+                                    <Button
+                                        color={boolDamage ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolDamage, 'boolDamage')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Damage
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. +1 to Defense Score or Damage Reduction)' } placement='top'>
+                                    <Button
+                                        color={boolDefense ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolDefense, 'boolDefense')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Defense
+                                    </Button>
+                                </Tooltip>
+                            </div>
                             <Divider sx={dividerStyling}/>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolResistance}
-                                        onChange={optionalValueHandler}
-                                        name='boolResistance'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this confer resistance to damage?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolImmunity}
-                                        onChange={optionalValueHandler}
-                                        name='boolImmunity'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this confer immunity to damage?'
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolDamageType}
-                                        onChange={optionalValueHandler}
-                                        name='boolDamageType'
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption}
-                                    />
-                                }
-                                label='Does this have a specific damage type?'
-                            />
+                            <FormLabel component='legend'>
+                                Additional Modifiers
+                            </FormLabel>
+                            <div style={buttonContainerStyling}>
+                                <Tooltip title={'(E.g. +1d6 Fire Damage)' } placement='top'>
+                                    <Button
+                                        color={boolDamageDice ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolDamageDice, 'boolDamageDice')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableIfNotMultipleOption || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Additional Damage Dice
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. Cold Resistance 15)' } placement='top'>
+                                    <Button
+                                        color={boolResistance ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolResistance, 'boolResistance')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity}
+                                    >
+                                        Resistance to Damage Type
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. Immune to Acid Damage)' } placement='top'>
+                                    <Button
+                                        color={boolImmunity ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolImmunity, 'boolImmunity')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolResistance}
+                                    >
+                                        Immunity to Damage Type
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title={'(E.g. Immune to Acid Damage)' } placement='top'>
+                                    <Button
+                                        color={boolDamageType ? 'success' : 'info'}
+                                        onClick={() => optionalValueHandler(!boolDamageType, 'boolDamageType')}
+                                        variant='outlined'
+                                        sx={buttonStyle}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                    >
+                                        Specify Damage Type
+                                    </Button>
+                                </Tooltip>
+                            </div>
                             <Divider sx={dividerStyling}/>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={boolDefinition}
-                                        onChange={optionalValueHandler}
-                                        name='boolDefinition'
-                                    />
-                                }
-                                label='Would you like to add a definition?'
-                            />
                         </FormGroup>
                         <FormHelperText>
                             Resistance, Attack, Damage, Defense, and Skills
@@ -497,7 +521,7 @@ export const ModifierDialog = ({
                         }
                         </Select>
                     </FormControl>
-                    <FormControl fullWidth sx={formControlStyle}>
+                    {(!boolImmunity && !boolResistance) && <FormControl fullWidth sx={formControlStyle}>
                         <InputLabel id='bonus-type-id'>Bonus Type</InputLabel>
                         <Select
                             labelId='bonus-type-id'
@@ -517,7 +541,7 @@ export const ModifierDialog = ({
                                 );
                             })}
                         </Select>
-                    </FormControl>
+                    </FormControl>}
                    {!!boolSpell && <FormControl fullWidth sx={formControlStyle}>
                         <InputLabel id='spell-school-id'>School/Discipline/Domain/Path</InputLabel>
                         <Select
@@ -538,7 +562,7 @@ export const ModifierDialog = ({
                             })}
                         </Select>
                     </FormControl>}
-                    {!!optionalValues.boolDamage && !!boolDamageDice && (
+                    {!!boolDamageDice && (
                         <>
                             <FormControl fullWidth sx={formControlStyle}>
                                 <InputLabel id='damage-die-id'>
@@ -576,17 +600,7 @@ export const ModifierDialog = ({
                             onChange={modifierValueHandler}
                         />
                     )}
-                    {!!optionalValues.boolDefinition && (
-                        <FormControl fullWidth sx={formControlStyle}>
-                            <TextField
-                                label='Definition'
-                                name='definition'
-                                multiline
-                                onChange={modifierValueHandler}
-                                value={definition}
-                            />
-                        </FormControl>
-                    )}
+                 
                     {!!optionalValues.boolSkill && (
                         <FormControl fullWidth sx={formControlStyle}>
                             <InputLabel id='skill-id'>
@@ -610,7 +624,7 @@ export const ModifierDialog = ({
                             </Select>
                         </FormControl>
                     )}
-                    {!!optionalValues.boolAttribute || !!optionalValues.boolSave && (
+                    {(optionalValues.boolAttribute || optionalValues.boolSave) && (
                         <FormControl fullWidth sx={formControlStyle}>
                             <InputLabel id='attribute-id'>
                                 {boolSave ? 'Save' : 'Attribute'} Modified
@@ -681,6 +695,15 @@ export const ModifierDialog = ({
                             </Select>
                         </FormControl>
                     )}
+                       <FormControl fullWidth sx={formControlStyle}>
+                        <TextField
+                            label='Definition (optional)'
+                            name='definition'
+                            multiline
+                            onChange={modifierValueHandler}
+                            value={definition}
+                        />
+                    </FormControl>
                     <div style={{ display: 'flex', justifyContent: 'end' }}>
                         <Button
                             disabled={!formValidation}
