@@ -46,12 +46,13 @@ const adjustDexForStatusEffects = (character: Character, dexMod: number) => {
     return adjustedDexMod;
 };
 
+export const drBonusTypes = [
+    BonusTypes.Armor,
+    BonusTypes.Shield,
+    BonusTypes.Racial,
+];
+
 export const getTotalDefense = (character: Character): DefenseObject => {
-    const drBonusTypes = [
-        BonusTypes.Armor,
-        BonusTypes.Shield,
-        BonusTypes.Racial,
-    ];
     const adjustedDexMod = adjustDexForStatusEffects(
         character,
         getAdjustedMaxDexMod(character)

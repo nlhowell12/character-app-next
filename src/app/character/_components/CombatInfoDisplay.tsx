@@ -13,6 +13,7 @@ import {
     getDefenseBonuses,
     getResistances,
     getAdjustedMaxDexMod,
+    drBonusTypes,
 } from '@/_utils/defenseUtils';
 import {
     Table,
@@ -69,6 +70,13 @@ const tooltipCellStyling = {
     border: 'none',
 };
 const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
+    const drBonuses = Object.entries(acBonuses).filter(([key, _]) => {
+        return drBonusTypes.some(x => x === key)
+    })
+    const dsBonuses = Object.entries(acBonuses).filter(([key, _]) => {
+        return !drBonusTypes.some(x => x === key)
+    })
+    console.log(acBonuses, drBonuses, dsBonuses)
     return (
         <Table>
             <TableBody>
@@ -79,7 +87,22 @@ const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
                         )}`}</Typography>
                     </TableCell>
                 </TableRow>
-                {Object.entries(acBonuses).map(([key, value]) => {
+                <TableRow>
+                    <TableCell>Defense Score</TableCell>
+                </TableRow>
+                {dsBonuses.map(([key, value]) => {
+                    return (
+                        <TableRow key={`${key} + ${value}`}>
+                            <TableCell sx={tooltipCellStyling}>
+                                <Typography>{`${key} ${value}`}</Typography>
+                            </TableCell>
+                        </TableRow>
+                    );
+                })}
+                 <TableRow>
+                    <TableCell>Damage Reduction</TableCell>
+                </TableRow>
+                {drBonuses.map(([key, value]) => {
                     return (
                         <TableRow key={`${key} + ${value}`}>
                             <TableCell sx={tooltipCellStyling}>

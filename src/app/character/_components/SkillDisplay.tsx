@@ -68,6 +68,7 @@ const SkillsTooltip = (
                     {!!skill.armorCheckPenalty ? (
                         <SkillCell>
                             <Typography>Armor Penalty</Typography>
+                            <Typography variant='caption'>Double for Swimming</Typography>
                             <Typography>
                                 {getArmorCheckPenalties(character.equipment)}
                             </Typography>
