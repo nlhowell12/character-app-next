@@ -4,11 +4,13 @@ export default {
 	[SkillTypes.Acrobatics]: {
 		name: SkillTypes.Acrobatics,
 		linkedAttribute: AttributeNames.Dexterity,
+		armorCheckPenalty: true,
 		ranks: 0,
 	},
 	[SkillTypes.Athletics]: {
 		name: SkillTypes.Athletics,
 		linkedAttribute: AttributeNames.Strength,
+		armorCheckPenalty: true,
 		ranks: 0,
 	},
 	[SkillTypes.Bluff]: {
@@ -34,6 +36,7 @@ export default {
 	[SkillTypes.EscapeArtist]: {
 		name: SkillTypes.EscapeArtist,
 		linkedAttribute: AttributeNames.Dexterity,
+		armorCheckPenalty: true,
 		ranks: 0,
 	},
 	[SkillTypes.Heal]: {
@@ -109,6 +112,7 @@ export default {
 	[SkillTypes.SleightOfHand]: {
 		name: SkillTypes.SleightOfHand,
 		linkedAttribute: AttributeNames.Dexterity,
+		armorCheckPenalty: true,
 		ranks: 0,
 	},
 	[SkillTypes.SpeakLanguage]: {
@@ -119,6 +123,7 @@ export default {
 	[SkillTypes.Stealth]: {
 		name: SkillTypes.Stealth,
 		linkedAttribute: AttributeNames.Dexterity,
+		armorCheckPenalty: true,
 		ranks: 0,
 	},
 };

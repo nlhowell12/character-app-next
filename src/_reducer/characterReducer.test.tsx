@@ -60,7 +60,8 @@ describe('characterReducer', () => {
 			initialCharacterState,
 			updateSkillAction(SkillTypes.Acrobatics, 12)
 		);
-		expect(newState.skills.Acrobatics).toStrictEqual({ ranks: 12, linkedAttribute: 'Dexterity', name: 'Acrobatics' });
+		expect(newState.skills.Acrobatics).toStrictEqual({ ranks: 12, linkedAttribute: 'Dexterity', name: 'Acrobatics', armorCheckPenalty: true,
+		});
 		expect(initialCharacterState.skills.Perform).toBe(
 			initialCharacterState.skills.Perform
 		);
@@ -84,11 +85,11 @@ describe('characterReducer', () => {
 	it('should update class abilities correctly', () => {
 		const newState = characterReducer(
 			mockCharacters[0],
-			updateClassAbilityAction(CharacterClassNames.Rogue, {description: 'This is a test', level: 1, className: CharacterClassNames.Rogue})
+			updateClassAbilityAction(CharacterClassNames.Rogue, {description: 'This is a test', name: 'test ability',level: 1, className: CharacterClassNames.Rogue})
 		);
 		const newState2 = characterReducer(
 			newState,
-			updateClassAbilityAction(CharacterClassNames.Rogue, {description: 'This is a test', level: 1, className: CharacterClassNames.Rogue})
+			updateClassAbilityAction(CharacterClassNames.Rogue, {description: 'This is a test', name: 'test ability', level: 1, className: CharacterClassNames.Rogue})
 		);
 		expect(newState.classes[0].classAbilities.some(x => x.description === 'This is a test'))
 		expect(newState2.classes[0].classAbilities.some(x => x.description === 'This is a test')).toBeFalsy()
@@ -218,7 +219,7 @@ describe('characterReducer', () => {
 			updateSkillAction(SkillTypes.Acrobatics, 12)
 		);
 		expect(update2State.attributes.Strength.value).toBe(12);
-		expect(update2State.skills.Acrobatics).toStrictEqual({ ranks: 12, linkedAttribute: 'Dexterity', name: 'Acrobatics' });
+		expect(update2State.skills.Acrobatics).toStrictEqual({ ranks: 12, linkedAttribute: 'Dexterity', name: 'Acrobatics', armorCheckPenalty: true });
 		expect(update2State.name).toBe(name);
 		const finalState = characterReducer(update2State, resetAction());
 		expect(finalState).toStrictEqual(initialCharacterState);
