@@ -11,11 +11,13 @@ interface NumberInputProps {
     value: number;
     onChange: (e: any) => void;
     minZero?: boolean;
+    error?: boolean;
     sx?: {};
 }
-export const NumberInput = ({label, value, onChange, minZero, sx}: NumberInputProps) => {
+export const NumberInput = ({label, value, onChange, minZero, sx, error}: NumberInputProps) => {
     return(
-        <FormControl fullWidth sx={{...formControlStyle, ...sx}}>
+        <FormControl fullWidth sx={{...formControlStyle, ...sx}}  error={error}
+>
             <InputLabel id={`${label.toLowerCase()}-id`}>{label}</InputLabel>
             <OutlinedInput
                 type='number'
@@ -24,6 +26,7 @@ export const NumberInput = ({label, value, onChange, minZero, sx}: NumberInputPr
                 sx={numberInputStyling}
                 value={Number(value)}
                 onChange={onChange}
+                error={error}
                 inputProps={{
                     min: minZero ? 0 : undefined
                 }}

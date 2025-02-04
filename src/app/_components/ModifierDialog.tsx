@@ -148,6 +148,7 @@ export const ModifierDialog = ({
             setOptionalValues({
                 ...initialOptionalValues,
                 boolDamageDice: checked,
+                boolDamage: checked
               
             });
             return
@@ -170,7 +171,7 @@ export const ModifierDialog = ({
             });
             setOptionalValues({
                 ...initialOptionalValues,
-                boolValue: checked,
+                boolValue: checked ? checked : boolValue,
                 [name]: checked,
             });
             return
@@ -183,6 +184,26 @@ export const ModifierDialog = ({
             setOptionalValues({
                 ...initialOptionalValues,
                 boolValue: checked,
+                [name]: checked,
+            });
+            return
+        }
+        if(name === 'boolSave') {
+            setOptionalValues({
+                ...optionalValues,
+                boolAttribute:false,
+                boolValue: checked,
+                [name]: checked,
+            });
+            return
+        }
+        if(name === 'boolDamageType') {
+            setOptionalValues({
+                ...initialOptionalValues,
+                boolDamageDice,
+                boolDamage,
+                boolValue,
+                boolAttribute,
                 [name]: checked,
             });
             return
@@ -214,13 +235,13 @@ export const ModifierDialog = ({
     const abilityTypeRequired = ModifierSource[source] === ModifierSource.classAbility || ModifierSource[source] === ModifierSource.otherAbility;
 
     const appliedModifier: Modifier = {
-        value: !!boolValue ? Number(modValue) : 0,
+        value: !!boolValue ? +modValue : 0,
         definition: !!definition ? definition : undefined,
         skill: !!boolSkill && !boolAllSkills ? skill : undefined,
         save: boolSave && !boolAllSaves,
         allSkills: boolAllSkills,
         allSaves: boolAllSaves,
-        attribute: !!boolAttribute || !!boolSave ? attribute : undefined,
+        attribute: (!!boolAttribute || !!boolSave) ? attribute : undefined,
         attack: boolAttack,
         damage: boolDamage,
         defense: boolDefense,
@@ -235,14 +256,14 @@ export const ModifierDialog = ({
                 : undefined,
         damageDice: !!boolDamage && !!boolDamageDice ? damageDice : undefined,
         numberOfDice:
-            !!boolDamage && !!boolDamageDice ? Number(numberOfDice) : undefined,
+            (!!boolDamage && !!boolDamageDice && numberOfDice) ? +numberOfDice : undefined,
             spellSchool: !!boolSpell ? spellSchool :  undefined,
         id: uuidv4(),
         source: source
     };
-    const diceAndNumber = !!damageDice && !!numberOfDice;
+    const diceAndNumber = !!damageDice && numberOfDice  && numberOfDice > 0;
     const valueOptions =
-        appliedModifier.value || appliedModifier.attribute || diceAndNumber;
+        boolValue || boolAttribute || diceAndNumber;
     const valueAssignments =
         boolResistance ||
         boolAttack ||
@@ -264,20 +285,30 @@ export const ModifierDialog = ({
         boolSkill ||
         boolValue ||
         boolInit;
-    const noModValue = !!valueAssignments && !valueOptions;
-    const noDamageType = !!boolImmunity && !appliedModifier.damageType;
-    const noUnassignedValue = boolValue && !valueAssignments;
-    const noUnassignedAttribute = boolAttribute && !attAssignments;
-
-    const noValuesSelected = Object.values(optionalValues).every((value) => {
-        if (!value) {
-            return true;
+    const noModValue = (!!valueAssignments && !valueOptions) && !boolDamageDice;
+    const noDamageDice = boolDamageDice && (!!numberOfDice && numberOfDice < 1);
+    const noAttAssignment = (boolAttribute && !boolValue) && !attAssignments;
+    const formValidation = () => {
+        if(boolValue && !appliedModifier.value) {
+            return false;
         }
-        return false;
-    });
-
-    const formValidation =
-        !noValuesSelected && !noModValue && !noDamageType && !noUnassignedValue && !noUnassignedAttribute;
+        if(valueAssignments && !valueOptions) {
+            return false;
+        }
+        if((!!boolImmunity || !!boolResistance) && !appliedModifier.damageType){
+            return false;
+        }
+        if(noAttAssignment){
+            return false
+        }
+        if(!boolValue && !boolAttribute && !boolDamageDice && !boolImmunity){
+            return false;
+        }
+        if(noDamageDice) {
+            return false;
+        }
+        return true;
+    }
 
     const formControlStyle = {
         marginBottom: '.5rem',
@@ -292,7 +323,7 @@ export const ModifierDialog = ({
     };
 
     const handleAdd = () => {
-        if (formValidation) {
+        if (formValidation()) {
             onAdd(appliedModifier);
         }
     };
@@ -300,7 +331,6 @@ export const ModifierDialog = ({
     const disableNonSkillOptions = source === ModifierSource.synergy || source === ModifierSource.trait;
     const disableIfNotMultipleOption = boolAllSaves || boolAllSkills;
     const disabledIfModifyingAttribute = boolValue && boolAttribute;
-
     return (
         <Dialog open={open} onClose={onClose}>
             <Card sx={{ overflow: 'scroll', width: 'fit-content', maxWidth: '50rem' }}>
@@ -309,40 +339,45 @@ export const ModifierDialog = ({
                     <FormControl
                         fullWidth
                         sx={formControlStyle}
-                        error={!formValidation}
+                        error={noModValue}
                     >
                         <FormLabel component='legend'>
                             Modifier Value (if you select both you will be modifying an attribute)
                         </FormLabel>
-                        <FormGroup>
-                            <div style={buttonContainerStyling}>
-                            <Tooltip title={'This modifier has a numerical value (E.g. +2)' } placement='top'>
-                                <Button
-                                    color={boolValue ? 'success' : 'info'}
-                                    onClick={() => optionalValueHandler(!boolValue, 'boolValue')}
-                                    variant='outlined'
-                                    sx={buttonStyle}
-                                    disabled={boolDamageDice || disableIfNotMultipleOption || boolImmunity || boolSpell}
+                        <div style={buttonContainerStyling}>
+                        <Tooltip title={'This modifier has a numerical value (E.g. +2)' } placement='top'>
+                            <Button
+                                color={boolValue ? 'success' : 'info'}
+                                onClick={() => optionalValueHandler(!boolValue, 'boolValue')}
+                                variant='outlined'
+                                sx={buttonStyle}
+                                disabled={boolDamageDice || disableIfNotMultipleOption || boolImmunity || boolSpell || boolSave}
 
-                                >
-                                    Value
-                                </Button>
-                            </Tooltip>
-                            <Tooltip title={'This modifier is derived from an attribute (E.g. Add your Strength to something)' } placement='top'>
-                                <Button
-                                    color={boolAttribute ? 'success' : 'info'}
-                                    onClick={() => optionalValueHandler(!boolAttribute, 'boolAttribute')}
-                                    variant='outlined'
-                                    sx={buttonStyle}
-                                    disabled={disableIfNotMultipleOption || boolDamageDice || boolImmunity || boolResistance || boolSpell}
-                                >
-                                    Attribute
-                                </Button>
-                            </Tooltip>
-                            </div>
-                            
-                            <Divider sx={dividerStyling}/>
+                            >
+                                Value
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title={'This modifier is derived from an attribute (E.g. Add your Strength to something)' } placement='top'>
+                            <Button
+                                color={boolAttribute ? 'success' : 'info'}
+                                onClick={() => optionalValueHandler(!boolAttribute, 'boolAttribute')}
+                                variant='outlined'
+                                sx={buttonStyle}
+                                disabled={disableIfNotMultipleOption || boolDamageDice || boolImmunity || boolResistance || boolSpell || boolSave}
+                            >
+                                Attribute
+                            </Button>
+                        </Tooltip>
+                        </div>
+                    </FormControl>
 
+                        <Divider sx={dividerStyling}/>
+
+                        <FormControl
+                            fullWidth
+                            sx={formControlStyle}
+                            error={(!!boolValue && !valueAssignments) || noAttAssignment}
+                        >
                             <FormLabel component='legend'>
                                 Modifier Target (Where you want the modifier applied)
                             </FormLabel>
@@ -353,7 +388,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolSkill, 'boolSkill')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell || boolDamageType}
                                     >
                                         Skill
                                     </Button>
@@ -364,7 +399,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolSave, 'boolSave')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell || boolDamageType}
                                     >
                                         Save
                                     </Button>
@@ -375,7 +410,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolAllSkills, 'boolAllSkills')}
                                         variant='outlined'
                                         sx={{margin: '1rem'}}
-                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell || boolDamageType}
                                     >
                                         All Skills
                                     </Button>
@@ -386,7 +421,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolAllSaves, 'boolAllSaves')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell || boolDamageType}
                                     >
                                         All Saves
                                     </Button>
@@ -397,7 +432,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolSpell, 'boolSpell')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolDamageType}
                                     >
                                         Spell School DC
                                     </Button>
@@ -408,7 +443,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolInit, 'boolInit')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell || boolDamageType}
                                     >
                                         Initiative
                                     </Button>
@@ -419,7 +454,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolAttack, 'boolAttack')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell || boolDamageType}
                                     >
                                         Attack
                                     </Button>
@@ -441,16 +476,24 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolDefense, 'boolDefense')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell || boolDamageType}
                                     >
                                         Defense
                                     </Button>
                                 </Tooltip>
                             </div>
-                            <Divider sx={dividerStyling}/>
+                        </FormControl>
+                            
+                        <Divider sx={dividerStyling}/>
+
+                        <FormControl
+                            fullWidth
+                            sx={formControlStyle}
+                        >
                             <FormLabel component='legend'>
                                 Additional Modifiers
                             </FormLabel>
+                            <FormGroup>
                             <div style={buttonContainerStyling}>
                                 <Tooltip title={'(E.g. +1d6 Fire Damage)' } placement='top'>
                                     <Button
@@ -469,7 +512,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolResistance, 'boolResistance')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolSpell}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolSpell || boolDamageType}
                                     >
                                         Resistance to Damage Type
                                     </Button>
@@ -480,7 +523,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolImmunity, 'boolImmunity')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolResistance || boolSpell}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolResistance || boolSpell || boolDamageType}
                                     >
                                         Immunity to Damage Type
                                     </Button>
@@ -497,8 +540,10 @@ export const ModifierDialog = ({
                                     </Button>
                                 </Tooltip>
                             </div>
-                            <Divider sx={dividerStyling}/>
-                        </FormGroup>
+                            </FormGroup>
+                        </FormControl>
+                        <Divider sx={dividerStyling}/>
+
                         <FormHelperText>
                             Resistance, Attack, Damage, Defense, and Skills
                             require a Value, Attribute, or additional Dice (size
@@ -508,7 +553,7 @@ export const ModifierDialog = ({
                             If Value or Attribute are selected, you must select
                             where to apply it.
                         </FormHelperText>
-                    </FormControl>
+
                     <FormControl fullWidth sx={formControlStyle}>
                         <InputLabel id='source-id'>Source</InputLabel>
                         <Select
@@ -533,7 +578,8 @@ export const ModifierDialog = ({
                         }
                         </Select>
                     </FormControl>
-                    {(!boolImmunity && !boolResistance) && <FormControl fullWidth sx={formControlStyle}>
+                    {(!boolImmunity && !boolResistance) && 
+                    <FormControl fullWidth sx={formControlStyle}>
                         <InputLabel id='bonus-type-id'>Bonus Type</InputLabel>
                         <Select
                             labelId='bonus-type-id'
@@ -601,8 +647,10 @@ export const ModifierDialog = ({
                             <NumberInput
                                 label='Number of Dice'
                                 value={numberOfDice || 0}
-                                onChange={modifierValueHandler}
-                            />
+                                onChange={(e) => modifierValueHandler({target: {value: e.target.value, name: 'numberOfDice'}})}
+                                error={noDamageDice}
+                                minZero
+                            />                           
                         </>
                     )}
                     {!!optionalValues.boolValue && (
@@ -610,6 +658,7 @@ export const ModifierDialog = ({
                             label='Value'
                             value={modValue}
                             onChange={modifierValueHandler}
+                            error={!!boolValue && !appliedModifier.value}
                         />
                     )}
                  
@@ -718,7 +767,7 @@ export const ModifierDialog = ({
                     </FormControl>
                     <div style={{ display: 'flex', justifyContent: 'end' }}>
                         <Button
-                            disabled={!formValidation}
+                            disabled={!formValidation()}
                             variant='outlined'
                             onClick={() => handleAdd()}
                         >
