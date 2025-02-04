@@ -12,6 +12,7 @@ import {
     getDiceDamageModifiers,
     getEqBonusObject,
     getEquipmentWeightBySize,
+    getModifiersFromWornEquipment,
     getTotalArmorBonus,
     getTotalBAB,
     getTotalCarriedWeight,
@@ -131,6 +132,22 @@ export const magicLeather: Armor = {
     ],
 };
 
+export const cloakOfResistance: Equipment = {
+    id: '123457',
+    name: 'Cloak of Resistance +5',
+    armorCheckPenalty: 0,
+    weight: 0,
+    amount: 1,
+    cost: '',
+    equipped: true,
+    modifiers: [
+        { 
+            id: '123',
+            type: BonusTypes.Resistance, value: 5, source: ModifierSource.other, allSaves: true
+        },
+    ],
+};
+
 const otherEquipment: BaseEquipment = {
     id: '32456',
     name: 'Thieves Tools',
@@ -139,36 +156,36 @@ const otherEquipment: BaseEquipment = {
     modifiers: [],
     amount: 1
 };
-
+const mock0 = mockCharacters[0];
 describe('Equipment Utils', () => {
     it('should return correct damage based on attribute', () => {
-        expect(getAttributeDamageBonus(mockCharacters[0], dagger)).toBe(3);
-        expect(getAttributeDamageBonus(mockCharacters[0], sword)).toBe(-2);
+        expect(getAttributeDamageBonus(mock0, dagger)).toBe(3);
+        expect(getAttributeDamageBonus(mock0, sword)).toBe(-2);
     });
     it('should return correct attack mod based on attribute', () => {
-        expect(getAttributeAttackBonus(mockCharacters[0], dagger)).toBe(3);
-        expect(getAttributeAttackBonus(mockCharacters[0], sword)).toBe(-2);
+        expect(getAttributeAttackBonus(mock0, dagger)).toBe(3);
+        expect(getAttributeAttackBonus(mock0, sword)).toBe(-2);
     });
     it('should get all damage mods', () => {
-        expect(getAllDamageModifiers(mockCharacters[0], dagger).length).toBe(6);
+        expect(getAllDamageModifiers(mock0, dagger).length).toBe(6);
     });
     it('should get all damage dice mods', () => {
-        expect(getDiceDamageModifiers(mockCharacters[0], dagger).length).toBe(1);
-        expect(getDiceDamageModifiers(mockCharacters[0], dagger)[0].numberOfDice).toBe(1);
-        expect(getDiceDamageModifiers(mockCharacters[0], dagger)[0].damageDice).toBe(Dice.d6);
-        expect(getDiceDamageModifiers(mockCharacters[0], dagger)[0].damageType).toBe(Damage.Fire);
+        expect(getDiceDamageModifiers(mock0, dagger).length).toBe(1);
+        expect(getDiceDamageModifiers(mock0, dagger)[0].numberOfDice).toBe(1);
+        expect(getDiceDamageModifiers(mock0, dagger)[0].damageDice).toBe(Dice.d6);
+        expect(getDiceDamageModifiers(mock0, dagger)[0].damageType).toBe(Damage.Fire);
     });
     it('should get all attack mods', () => {
-        expect(getAllAttackModifiers(mockCharacters[0], sword).length).toBe(6);
+        expect(getAllAttackModifiers(mock0, sword).length).toBe(6);
     });
     it('should return the correct carrying capacity', () => {
-        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium})).toStrictEqual({light: 23, med: 46, heavy: 70})
-        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 11}}})).toStrictEqual({light: 23, med: 46, heavy: 70})
-        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 15}}})).toStrictEqual({light: 38, med: 76, heavy: 115})
-        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 22}}})).toStrictEqual({light: 100, med: 200, heavy: 300})
-        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 23}}})).toStrictEqual({light: 116, med: 233, heavy: 350})
-        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Medium, attributes:{...mockCharacters[0].attributes, Strength: {value: 24}}})).toStrictEqual({light: 133, med: 266, heavy: 400})
-        expect(determineCarryingCapacity({...mockCharacters[0], size: Sizes.Small, attributes:{...mockCharacters[0].attributes, Strength: {value: 24}}})).toStrictEqual({light: 100, med: 200, heavy: 300})
+        expect(determineCarryingCapacity({...mock0, size: Sizes.Medium})).toStrictEqual({light: 23, med: 46, heavy: 70})
+        expect(determineCarryingCapacity({...mock0, size: Sizes.Medium, attributes:{...mock0.attributes, Strength: {value: 11}}})).toStrictEqual({light: 23, med: 46, heavy: 70})
+        expect(determineCarryingCapacity({...mock0, size: Sizes.Medium, attributes:{...mock0.attributes, Strength: {value: 15}}})).toStrictEqual({light: 38, med: 76, heavy: 115})
+        expect(determineCarryingCapacity({...mock0, size: Sizes.Medium, attributes:{...mock0.attributes, Strength: {value: 22}}})).toStrictEqual({light: 100, med: 200, heavy: 300})
+        expect(determineCarryingCapacity({...mock0, size: Sizes.Medium, attributes:{...mock0.attributes, Strength: {value: 23}}})).toStrictEqual({light: 116, med: 233, heavy: 350})
+        expect(determineCarryingCapacity({...mock0, size: Sizes.Medium, attributes:{...mock0.attributes, Strength: {value: 24}}})).toStrictEqual({light: 133, med: 266, heavy: 400})
+        expect(determineCarryingCapacity({...mock0, size: Sizes.Small, attributes:{...mock0.attributes, Strength: {value: 24}}})).toStrictEqual({light: 100, med: 200, heavy: 300})
     });
     it('should modify equipment weight by size of equipment', () => {
         expect(getEquipmentWeightBySize(dagger)).toBe(dagger.weight);
@@ -179,41 +196,41 @@ describe('Equipment Utils', () => {
         expect(getEquipmentWeightBySize({...dagger, size: Sizes.Large})).toBe(dagger.weight * 2);
     })
     it('should return total weight of carried equipment', () => {
-        expect(getTotalEquipmentWeight(mockCharacters[0])).toBe(7)
-        expect(getTotalEquipmentWeight({...mockCharacters[0], equipment: [...mockCharacters[0].equipment, dagger]})).toBe(9.5)
+        expect(getTotalEquipmentWeight(mock0)).toBe(7)
+        expect(getTotalEquipmentWeight({...mock0, equipment: [...mock0.equipment, dagger]})).toBe(9.5)
     });
     it('should get total weight of equipment and currency', () => {
-        expect(getTotalCarriedWeight({...mockCharacters[0], currency: {cp: 0, sp: 0, gp: 150, pp: 0}})).toBe(10)
+        expect(getTotalCarriedWeight({...mock0, currency: {cp: 0, sp: 0, gp: 150, pp: 0}})).toBe(10)
     });
     it('should get total BAB from all classes', () => {
-        expect(getTotalBAB(mockCharacters[0])).toBe(1)
+        expect(getTotalBAB(mock0)).toBe(1)
     })
     it('should total modifiers for damage or attack', () => {
         const damageModifiers = getAllDamageModifiers(
-            mockCharacters[0],
+            mock0,
             dagger
         );
-        const attackModifiers = getAllAttackModifiers(mockCharacters[0], sword);
-        expect(getTotalModifierBonus(mockCharacters[0], damageModifiers)).toBe(
+        const attackModifiers = getAllAttackModifiers(mock0, sword);
+        expect(getTotalModifierBonus(mock0, damageModifiers)).toBe(
             8
         );
-        expect(getTotalModifierBonus(mockCharacters[0], attackModifiers)).toBe(
+        expect(getTotalModifierBonus(mock0, attackModifiers)).toBe(
             6
         );
     });
     it('should get the damage bonus', () => {
-        expect(getDamageBonus(mockCharacters[0], dagger)).toBe(11);
-        expect(getDamageBonus(mockCharacters[0], sword)).toBe(2);
+        expect(getDamageBonus(mock0, dagger)).toBe(11);
+        expect(getDamageBonus(mock0, sword)).toBe(2);
     });
     it('should get the attack bonus', () => {
-        expect(getAttackBonus(mockCharacters[0], sword)).toBe('+5');
-        expect(getAttackBonus(mockCharacters[0], dagger)).toBe('+9');
+        expect(getAttackBonus(mock0, sword)).toBe('+5');
+        expect(getAttackBonus(mock0, dagger)).toBe('+9');
     });
     it('should return an attack bonus object', () => {
         expect(
             getEqBonusObject(
-                mockCharacters[0],
-                getAllAttackModifiers(mockCharacters[0], sword)
+                mock0,
+                getAllAttackModifiers(mock0, sword)
             )
         ).toStrictEqual({
             [BonusTypes.Morale]: 3,
@@ -222,8 +239,8 @@ describe('Equipment Utils', () => {
         });
         expect(
             getEqBonusObject(
-                mockCharacters[0],
-                getAllDamageModifiers(mockCharacters[0], sword)
+                mock0,
+                getAllDamageModifiers(mock0, sword)
             )
         ).toStrictEqual({
             [BonusTypes.Morale]: 2,
@@ -234,7 +251,7 @@ describe('Equipment Utils', () => {
         expect(getAllArmorMods(magicLeather).length).toBe(2)
     });
     it('should get totalArmorBonus', () => {
-        const total = getTotalArmorBonus(mockCharacters[0], magicLeather)
+        const total = getTotalArmorBonus(mock0, magicLeather)
         expect(total).toBe(4)
     });
     it('should get weight of coins carried', () => {
@@ -247,4 +264,14 @@ describe('Equipment Utils', () => {
         const total = getCurrencyWeight(mockCurrency)
         expect(total).toBe(8)
     });
+    it('should get all equipped modifiers from equipment', () => {
+        const mock = {...mock0, equipment: [cloakOfResistance]}
+        const mods = getModifiersFromWornEquipment(mock)
+        expect(mods.length).toBe(1)
+        expect(mods[0].value).toBe(cloakOfResistance.modifiers[0].value)
+    })
+    it('should not get modifiers from equipment that is not equipped', () => {
+        const mock = {...mock0, equipment: [{...cloakOfResistance, equipped: false}]}
+        expect(getModifiersFromWornEquipment(mock).length).toBe(0)
+    })
 });

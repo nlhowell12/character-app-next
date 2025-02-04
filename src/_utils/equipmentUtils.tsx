@@ -256,3 +256,10 @@ export const getEqBonusObject = (
     });
     return bonusObject;
 };
+
+export const getModifiersFromWornEquipment = (character: Character) : Modifier[] => {
+    const { equipment } = character;
+    const modifiers: Modifier[] = [];
+    equipment.filter(x => x.equipped).map(x => modifiers.push(...x.modifiers));
+    return modifiers;
+}
