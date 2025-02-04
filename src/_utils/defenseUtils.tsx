@@ -14,6 +14,7 @@ import {
 } from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
 import { getEnergyDrainedModifiers, getFearModifiers, getSickenedModifiers, getSlowedModifiers } from './statusEffectUtils';
+import { getModifiersFromWornEquipment } from './equipmentUtils';
 
 export interface DefenseObject {
     dsBonus: number;
@@ -111,14 +112,7 @@ export const getMiscAcBonuses = (character: Character): Modifier[] => {
 };
 
 export const getEquipmentWithAcBonuses = (character: Character): Modifier[] => {
-    const eqWithMods: Equipment[] = character.equipment.filter(
-        (eq) =>
-            !!(eq as Armor).equipped &&
-            !!eq.modifiers?.some((mod) => !!mod.defense)
-    );
-    return eqWithMods
-        .map((eq) => eq.modifiers.filter((mod) => !!mod.defense))
-        .flat();
+    return getModifiersFromWornEquipment(character).filter((mod) => !!mod.defense)
 };
 
 export type BonusObject = {
@@ -159,24 +153,29 @@ export const getDefenseBonuses = (character: Character): BonusObject => {
 };
 
 export type ResistObject = {
-    [key in Damage]: number;
+    [key in Damage]: number | string;
 };
 
 export const getResistances = (character: Character): ResistObject => {
     const miscMod = character.miscModifiers.filter(
         (mod) => !!mod.resistance || mod.immunity
     );
-
+    const equipmentMods = getModifiersFromWornEquipment(character).filter((mod) => !!mod.resistance || !!mod.immunity)
     const resistances: ResistObject = {} as ResistObject;
 
-    [...miscMod].forEach((mod) => {
+    [...miscMod, ...equipmentMods].forEach((mod) => {
         if (!!mod.damageType) {
-            if (!resistances[mod.damageType]) {
-                resistances[mod.damageType] = 0;
+            if(mod.immunity){
+                resistances[mod.damageType] = 'Immune'
+            } else {
+                if (!resistances[mod.damageType]) {
+                    resistances[mod.damageType] = 0;
+                }
+                if ((!!mod.value && typeof mod.value === 'number') && !mod.immunity && mod.value as Number > resistances[mod.damageType]) {
+                    resistances[mod.damageType] = mod.value;
+                }
             }
-            if (!!mod.value && mod.value > resistances[mod.damageType]) {
-                resistances[mod.damageType] = mod.value;
-            }
+           
         }
     });
     return resistances;
@@ -204,12 +203,13 @@ export const getSaveModifiers = (
     const miscMods = character.miscModifiers.filter(
         (x) => (x.save && x.attribute === saveName) || x.allSaves
     );
+    const equipmentMods = getModifiersFromWornEquipment(character).filter(x => (x.save && x.attribute === saveName) || x.allSaves);
     const statusEffectMods = [
         ...getFearModifiers(character, undefined, saveName),
 		...getSickenedModifiers(character, undefined, saveName),
         ...getEnergyDrainedModifiers(character, undefined, saveName)
     ].filter(x => x.attribute === saveName);
-    return [...miscMods, ...statusEffectMods];
+    return [...miscMods, ...statusEffectMods, ...equipmentMods];
 };
 
 export const adjustSaveForModifiers = (

@@ -143,7 +143,10 @@ export const cloakOfResistance: Equipment = {
     modifiers: [
         { 
             id: '123',
-            type: BonusTypes.Resistance, value: 5, source: ModifierSource.other, allSaves: true
+            type: BonusTypes.Resistance,
+            value: 5,
+            source: ModifierSource.other,
+            allSaves: true
         },
     ],
 };

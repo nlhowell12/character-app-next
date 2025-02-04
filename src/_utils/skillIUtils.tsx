@@ -3,6 +3,7 @@ import { Character, RankedSkill, Equipment, Armor, stackableBonuses, SizeModifie
 import { getTotalAttributeModifier } from './attributeUtils';
 import { BonusObject } from './defenseUtils';
 import { getDazzledModifiers, getEnergyDrainedModifiers, getFascinatedModifiers, getFearModifiers, getSickenedModifiers } from './statusEffectUtils';
+import { getModifiersFromWornEquipment } from './equipmentUtils';
 
 export const getTotalSkillValue = (
 	character: Character,
@@ -42,13 +43,14 @@ export const getModsForSkill = (
 	const skillsAffectedBySize = [SkillTypes.Stealth];
 	const skillMods = character.miscModifiers.filter(x => x.skill === skill.name || !!x.allSkills);
 	const sizeBonus = getSkillSizeBonus(character);
+	const equipmentBonuses = getModifiersFromWornEquipment(character).filter(x => x.skill === skill.name || x.allSkills)
 	const sizeMod: Modifier[] = skillsAffectedBySize.includes(skill.name) ? [{
 		value: sizeBonus,
 		type: BonusTypes.Size,
 		skill: SkillTypes.Stealth
 	} as Modifier] : []
 	const statusEffectMods = [...getDazzledModifiers(character), ...getFascinatedModifiers(character, skill.name), ...getFearModifiers(character, skill.name), ...getSickenedModifiers(character, skill.name), ...getEnergyDrainedModifiers(character, skill.name)].filter(x => x.skill === skill.name);
-	return [...skillMods, ...sizeMod, ...statusEffectMods]
+	return [...skillMods, ...sizeMod, ...statusEffectMods, ...equipmentBonuses]
 };
 
 export const getSkillBonusObject = (	

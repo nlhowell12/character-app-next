@@ -1,8 +1,9 @@
 
 import { mockCharacters } from '@/_mockData/characters';
-import { AttributeNames, BonusTypes, ModifierSource, StatusEffects } from '@/_models';
+import { AttributeNames, BaseEquipment, BonusTypes, EnergyType, Equipment, Modifier, ModifierSource, StatusEffects } from '@/_models';
 import * as defenseUtils from './defenseUtils';
 import { getTotalAttributeModifier } from './attributeUtils';
+import { cloakOfResistance } from './equipmentUtils.test';
 
 describe('Defense Utilities', () => {
 	const mock0 = mockCharacters[0];
@@ -37,7 +38,7 @@ describe('Defense Utilities', () => {
 		expect(defenseUtils.getLowestEqDexMod(mock0.equipment)).toBe(8);
 		expect(defenseUtils.getLowestEqDexMod([...mock0.equipment, {...mock0.equipment[0], maxDexBonus: 2}])).toBe(2);
 	})
-	it('should get edjusted adjusted dex mod', () => {
+	it('should get adjusted adjusted dex mod', () => {
 		expect(defenseUtils.getAdjustedMaxDexMod(mock0)).toBe(3)
 		expect(defenseUtils.getAdjustedMaxDexMod({...mock0, equipment: [...mock0.equipment, {...mock0.equipment[0], maxDexBonus: 2}]})).toBe(2)
 	})
@@ -56,8 +57,29 @@ describe('Defense Utilities', () => {
 		});
 	});
 	test('getResistances', () => {
-		expect(defenseUtils.getResistances(mock0)).toStrictEqual({
-			Cold: 5
+		const equipmentMod = {value: 10, type: BonusTypes.Resistance, resistance: true, damageType: EnergyType.Fire};
+		const moddedCloak = {...cloakOfResistance, modifiers: [equipmentMod]} as Equipment;
+		const immunityMod = {
+			id: '1',
+			immunity: true,
+			damageType: EnergyType.Acid,
+			value: 0,
+			type: BonusTypes.Resistance,
+			source: ModifierSource.other
+		}
+		const ringOfFireImmunity = {
+			name: 'Ring of Fire Immunity',
+			equipped: true,
+			modifiers: [immunityMod],
+			id: '123',
+			amount: 1,
+			weight: 0,
+			cost: '1'} as BaseEquipment;
+		const mock = {...mock0, equipment: [moddedCloak, ringOfFireImmunity]}
+		expect(defenseUtils.getResistances(mock)).toStrictEqual({
+			Cold: 5,
+			Fire: 10,
+			Acid: 'Immune'
 		} as defenseUtils.ResistObject);
 	});
 	test('isProficientSave', () => {
@@ -73,6 +95,11 @@ describe('Defense Utilities', () => {
 		expect(defenseUtils.getSaveBonus(false, 15)).toBe(5);
 	});
 	test('getTotalSaveBonus', () => {
-		expect(defenseUtils.getTotalSaveBonus(mock0, AttributeNames.Dexterity)).toBe(7)
+		let mock = mock0;
+		expect(defenseUtils.getTotalSaveBonus(mock, AttributeNames.Dexterity)).toBe(7)
+		mock = {...mock0, equipment: [cloakOfResistance]}
+		expect(defenseUtils.getTotalSaveBonus(mock, AttributeNames.Dexterity)).toBe(12)
+		expect(defenseUtils.getTotalSaveBonus(mock, AttributeNames.Strength)).toBe(3)
+		expect(defenseUtils.getTotalSaveBonus(mock, AttributeNames.Intelligence)).toBe(11)
 	});
 });
