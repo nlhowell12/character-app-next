@@ -22,8 +22,6 @@ import {
     Armor,
     CarryingCapacityObject,
     Character,
-    CharacterKeys,
-    Currency,
     Dice,
     Equipment,
     Weapon,

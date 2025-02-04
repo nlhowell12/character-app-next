@@ -26,6 +26,7 @@ import UserContext from '@/app/_auth/UserContext';
 import { FeatTable } from '@/app/_components/FeatTable';
 import { StatusEffectDialog } from './StatusEffectDialog';
 import * as R from 'ramda';
+import { getModifiersFromWornEquipment } from '@/_utils/equipmentUtils';
 
 interface CharacterInfoDisplayProps {
     character: Character;
@@ -278,7 +279,7 @@ export const CharacterInfoDisplay = ({
                 value={!!character.hairColor ? character.hairColor : 'N/A'}
             />
             <ModChipStack
-                mods={character.miscModifiers}
+                mods={[...character.miscModifiers, ...getModifiersFromWornEquipment(character)]}
                 onDelete={handleDeleteMod}
             />
             <StatusEffectDialog open={openStatus} character={character} dispatch={dispatch} onClose={() => setOpenStatus(false)}/>

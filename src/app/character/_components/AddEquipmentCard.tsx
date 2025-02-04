@@ -212,6 +212,8 @@ export const AddEquipmentCard = ({
                         onAdd={handleAddModifier}
                         onClose={() => setModOpen(false)}
                         open={modOpen}
+                        edit
+                        equipment
                     />
                 {showCustomFields &&
                     <FormGroup sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -235,7 +237,7 @@ export const AddEquipmentCard = ({
                         />
                     </FormGroup>
                 }
-            <ModChipStack mods={!selectedEquipment ? newEq.modifiers : newEq.modifiers.filter(x => !x.defense)} onDelete={handleDeleteModifier}/>
+            <ModChipStack edit mods={!selectedEquipment ? newEq.modifiers : newEq.modifiers.filter(x => !x.defense)} onDelete={handleDeleteModifier}/>
 
             </CardActions>
             {showCustomFields ? 

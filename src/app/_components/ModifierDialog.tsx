@@ -35,13 +35,15 @@ interface ModifierDialogProps {
     onClose: () => void;
     open: boolean;
     edit?: boolean;
+    equipment?: boolean;
 }
 
 export const ModifierDialog = ({
     onAdd,
     onClose,
     open,
-    edit = false
+    edit = false,
+    equipment = false,
 }: ModifierDialogProps) => {
     const initialState: Modifier = {
         id: '',
@@ -565,7 +567,7 @@ export const ModifierDialog = ({
                             onChange={modifierValueHandler}
                             disabled={!edit}
                         >
-                            {!!edit ? Object.values(ModifierSource).filter(x => x !== ModifierSource.statusEffect).map((source) => {
+                            {!!edit ? Object.values(ModifierSource).filter(x => x !== ModifierSource.statusEffect && (!!equipment  ? (x !== ModifierSource.synergy && x !== ModifierSource.trait) : null) ).map((source) => {
                                 return (
                                     <MenuItem key={source} value={source}>
                                         {source}
