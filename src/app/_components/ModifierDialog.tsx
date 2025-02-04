@@ -175,6 +175,18 @@ export const ModifierDialog = ({
             });
             return
         }
+        if(name === 'boolSpell') {
+            setModifier({
+                ...modifier,
+                type: BonusTypes.Untyped,
+            });
+            setOptionalValues({
+                ...initialOptionalValues,
+                boolValue: checked,
+                [name]: checked,
+            });
+            return
+        }
         setOptionalValues({
             ...optionalValues,
             [name]: checked,
@@ -310,7 +322,7 @@ export const ModifierDialog = ({
                                     onClick={() => optionalValueHandler(!boolValue, 'boolValue')}
                                     variant='outlined'
                                     sx={buttonStyle}
-                                    disabled={boolDamageDice || disableIfNotMultipleOption || boolImmunity}
+                                    disabled={boolDamageDice || disableIfNotMultipleOption || boolImmunity || boolSpell}
 
                                 >
                                     Value
@@ -322,7 +334,7 @@ export const ModifierDialog = ({
                                     onClick={() => optionalValueHandler(!boolAttribute, 'boolAttribute')}
                                     variant='outlined'
                                     sx={buttonStyle}
-                                    disabled={disableIfNotMultipleOption || boolDamageDice || boolImmunity || boolResistance}
+                                    disabled={disableIfNotMultipleOption || boolDamageDice || boolImmunity || boolResistance || boolSpell}
                                 >
                                     Attribute
                                 </Button>
@@ -341,7 +353,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolSkill, 'boolSkill')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Skill
                                     </Button>
@@ -352,7 +364,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolSave, 'boolSave')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Save
                                     </Button>
@@ -363,7 +375,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolAllSkills, 'boolAllSkills')}
                                         variant='outlined'
                                         sx={{margin: '1rem'}}
-                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         All Skills
                                     </Button>
@@ -374,7 +386,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolAllSaves, 'boolAllSaves')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         All Saves
                                     </Button>
@@ -396,7 +408,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolInit, 'boolInit')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Initiative
                                     </Button>
@@ -407,7 +419,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolAttack, 'boolAttack')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Attack
                                     </Button>
@@ -418,7 +430,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolDamage, 'boolDamage')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Damage
                                     </Button>
@@ -429,7 +441,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolDefense, 'boolDefense')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Defense
                                     </Button>
@@ -446,7 +458,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolDamageDice, 'boolDamageDice')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableIfNotMultipleOption || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={disableIfNotMultipleOption || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Additional Damage Dice
                                     </Button>
@@ -457,7 +469,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolResistance, 'boolResistance')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolSpell}
                                     >
                                         Resistance to Damage Type
                                     </Button>
@@ -468,7 +480,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolImmunity, 'boolImmunity')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolResistance}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolResistance || boolSpell}
                                     >
                                         Immunity to Damage Type
                                     </Button>
@@ -479,7 +491,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolDamageType, 'boolDamageType')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Specify Damage Type
                                     </Button>
