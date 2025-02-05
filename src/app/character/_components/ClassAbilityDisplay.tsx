@@ -77,7 +77,7 @@ export const ClassAbilityDisplay = ({
 						<TableCell><Typography>Hexblade Curse DC</Typography></TableCell>
 						<TableCell><Typography>{hexbladeDC}</Typography></TableCell>
 					</TableRow>}
-					{abilities.map((ability) => {
+					{abilities.sort((a, b) => a.level - b.level).map((ability) => {
 						return (
 							<AbilityRow key={ability.className + ability.description} ability={ability}/>
 						);

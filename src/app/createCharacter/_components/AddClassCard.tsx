@@ -420,7 +420,7 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                         handleDelete={handleDeleteClassAbility}
                     />
                 </Popover>
-                {classAbilities.map((abl: ClassAbility) => {
+                {classAbilities.sort((a, b) => a.level - b.level).map((abl: ClassAbility) => {
                     const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name
                     return !!abl.description ? (
                         <Tooltip title={abl.description} key={name}>
