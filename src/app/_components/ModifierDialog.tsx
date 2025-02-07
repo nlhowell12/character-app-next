@@ -536,7 +536,7 @@ export const ModifierDialog = ({
                                         onClick={() => optionalValueHandler(!boolDamageType, 'boolDamageType')}
                                         variant='outlined'
                                         sx={buttonStyle}
-                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || boolDamageDice || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
+                                        disabled={disableNonSkillOptions || disableIfNotMultipleOption || disabledIfModifyingAttribute || boolImmunity || boolResistance || boolSpell}
                                     >
                                         Specify Damage Type
                                     </Button>
