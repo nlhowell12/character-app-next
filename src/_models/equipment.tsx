@@ -30,8 +30,8 @@ export interface BaseEquipment {
     category?: string;
     cost: string;
     equipped?: boolean;
-    isWeapon: boolean;
-    isArmor: boolean;
+    isWeapon?: boolean;
+    isArmor?: boolean;
 }
 export interface Weapon extends BaseEquipment {
     numberOfDice: number;
