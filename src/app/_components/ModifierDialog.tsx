@@ -333,6 +333,15 @@ export const ModifierDialog = ({
     const disableNonSkillOptions = source === ModifierSource.synergy || source === ModifierSource.trait;
     const disableIfNotMultipleOption = boolAllSaves || boolAllSkills;
     const disabledIfModifyingAttribute = boolValue && boolAttribute;
+
+    const editSources = Object.values(ModifierSource).filter(x => x !== ModifierSource.statusEffect).filter(x => {
+        if(equipment) { 
+            return x !== ModifierSource.synergy && x !== ModifierSource.trait
+        }
+        return true;
+    }
+
+    )
     return (
         <Dialog open={open} onClose={onClose}>
             <Card sx={{ overflow: 'scroll', width: 'fit-content', maxWidth: '50rem' }}>
@@ -567,7 +576,8 @@ export const ModifierDialog = ({
                             onChange={modifierValueHandler}
                             disabled={!edit}
                         >
-                            {!!edit ? Object.values(ModifierSource).filter(x => x !== ModifierSource.statusEffect && (!!equipment  ? (x !== ModifierSource.synergy && x !== ModifierSource.trait) : null) ).map((source) => {
+                            {!!edit ? 
+                            editSources.map((source) => {
                                 return (
                                     <MenuItem key={source} value={source}>
                                         {source}
