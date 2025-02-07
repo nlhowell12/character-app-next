@@ -252,6 +252,7 @@ export const ModifierDialog = ({
         abilityType: !!abilityTypeRequired ? abilityType : undefined,
         resistance: boolResistance,
         immunity: boolImmunity,
+        fromEquipment: !!equipment ? equipment : false,
         damageType:
             !!boolResistance || !!boolImmunity || boolDamageType
                 ? damageType

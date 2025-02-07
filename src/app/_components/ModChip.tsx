@@ -4,7 +4,7 @@ import { Chip, Tooltip } from "@mui/material";
 
 interface ModCardProps {
     mod: Modifier;
-    onDelete: () => void;
+    onDelete: (() => void) | undefined;
 }
 const modifierString = (key: keyof Modifier, value: any) => {
     switch(key) {
@@ -47,6 +47,8 @@ const modifierString = (key: keyof Modifier, value: any) => {
             return 'All Saves';
         case('allSkills'):
             return 'All Skills';
+        case('fromEquipment'):
+            return '';
         default:
             return key
     }
@@ -61,11 +63,20 @@ const getModType = (mod: Modifier) => {
     }
     return ''
 }
+
+const getModSource = (mod: Modifier) => {
+    if(mod.type === BonusTypes.Racial){
+        return ''
+    };
+    if(mod.fromEquipment){
+        return '(Equipment)';
+    }
+    return mod.source;
+}
 export const ModChip = ({ mod, onDelete }: ModCardProps) => {
     const positive = !!mod.value && mod.value >= 0 ? '+' : ''
     const modValue = !!mod.value ? `${positive}${mod.value}` : '';
     const bonusDamageDice = !!mod.numberOfDice ? `+${mod.numberOfDice}${mod.damageDice}`: '';
-    const modSource = mod.type !== BonusTypes.Racial ? `(${mod.source})` : ''
     let assignmentString = '';
     Object.entries(mod).forEach(([key, value]) => {
         if(!!value){
@@ -77,14 +88,14 @@ export const ModChip = ({ mod, onDelete }: ModCardProps) => {
             <Tooltip title={mod.definition}>
             <Chip
                 /* @ts-ignore */
-                label={`${bonusDamageDice} ${modValue} ${getModType(mod)} - ${assignmentString}(${mod.source})`}
+                label={`${bonusDamageDice} ${modValue} ${getModType(mod)} - ${assignmentString}(${getModSource(mod)})`}
                 variant='outlined'
                 onDelete={onDelete}
             />
         </Tooltip> : 
         <Chip
             /* @ts-ignore */
-            label={`${bonusDamageDice} ${modValue} ${getModType(mod)} - ${assignmentString}${modSource}`}
+            label={`${bonusDamageDice} ${modValue} ${getModType(mod)} - ${assignmentString}${getModSource(mod)}`}
             variant='outlined'
             onDelete={onDelete}
         />

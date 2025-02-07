@@ -252,6 +252,7 @@ export interface Modifier {
 	damageType?: Damage;
 	damageDice?: Dice;
 	numberOfDice?: number;
+	fromEquipment?: boolean;
 	statusEffect?: StatusEffects;
 	spellSchool?: ArcaneSchool | PsionicDiscipline | DivineDomain | ShadowPath
 	id: string;

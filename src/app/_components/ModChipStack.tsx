@@ -29,7 +29,7 @@ export const ModChipStack = ({ mods, onDelete, edit = false }: ModChipStackProps
                     <ModChip
                         key={`${mod.type}-${mod.id || uuidv4()}`}
                         mod={mod}
-                        onDelete={() => onDelete(mod)}
+                        onDelete={!edit  ? undefined : () => onDelete(mod)}
                     />
                 );
             })}
