@@ -30,6 +30,8 @@ export interface BaseEquipment {
     category?: string;
     cost: string;
     equipped?: boolean;
+    isWeapon: boolean;
+    isArmor: boolean;
 }
 export interface Weapon extends BaseEquipment {
     numberOfDice: number;
@@ -41,7 +43,6 @@ export interface Weapon extends BaseEquipment {
     rangeIncrement: number;
     dexBasedAttack: boolean;
     dexBasedDamage: boolean;
-    isWeapon: boolean;
 }
 
 export interface Armor extends BaseEquipment {
@@ -50,5 +51,4 @@ export interface Armor extends BaseEquipment {
     maxDexBonus: number;
     spellFailure: number;
     hardness: number;
-    isArmor: boolean;
 }

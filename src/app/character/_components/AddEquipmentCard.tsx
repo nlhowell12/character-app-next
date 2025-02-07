@@ -111,6 +111,22 @@ export const AddEquipmentCard = ({
         e: any,
         key: keyof Equipment | keyof Weapon | keyof Armor
     ) => {
+        if(key === 'isWeapon'){
+            setNewObject({
+                ...newEq,
+                isArmor: false,
+                [key]: e.target.checked
+            });
+            return
+        }
+        if(key === 'isArmor'){
+            setNewObject({
+                ...newEq,
+                isWeapon: false,
+                [key]: e.target.checked
+            });
+            return
+        }
         setNewObject({
             ...newEq,
             [key]: e.target.checked
@@ -148,7 +164,9 @@ export const AddEquipmentCard = ({
         handleChange({target: {value: filteredMods}}, 'modifiers')};
 
     const { equipment } = useEquipmentService();
-    const showCustomFields = equipmentType === EquipmentTypeOptions.Custom || !!edit;
+    const showCustomFields = equipmentType === EquipmentTypeOptions.Custom;
+    const isTableDisplayedType = equipmentType !== EquipmentTypeOptions.Custom;
+    const showEditFields = showCustomFields || !!edit;
     
     const columnsByType = {
         [EquipmentTypeOptions.Armor]: ['Name', 'Cost', 'Armor Bonus', 'Max Dex Bonus', 'Armor Check Penalty', 'Spell Failure', 'Weight', 'Category'],
@@ -185,22 +203,6 @@ export const AddEquipmentCard = ({
     return (
         <Card sx={{overflow: 'scroll'}}>
             <CardActions>
-                <FormControl sx={{width: '25%'}}>
-                    <InputLabel id='type-id'>Equipment Type</InputLabel>
-                    <Select
-                        labelId='type-id'
-                        id='type'
-                        label='Equipment Type'
-                        name='type'
-                        value={equipmentType}
-                        onChange={(e: any) => setEquipmentType(e.target.value)}
-                    >
-                        {Object.keys(EquipmentTypeOptions).map((x) => {
-                            /* @ts-ignore */
-                            return <MenuItem key={x} value={x}>{EquipmentTypeOptions[x]}</MenuItem>
-                        })}
-                    </Select>
-                </FormControl>
                 <Button
                     variant='outlined'
                     onClick={() => setModOpen(true)}
@@ -215,13 +217,31 @@ export const AddEquipmentCard = ({
                         edit
                         equipment
                     />
+                {!edit && <FormControl sx={{width: '25%'}}>
+                    <InputLabel id='type-id'>Equipment Type</InputLabel>
+                    <Select
+                        labelId='type-id'
+                        id='type'
+                        label='Equipment Type'
+                        name='type'
+                        value={equipmentType}
+                        onChange={(e: any) => setEquipmentType(e.target.value)}
+                    >
+                        {Object.keys(EquipmentTypeOptions).map((x) => {
+                            /* @ts-ignore */
+                            return <MenuItem key={x} value={x}>{EquipmentTypeOptions[x]}</MenuItem>
+                        })}
+                    </Select>
+                </FormControl>}
                 {showCustomFields &&
                     <FormGroup sx={{ display: 'flex', flexDirection: 'row' }}>
+                        
                             <FormControlLabel
                             control={
                                 <Checkbox
                                     checked={(newEq as Weapon).isWeapon}
                                     onChange={(e) => handleCheck(e, 'isWeapon')}
+                                    disabled={newEq.isArmor}
                                 />
                             }
                             label='Is this a Weapon?'
@@ -231,6 +251,7 @@ export const AddEquipmentCard = ({
                                 <Checkbox
                                     checked={(newEq as Armor).isArmor}
                                     onChange={(e) => handleCheck(e, 'isArmor')}
+                                    disabled={newEq.isWeapon}
                                 />
                             }
                             label='Is this Armor?'
@@ -240,7 +261,7 @@ export const AddEquipmentCard = ({
             <ModChipStack edit mods={!selectedEquipment ? newEq.modifiers : newEq.modifiers.filter(x => !x.defense)} onDelete={handleDeleteModifier}/>
 
             </CardActions>
-            {showCustomFields ? 
+            {showEditFields ? 
             <CardContent>
                 <TextField
                     value={newEq.name}
@@ -484,31 +505,33 @@ export const AddEquipmentCard = ({
                     </>
                 ) : null}
             </CardContent> : 
-            <CardContent>
-            <TableContainer sx={{height: '24rem'}}>
-                <Table size='small'>
-                    <TableHead>
-                        <TableRow>
-                            {columnsByType[equipmentType].map(x => {
-                                return <TableCell key={x} align='center'>{camelToTitle(x)}</TableCell>
-                            })}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {(!!selectedEquipment ? [selectedEquipment] : equipment[equipmentType]).map(eq => {
-                            /* @ts-ignore */
-                            const values = columnValuesByType[equipmentType](eq);
-                            return <TableRow key={eq.name} hover onClick={() => handleTableClick(eq)}>
-                                {Object.keys(values).map(x => {
+            isTableDisplayedType && 
+                <CardContent>
+                    <TableContainer sx={{height: '24rem'}}>
+                        <Table size='small'>
+                            <TableHead>
+                                <TableRow>
+                                    {columnsByType[equipmentType].map(x => {
+                                        return <TableCell key={x} align='center'>{camelToTitle(x)}</TableCell>
+                                    })}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {(!!selectedEquipment ? [selectedEquipment] : equipment[equipmentType]).map(eq => {
                                     /* @ts-ignore */
-                                    return <TableCell key={`${eq.name}${x}`} align='center'>{values[x]}</TableCell>
+                                    const values = columnValuesByType[equipmentType](eq);
+                                    return <TableRow key={eq.name} hover onClick={() => handleTableClick(eq)}>
+                                        {Object.keys(values).map(x => {
+                                            /* @ts-ignore */
+                                            return <TableCell key={`${eq.name}${x}`} align='center'>{values[x]}</TableCell>
+                                        })}
+                                    </TableRow>
                                 })}
-                            </TableRow>
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </CardContent>}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </CardContent>
+            }
             <CardActions sx={{justifyContent: 'flex-end'}}>
                 <Button onClick={() => onClose()}>Cancel</Button>
                 <Button onClick={() => !!edit ? onEdit(newEq) : onAdd(newEq)}>{!!edit ? `Update Equipment` :`Add to Equipment`}</Button>
