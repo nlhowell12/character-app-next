@@ -327,7 +327,7 @@ export const AddEquipmentCard = ({
                                             (newEq as Weapon).dexBasedAttack
                                         }
                                         onChange={(e) =>
-                                            handleChange(e, 'dexBasedAttack')
+                                            handleCheck(e, 'dexBasedAttack')
                                         }
                                     />
                                 }
@@ -340,7 +340,7 @@ export const AddEquipmentCard = ({
                                             (newEq as Weapon).dexBasedDamage
                                         }
                                         onChange={(e) =>
-                                            handleChange(e, 'dexBasedDamage')
+                                            handleCheck(e, 'dexBasedDamage')
                                         }
                                     />
                                 }
