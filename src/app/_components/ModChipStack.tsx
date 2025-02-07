@@ -22,6 +22,12 @@ export const ModChipStack = ({ mods, onDelete, edit = false }: ModChipStackProps
         }
         return false;
     }
+    const canDelete = (mod: Modifier) => {
+        if(mod.fromEquipment && !edit){
+            return false;
+        }
+        return true;
+    }
     return (
         <Stack direction='row' spacing={1} flexWrap='wrap' justifyContent='flex-end'>
             {R.filter(showMod, mods).map((mod) => {
@@ -29,7 +35,7 @@ export const ModChipStack = ({ mods, onDelete, edit = false }: ModChipStackProps
                     <ModChip
                         key={`${mod.type}-${mod.id || uuidv4()}`}
                         mod={mod}
-                        onDelete={!edit  ? undefined : () => onDelete(mod)}
+                        onDelete={!canDelete(mod)  ? undefined : () => onDelete(mod)}
                     />
                 );
             })}
