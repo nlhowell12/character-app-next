@@ -260,6 +260,10 @@ export const EquipmentDisplay = ({
         }
     };
 
+    const equippedIconStyling = {
+        ...iconHoverStyling,
+        color: 'green'
+    };
     return (
         <Card>
             <div
@@ -459,7 +463,7 @@ export const EquipmentDisplay = ({
                                         {armor.equipped ? (
                                             <Tooltip title='Unequip Item'>
                                                 <CheckCircleOutlineIcon
-                                                    sx={iconHoverStyling}
+                                                    sx={equippedIconStyling}
                                                     onClick={() =>
                                                         dispatch(
                                                             toggleEquippedAction(
@@ -540,7 +544,7 @@ export const EquipmentDisplay = ({
                                         {(eq as Armor).equipped ? (
                                             <Tooltip title='Unequip Item'>
                                                 <CheckCircleOutlineIcon
-                                                    sx={iconHoverStyling}
+                                                    sx={equippedIconStyling}
                                                     onClick={() =>
                                                         dispatch(
                                                             toggleEquippedAction(
