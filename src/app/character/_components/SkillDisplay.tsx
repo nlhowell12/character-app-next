@@ -1,6 +1,6 @@
 import { BonusTypes, Character, Modifier, RankedSkill, SkillTypes } from '@/_models';
 import { ModiferSourceBonusObject } from '@/_utils/defenseUtils';
-import { getArmorCheckPenalties, getTotalSkillValue, getSkillBonusObject, getModsForSkill } from '@/_utils/skillIUtils';
+import { getArmorCheckPenalties, getTotalSkillValue, getSkillBonusObject, getModsForSkill, useUntrained } from '@/_utils/skillIUtils';
 import {
     Card,
     Table,
@@ -13,6 +13,7 @@ import {
     Typography,
     useTheme
 } from '@mui/material';
+import Block from '@mui/icons-material/Block';
 import { styled } from '@mui/material/styles';
 
 interface SkillDisplayProps {
@@ -121,9 +122,16 @@ export const SkillDisplay = ({ character }: SkillDisplayProps) => {
                                 >
                                     <TableRow key={skillName}>
                                         <SkillCell>
+                                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                             <Typography>
                                                 {skill.name}
                                             </Typography>
+                                            {!useUntrained(skill) && 
+                                                <Tooltip title='Cannot use Untrained'>
+                                                    <Block sx={{ marginLeft: '.25rem', color: 'red' }} />
+                                                </Tooltip>
+                                            }
+                                            </div>
                                         </SkillCell>
                                         <SkillCell>
                                             <Typography variant='caption'>
