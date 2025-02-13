@@ -3,8 +3,9 @@ import {
 	getArmorCheckPenalties,
 	getTotalSkillMod,
 	getTotalSkillValue,
+	useUntrained,
 } from './skillIUtils';
-import { Armor, BaseEquipment, BonusTypes, ModifierSource, SkillTypes } from '@/_models';
+import { Armor, AttributeNames, BaseEquipment, BonusTypes, ModifierSource, RankedSkill, SkillTypes } from '@/_models';
 
 export const cloakOfElvenkind: BaseEquipment = {
 	equipped: true,
@@ -56,4 +57,24 @@ describe('Skill Utils', () => {
 		expect(getTotalSkillMod(mock0.skills.Stealth, mock0)).toBe(4);
 		expect(getTotalSkillMod(mock0.skills.Disguise, mock0)).toBe(2);
 	});
+	test('useUntrained', () => {
+		const untrainedCanUse: RankedSkill = {
+			ranks: 0,
+			name: SkillTypes.Acrobatics,
+			linkedAttribute: AttributeNames.Dexterity
+		}
+		const untrainedCannotUse: RankedSkill = {
+			ranks: 0,
+			name: SkillTypes.KnowledgeArcana,
+			linkedAttribute: AttributeNames.Intelligence
+		}
+		const trainedCanUse: RankedSkill = {
+			ranks: 3,
+			name: SkillTypes.KnowledgeArcana,
+			linkedAttribute: AttributeNames.Intelligence
+		}
+		expect(useUntrained(untrainedCanUse)).toBeTruthy();
+		expect(useUntrained(untrainedCannotUse)).toBeFalsy();
+		expect(useUntrained(trainedCanUse)).toBeTruthy();
+	})
 });

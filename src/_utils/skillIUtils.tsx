@@ -83,3 +83,20 @@ export const getTotalSkillMod = (
 	const bonuses = getSkillBonusObject(skill, character);
 	return Object.entries(bonuses).reduce((x, [_, value]) => x + value, 0);
 };
+
+export const useUntrained = (skill: RankedSkill) => {
+	const requiresTraining: SkillTypes[] = [
+		SkillTypes.Heal,
+		SkillTypes.KnowledgeArcana,
+		SkillTypes.KnowledgeDungeoneering,
+		SkillTypes.KnowledgeHistory, 
+		SkillTypes.KnowledgeLocal,
+		SkillTypes.KnowledgeNature,
+		SkillTypes.KnowledgeNobilityRoyalty,
+		SkillTypes.KnowledgePsionics,
+		SkillTypes.Magecraft,
+		SkillTypes.SleightOfHand,
+		SkillTypes.SpeakLanguage
+	];
+	return !requiresTraining.includes(skill.name) || !!skill.ranks;
+}
