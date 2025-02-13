@@ -18,6 +18,7 @@ import {
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { ClassAbilityDisplay } from './ClassAbilityDisplay';
 import { Class } from '@mui/icons-material';
+import SpecialResourceTracker from './SpecialResourceTracker';
 
 interface CharacterDisplayProps {
     character: Character;
@@ -59,7 +60,7 @@ export const CharacterDisplay = ({
                     style={{
                         display: 'flex',
                         height: '65vh',
-                        position: 'relative'
+                        position: 'relative',
                     }}
                 >
                     <Button
@@ -189,7 +190,7 @@ export const CharacterDisplay = ({
                         }}
                     >
                         <AttributeDisplay character={character} />
-                        <ClassAbilityDisplay character={character}/>
+                        <ClassAbilityDisplay character={character} />
                     </Grid>
                     <Grid
                         item
@@ -205,6 +206,9 @@ export const CharacterDisplay = ({
                                 character={character}
                                 dispatch={dispatch}
                             />
+                        </Grid>
+                        <Grid>
+                            <SpecialResourceTracker character={character} />
                         </Grid>
                     </Grid>
                     <Grid item xs={12} xl={7} sx={{ margin: '0 .5rem' }}>
@@ -223,6 +227,11 @@ export const CharacterDisplay = ({
                                     <CombatInfoDisplay
                                         character={character}
                                         dispatch={dispatch}
+                                    />
+                                </Grid>
+                                <Grid container>
+                                    <SpecialResourceTracker
+                                        character={character}
                                     />
                                 </Grid>
                             </Grid>

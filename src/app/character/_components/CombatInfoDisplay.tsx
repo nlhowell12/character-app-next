@@ -44,13 +44,20 @@ import MenuBook from '@mui/icons-material/MenuBook';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { SpellTable } from '@/app/_components/SpellTable';
 import useSpellService from '@/app/api/_services/useSpellService';
-import SpellbookTabsContainer, { CustomTabPanel } from '@/app/_components/SpellbookTabsContainer';
+import SpellbookTabsContainer, {
+    CustomTabPanel,
+} from '@/app/_components/SpellbookTabsContainer';
 import {
     filterSpellObjectByCharacter,
     isCharacterPsionic,
 } from '@/_utils/spellUtils';
 import { SpeedDialog } from './SpeedDialog';
-import { checkForHalfMovement, getAlignedOrisons, getInitiativeScore, hasMartialClass } from '@/_utils/classUtils';
+import {
+    checkForHalfMovement,
+    getAlignedOrisons,
+    getInitiativeScore,
+    hasMartialClass,
+} from '@/_utils/classUtils';
 import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
 import { DomainAspectsTable } from '@/app/_components/DomainAspectsTable';
 
@@ -71,11 +78,11 @@ const tooltipCellStyling = {
 };
 const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
     const drBonuses = Object.entries(acBonuses).filter(([key, _]) => {
-        return drBonusTypes.some(x => x === key)
-    })
+        return drBonusTypes.some((x) => x === key);
+    });
     const dsBonuses = Object.entries(acBonuses).filter(([key, _]) => {
-        return !drBonusTypes.some(x => x === key)
-    })
+        return !drBonusTypes.some((x) => x === key);
+    });
     return (
         <Table>
             <TableBody>
@@ -98,7 +105,7 @@ const AcTooltip = ({ acBonuses, character }: AcTooltipProps) => {
                         </TableRow>
                     );
                 })}
-                 <TableRow>
+                <TableRow>
                     <TableCell>Damage Reduction</TableCell>
                 </TableRow>
                 {drBonuses.map(([key, value]) => {
@@ -329,6 +336,7 @@ export const CombatInfoDisplay = ({
                 cellTitle='Initiative:'
                 value={getInitiativeScore(character)}
             />
+
             {!!character.spellBook && !!spells && hasSpellCastingClass() && (
                 <Grid item xs={4} sx={cellStylingObject}>
                     <Button
@@ -366,18 +374,19 @@ export const CombatInfoDisplay = ({
                                 character={character}
                                 onChange={handlePrepareSpell}
                             />
-                            {hasMartialClass(character) &&
-                            <SpellTable
-                                spells={filterSpellObjectByCharacter(
-                                    character,
-                                    character.martialQueue,
-                                    true
-                                )}
-                                characterSpellbook
-                                personal
-                                character={character}
-                                onChange={handlePrepareSpell}
-                            />}
+                            {hasMartialClass(character) && (
+                                <SpellTable
+                                    spells={filterSpellObjectByCharacter(
+                                        character,
+                                        character.martialQueue,
+                                        true
+                                    )}
+                                    characterSpellbook
+                                    personal
+                                    character={character}
+                                    onChange={handlePrepareSpell}
+                                />
+                            )}
                         </SpellbookTabsContainer>
                     </Dialog>
                 </Grid>
@@ -400,17 +409,22 @@ export const CombatInfoDisplay = ({
                         keepMounted
                     >
                         <Box sx={{ width: '100%' }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={domainTabValue} onChange={handleTabChange}>
+                            <Box
+                                sx={{ borderBottom: 1, borderColor: 'divider' }}
+                            >
+                                <Tabs
+                                    value={domainTabValue}
+                                    onChange={handleTabChange}
+                                >
                                     <Tab label='Domain Aspects' />
                                     <Tab label='Orisons' />
                                 </Tabs>
                             </Box>
                             <CustomTabPanel value={domainTabValue} index={0}>
-                            <DomainAspectsTable
-                                character={character}
-                                dispatch={dispatch}
-                            />
+                                <DomainAspectsTable
+                                    character={character}
+                                    dispatch={dispatch}
+                                />
                             </CustomTabPanel>
                             <CustomTabPanel value={domainTabValue} index={1}>
                                 <Card>
@@ -418,23 +432,36 @@ export const CombatInfoDisplay = ({
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell>Domain</TableCell>
-                                                <TableCell>Description</TableCell>
-                                            </TableRow>   
+                                                <TableCell>
+                                                    Description
+                                                </TableCell>
+                                            </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                                {getAlignedOrisons(character, classAbilities.Cleric.orisons).map(ori => {
-                                                    return (
+                                            {getAlignedOrisons(
+                                                character,
+                                                classAbilities.Cleric.orisons
+                                            ).map((ori) => {
+                                                return (
                                                     <TableRow key={ori.domain}>
-                                                        <TableCell>{ori.domain}</TableCell>
-                                                        <TableCell><Typography whiteSpace='pre-line'>{ori.description}</Typography></TableCell>
-                                                    </TableRow>)
-                                                })}
-                                            </TableBody>
+                                                        <TableCell>
+                                                            {ori.domain}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography whiteSpace='pre-line'>
+                                                                {
+                                                                    ori.description
+                                                                }
+                                                            </Typography>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
                                     </Table>
-                                </Card>  
+                                </Card>
                             </CustomTabPanel>
                         </Box>
-                        
                     </Dialog>
                 </Grid>
             )}
