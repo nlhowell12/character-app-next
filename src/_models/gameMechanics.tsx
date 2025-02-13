@@ -147,6 +147,7 @@ export enum StatusEffects {
     Deafened = 'Deafened',
     Disabled = 'Disabled',
     Dying = 'Dying',
+    Dead = 'Dead',
     EnergyDrained = 'Energy Drained',
     Entangled = 'Entangled',
     Exhausted = 'Exhausted',

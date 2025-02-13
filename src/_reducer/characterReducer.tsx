@@ -336,14 +336,16 @@ export const addMovementActions = (value: Movement): CharacterAction => {
     };
 };
 
-export const togglePreferredDomainAction = (value: DivineDomain): CharacterAction => {
+export const togglePreferredDomainAction = (
+    value: DivineDomain
+): CharacterAction => {
     return {
         type: CharacterReducerActions.TOGGLE_PREFERRED_DOMAIN,
         payload: {
             value,
-            key: CharacterKeys.classes
-        }
-    }
+            key: CharacterKeys.classes,
+        },
+    };
 };
 
 export const removeMovementAction = (value: Movement): CharacterAction => {
@@ -418,7 +420,7 @@ export const initialCharacterState: Character = {
     martialQueue: initialMartialQueue,
     notes: [],
     heroPoints: 0,
-    statusEffects: []
+    statusEffects: [],
 };
 
 export const characterReducer: Reducer<Character, CharacterAction> = (
@@ -441,7 +443,7 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                         ...state.attributes,
                         [attribute]: {
                             ...state.attributes[attribute],
-                            value: Number(payload.value)
+                            value: Number(payload.value),
                         },
                     },
                 };
@@ -475,38 +477,89 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
         case CharacterReducerActions.TOGGLE_PREFERRED_DOMAIN:
             const domain = value as DivineDomain;
             if (!!domain) {
-                const index = R.findIndex(R.propEq(CharacterClassNames.Cleric, 'name'))(state.classes);
+                const index = R.findIndex(
+                    R.propEq(CharacterClassNames.Cleric, 'name')
+                )(state.classes);
                 const cleric = state.classes[index];
-                const preferredDomains = !!cleric.preferredDomains ? cleric.preferredDomains : [];
-                    if(state.classes[index].preferredDomains?.includes(domain)){
-                        return {
-                            ...state,
-                            classes: R.update(index, {...cleric, preferredDomains: R.reject(x => x === domain, preferredDomains)}, state.classes)
-                        };
-                    }
+                const preferredDomains = !!cleric.preferredDomains
+                    ? cleric.preferredDomains
+                    : [];
+                if (state.classes[index].preferredDomains?.includes(domain)) {
                     return {
                         ...state,
-                        classes: R.update(index, {...cleric, preferredDomains: R.append(domain, !!preferredDomains ? preferredDomains : [])}, state.classes)
+                        classes: R.update(
+                            index,
+                            {
+                                ...cleric,
+                                preferredDomains: R.reject(
+                                    (x) => x === domain,
+                                    preferredDomains
+                                ),
+                            },
+                            state.classes
+                        ),
                     };
+                }
+                return {
+                    ...state,
+                    classes: R.update(
+                        index,
+                        {
+                            ...cleric,
+                            preferredDomains: R.append(
+                                domain,
+                                !!preferredDomains ? preferredDomains : []
+                            ),
+                        },
+                        state.classes
+                    ),
+                };
             }
         case CharacterReducerActions.UPDATECLASSABILITIES:
             const updateAbility = value as ClassAbility;
-            if(!!className){
-                const characterClass = R.find(R.propEq(className, 'name'))(state.classes) as CharacterClass;
-                const characterClassIndex = R.findIndex(R.propEq(className, 'name'))(state.classes)
-                const classAbilityIndex = !!characterClass && R.findIndex(R.propEq(updateAbility.description, 'description'))(characterClass.classAbilities);
-                if(classAbilityIndex > -1){
-                    const updateAbilities: ClassAbility[] = R.reject(R.propEq(updateAbility.description, 'description'))(characterClass.classAbilities);
+            if (!!className) {
+                const characterClass = R.find(R.propEq(className, 'name'))(
+                    state.classes
+                ) as CharacterClass;
+                const characterClassIndex = R.findIndex(
+                    R.propEq(className, 'name')
+                )(state.classes);
+                const classAbilityIndex =
+                    !!characterClass &&
+                    R.findIndex(
+                        R.propEq(updateAbility.description, 'description')
+                    )(characterClass.classAbilities);
+                if (classAbilityIndex > -1) {
+                    const updateAbilities: ClassAbility[] = R.reject(
+                        R.propEq(updateAbility.description, 'description')
+                    )(characterClass.classAbilities);
                     return {
                         ...state,
-                        classes: R.update(characterClassIndex, {...state.classes[characterClassIndex], classAbilities: updateAbilities}, state.classes)
-                    }
+                        classes: R.update(
+                            characterClassIndex,
+                            {
+                                ...state.classes[characterClassIndex],
+                                classAbilities: updateAbilities,
+                            },
+                            state.classes
+                        ),
+                    };
                 } else {
-                    const updateAbilities: ClassAbility[] = [...characterClass.classAbilities, updateAbility];
+                    const updateAbilities: ClassAbility[] = [
+                        ...characterClass.classAbilities,
+                        updateAbility,
+                    ];
                     return {
                         ...state,
-                        classes: R.update(characterClassIndex, {...state.classes[characterClassIndex], classAbilities: updateAbilities}, state.classes)
-                    }
+                        classes: R.update(
+                            characterClassIndex,
+                            {
+                                ...state.classes[characterClassIndex],
+                                classAbilities: updateAbilities,
+                            },
+                            state.classes
+                        ),
+                    };
                 }
             }
         case CharacterReducerActions.DELETE_MOD:
@@ -591,13 +644,19 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                             state.spellBook[spellClassName]
                         ),
                     },
-                    martialQueue: Object.keys(state.martialQueue).includes(spellClassName) ? {
-                        ...state.martialQueue,
-                        [spellClassName]: R.filter(
-                            filter,
-                            state.martialQueue[spellClassName as keyof MartialQueue]
-                        ),
-                    } : state.martialQueue
+                    martialQueue: Object.keys(state.martialQueue).includes(
+                        spellClassName
+                    )
+                        ? {
+                              ...state.martialQueue,
+                              [spellClassName]: R.filter(
+                                  filter,
+                                  state.martialQueue[
+                                      spellClassName as keyof MartialQueue
+                                  ]
+                              ),
+                          }
+                        : state.martialQueue,
                 };
             } else {
                 const newSpellAdded = R.append(
@@ -639,14 +698,32 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
         case CharacterReducerActions.MARTIAL_QUEUE:
             const maneuver = value as Maneuver;
             const martialClass = updateId as keyof MartialQueue;
-            const maneuverIndex = R.findIndex(
-                R.propEq(maneuver.name, 'name')
-            )(state.martialQueue[martialClass]);
-            const filter = (x: Maneuver) => x.name !== maneuver.name
-            if(maneuverIndex !== -1){
-                return {...state, martialQueue: {...state.martialQueue, [martialClass]: R.filter(filter, state.martialQueue[martialClass])}}
+            const maneuverIndex = R.findIndex(R.propEq(maneuver.name, 'name'))(
+                state.martialQueue[martialClass]
+            );
+            const filter = (x: Maneuver) => x.name !== maneuver.name;
+            if (maneuverIndex !== -1) {
+                return {
+                    ...state,
+                    martialQueue: {
+                        ...state.martialQueue,
+                        [martialClass]: R.filter(
+                            filter,
+                            state.martialQueue[martialClass]
+                        ),
+                    },
+                };
             }
-            return {...state, martialQueue: {...state.martialQueue, [martialClass]: [...state.martialQueue[martialClass], maneuver]}}
+            return {
+                ...state,
+                martialQueue: {
+                    ...state.martialQueue,
+                    [martialClass]: [
+                        ...state.martialQueue[martialClass],
+                        maneuver,
+                    ],
+                },
+            };
         case CharacterReducerActions.ADD_NOTE:
             return { ...state, notes: R.append(value as Note, state.notes) };
         case CharacterReducerActions.UPDATE_NOTE:

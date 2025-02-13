@@ -9,13 +9,14 @@ import {
     ListItem,
     ListItemText,
 } from '@mui/material';
-import { Dispatch } from 'react';
+import { Dispatch, useMemo } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Character, CharacterKeys, StatusEffects } from '@/_models';
 import * as R from 'ramda';
 import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
+import { getTotalClassLevels } from '@/_utils/classUtils';
 
 interface StatusEffectRowProps {
     effect: StatusEffects;
@@ -29,15 +30,20 @@ const StatusEffectRow = ({
     dispatch,
 }: StatusEffectRowProps) => {
     const hasStatusEffect = R.includes(effect, character.statusEffects);
+    const totalEnergyDrained = getTotalEnergyDrained(character);
     const handleClick = () => {
         if (hasStatusEffect) {
             const filter = (x: string) => x !== effect;
-            dispatch(
-                updateAction(
-                    CharacterKeys.statusEffects,
-                    R.filter(filter, character.statusEffects)
-                )
-            );
+            if ((effect as StatusEffects) === StatusEffects.Dead) {
+                dispatch(updateAction(CharacterKeys.statusEffects, []));
+            } else {
+                dispatch(
+                    updateAction(
+                        CharacterKeys.statusEffects,
+                        R.filter(filter, character.statusEffects)
+                    )
+                );
+            }
         } else {
             dispatch(
                 updateAction(
@@ -48,15 +54,17 @@ const StatusEffectRow = ({
         }
     };
     const handleEnergyDrainClick = (increase: boolean) => {
-        if(increase){
-            dispatch(
-                updateAction(
-                    CharacterKeys.statusEffects,
-                    R.append(effect, character.statusEffects)
-                )
-            );
+        if (increase) {
+            const updateStatus = [...character.statusEffects];
+            if (totalEnergyDrained + 1 === getTotalClassLevels(character)) {
+                updateStatus.push(StatusEffects.Dead);
+            }
+            updateStatus.push(effect);
+            dispatch(updateAction(CharacterKeys.statusEffects, updateStatus));
         } else {
-            const removeIndex = R.findIndex(x => x === StatusEffects.EnergyDrained)(character.statusEffects);
+            const removeIndex = R.findIndex(
+                (x) => x === StatusEffects.EnergyDrained
+            )(character.statusEffects);
             dispatch(
                 updateAction(
                     CharacterKeys.statusEffects,
@@ -66,38 +74,78 @@ const StatusEffectRow = ({
         }
     };
 
-    const textStyle = {marginRight: '.5rem'}
-    return (
-        (effect as StatusEffects) !== StatusEffects.EnergyDrained ? 
-            <ListItem
-            secondaryAction={
-                <IconButton onClick={handleClick}>
-                    {hasStatusEffect ? (
-                        <HighlightOffIcon color='error'/>
-                    ) : (
-                        <AddCircleOutlineIcon/>
-                    )}
-                </IconButton>
-            }
-        >
-            <ListItemText primary={effect} sx={textStyle}/>
-        </ListItem> : 
-        <ListItem
-            secondaryAction={
-                <>
-                {hasStatusEffect && 
-                <IconButton onClick={() => handleEnergyDrainClick(false)}>
-                    <RemoveCircleOutlineIcon/>
-                </IconButton>}
-                <IconButton onClick={() => handleEnergyDrainClick(true)}>
-                    <AddCircleOutlineIcon/>
-                </IconButton>
-                </>
-            }
-    >
-        <ListItemText primary={`${effect}${hasStatusEffect ? ` (${getTotalEnergyDrained(character)})` : ''}`} sx={textStyle}/>
-    </ListItem>
-    );
+    const textStyle = { marginRight: '.5rem' };
+    const isDead = character.statusEffects.includes(StatusEffects.Dead);
+    switch (effect as StatusEffects) {
+        case StatusEffects.EnergyDrained:
+            return (
+                <ListItem
+                    disabled={isDead}
+                    secondaryAction={
+                        <>
+                            {hasStatusEffect && (
+                                <IconButton
+                                    disabled={isDead}
+                                    onClick={() =>
+                                        handleEnergyDrainClick(false)
+                                    }
+                                >
+                                    <RemoveCircleOutlineIcon />
+                                </IconButton>
+                            )}
+                            <IconButton
+                                disabled={isDead}
+                                onClick={() => handleEnergyDrainClick(true)}
+                            >
+                                <AddCircleOutlineIcon />
+                            </IconButton>
+                        </>
+                    }
+                >
+                    <ListItemText
+                        primary={`${effect}${
+                            hasStatusEffect ? ` (${totalEnergyDrained})` : ''
+                        }`}
+                        sx={textStyle}
+                    />
+                </ListItem>
+            );
+        case StatusEffects.Dead:
+            return (
+                isDead && (
+                    <ListItem
+                        secondaryAction={
+                            <IconButton onClick={handleClick}>
+                                {hasStatusEffect ? (
+                                    <HighlightOffIcon color='error' />
+                                ) : (
+                                    <AddCircleOutlineIcon />
+                                )}
+                            </IconButton>
+                        }
+                    >
+                        <ListItemText primary={effect} sx={textStyle} />
+                    </ListItem>
+                )
+            );
+        default:
+            return (
+                <ListItem
+                    disabled={isDead}
+                    secondaryAction={
+                        <IconButton onClick={handleClick} disabled={isDead}>
+                            {hasStatusEffect ? (
+                                <HighlightOffIcon color='error' />
+                            ) : (
+                                <AddCircleOutlineIcon />
+                            )}
+                        </IconButton>
+                    }
+                >
+                    <ListItemText primary={effect} sx={textStyle} />
+                </ListItem>
+            );
+    }
 };
 
 interface StatusEffectDialogProps {
@@ -110,49 +158,46 @@ export const StatusEffectDialog = ({
     dispatch,
     character,
     open,
-    onClose
+    onClose,
 }: StatusEffectDialogProps) => {
     const statusEffects = Object.keys(StatusEffects);
     return (
         <Dialog open={open} onClose={onClose}>
-            <Card sx={{overflow: 'scroll', width: '32rem'}}>
-                <CardHeader subheader='Status Effects'/>
-                <CardContent  sx={{display: 'flex', flexDirection: 'row'}}>
-                    <List
-                        dense
-                        sx={{width: '50%'}}
-                    >
-                        {statusEffects.slice(0, statusEffects.length/2).map((eff) => {
-                            return (
-                                <StatusEffectRow
-                                    key={eff}
-                                    character={character}
-                                    /* @ts-ignore */
-                                    effect={StatusEffects[eff]}
-                                    dispatch={dispatch}
-                                />
-                            );
-                        })}
+            <Card sx={{ overflow: 'scroll', width: '32rem' }}>
+                <CardHeader subheader='Status Effects' />
+                <CardContent sx={{ display: 'flex', flexDirection: 'row' }}>
+                    <List dense sx={{ width: '50%' }}>
+                        {statusEffects
+                            .slice(0, statusEffects.length / 2)
+                            .map((eff) => {
+                                return (
+                                    <StatusEffectRow
+                                        key={eff}
+                                        character={character}
+                                        /* @ts-ignore */
+                                        effect={StatusEffects[eff]}
+                                        dispatch={dispatch}
+                                    />
+                                );
+                            })}
                     </List>
-                    <List
-                        dense
-                        sx={{width: '50%'}}
-                    >
-                        {statusEffects.slice(-(statusEffects.length/2)).map((eff) => {
-                            return (
-                                <StatusEffectRow
-                                    key={eff}
-                                    character={character}
-                                    /* @ts-ignore */
-                                    effect={StatusEffects[eff]}
-                                    dispatch={dispatch}
-                                />
-                            );
-                        })}
+                    <List dense sx={{ width: '50%' }}>
+                        {statusEffects
+                            .slice(-(statusEffects.length / 2))
+                            .map((eff) => {
+                                return (
+                                    <StatusEffectRow
+                                        key={eff}
+                                        character={character}
+                                        /* @ts-ignore */
+                                        effect={StatusEffects[eff]}
+                                        dispatch={dispatch}
+                                    />
+                                );
+                            })}
                     </List>
                 </CardContent>
             </Card>
         </Dialog>
-       
     );
 };
