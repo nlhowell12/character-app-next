@@ -56,7 +56,7 @@ const SpecialResourceTracker = ({ character }: SpecialResourceProps) => {
     const specialResources = getSpecialResources(character);
 
     return specialResources.map(({ name, value }) => {
-        return <ResourceWidget name={name} value={value} />;
+        return <ResourceWidget key={name} name={name} value={value} />;
     });
 };
 

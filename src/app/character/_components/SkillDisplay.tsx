@@ -1,6 +1,18 @@
-import { BonusTypes, Character, Modifier, RankedSkill, SkillTypes } from '@/_models';
+import {
+    BonusTypes,
+    Character,
+    Modifier,
+    RankedSkill,
+    SkillTypes,
+} from '@/_models';
 import { ModiferSourceBonusObject } from '@/_utils/defenseUtils';
-import { getArmorCheckPenalties, getTotalSkillValue, getSkillBonusObject, getModsForSkill, useUntrained } from '@/_utils/skillIUtils';
+import {
+    getArmorCheckPenalties,
+    getTotalSkillValue,
+    getSkillBonusObject,
+    getModsForSkill,
+    canUseUntrained,
+} from '@/_utils/skillIUtils';
 import {
     Card,
     Table,
@@ -11,24 +23,24 @@ import {
     tooltipClasses,
     TooltipProps,
     Typography,
-    useTheme
+    useTheme,
 } from '@mui/material';
 import Block from '@mui/icons-material/Block';
 import { styled } from '@mui/material/styles';
 
 interface SkillDisplayProps {
     character: Character;
-};
+}
 
 interface SkillCellProps {
     children: React.ReactNode;
-};
+}
 interface SkillsTooltipProps {
-    skill: RankedSkill; 
-    character: Character
-};
+    skill: RankedSkill;
+    character: Character;
+}
 
-const SkillCell = ({children}: SkillCellProps) => {
+const SkillCell = ({ children }: SkillCellProps) => {
     return (
         <TableCell size='small' align='center'>
             {children}
@@ -37,27 +49,25 @@ const SkillCell = ({children}: SkillCellProps) => {
 };
 const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
-  ))({
+))({
     [`& .${tooltipClasses.tooltip}`]: {
-      maxWidth: 'none',
+        maxWidth: 'none',
     },
-  });
-const SkillsTooltip = (
-    {
-        skill,
-        character
-    }: SkillsTooltipProps
-) => {
+});
+const SkillsTooltip = ({ skill, character }: SkillsTooltipProps) => {
     const skillMods = getSkillBonusObject(skill, character);
-    const untypedMods = getModsForSkill(skill, character).filter(x => x.type === BonusTypes.Untyped);
-    const untypedBonusObject: ModiferSourceBonusObject = {} as ModiferSourceBonusObject;;
+    const untypedMods = getModsForSkill(skill, character).filter(
+        (x) => x.type === BonusTypes.Untyped
+    );
+    const untypedBonusObject: ModiferSourceBonusObject =
+        {} as ModiferSourceBonusObject;
     untypedMods.forEach((mod: Modifier) => {
-            if(!untypedBonusObject[mod.source]) {
-                untypedBonusObject[mod.source] = mod.value
-            } else {
-                untypedBonusObject[mod.source] += mod.value
-            }
-        });
+        if (!untypedBonusObject[mod.source]) {
+            untypedBonusObject[mod.source] = mod.value;
+        } else {
+            untypedBonusObject[mod.source] += mod.value;
+        }
+    });
     return (
         <Table>
             <TableBody>
@@ -69,7 +79,11 @@ const SkillsTooltip = (
                     {!!skill.armorCheckPenalty ? (
                         <SkillCell>
                             <Typography>Armor Penalty</Typography>
-                            {skill.name === SkillTypes.Athletics && <Typography variant='caption'>Double for Swimming</Typography>}
+                            {skill.name === SkillTypes.Athletics && (
+                                <Typography variant='caption'>
+                                    Double for Swimming
+                                </Typography>
+                            )}
                             <Typography>
                                 {getArmorCheckPenalties(character.equipment)}
                             </Typography>
@@ -77,19 +91,21 @@ const SkillsTooltip = (
                     ) : null}
                     {Object.entries(skillMods).map(([key, value]) => {
                         return (
-                            key !== BonusTypes.Untyped && 
+                            key !== BonusTypes.Untyped && (
+                                <SkillCell key={key + value}>
+                                    <Typography>{key}</Typography>
+                                    <Typography>{value}</Typography>
+                                </SkillCell>
+                            )
+                        );
+                    })}
+                    {Object.entries(untypedBonusObject).map(([key, value]) => {
+                        return (
                             <SkillCell key={key + value}>
                                 <Typography>{key}</Typography>
                                 <Typography>{value}</Typography>
                             </SkillCell>
-                        )
-                    })}
-                     {Object.entries(untypedBonusObject).map(([key, value]) => {
-                        return (
-                        <SkillCell key={key + value}>
-                            <Typography>{key}</Typography>
-                            <Typography>{value}</Typography>
-                        </SkillCell>)
+                        );
                     })}
                 </TableRow>
             </TableBody>
@@ -100,9 +116,13 @@ export const SkillDisplay = ({ character }: SkillDisplayProps) => {
     const theme = useTheme();
     return (
         <Card
-            sx={{ overflow: 'scroll', width: 'fit-content', [theme.breakpoints.up('xl')]: {
-                maxHeight: '65vh'
-            } }}
+            sx={{
+                overflow: 'scroll',
+                width: 'fit-content',
+                [theme.breakpoints.up('xl')]: {
+                    maxHeight: '65vh',
+                },
+            }}
         >
             <Table>
                 <TableBody>
@@ -122,15 +142,27 @@ export const SkillDisplay = ({ character }: SkillDisplayProps) => {
                                 >
                                     <TableRow key={skillName}>
                                         <SkillCell>
-                                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                            <Typography>
-                                                {skill.name}
-                                            </Typography>
-                                            {!useUntrained(skill) && 
-                                                <Tooltip title='Cannot use Untrained'>
-                                                    <Block sx={{ marginLeft: '.25rem', color: 'red' }} />
-                                                </Tooltip>
-                                            }
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}
+                                            >
+                                                <Typography>
+                                                    {skill.name}
+                                                </Typography>
+                                                {!canUseUntrained(skill) && (
+                                                    <Tooltip title='Cannot use Untrained'>
+                                                        <Block
+                                                            sx={{
+                                                                marginLeft:
+                                                                    '.25rem',
+                                                                color: 'red',
+                                                            }}
+                                                        />
+                                                    </Tooltip>
+                                                )}
                                             </div>
                                         </SkillCell>
                                         <SkillCell>
