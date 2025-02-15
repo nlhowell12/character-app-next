@@ -5,6 +5,7 @@ import {
     CharacterClassNames,
     ClassAbility,
     DivineDomain,
+    Feat,
     Movement,
     SpecialResource,
     SpecialResourceType,
@@ -227,13 +228,20 @@ export const getSpecialResources = (
     character: Character
 ): SpecialResource[] => {
     const resources: SpecialResource[] = [];
-    character.classes.map((x) => {
+    const { classes, feats } = character;
+    classes.map((x) => {
         switch (x.name) {
             case CharacterClassNames.Barbarian:
-                const name = SpecialResourceType.Rage;
+                const rage = SpecialResourceType.Rage;
                 resources.push({
-                    name,
-                    value: getSpecialResourceValue(x.level, name),
+                    name: rage,
+                    value: getSpecialResourceValue(x.level, rage, feats),
+                });
+            case CharacterClassNames.Bard:
+                const music = SpecialResourceType.BardMusic;
+                resources.push({
+                    name: music,
+                    value: getSpecialResourceValue(x.level, music, feats),
                 });
             default:
                 resources.push({
@@ -248,11 +256,14 @@ export const getSpecialResources = (
 
 export const getSpecialResourceValue = (
     level: number,
-    resource: SpecialResourceType
+    resource: SpecialResourceType,
+    feats: Feat[]
 ): number => {
     switch (resource) {
         case SpecialResourceType.Rage:
-            return !!level ? getRageCount(level) : 0;
+            return getRageCount(level);
+        case SpecialResourceType.BardMusic:
+            return getBardicMusicCount(level, feats);
         default:
             return 0;
     }
@@ -260,6 +271,12 @@ export const getSpecialResourceValue = (
 
 const getRageCount = (level: number) => {
     return Math.floor(level / 4) + 1;
+};
+
+const getBardicMusicCount = (level: number, feats: Feat[]) => {
+    const bonus =
+        feats.filter((x) => x.name === 'Extra Performance').length * 2;
+    return 3 + level + bonus;
 };
 
 const getAoOCount = (character: Character) => {
