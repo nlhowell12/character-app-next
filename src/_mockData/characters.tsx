@@ -13,6 +13,7 @@ import {
     ModifierSource,
     MovementTypes,
     SkillTypes,
+    SpecialResourceObject,
 } from '../_models/character';
 import { MockSkills } from './mockSkills';
 
@@ -144,7 +145,7 @@ export const mockCharacters: Character[] = [
                         value: 2,
                         type: BonusTypes.Armor,
                         defense: true,
-                        source: ModifierSource.spell
+                        source: ModifierSource.spell,
                     },
                 ],
                 equipped: true,
@@ -153,7 +154,7 @@ export const mockCharacters: Character[] = [
                 hardness: 50,
                 amount: 1,
                 isArmor: true,
-                cost: '8gp'
+                cost: '8gp',
             },
         ],
         miscModifiers: [
@@ -162,7 +163,7 @@ export const mockCharacters: Character[] = [
                 value: -4,
                 type: BonusTypes.Racial,
                 attribute: AttributeNames.Strength,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '1',
@@ -170,7 +171,7 @@ export const mockCharacters: Character[] = [
                 type: BonusTypes.Racial,
                 defense: true,
                 definition: 'Natural Armor',
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '12',
@@ -178,7 +179,7 @@ export const mockCharacters: Character[] = [
                 resistance: true,
                 damageType: Damage.Cold,
                 type: BonusTypes.Racial,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '12345',
@@ -186,7 +187,7 @@ export const mockCharacters: Character[] = [
                 value: 1,
                 type: BonusTypes.Untyped,
                 defense: true,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '123456',
@@ -194,7 +195,7 @@ export const mockCharacters: Character[] = [
                 value: 1,
                 type: BonusTypes.Untyped,
                 defense: true,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '1234567',
@@ -202,7 +203,7 @@ export const mockCharacters: Character[] = [
                 value: 1,
                 type: BonusTypes.Untyped,
                 skill: SkillTypes.Disguise,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '12345678',
@@ -210,7 +211,7 @@ export const mockCharacters: Character[] = [
                 value: 1,
                 type: BonusTypes.Untyped,
                 skill: SkillTypes.Disguise,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '123456789',
@@ -218,7 +219,7 @@ export const mockCharacters: Character[] = [
                 value: 4,
                 type: BonusTypes.Size,
                 skill: SkillTypes.Stealth,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '1234567890',
@@ -227,7 +228,7 @@ export const mockCharacters: Character[] = [
                 type: BonusTypes.Morale,
                 damage: true,
                 attack: true,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '12345678901',
@@ -235,7 +236,7 @@ export const mockCharacters: Character[] = [
                 value: 1,
                 type: BonusTypes.Untyped,
                 attack: true,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '123456789012',
@@ -243,7 +244,7 @@ export const mockCharacters: Character[] = [
                 value: 1,
                 type: BonusTypes.Untyped,
                 attack: true,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '123456',
@@ -252,7 +253,7 @@ export const mockCharacters: Character[] = [
                 attribute: AttributeNames.Intelligence,
                 type: BonusTypes.Untyped,
                 damage: true,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
             {
                 id: '1111111',
@@ -260,8 +261,9 @@ export const mockCharacters: Character[] = [
                 value: 1,
                 type: BonusTypes.Untyped,
                 spellSchool: ArcaneSchool.Abjuration,
-                source: ModifierSource.spell
+                source: ModifierSource.spell,
             },
         ],
+        specialResources: {} as SpecialResourceObject,
     },
 ];
