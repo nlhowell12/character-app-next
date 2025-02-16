@@ -23,6 +23,8 @@ import {
     Maneuver,
     ClassAbility,
     DivineDomain,
+    SpecialResourceObject,
+    SpecialResourceType,
 } from '@/_models';
 import initialSkillsState from './initialSkillsState';
 import * as R from 'ramda';
@@ -91,7 +93,8 @@ type AcceptedUpdateValues =
     | Movement
     | Currency
     | DivineDomain
-    | ClassAbility;
+    | ClassAbility
+    | SpecialResourceObject;
 
 export type CharacterAction = {
     type: CharacterReducerActions;
@@ -381,6 +384,18 @@ const initialMartialQueue: MartialQueue = {
     [CharacterClassNames.Oathsworn]: [],
     [CharacterClassNames.PsychicWarrior]: [],
 };
+const initialSpecialResouces: SpecialResourceObject = {
+    [SpecialResourceType.AoO]: 0,
+    [SpecialResourceType.BardMusic]: 0,
+    [SpecialResourceType.HexCurse]: 0,
+    [SpecialResourceType.LayOnHands]: 0,
+    [SpecialResourceType.LuckPool]: 0,
+    [SpecialResourceType.Qi]: 0,
+    [SpecialResourceType.Rage]: 0,
+    [SpecialResourceType.Rebuke]: 0,
+    [SpecialResourceType.StunningFist]: 0,
+    [SpecialResourceType.Turn]: 0,
+};
 export const initialCharacterState: Character = {
     name: '',
     race: '',
@@ -421,6 +436,7 @@ export const initialCharacterState: Character = {
     notes: [],
     heroPoints: 0,
     statusEffects: [],
+    specialResources: initialSpecialResouces,
 };
 
 export const characterReducer: Reducer<Character, CharacterAction> = (

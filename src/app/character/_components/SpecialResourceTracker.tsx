@@ -1,29 +1,54 @@
 import { Card, Grid, IconButton, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { Dispatch } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { RestartAlt } from '@mui/icons-material';
 import { getSpecialResources } from '@/_utils/classUtils';
-import { Character } from '@/_models';
+import { Character, CharacterKeys, SpecialResourceType } from '@/_models';
+import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
 
 interface SpecialResourceProps {
     character: Character;
+    dispatch: Dispatch<CharacterAction>;
 }
 
 interface WidgetProps {
-    name: string;
-    value: number;
+    name: SpecialResourceType;
+    initialValue: number;
+    character: Character;
+    dispatch: Dispatch<CharacterAction>;
 }
-const ResourceWidget = ({ name, value }: WidgetProps) => {
-    const [resValue, setResValue] = useState(value);
+const ResourceWidget = ({
+    name,
+    initialValue,
+    character,
+    dispatch,
+}: WidgetProps) => {
+    const { specialResources } = character;
+    const currentValue = specialResources[name];
     const handleAdd = () => {
-        setResValue(resValue + 1);
+        dispatch(
+            updateAction(CharacterKeys.specialResources, {
+                ...specialResources,
+                [name]: currentValue + 1,
+            })
+        );
     };
     const handleSubtract = () => {
-        setResValue(resValue - 1);
+        dispatch(
+            updateAction(CharacterKeys.specialResources, {
+                ...specialResources,
+                [name]: currentValue - 1,
+            })
+        );
     };
     const handleReset = () => {
-        setResValue(value);
+        dispatch(
+            updateAction(CharacterKeys.specialResources, {
+                ...specialResources,
+                [name]: initialValue,
+            })
+        );
     };
     return (
         <Grid>
@@ -38,28 +63,42 @@ const ResourceWidget = ({ name, value }: WidgetProps) => {
                 }}
             >
                 <Typography>{name}</Typography>
-                <IconButton onClick={handleSubtract} disabled={!resValue}>
+                <IconButton onClick={handleSubtract} disabled={!currentValue}>
                     <RemoveCircleOutlineIcon />
                 </IconButton>
-                <Typography>{resValue}</Typography>
+                <Typography>{specialResources[name]}</Typography>
                 <IconButton
                     onClick={handleAdd}
-                    disabled={resValue === value && !!value}
+                    disabled={currentValue === initialValue && !!initialValue}
                 >
                     <AddCircleOutlineIcon />
                 </IconButton>
-                <IconButton onClick={handleReset} disabled={resValue === value}>
+                <IconButton
+                    onClick={handleReset}
+                    disabled={currentValue === initialValue}
+                >
                     <RestartAlt />
                 </IconButton>
             </Card>
         </Grid>
     );
 };
-const SpecialResourceTracker = ({ character }: SpecialResourceProps) => {
+const SpecialResourceTracker = ({
+    character,
+    dispatch,
+}: SpecialResourceProps) => {
     const specialResources = getSpecialResources(character);
 
     return specialResources.map(({ name, value }) => {
-        return <ResourceWidget key={name} name={name} value={value} />;
+        return (
+            <ResourceWidget
+                key={name}
+                name={name}
+                initialValue={value}
+                character={character}
+                dispatch={dispatch}
+            />
+        );
     });
 };
 

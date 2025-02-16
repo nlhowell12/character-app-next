@@ -138,6 +138,7 @@ export enum CharacterKeys {
     heroPoints = 'heroPoints',
     movementSpeeds = 'movementSpeeds',
     statusEffects = 'statusEffects',
+    specialResources = 'specialResources',
 }
 
 export interface Currency {
@@ -187,10 +188,16 @@ export interface Character {
     notes: Note[];
     heroPoints: number;
     statusEffects: StatusEffects[];
+    specialResources: SpecialResourceObject;
 }
 export type SkillObject = {
     [key in SkillTypes]: RankedSkill;
 };
+
+export type SpecialResourceObject = {
+    [key in SpecialResourceType]: number;
+};
+
 export enum MovementTypes {
     Land = 'Land',
     Fly = 'Fly',
@@ -326,6 +333,6 @@ export enum SpecialResourceType {
     StunningFist = 'Stunning Fist',
 }
 export interface SpecialResource {
-    name: string;
+    name: SpecialResourceType;
     value: number;
 }

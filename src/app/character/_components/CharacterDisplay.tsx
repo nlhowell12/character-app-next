@@ -208,7 +208,10 @@ export const CharacterDisplay = ({
                             />
                         </Grid>
                         <Grid>
-                            <SpecialResourceTracker character={character} />
+                            <SpecialResourceTracker
+                                character={character}
+                                dispatch={dispatch}
+                            />
                         </Grid>
                     </Grid>
                     <Grid item xs={12} xl={7} sx={{ margin: '0 .5rem' }}>
@@ -232,6 +235,7 @@ export const CharacterDisplay = ({
                                 <Grid container>
                                     <SpecialResourceTracker
                                         character={character}
+                                        dispatch={dispatch}
                                     />
                                 </Grid>
                             </Grid>

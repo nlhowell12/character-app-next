@@ -1,4 +1,16 @@
-import { Spell, MagickCategory, CharacterClassNames, ArcaneSchool, Character, Sizes, ClassAbility, BodySlot, Dice, DBEquipment, Feat } from '@/_models';
+import {
+    Spell,
+    MagickCategory,
+    CharacterClassNames,
+    ArcaneSchool,
+    Character,
+    Sizes,
+    ClassAbility,
+    BodySlot,
+    Dice,
+    DBEquipment,
+    Feat,
+} from '@/_models';
 import { User } from '@/_models/user';
 import mongoose from 'mongoose';
 
@@ -8,8 +20,8 @@ const dbPw = process.env.MONGO_PW;
 const dbUrl = `mongodb+srv://nlhowell12:${dbPw}@characterbuilder.3boqqau.mongodb.net/character_sheet?retryWrites=true&w=majority`;
 
 mongoose.connect(`${dbUrl}`).then(() => {
-    console.log('Connected to Atlas')
-})
+    console.log('Connected to Atlas');
+});
 mongoose.Promise = global.Promise;
 
 export const db = {
@@ -18,15 +30,15 @@ export const db = {
     User: userModel(),
     ClassAbility: classAbilityModel(),
     Equipment: equipmentModel(),
-    Feat: featModel()
+    Feat: featModel(),
 };
 
-function userModel(){
+function userModel() {
     const userSchema = new Schema<User>({
         name: { type: String, required: true },
         password: { type: String, required: true },
         isDm: { type: Boolean, required: true },
-    })
+    });
     return mongoose.models.User || mongoose.model('User', userSchema, 'users');
 }
 function spellModel() {
@@ -40,13 +52,15 @@ function spellModel() {
         class: { type: String, enum: CharacterClassNames, required: true },
         level: { type: Number, required: true },
         damageType: String,
-        savingThrow: {type: String, required: true},
+        savingThrow: { type: String, required: true },
         action: { type: String, required: true },
         bonusType: String,
         school: { type: String, required: true, enum: ArcaneSchool },
     });
 
-    return mongoose.models.Spell || mongoose.model('Spell', spellSchema, 'spells');
+    return (
+        mongoose.models.Spell || mongoose.model('Spell', spellSchema, 'spells')
+    );
 }
 
 function characterModel() {
@@ -56,7 +70,7 @@ function characterModel() {
         size: { type: String, enum: Sizes, required: true },
         movementSpeeds: [Object],
         subRace: { type: String },
-        attributes: {type: Map, of: Object},
+        attributes: { type: Map, of: Object },
         classes: [Object],
         maxHitPoints: { type: Number, required: true },
         currentHitPoints: { type: Number, required: true },
@@ -65,28 +79,32 @@ function characterModel() {
         age: { type: Number },
         height: { type: String },
         weight: { type: Number },
-        eyeColor: { type: String},
+        eyeColor: { type: String },
         hairColor: { type: String },
         languages: [String],
         proficiencies: [String],
         specialAbilities: [String],
-        skills: {type: Map, of: Object},
-        currency: {type: Map, of: Object},
+        skills: { type: Map, of: Object },
+        currency: { type: Map, of: Object },
         equipment: [Object],
         miscModifiers: [Object],
         playerName: { type: String, required: true },
         experience: { type: Number, required: true },
         feats: [Object],
-        spellBook: {type: Map, of: Object},
-        martialQueue: {type: Map, of: Object},
+        spellBook: { type: Map, of: Object },
+        martialQueue: { type: Map, of: Object },
         notes: [Object],
         isPsionic: Boolean,
         powerPoints: { type: Number },
         maxPowerPoints: { type: Number },
         heroPoints: { type: Number },
-        statusEffects: {type: [String], required: true}
+        statusEffects: { type: [String], required: true },
+        specialResources: { type: Map, of: Object },
     });
-    return mongoose.models.Character || mongoose.model('Character', characterSchema, 'characters');
+    return (
+        mongoose.models.Character ||
+        mongoose.model('Character', characterSchema, 'characters')
+    );
 }
 
 function classAbilityModel() {
@@ -99,7 +117,10 @@ function classAbilityModel() {
         domain: { type: String },
         school: { type: String },
     });
-    return mongoose.models.ClassAbility || mongoose.model('ClassAbility', classAbilitySchema, 'class_abilities')
+    return (
+        mongoose.models.ClassAbility ||
+        mongoose.model('ClassAbility', classAbilitySchema, 'class_abilities')
+    );
 }
 
 function equipmentModel() {
@@ -127,7 +148,10 @@ function equipmentModel() {
         dexBasedDamage: Boolean,
         isWeapon: Boolean,
     });
-    return mongoose.models.Equipment || mongoose.model('Equipment', equipmentSchema, 'equipment');
+    return (
+        mongoose.models.Equipment ||
+        mongoose.model('Equipment', equipmentSchema, 'equipment')
+    );
 }
 
 function featModel() {
@@ -137,7 +161,7 @@ function featModel() {
         definition: { type: String, required: true },
         category: { type: String, required: true },
         stackable: Boolean,
-        requiredOption: Boolean
-    })
+        requiredOption: Boolean,
+    });
     return mongoose.models.Feat || mongoose.model('Feat', featSchema, 'feats');
 }
