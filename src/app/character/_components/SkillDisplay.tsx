@@ -27,6 +27,7 @@ import {
 } from '@mui/material';
 import Block from '@mui/icons-material/Block';
 import { styled } from '@mui/material/styles';
+import { linkToSkillCompendium } from '@/_utils/stringUtils';
 
 interface SkillDisplayProps {
     character: Character;
@@ -140,7 +141,12 @@ export const SkillDisplay = ({ character }: SkillDisplayProps) => {
                                     }
                                     placement='left'
                                 >
-                                    <TableRow key={skillName}>
+                                    <TableRow
+                                        key={skillName}
+                                        onClick={() =>
+                                            linkToSkillCompendium(skillName)
+                                        }
+                                    >
                                         <SkillCell>
                                             <div
                                                 style={{

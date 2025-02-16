@@ -453,7 +453,8 @@ export const SpellTable = ({
                                                     key={row.name}
                                                     onClick={() =>
                                                         linkToSpellCompendium(
-                                                            row.name
+                                                            row.name,
+                                                            row.category
                                                         )
                                                     }
                                                 >
