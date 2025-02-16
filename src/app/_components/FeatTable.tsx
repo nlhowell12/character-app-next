@@ -26,32 +26,36 @@ export const FeatTable = ({ feats, handleClick }: FeatTableProps) => {
     const [columnFilter, setColumnFilter] = useState<FeatCategory | string>('');
 
     useEffect(() => {
-        if(!!columnFilter){
+        if (!!columnFilter) {
             setColumnFilter('');
         }
-        if(!!searchValue){
+        if (!!searchValue) {
             const rows = feats.filter((x: Feat) =>
-            x.name.toLowerCase().includes(searchValue.toLowerCase())
+                x.name.toLowerCase().includes(searchValue.toLowerCase())
             );
             if (!!rows && !!rows.length) {
                 setFilteredRows(rows);
             }
+        } else {
+            setFilteredRows(feats);
         }
     }, [searchValue]);
 
     useEffect(() => {
-        if(!!searchValue){
+        if (!!searchValue) {
             setSearchValue('');
         }
-        if(!!columnFilter) {
-            const filter = (x: Feat) =>  x.category === columnFilter;
-            const rows = R.filter(filter, feats)
+        if (!!columnFilter) {
+            const filter = (x: Feat) => x.category === columnFilter;
+            const rows = R.filter(filter, feats);
             setFilteredRows(rows);
+        } else {
+            setFilteredRows(feats);
         }
     }, [columnFilter]);
 
     return (
-        <Card sx={{overflow: 'scroll'}}>
+        <Card sx={{ overflow: 'scroll' }}>
             <TextField
                 onChange={(e) => setSearchValue(e.target.value)}
                 value={searchValue}
@@ -67,56 +71,67 @@ export const FeatTable = ({ feats, handleClick }: FeatTableProps) => {
                             )}
                             <TableCell>Prerequisites</TableCell>
                             <TableCell>
-                            <FormControl sx={{ width: '100%' }}>
-                            <InputLabel>Category</InputLabel>
-                            <Select
-                                variant='standard'
-                                label='Category'
-                                onChange={(e) => setColumnFilter(e.target.value)}
-                                fullWidth
-                                value={columnFilter}
-                            >
-                                <MenuItem value={''}>Reset</MenuItem>
-                                {Object.keys(FeatCategory).map(x => {
-                                    return <MenuItem key={x} value={x}>{x}</MenuItem>
-                                })}
-                            </Select>
-                        </FormControl></TableCell>
+                                <FormControl sx={{ width: '100%' }}>
+                                    <InputLabel>Category</InputLabel>
+                                    <Select
+                                        variant='standard'
+                                        label='Category'
+                                        onChange={(e) =>
+                                            setColumnFilter(e.target.value)
+                                        }
+                                        fullWidth
+                                        value={columnFilter}
+                                    >
+                                        <MenuItem value={''}>Reset</MenuItem>
+                                        {Object.keys(FeatCategory).map((x) => {
+                                            return (
+                                                <MenuItem key={x} value={x}>
+                                                    {x}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                    </Select>
+                                </FormControl>
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {(!!filteredRows.length ? filteredRows : feats).map((feat) => {
-                            return (
-                                <Tooltip
-                                    title={feat.definition}
-                                    key={feat.name}
-                                >
-                                    <TableRow
-                                        hover={!!handleClick}
-                                        onClick={
-                                            !!handleClick
-                                                ? () => handleClick(feat)
-                                                : undefined
-                                        }
+                        {(!!filteredRows.length ? filteredRows : feats).map(
+                            (feat) => {
+                                return (
+                                    <Tooltip
+                                        title={feat.definition}
+                                        key={feat.name}
                                     >
-                                        <TableCell>{feat.name}</TableCell>
-                                        {!handleClick && (
+                                        <TableRow
+                                            hover={!!handleClick}
+                                            onClick={
+                                                !!handleClick
+                                                    ? () => handleClick(feat)
+                                                    : undefined
+                                            }
+                                        >
+                                            <TableCell>{feat.name}</TableCell>
+                                            {!handleClick && (
+                                                <TableCell>
+                                                    {!!feat.selectedOption
+                                                        ? feat.selectedOption
+                                                        : ''}
+                                                </TableCell>
+                                            )}
                                             <TableCell>
-                                                {!!feat.selectedOption
-                                                    ? feat.selectedOption
+                                                {!!feat.prerequisites
+                                                    ? feat.prerequisites
                                                     : ''}
                                             </TableCell>
-                                        )}
-                                        <TableCell>
-                                            {!!feat.prerequisites
-                                                ? feat.prerequisites
-                                                : ''}
-                                        </TableCell>
-                                        <TableCell>{feat.category}</TableCell>
-                                    </TableRow>
-                                </Tooltip>
-                            );
-                        })}
+                                            <TableCell>
+                                                {feat.category}
+                                            </TableCell>
+                                        </TableRow>
+                                    </Tooltip>
+                                );
+                            }
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
