@@ -26,7 +26,6 @@ export default () => {
     const getOneCharacter = async (name: string) => {
         const res = await fetch(`/api/characters?character=${name}`);
         const character = await res.json();
-        console.log(character);
         Object.keys(initialCharacterState).map((key) => {
             if (!character[key]) {
                 character[key] = initialCharacterState[key as keyof Character];
