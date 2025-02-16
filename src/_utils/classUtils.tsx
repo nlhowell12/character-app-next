@@ -229,7 +229,12 @@ export const getHexbladeCurseDC = (character: Character) => {
 export const getSpecialResources = (
     character: Character
 ): SpecialResource[] => {
-    const resources: SpecialResource[] = [];
+    const resources: SpecialResource[] = [
+        {
+            name: SpecialResourceType.AoO,
+            value: getAoOCount(character),
+        },
+    ];
     const { classes, feats } = character;
     const stun = SpecialResourceType.StunningFist;
     if (feats.filter((x) => x.name === 'Stunning Fist').length) {
@@ -255,12 +260,14 @@ export const getSpecialResources = (
                     name: rage,
                     value: getSpecialResourceValue(x.level, rage, feats, 0),
                 });
+                return;
             case CharacterClassNames.Bard:
                 const music = SpecialResourceType.BardMusic;
                 resources.push({
                     name: music,
                     value: getSpecialResourceValue(x.level, music, feats, 0),
                 });
+                return;
             case CharacterClassNames.Cleric:
                 const turn = SpecialResourceType.Turn;
                 const rebuke = SpecialResourceType.Rebuke;
@@ -273,6 +280,7 @@ export const getSpecialResources = (
                     name: rebuke,
                     value: getSpecialResourceValue(0, turn, feats, chaMod),
                 });
+                return;
             case CharacterClassNames.Hexblade:
                 const hex = SpecialResourceType.HexCurse;
                 const luck = SpecialResourceType.LuckPool;
@@ -285,12 +293,14 @@ export const getSpecialResources = (
                         name: luck,
                         value: getSpecialResourceValue(0, luck, feats, 0),
                     });
+                return;
             case CharacterClassNames.Monk:
                 const qi = SpecialResourceType.Qi;
                 resources.push({
                     name: qi,
                     value: getSpecialResourceValue(x.level, qi, feats, 0),
                 });
+                return;
             case CharacterClassNames.Oathsworn:
                 const layOnHands = SpecialResourceType.LayOnHands;
                 resources.push({
@@ -306,11 +316,9 @@ export const getSpecialResources = (
                     name: SpecialResourceType.Turn,
                     value: oathTurnCount(x.level, feats),
                 });
+                return;
+
             default:
-                resources.push({
-                    name: SpecialResourceType.AoO,
-                    value: getAoOCount(character),
-                });
                 return;
         }
     });
