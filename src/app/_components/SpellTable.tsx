@@ -28,7 +28,7 @@ import {
     Magick,
     MartialQueue,
 } from '@/_models';
-import { camelToTitle } from '@/_utils/stringUtils';
+import { camelToTitle, linkToSpellCompendium } from '@/_utils/stringUtils';
 import * as R from 'ramda';
 import { NumberInput } from './NumberInput';
 import { iconHoverStyling } from '@/_utils/theme';
@@ -45,24 +45,24 @@ const SpellTooltip = ({ character, spell, useDex }: SpellTableTooltipProps) => {
     return (
         <Table>
             <TableBody>
-            <TableRow>
-                {!!character && !!(spell as Magick).savingThrow && (
-                    <TableCell
-                        sx={{
-                            ...tableCellStyling,
-                            borderRight: '1px solid grey',
-                        }}
-                    >
-                        <Typography>DC</Typography>
-                        <Typography>
-                            {getSpellDc(character, spell, useDex)}
-                        </Typography>
+                <TableRow>
+                    {!!character && !!(spell as Magick).savingThrow && (
+                        <TableCell
+                            sx={{
+                                ...tableCellStyling,
+                                borderRight: '1px solid grey',
+                            }}
+                        >
+                            <Typography>DC</Typography>
+                            <Typography>
+                                {getSpellDc(character, spell, useDex)}
+                            </Typography>
+                        </TableCell>
+                    )}
+                    <TableCell sx={tableCellStyling}>
+                        <Typography>{spell.description}</Typography>
                     </TableCell>
-                )}
-                <TableCell sx={tableCellStyling}>
-                    <Typography>{spell.description}</Typography>
-                </TableCell>
-            </TableRow>
+                </TableRow>
             </TableBody>
         </Table>
     );
@@ -144,7 +144,7 @@ export const SpellTable = ({
             } = e;
             if (!!value) {
                 setColumnFilter({ column, value });
-                setPage(0)
+                setPage(0);
             } else {
                 resetColumnFilter();
             }
@@ -201,8 +201,8 @@ export const SpellTable = ({
     };
     const getColumns = (spells: AnyMagickType[]) => {
         return spells.length > 0
-        ? Object.keys(spells[0]).filter((x) => filterData(x))
-        : [];
+            ? Object.keys(spells[0]).filter((x) => filterData(x))
+            : [];
     };
     const filterClass = selectedClass as keyof SpellObject;
 
@@ -248,9 +248,11 @@ export const SpellTable = ({
     }, [selectedSubtype]);
 
     useEffect(() => {
-        const filteredRows = rows.filter((x: AnyMagickType) =>
-            x.name.toLowerCase().includes(searchValue.toLowerCase())
-        ).sort((a,b) => a.level - b.level);
+        const filteredRows = rows
+            .filter((x: AnyMagickType) =>
+                x.name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+            .sort((a, b) => a.level - b.level);
         if (!!filteredRows && !!filteredRows.length) {
             setFilteredRows(filteredRows);
         }
@@ -261,10 +263,10 @@ export const SpellTable = ({
     };
 
     const handleClassChange = (event: SelectChangeEvent) => {
-        setSearchValue('')
+        setSearchValue('');
         setSelectedSubtype(MagickCategory.Maneuver);
         resetColumnFilter();
-        setPage(0)
+        setPage(0);
         setSelectedClass(event.target.value as keyof SpellObject);
     };
 
@@ -364,16 +366,17 @@ export const SpellTable = ({
                             );
                         })}
                     </Select>
-                    {selectedSubtype === MagickCategory.Maneuver && !!characterSpellbook && (
-                        <Button
-                            variant='outlined'
-                            sx={{ marginRight: '1rem' }}
-                            onClick={() => setUseDex(!useDex)}
-                            color={useDex ? 'success' : undefined}
-                        >
-                            Use Dex for Maneuver
-                        </Button>
-                    )}
+                    {selectedSubtype === MagickCategory.Maneuver &&
+                        !!characterSpellbook && (
+                            <Button
+                                variant='outlined'
+                                sx={{ marginRight: '1rem' }}
+                                onClick={() => setUseDex(!useDex)}
+                                color={useDex ? 'success' : undefined}
+                            >
+                                Use Dex for Maneuver
+                            </Button>
+                        )}
                 </>
             ) : null}
             <TextField
@@ -445,7 +448,15 @@ export const SpellTable = ({
                                                 placement='right'
                                                 key={row.name}
                                             >
-                                                <TableRow hover key={row.name}>
+                                                <TableRow
+                                                    hover
+                                                    key={row.name}
+                                                    onClick={() =>
+                                                        linkToSpellCompendium(
+                                                            row.name
+                                                        )
+                                                    }
+                                                >
                                                     {!!characterSpellbook ? (
                                                         <>
                                                             {!personal ? (
