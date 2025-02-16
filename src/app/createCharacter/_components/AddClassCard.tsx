@@ -285,7 +285,10 @@ export const AddClassCard = ({
         const {
             target: { value },
         } = event;
-        setPreferredDomains(value);
+        console.log(value);
+        if (value.length < 6) {
+            setPreferredDomains(value);
+        }
     };
     const addClassButtonRef = useRef(null);
 
