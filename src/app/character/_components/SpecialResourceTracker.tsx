@@ -42,7 +42,10 @@ const ResourceWidget = ({ name, value }: WidgetProps) => {
                     <RemoveCircleOutlineIcon />
                 </IconButton>
                 <Typography>{resValue}</Typography>
-                <IconButton onClick={handleAdd} disabled={resValue === value}>
+                <IconButton
+                    onClick={handleAdd}
+                    disabled={resValue === value && !!value}
+                >
                     <AddCircleOutlineIcon />
                 </IconButton>
                 <IconButton onClick={handleReset} disabled={resValue === value}>

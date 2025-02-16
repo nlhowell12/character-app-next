@@ -323,6 +323,7 @@ export enum SpecialResourceType {
     HexCurse = 'Hexblade Curse',
     LuckPool = 'Luck Pool',
     Qi = 'Qi',
+    StunningFist = 'Stunning Fist',
 }
 export interface SpecialResource {
     name: string;

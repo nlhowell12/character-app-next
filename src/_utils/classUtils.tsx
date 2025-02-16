@@ -1,6 +1,8 @@
 import {
+    Attribute,
     AttributeNames,
     Character,
+    CharacterAttributes,
     CharacterClass,
     CharacterClassNames,
     ClassAbility,
@@ -229,19 +231,80 @@ export const getSpecialResources = (
 ): SpecialResource[] => {
     const resources: SpecialResource[] = [];
     const { classes, feats } = character;
+    const stun = SpecialResourceType.StunningFist;
+    if (feats.filter((x) => x.name === 'Stunning Fist').length) {
+        resources.push({
+            name: stun,
+            value: getSpecialResourceValue(
+                getTotalClassLevels(character),
+                stun,
+                feats,
+                0
+            ),
+        });
+    }
     classes.map((x) => {
+        const chaMod = getTotalAttributeModifier(
+            character,
+            AttributeNames.Charisma
+        );
         switch (x.name) {
             case CharacterClassNames.Barbarian:
                 const rage = SpecialResourceType.Rage;
                 resources.push({
                     name: rage,
-                    value: getSpecialResourceValue(x.level, rage, feats),
+                    value: getSpecialResourceValue(x.level, rage, feats, 0),
                 });
             case CharacterClassNames.Bard:
                 const music = SpecialResourceType.BardMusic;
                 resources.push({
                     name: music,
-                    value: getSpecialResourceValue(x.level, music, feats),
+                    value: getSpecialResourceValue(x.level, music, feats, 0),
+                });
+            case CharacterClassNames.Cleric:
+                const turn = SpecialResourceType.Turn;
+                const rebuke = SpecialResourceType.Rebuke;
+
+                resources.push({
+                    name: turn,
+                    value: getSpecialResourceValue(0, turn, feats, chaMod),
+                });
+                resources.push({
+                    name: rebuke,
+                    value: getSpecialResourceValue(0, turn, feats, chaMod),
+                });
+            case CharacterClassNames.Hexblade:
+                const hex = SpecialResourceType.HexCurse;
+                const luck = SpecialResourceType.LuckPool;
+                resources.push({
+                    name: hex,
+                    value: getSpecialResourceValue(x.level, hex, feats, 0),
+                });
+                x.level >= 3 &&
+                    resources.push({
+                        name: luck,
+                        value: getSpecialResourceValue(0, luck, feats, 0),
+                    });
+            case CharacterClassNames.Monk:
+                const qi = SpecialResourceType.Qi;
+                resources.push({
+                    name: qi,
+                    value: getSpecialResourceValue(x.level, qi, feats, 0),
+                });
+            case CharacterClassNames.Oathsworn:
+                const layOnHands = SpecialResourceType.LayOnHands;
+                resources.push({
+                    name: layOnHands,
+                    value: getSpecialResourceValue(
+                        x.level,
+                        layOnHands,
+                        feats,
+                        chaMod
+                    ),
+                });
+                resources.push({
+                    name: SpecialResourceType.Turn,
+                    value: oathTurnCount(x.level, feats),
                 });
             default:
                 resources.push({
@@ -257,13 +320,28 @@ export const getSpecialResources = (
 export const getSpecialResourceValue = (
     level: number,
     resource: SpecialResourceType,
-    feats: Feat[]
+    feats: Feat[],
+    attributeMod: number
 ): number => {
     switch (resource) {
         case SpecialResourceType.Rage:
             return getRageCount(level);
         case SpecialResourceType.BardMusic:
             return getBardicMusicCount(level, feats);
+        case SpecialResourceType.Turn:
+            return getTurnCount(feats, attributeMod);
+        case SpecialResourceType.Rebuke:
+            return getTurnCount(feats, attributeMod);
+        case SpecialResourceType.HexCurse:
+            return getHexCurseCount(level);
+        case SpecialResourceType.HexCurse:
+            return getLuckCount();
+        case SpecialResourceType.StunningFist:
+            return getStunningFistCount(level, feats);
+        case SpecialResourceType.Qi:
+            return getQiValue(level);
+        case SpecialResourceType.LayOnHands:
+            return getLayOnHandsCount(level, attributeMod);
         default:
             return 0;
     }
@@ -283,4 +361,65 @@ const getAoOCount = (character: Character) => {
     return (
         character.feats.filter((x) => x.name === 'Combat Reflexes').length + 1
     );
+};
+
+const getTurnCount = (feats: Feat[], chaMod: number) => {
+    const extTurn = feats.filter((x) => x.name === 'Extra Turning').length * 4;
+    return 3 + chaMod + extTurn;
+};
+
+const getHexCurseCount = (level: number) => {
+    return Math.floor(level / 4) + 1;
+};
+
+const getLuckCount = () => {
+    return 0;
+};
+
+const getStunningFistCount = (level: number, feats: Feat[]) => {
+    const extraStun =
+        feats.filter((x) => x.name === 'Extra Stunning').length * 2;
+    return Math.ceil(level / 4) + extraStun;
+};
+const getQiValue = (level: number) => {
+    switch (level) {
+        case 4:
+            return level / 4;
+        case 5:
+            return Math.floor(level / 4) + 1;
+        case 6:
+            return Math.floor(level / 4) + 2;
+        case 7:
+            return Math.ceil(level / 4) + 4;
+        case 8:
+            return level;
+        case 9:
+        case 10:
+            return level + 1;
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+            return level + (level - 10);
+        case 16:
+        case 17:
+            return level + 5;
+        case 18:
+        case 19:
+        case 20:
+            return level + (level - 12);
+        default:
+            return 0;
+    }
+};
+
+const getLayOnHandsCount = (level: number, chaMod: number) => {
+    const total = level * chaMod;
+    return !!total ? total : 0;
+};
+
+const oathTurnCount = (level: number, feats: Feat[]) => {
+    const extTurn = feats.filter((x) => x.name === 'Extra Turning').length * 4;
+    return level + 3 + extTurn;
 };
