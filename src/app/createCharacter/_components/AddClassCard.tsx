@@ -9,12 +9,14 @@ import {
 import { NumberInput } from '@/app/_components/NumberInput';
 import { Add, CancelRounded, CheckCircle } from '@mui/icons-material';
 import {
+    Box,
     Button,
     Card,
     CardActions,
     CardContent,
     CardHeader,
     Checkbox,
+    Chip,
     FormControl,
     InputLabel,
     ListItemText,
@@ -41,10 +43,19 @@ interface AddClassAbilityProps {
 const textFieldStyling = { marginTop: '.5rem' };
 const formControlStyling = { marginLeft: '.5rem' };
 
-const AddClassAbility = ({ handleClose, addAbility, className, editAbility, updateAbility, handleDelete }: AddClassAbilityProps) => {
-    const [name, setName] = useState(editAbility && editAbility.name || '');
-    const [level, setLevel] = useState(editAbility && editAbility.level ||1);
-    const [description, setDescription] = useState(editAbility && editAbility.description ||'');
+const AddClassAbility = ({
+    handleClose,
+    addAbility,
+    className,
+    editAbility,
+    updateAbility,
+    handleDelete,
+}: AddClassAbilityProps) => {
+    const [name, setName] = useState((editAbility && editAbility.name) || '');
+    const [level, setLevel] = useState((editAbility && editAbility.level) || 1);
+    const [description, setDescription] = useState(
+        (editAbility && editAbility.description) || ''
+    );
     return (
         <Card variant='outlined'>
             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -69,10 +80,14 @@ const AddClassAbility = ({ handleClose, addAbility, className, editAbility, upda
                 />
             </CardContent>
             <CardActions sx={{ justifyContent: 'right' }}>
-                {!!editAbility && 
-                <Button onClick={() => handleDelete(editAbility)} color='error'>
-                    Delete
-                </Button>}
+                {!!editAbility && (
+                    <Button
+                        onClick={() => handleDelete(editAbility)}
+                        color='error'
+                    >
+                        Delete
+                    </Button>
+                )}
                 <Button onClick={(e) => handleClose(false)}>
                     <Tooltip title='Close'>
                         <CancelRounded />
@@ -81,10 +96,19 @@ const AddClassAbility = ({ handleClose, addAbility, className, editAbility, upda
                 <Tooltip title='Submit'>
                     <Button
                         onClick={() =>
-                            !!editAbility ? 
-                            updateAbility(editAbility, { name, level, description, className })
-                            : 
-                            addAbility({ name, level, description, className })
+                            !!editAbility
+                                ? updateAbility(editAbility, {
+                                      name,
+                                      level,
+                                      description,
+                                      className,
+                                  })
+                                : addAbility({
+                                      name,
+                                      level,
+                                      description,
+                                      className,
+                                  })
                         }
                     >
                         <CheckCircle />
@@ -96,10 +120,10 @@ const AddClassAbility = ({ handleClose, addAbility, className, editAbility, upda
 };
 
 interface ClassAbilityCardProps {
-    abl: ClassAbility
-};
-const ClassAbilityCard = ({abl}: ClassAbilityCardProps) => {
-    const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name
+    abl: ClassAbility;
+}
+const ClassAbilityCard = ({ abl }: ClassAbilityCardProps) => {
+    const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name;
     return (
         <Card sx={{ padding: '0 0 0 .5rem', margin: '0 0 .25rem 0' }}>
             <Typography
@@ -108,15 +132,19 @@ const ClassAbilityCard = ({abl}: ClassAbilityCardProps) => {
             >{`Level: ${abl.level}`}</Typography>
             <Typography>{name}</Typography>
         </Card>
-    )
-}
+    );
+};
 interface AddClassCardProps {
     onClose: (event: any, reason: any) => void;
     onSubmit: (cls: CharacterClass) => void;
     editClass?: CharacterClass;
 }
 
-export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps) => {
+export const AddClassCard = ({
+    onClose,
+    onSubmit,
+    editClass,
+}: AddClassCardProps) => {
     const [className, setClassName] = useState<CharacterClassNames>(
         CharacterClassNames.Barbarian
     );
@@ -130,33 +158,58 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
     const [BAB, setBAB] = useState<number>(0);
     const [classAbilities, setClassAbilities] = useState<ClassAbility[]>([]);
     const [classSkills, setClassSkills] = useState<string[]>([]);
-    const [turnDomain, setTurnDomain] = useState<DivineDomain>(DivineDomain.Air);
-    const [rebukeDomain, setRebukeDomain] = useState<DivineDomain>(DivineDomain.Air);
-    const [sponDomain, setSponDomain] = useState<DivineDomain>(DivineDomain.Air);
+    const [turnDomain, setTurnDomain] = useState<DivineDomain>(
+        DivineDomain.Air
+    );
+    const [rebukeDomain, setRebukeDomain] = useState<DivineDomain>(
+        DivineDomain.Air
+    );
+    const [sponDomain, setSponDomain] = useState<DivineDomain>(
+        DivineDomain.Air
+    );
+    const [preferredDomains, setPreferredDomains] = useState<DivineDomain[]>(
+        []
+    );
 
     const [open, setOpen] = useState<boolean>(false);
-    const [editClassAbility, setEditClassAbility] = useState<ClassAbility | undefined>(undefined)
+    const [editClassAbility, setEditClassAbility] = useState<
+        ClassAbility | undefined
+    >(undefined);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setOpen(!open);
     };
 
     useEffect(() => {
-        if(!!editClass) {
-            const {name, level, primarySave, secondarySave, classAbilities, classSkills, BAB, turnDomain, rebukeDomain, spontaneousChannelDomain} = editClass;
+        if (!!editClass) {
+            const {
+                name,
+                level,
+                primarySave,
+                secondarySave,
+                classAbilities,
+                classSkills,
+                BAB,
+                turnDomain,
+                rebukeDomain,
+                spontaneousChannelDomain,
+                preferredDomains,
+            } = editClass;
             setClassName(name as CharacterClassNames);
-            setLevel(level)
-            setPrimarySave(primarySave)
-            setSecondarySave(secondarySave)
-            setClassAbilities(classAbilities)
-            setClassSkills(classSkills)
-            setBAB(BAB)
-            !!turnDomain && setTurnDomain(turnDomain)
-            !!rebukeDomain && setRebukeDomain(rebukeDomain)
-            !!spontaneousChannelDomain && setSponDomain(spontaneousChannelDomain)
+            setLevel(level);
+            setPrimarySave(primarySave);
+            setSecondarySave(secondarySave);
+            setClassAbilities(classAbilities);
+            setClassSkills(classSkills);
+            setBAB(BAB);
+            !!turnDomain && setTurnDomain(turnDomain);
+            !!rebukeDomain && setRebukeDomain(rebukeDomain);
+            !!spontaneousChannelDomain &&
+                setSponDomain(spontaneousChannelDomain);
+            !!preferredDomains && setPreferredDomains(preferredDomains);
         }
-    },[editClass])
-    
+    }, [editClass]);
+
     const handleSubmitClick = () => {
         const cls: CharacterClass = {
             name: className,
@@ -165,12 +218,25 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
             primarySave,
             secondarySave,
             classAbilities,
-            turnDomain: className === CharacterClassNames.Cleric ? turnDomain : undefined,
-            rebukeDomain: className === CharacterClassNames.Cleric ? rebukeDomain : undefined,
-            spontaneousChannelDomain: className === CharacterClassNames.Cleric ? sponDomain : undefined,
+            turnDomain:
+                className === CharacterClassNames.Cleric
+                    ? turnDomain
+                    : undefined,
+            rebukeDomain:
+                className === CharacterClassNames.Cleric
+                    ? rebukeDomain
+                    : undefined,
+            spontaneousChannelDomain:
+                className === CharacterClassNames.Cleric
+                    ? sponDomain
+                    : undefined,
             classSkills: classSkills.map((x) => {
                 return x as SkillTypes;
             }),
+            preferredDomains:
+                className === CharacterClassNames.Cleric
+                    ? preferredDomains
+                    : undefined,
         };
         onSubmit(cls);
         onClose({}, 'buttonClose');
@@ -180,9 +246,18 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
         setClassAbilities([...classAbilities, ability]);
         setOpen(false);
     };
-    const handleUpdateAbility = (priorAbility: ClassAbility, ability: ClassAbility) => {
-        const updateIndex = R.findIndex(R.propEq(priorAbility.name, 'name'))(classAbilities);
-        const updatedClassAbilities = R.update(updateIndex, ability, classAbilities);
+    const handleUpdateAbility = (
+        priorAbility: ClassAbility,
+        ability: ClassAbility
+    ) => {
+        const updateIndex = R.findIndex(R.propEq(priorAbility.name, 'name'))(
+            classAbilities
+        );
+        const updatedClassAbilities = R.update(
+            updateIndex,
+            ability,
+            classAbilities
+        );
         setClassAbilities(updatedClassAbilities);
         setEditClassAbility(undefined);
         setOpen(false);
@@ -190,13 +265,14 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
     const triggerAbilityUpdate = (abl: ClassAbility) => {
         setEditClassAbility(abl);
         setOpen(true);
-    }
+    };
     const handleDeleteClassAbility = (abl: ClassAbility) => {
-        const filter = (x:ClassAbility) => x.name === abl.name && x.level === abl.level
+        const filter = (x: ClassAbility) =>
+            x.name === abl.name && x.level === abl.level;
         const updatedClassAbilities = R.reject(filter, classAbilities);
         setClassAbilities(updatedClassAbilities);
         setOpen(false);
-    };  
+    };
     const handleChangeClassSkill = (
         event: SelectChangeEvent<typeof classSkills>
     ) => {
@@ -205,12 +281,19 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
         } = event;
         setClassSkills(typeof value === 'string' ? value.split(',') : value);
     };
-
+    const handleDomainPrefChange = (event: any) => {
+        const {
+            target: { value },
+        } = event;
+        setPreferredDomains(value);
+    };
     const addClassButtonRef = useRef(null);
-    
+
     return (
-        <Card variant='outlined' sx={{overflow: 'scroll'}}>
-            <CardHeader title={!!editClass ? 'Update Class' : 'Add New Class'} />
+        <Card variant='outlined' sx={{ overflow: 'scroll' }}>
+            <CardHeader
+                title={!!editClass ? 'Update Class' : 'Add New Class'}
+            />
             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
                 <div
                     style={{
@@ -247,8 +330,16 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                                     })}
                             </Select>
                         </FormControl>
-                        <NumberInput value={level} label='Level' onChange={(e) => setLevel(Number(e.target.value))}/>
-                        <NumberInput value={BAB} label='Base Attack Bonus' onChange={(e) => setBAB(Number(e.target.value))}/>
+                        <NumberInput
+                            value={level}
+                            label='Level'
+                            onChange={(e) => setLevel(Number(e.target.value))}
+                        />
+                        <NumberInput
+                            value={BAB}
+                            label='Base Attack Bonus'
+                            onChange={(e) => setBAB(Number(e.target.value))}
+                        />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <FormControl fullWidth sx={formControlStyling}>
@@ -337,68 +428,143 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                         })}
                     </Select>
                 </FormControl>
-                {className === CharacterClassNames.Cleric &&
-                <>
-                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                    <InputLabel id='turn-label'>Turn Domain</InputLabel>
-                    <Select
-                        labelId='turn-label'
-                        id='turn'
-                        label='Turn Domain'
-                        value={turnDomain}
-                        onChange={(e) => setTurnDomain(e.target.value as DivineDomain)}
-                    >
-                        {Object.keys(DivineDomain).map((dom) => {
-                            return (
-                                <MenuItem key={dom} value={dom}>
-                                    {/* @ts-ignore */}
-                                    <ListItemText primary={DivineDomain[dom]} />
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                    <InputLabel id='rebuke-label'>Rebuke Domain</InputLabel>
-                    <Select
-                        labelId='rebuke-label'
-                        id='rebuke'
-                        label='Rebuke Domain'
-                        value={rebukeDomain}
-                        onChange={(e) => setRebukeDomain(e.target.value as DivineDomain)}
-                    >
-                        {Object.keys(DivineDomain).map((dom) => {
-                            return (
-                                <MenuItem key={dom} value={dom}>
-                                    {/* @ts-ignore */}
-                                    <ListItemText primary={DivineDomain[dom]} />
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                    <InputLabel id='spon-label'>Spontaneous Casting Domain</InputLabel>
-                    <Select
-                        labelId='spon-label'
-                        id='spontCast'
-                        label='Spontaneous Casting Domain'
-                        value={sponDomain}
-                        onChange={(e) => setSponDomain(e.target.value as DivineDomain)}
-                    >
-                        {Object.keys(DivineDomain).map((dom) => {
-                            return (
-                                <MenuItem key={dom} value={dom}>
-                                    {/* @ts-ignore */}
-                                    <ListItemText primary={DivineDomain[dom]} />
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-                </>
-                }
-                <Button  ref={addClassButtonRef} sx={{ margin: '.5rem 0' }} onClick={handleClick}>
+                {className === CharacterClassNames.Cleric && (
+                    <>
+                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                            <InputLabel id='turn-label'>Turn Domain</InputLabel>
+                            <Select
+                                labelId='turn-label'
+                                id='turn'
+                                label='Turn Domain'
+                                value={turnDomain}
+                                onChange={(e) =>
+                                    setTurnDomain(
+                                        e.target.value as DivineDomain
+                                    )
+                                }
+                            >
+                                {Object.keys(DivineDomain).map((dom) => {
+                                    return (
+                                        <MenuItem key={dom} value={dom}>
+                                            <ListItemText
+                                                primary={
+                                                    DivineDomain[
+                                                        dom as DivineDomain
+                                                    ]
+                                                }
+                                            />
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                            <InputLabel id='rebuke-label'>
+                                Rebuke Domain
+                            </InputLabel>
+                            <Select
+                                labelId='rebuke-label'
+                                id='rebuke'
+                                label='Rebuke Domain'
+                                value={rebukeDomain}
+                                onChange={(e) =>
+                                    setRebukeDomain(
+                                        e.target.value as DivineDomain
+                                    )
+                                }
+                            >
+                                {Object.keys(DivineDomain).map((dom) => {
+                                    return (
+                                        <MenuItem key={dom} value={dom}>
+                                            <ListItemText
+                                                primary={
+                                                    DivineDomain[
+                                                        dom as DivineDomain
+                                                    ]
+                                                }
+                                            />
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                            <InputLabel id='spon-label'>
+                                Spontaneous Casting Domain
+                            </InputLabel>
+                            <Select
+                                labelId='spon-label'
+                                id='spontCast'
+                                label='Spontaneous Casting Domain'
+                                value={sponDomain}
+                                onChange={(e) =>
+                                    setSponDomain(
+                                        e.target.value as DivineDomain
+                                    )
+                                }
+                            >
+                                {Object.keys(DivineDomain).map((dom) => {
+                                    return (
+                                        <MenuItem key={dom} value={dom}>
+                                            <ListItemText
+                                                primary={
+                                                    DivineDomain[
+                                                        dom as DivineDomain
+                                                    ]
+                                                }
+                                            />
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                            <InputLabel id='spon-label'>
+                                Select Domain Preference
+                            </InputLabel>
+                            <Select
+                                labelId='spon-label'
+                                id='preferredDomains'
+                                label='Domain Preferences'
+                                value={preferredDomains}
+                                onChange={(e) => handleDomainPrefChange(e)}
+                                renderValue={(selected) => (
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            gap: 0.5,
+                                        }}
+                                    >
+                                        {selected.map((value) => (
+                                            <Chip key={value} label={value} />
+                                        ))}
+                                    </Box>
+                                )}
+                                multiple
+                            >
+                                {Object.keys(DivineDomain).map((dom) => {
+                                    return (
+                                        <MenuItem key={dom} value={dom}>
+                                            <ListItemText
+                                                primary={
+                                                    DivineDomain[
+                                                        dom as DivineDomain
+                                                    ]
+                                                }
+                                            />
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                    </>
+                )}
+                <Button
+                    ref={addClassButtonRef}
+                    sx={{ margin: '.5rem 0' }}
+                    onClick={handleClick}
+                >
                     <Typography>Add Class Ability</Typography>
                     <Add />
                 </Button>
@@ -420,20 +586,30 @@ export const AddClassCard = ({ onClose, onSubmit, editClass }: AddClassCardProps
                         handleDelete={handleDeleteClassAbility}
                     />
                 </Popover>
-                {classAbilities.sort((a, b) => a.level - b.level).map((abl: ClassAbility) => {
-                    const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name
-                    return !!abl.description ? (
-                        <Tooltip title={abl.description} key={name}>
-                            <div key={name }onClick={() => triggerAbilityUpdate(abl)}>
-                                <ClassAbilityCard abl={abl}/>
+                {classAbilities
+                    .sort((a, b) => a.level - b.level)
+                    .map((abl: ClassAbility) => {
+                        const name = !!abl.allegianceValue
+                            ? `${abl.domain} Aspect`
+                            : abl.name;
+                        return !!abl.description ? (
+                            <Tooltip title={abl.description} key={name}>
+                                <div
+                                    key={name}
+                                    onClick={() => triggerAbilityUpdate(abl)}
+                                >
+                                    <ClassAbilityCard abl={abl} />
+                                </div>
+                            </Tooltip>
+                        ) : (
+                            <div
+                                key={name}
+                                onClick={() => triggerAbilityUpdate(abl)}
+                            >
+                                <ClassAbilityCard abl={abl} />
                             </div>
-                        </Tooltip>
-                    ) : (
-                        <div key={name} onClick={() => triggerAbilityUpdate(abl)}>
-                            <ClassAbilityCard abl={abl}/>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
             </CardContent>
             <CardActions sx={{ justifyContent: 'right' }}>
                 <Button onClick={(e) => onClose(e, 'buttonClose')}>
