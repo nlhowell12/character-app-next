@@ -27,7 +27,7 @@ export const linkToSpellCompendium = (
     spellType: MagickCategory
 ) => {
     let baseUrl;
-    let linkSpell = spell;
+    let linkSpell = spell.trim();
     switch (spellType) {
         case MagickCategory.Arcane:
             baseUrl = 'https://homebrewery.naturalcrit.com/share/6988bCG34MfY';
