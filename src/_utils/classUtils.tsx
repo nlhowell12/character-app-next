@@ -1,6 +1,7 @@
 import {
     Attribute,
     AttributeNames,
+    BonusTypes,
     Character,
     CharacterAttributes,
     CharacterClass,
@@ -8,6 +9,8 @@ import {
     ClassAbility,
     DivineDomain,
     Feat,
+    Modifier,
+    ModifierSource,
     Movement,
     SpecialResource,
     SpecialResourceType,
@@ -19,6 +22,7 @@ import {
     getTotalAttributeModifier,
 } from './attributeUtils';
 import * as R from 'ramda';
+import { v4 as uuidv4 } from 'uuid';
 
 type ClassAbilityObject = {
     [key in CharacterClassNames]: ClassAbility[];
@@ -430,4 +434,51 @@ const getLayOnHandsCount = (level: number, chaMod: number) => {
 const oathTurnCount = (level: number, feats: Feat[]) => {
     const extTurn = feats.filter((x) => x.name === 'Extra Turning').length * 4;
     return level + 3 + extTurn;
+};
+
+export const rageModifiers: Modifier[] = [
+    {
+        source: ModifierSource.classAbility,
+        id: uuidv4(),
+        value: 4,
+        type: BonusTypes.Enhancement,
+        attribute: AttributeNames.Strength,
+        definition: SpecialResourceType.Rage,
+    },
+    {
+        source: ModifierSource.classAbility,
+        id: uuidv4(),
+        value: 4,
+        type: BonusTypes.Enhancement,
+        attribute: AttributeNames.Constitution,
+        definition: SpecialResourceType.Rage,
+    },
+    {
+        source: ModifierSource.classAbility,
+        id: uuidv4(),
+        value: 2,
+        type: BonusTypes.Morale,
+        attribute: AttributeNames.Charisma,
+        definition: SpecialResourceType.Rage,
+        save: true,
+    },
+    {
+        source: ModifierSource.classAbility,
+        id: uuidv4(),
+        value: -2,
+        type: BonusTypes.Untyped,
+        definition: SpecialResourceType.Rage,
+        defense: true,
+    },
+];
+
+export const isRaging = (modifiers: Modifier[]) => {
+    return modifiers.some((x) => x.definition === SpecialResourceType.Rage);
+};
+
+export const getRageHpIncrease = (character: Character) => {
+    const barbClass = character.classes.find(
+        (x) => x.name === CharacterClassNames.Barbarian
+    );
+    return !!barbClass ? barbClass.level * 2 : 0;
 };

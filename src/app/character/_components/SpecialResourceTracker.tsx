@@ -3,9 +3,14 @@ import React, { Dispatch, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { RestartAlt } from '@mui/icons-material';
-import { getSpecialResources } from '@/_utils/classUtils';
+import { getSpecialResources, isRaging } from '@/_utils/classUtils';
 import { Character, CharacterKeys, SpecialResourceType } from '@/_models';
-import { CharacterAction, updateAction } from '@/_reducer/characterReducer';
+import {
+    CharacterAction,
+    removeRageAction,
+    setRageAction,
+    updateAction,
+} from '@/_reducer/characterReducer';
 
 interface SpecialResourceProps {
     character: Character;
@@ -92,17 +97,23 @@ interface RageProps {
     dispatch: Dispatch<CharacterAction>;
 }
 const RageButton = ({ character, dispatch }: RageProps) => {
-    const [isRaging, setIsRaging] = useState(false);
+    const raging = isRaging(character.miscModifiers);
     const handleRage = () => {
-        setIsRaging(!isRaging);
+        if (!raging) {
+            dispatch(setRageAction());
+        } else {
+            dispatch(removeRageAction());
+        }
     };
     return (
         <Button
-            color={isRaging ? 'error' : undefined}
+            color={raging ? 'error' : undefined}
             variant='outlined'
             onClick={handleRage}
+            fullWidth
+            disabled={!character.specialResources.Rage && !raging}
         >
-            {isRaging ? <strong>RAGE!</strong> : <p>Rage?</p>}
+            {raging ? <strong>RAGE!</strong> : <p>Rage?</p>}
         </Button>
     );
 };

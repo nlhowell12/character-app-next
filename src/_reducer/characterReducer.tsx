@@ -29,6 +29,7 @@ import {
 import initialSkillsState from './initialSkillsState';
 import * as R from 'ramda';
 import { Reducer } from 'react';
+import { getRageHpIncrease, rageModifiers } from '@/_utils/classUtils';
 
 export enum CharacterReducerActions {
     SET_CHARACTER = 'SET_CHARACTER',
@@ -53,6 +54,8 @@ export enum CharacterReducerActions {
     DELETE_NOTE = 'DELETE_NOTE',
     ADD_MOVEMENT = 'ADD_MOVEMENT',
     REMOVE_MOVEMENT = 'REMOVE_MOVEMENT',
+    SET_RAGE = 'SET_RAGE',
+    REMOVE_RAGE = 'REMOVE_RAGE',
     DEFAULT = 'DEFAULT',
 }
 
@@ -361,6 +364,19 @@ export const removeMovementAction = (value: Movement): CharacterAction => {
     };
 };
 
+export const setRageAction = () => {
+    return {
+        type: CharacterReducerActions.SET_RAGE,
+        payload: { key: CharacterKeys.miscModifiers, value: '' },
+    };
+};
+
+export const removeRageAction = () => {
+    return {
+        type: CharacterReducerActions.REMOVE_RAGE,
+        payload: { key: CharacterKeys.miscModifiers, value: '' },
+    };
+};
 export const resetAction = () => {
     return {
         type: CharacterReducerActions.RESET,
@@ -774,6 +790,24 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
             return {
                 ...state,
                 movementSpeeds: R.reject(speedFilter, state.movementSpeeds),
+            };
+        case CharacterReducerActions.SET_RAGE:
+            return {
+                ...state,
+                miscModifiers: [...state.miscModifiers, ...rageModifiers],
+                maxHitPoints: state.maxHitPoints + getRageHpIncrease(state),
+                currentHitPoints:
+                    state.currentHitPoints + getRageHpIncrease(state),
+            };
+        case CharacterReducerActions.REMOVE_RAGE:
+            return {
+                ...state,
+                miscModifiers: state.miscModifiers.filter(
+                    (x) => x.definition !== SpecialResourceType.Rage
+                ),
+                maxHitPoints: state.maxHitPoints - getRageHpIncrease(state),
+                currentHitPoints:
+                    state.currentHitPoints - getRageHpIncrease(state),
             };
         case CharacterReducerActions.RESET:
             return initialCharacterState;
