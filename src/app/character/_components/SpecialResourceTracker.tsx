@@ -106,6 +106,7 @@ const RageButton = ({ character, dispatch }: RageProps) => {
         </Button>
     );
 };
+
 const SpecialResourceTracker = ({
     character,
     dispatch,
