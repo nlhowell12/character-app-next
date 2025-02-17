@@ -30,7 +30,7 @@ import {
 import initialSkillsState from './initialSkillsState';
 import * as R from 'ramda';
 import { Reducer } from 'react';
-import { getRageHpIncrease, rageModifiers } from '@/_utils/classUtils';
+import { getRageHpIncrease, getRageModifiers } from '@/_utils/classUtils';
 
 export enum CharacterReducerActions {
     SET_CHARACTER = 'SET_CHARACTER',
@@ -795,7 +795,10 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
         case CharacterReducerActions.SET_RAGE:
             return {
                 ...state,
-                miscModifiers: [...state.miscModifiers, ...rageModifiers],
+                miscModifiers: [
+                    ...state.miscModifiers,
+                    ...getRageModifiers(state),
+                ],
                 maxHitPoints: state.maxHitPoints + getRageHpIncrease(state),
                 currentHitPoints:
                     state.currentHitPoints + getRageHpIncrease(state),

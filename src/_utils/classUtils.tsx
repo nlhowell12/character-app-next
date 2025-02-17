@@ -436,49 +436,74 @@ const oathTurnCount = (level: number, feats: Feat[]) => {
     return level + 3 + extTurn;
 };
 
-export const rageModifiers: Modifier[] = [
-    {
-        source: ModifierSource.classAbility,
-        id: uuidv4(),
-        value: 4,
-        type: BonusTypes.Enhancement,
-        attribute: AttributeNames.Strength,
-        definition: SpecialResourceType.Rage,
-    },
-    {
-        source: ModifierSource.classAbility,
-        id: uuidv4(),
-        value: 4,
-        type: BonusTypes.Enhancement,
-        attribute: AttributeNames.Constitution,
-        definition: SpecialResourceType.Rage,
-    },
-    {
-        source: ModifierSource.classAbility,
-        id: uuidv4(),
-        value: 2,
-        type: BonusTypes.Morale,
-        attribute: AttributeNames.Charisma,
-        definition: SpecialResourceType.Rage,
-        save: true,
-    },
-    {
-        source: ModifierSource.classAbility,
-        id: uuidv4(),
-        value: -2,
-        type: BonusTypes.Untyped,
-        definition: SpecialResourceType.Rage,
-        defense: true,
-    },
-];
+export const getRageModifiers = (character: Character): Modifier[] => {
+    const barbClass = getBarbarianClass(character);
+    const attBonus = () => {
+        if (!!barbClass && barbClass?.level < 11) {
+            return 4;
+        } else if (barbClass && barbClass.level < 20) {
+            return 6;
+        } else {
+            return 8;
+        }
+    };
+    const chaBonus = () => {
+        if (!!barbClass && barbClass?.level < 11) {
+            return 2;
+        } else if (barbClass && barbClass.level < 20) {
+            return 3;
+        } else {
+            return 4;
+        }
+    };
+    return [
+        {
+            source: ModifierSource.classAbility,
+            id: uuidv4(),
+            value: attBonus(),
+            type: BonusTypes.Enhancement,
+            attribute: AttributeNames.Strength,
+            definition: SpecialResourceType.Rage,
+        },
+        {
+            source: ModifierSource.classAbility,
+            id: uuidv4(),
+            value: attBonus(),
+            type: BonusTypes.Enhancement,
+            attribute: AttributeNames.Constitution,
+            definition: SpecialResourceType.Rage,
+        },
+        {
+            source: ModifierSource.classAbility,
+            id: uuidv4(),
+            value: chaBonus(),
+            type: BonusTypes.Morale,
+            attribute: AttributeNames.Charisma,
+            definition: SpecialResourceType.Rage,
+            save: true,
+        },
+        {
+            source: ModifierSource.classAbility,
+            id: uuidv4(),
+            value: -2,
+            type: BonusTypes.Untyped,
+            definition: SpecialResourceType.Rage,
+            defense: true,
+        },
+    ];
+};
 
 export const isRaging = (modifiers: Modifier[]) => {
     return modifiers.some((x) => x.definition === SpecialResourceType.Rage);
 };
 
-export const getRageHpIncrease = (character: Character) => {
-    const barbClass = character.classes.find(
+export const getBarbarianClass = (character: Character) => {
+    return character.classes.find(
         (x) => x.name === CharacterClassNames.Barbarian
     );
+};
+export const getRageHpIncrease = (character: Character) => {
+    const barbClass = getBarbarianClass(character);
+
     return !!barbClass ? barbClass.level * 2 : 0;
 };
