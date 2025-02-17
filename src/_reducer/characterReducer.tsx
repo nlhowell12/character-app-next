@@ -25,6 +25,7 @@ import {
     DivineDomain,
     SpecialResourceObject,
     SpecialResourceType,
+    StatusEffects,
 } from '@/_models';
 import initialSkillsState from './initialSkillsState';
 import * as R from 'ramda';
@@ -798,6 +799,10 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                 maxHitPoints: state.maxHitPoints + getRageHpIncrease(state),
                 currentHitPoints:
                     state.currentHitPoints + getRageHpIncrease(state),
+                specialResources: {
+                    ...state.specialResources,
+                    [SpecialResourceType.Rage]: state.specialResources.Rage - 1,
+                },
             };
         case CharacterReducerActions.REMOVE_RAGE:
             return {
@@ -808,6 +813,7 @@ export const characterReducer: Reducer<Character, CharacterAction> = (
                 maxHitPoints: state.maxHitPoints - getRageHpIncrease(state),
                 currentHitPoints:
                     state.currentHitPoints - getRageHpIncrease(state),
+                statusEffects: [...state.statusEffects, StatusEffects.Fatigued],
             };
         case CharacterReducerActions.RESET:
             return initialCharacterState;
