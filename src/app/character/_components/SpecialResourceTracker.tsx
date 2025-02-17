@@ -1,5 +1,5 @@
-import { Card, Grid, IconButton, Typography } from '@mui/material';
-import React, { Dispatch } from 'react';
+import { Button, Card, Grid, IconButton, Typography } from '@mui/material';
+import React, { Dispatch, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { RestartAlt } from '@mui/icons-material';
@@ -80,7 +80,30 @@ const ResourceWidget = ({
                     <RestartAlt />
                 </IconButton>
             </Card>
+            {name === SpecialResourceType.Rage && (
+                <RageButton character={character} dispatch={dispatch} />
+            )}
         </Grid>
+    );
+};
+
+interface RageProps {
+    character: Character;
+    dispatch: Dispatch<CharacterAction>;
+}
+const RageButton = ({ character, dispatch }: RageProps) => {
+    const [isRaging, setIsRaging] = useState(false);
+    const handleRage = () => {
+        setIsRaging(!isRaging);
+    };
+    return (
+        <Button
+            color={isRaging ? 'error' : undefined}
+            variant='outlined'
+            onClick={handleRage}
+        >
+            {isRaging ? <strong>RAGE!</strong> : <p>Rage?</p>}
+        </Button>
     );
 };
 const SpecialResourceTracker = ({
