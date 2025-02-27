@@ -341,7 +341,7 @@ export interface ClassAbility {
     name: string;
     level: number;
     description: string;
-    abilityType: AbilityTypes;
+    abilityType?: AbilityTypes;
     save?: AttributeNames;
     choices?: string[] | OathChoice[];
     path?:
