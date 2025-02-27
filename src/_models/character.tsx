@@ -336,3 +336,105 @@ export interface SpecialResource {
     name: SpecialResourceType;
     value: number;
 }
+
+export interface ClassAbility {
+    name: string;
+    level: number;
+    description: string;
+    abilityType: AbilityTypes;
+    save?: AttributeNames;
+    choices?: string[] | OathChoice[];
+    path?:
+        | BarbarianPath
+        | BardicTraditions
+        | MonkTraditions
+        | Oaths
+        | GuildPaths;
+    selectedChoice?: string;
+}
+
+export interface BardicMusic extends ClassAbility {
+    isMusic?: boolean;
+}
+export interface DomainClassAbility extends ClassAbility {
+    domain: DivineDomain;
+}
+export interface BardicRefrain {
+    name: string;
+    level: number;
+    description: string;
+}
+
+export interface Avowal extends ClassAbility {
+    avowal: boolean;
+}
+
+export interface SchoolAbility extends ClassAbility {
+    school: ArcaneSchool;
+}
+
+export interface PsiAbility extends ClassAbility {
+    discipline: PsionicDiscipline;
+}
+export enum BarbarianPath {
+    TheGreatBeast = 'The Great Beast',
+    TheyWhoShouldertheWorld = 'They Who Shoulder the World',
+    TheUndying = 'The Undying',
+    GuardianoftheHerd = 'Guardian of the Herd',
+    SkyHolder = 'Sky-Holder',
+    TheRoarfromBeyond = 'The Roar from Beyond',
+    AlphaofthePack = 'Alpha of the Pack',
+}
+
+export enum BardicTraditions {
+    Dirgesinger = 'Dirgesinger',
+    Seeker = 'Seeker',
+}
+
+export enum MonkTraditions {
+    Antiquity = 'The Way of Antiquity',
+    Balance = 'The Way of Balance',
+    Life = 'The Way of Life',
+    Modesty = 'The Way of Modesty',
+    Oppression = 'The Way of Oppression',
+    Pain = 'The Way of Pain',
+    Shadow = 'The Way of Shadow',
+    Soul = 'The Way of Soul',
+    Stone = 'The Way of Stone',
+    Hexad = 'The Way of the Hexad',
+    Time = 'The Way of Time',
+}
+
+export enum Oaths {
+    Devotion = 'Oath of Devotion',
+    Narcissim = 'Oath of Narcissim',
+    Vengeance = 'Oath of Vengeance',
+    Vitality = 'Oath of Vitality',
+}
+
+export enum GuildPaths {
+    Acrobat = 'Acrobat',
+    Spelunker = 'Spelunker',
+    Charlatan = 'Charlatan',
+    Cragsman = 'Cragsman',
+    Face = 'Face',
+    GreyMan = 'Grey Man',
+    Contortionist = 'Contortionist',
+    Thug = 'Thug',
+    Informant = 'Informant',
+    Hawkeye = 'Hawkeye',
+    Prodigy = 'Prodigy',
+    Confessor = 'Confessor',
+    Cutthroat = 'Cutthroat',
+    Fade = 'Fade',
+    Scalawag = 'Scalawag',
+}
+export interface OathChoice {
+    oath: Oaths;
+    choices: string[];
+}
+
+export interface QiChoice {
+    qiCost: number;
+    description: string;
+}
