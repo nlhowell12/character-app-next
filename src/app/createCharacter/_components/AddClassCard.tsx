@@ -7,7 +7,7 @@ import {
     SkillTypes,
 } from '@/_models';
 import { NumberInput } from '@/app/_components/NumberInput';
-import { Add, CancelRounded, CheckCircle } from '@mui/icons-material';
+import { CancelRounded, CheckCircle } from '@mui/icons-material';
 import {
     Box,
     Button,
@@ -21,117 +21,69 @@ import {
     InputLabel,
     ListItemText,
     MenuItem,
-    Popover,
     Select,
     SelectChangeEvent,
-    TextField,
     Tooltip,
     Typography,
 } from '@mui/material';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as R from 'ramda';
 import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
 
-interface AddClassAbilityProps {
-    addAbility: (ability: ClassAbility) => void;
-    updateAbility: (priorAbility: ClassAbility, ability: ClassAbility) => void;
-    handleClose: Dispatch<SetStateAction<boolean>>;
-    className: CharacterClassNames;
-    editAbility?: ClassAbility;
-    handleDelete: (abl: ClassAbility) => void;
-}
-
-const textFieldStyling = { marginTop: '.5rem' };
 const formControlStyling = { marginLeft: '.5rem' };
-
-const AddClassAbility = ({
-    handleClose,
-    addAbility,
-    className,
-    editAbility,
-    updateAbility,
-    handleDelete,
-}: AddClassAbilityProps) => {
-    const [name, setName] = useState((editAbility && editAbility.name) || '');
-    const [level, setLevel] = useState((editAbility && editAbility.level) || 1);
-    const [description, setDescription] = useState(
-        (editAbility && editAbility.description) || ''
-    );
-    return (
-        <Card variant='outlined'>
-            <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-                <TextField
-                    sx={textFieldStyling}
-                    value={name}
-                    label='Name'
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <TextField
-                    sx={textFieldStyling}
-                    value={level}
-                    label='Level'
-                    onChange={(e) => setLevel(Number(e.target.value))}
-                />
-                <TextField
-                    sx={textFieldStyling}
-                    value={description}
-                    multiline
-                    placeholder='Description (optional)...'
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-            </CardContent>
-            <CardActions sx={{ justifyContent: 'right' }}>
-                {!!editAbility && (
-                    <Button
-                        onClick={() => handleDelete(editAbility)}
-                        color='error'
-                    >
-                        Delete
-                    </Button>
-                )}
-                <Button onClick={(e) => handleClose(false)}>
-                    <Tooltip title='Close'>
-                        <CancelRounded />
-                    </Tooltip>
-                </Button>
-                <Tooltip title='Submit'>
-                    <Button
-                        onClick={() =>
-                            !!editAbility
-                                ? updateAbility(editAbility, {
-                                      name,
-                                      level,
-                                      description,
-                                      className,
-                                  })
-                                : addAbility({
-                                      name,
-                                      level,
-                                      description,
-                                      className,
-                                  })
-                        }
-                    >
-                        <CheckCircle />
-                    </Button>
-                </Tooltip>
-            </CardActions>
-        </Card>
-    );
-};
 
 interface ClassAbilityCardProps {
     abl: ClassAbility;
+    handleSelection: (ability: ClassAbility, selection: string) => void;
+    selectedOption: string;
 }
-const ClassAbilityCard = ({ abl }: ClassAbilityCardProps) => {
+const ClassAbilityCard = ({ abl, handleSelection }: ClassAbilityCardProps) => {
     const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name;
     return (
         <Card sx={{ padding: '0 0 0 .5rem', margin: '0 0 .25rem 0' }}>
-            <Typography
-                variant='caption'
-                align='right'
-            >{`Level: ${abl.level}`}</Typography>
-            <Typography>{name}</Typography>
+            <div style={{ display: 'flex', alignContent: 'center' }}>
+                <div style={{ display: 'flex' }}>
+                    <div>
+                        <Typography
+                            variant='caption'
+                            align='right'
+                        >{`Level: ${abl.level}`}</Typography>
+                        <Typography>{name}</Typography>
+                    </div>
+                    {!!abl.choices?.length && !abl.selectedChoice ? (
+                        <div
+                            style={{
+                                alignContent: 'center',
+                                marginLeft: '2rem',
+                                color: 'red',
+                            }}
+                        >
+                            Selection is required!
+                        </div>
+                    ) : null}
+                </div>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginLeft: '2rem',
+                    }}
+                >
+                    {abl.choices?.map((x) => {
+                        return (
+                            <Chip
+                                variant={
+                                    abl.selectedChoice === x
+                                        ? undefined
+                                        : 'outlined'
+                                }
+                                onClick={() => handleSelection(abl, x)}
+                                label={x}
+                            />
+                        );
+                    })}
+                </div>
+            </div>
         </Card>
     );
 };
@@ -173,15 +125,6 @@ export const AddClassCard = ({
     const [preferredDomains, setPreferredDomains] = useState<DivineDomain[]>(
         []
     );
-
-    const [open, setOpen] = useState<boolean>(false);
-    const [editClassAbility, setEditClassAbility] = useState<
-        ClassAbility | undefined
-    >(undefined);
-
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setOpen(!open);
-    };
 
     useEffect(() => {
         if (!!editClass) {
@@ -252,10 +195,6 @@ export const AddClassCard = ({
         onClose({}, 'buttonClose');
     };
 
-    const handleAddAbility = (ability: ClassAbility) => {
-        setClassAbilities([...classAbilities, ability]);
-        setOpen(false);
-    };
     const handleUpdateAbility = (
         priorAbility: ClassAbility,
         ability: ClassAbility
@@ -269,19 +208,25 @@ export const AddClassCard = ({
             classAbilities
         );
         setClassAbilities(updatedClassAbilities);
-        setEditClassAbility(undefined);
-        setOpen(false);
     };
-    const triggerAbilityUpdate = (abl: ClassAbility) => {
-        setEditClassAbility(abl);
-        setOpen(true);
-    };
-    const handleDeleteClassAbility = (abl: ClassAbility) => {
-        const filter = (x: ClassAbility) =>
-            x.name === abl.name && x.level === abl.level;
-        const updatedClassAbilities = R.reject(filter, classAbilities);
+
+    const handleChoiceSelection = (
+        ability: ClassAbility,
+        selection: string
+    ) => {
+        const updateIndex = R.findIndex(R.propEq(ability.name, 'name'))(
+            classAbilities
+        );
+        const updatedAbility = {
+            ...classAbilities[updateIndex],
+            selectedChoice: selection,
+        };
+        const updatedClassAbilities = R.update(
+            updateIndex,
+            updatedAbility,
+            classAbilities
+        );
         setClassAbilities(updatedClassAbilities);
-        setOpen(false);
     };
     const handleChangeClassSkill = (
         event: SelectChangeEvent<typeof classSkills>
@@ -573,54 +518,22 @@ export const AddClassCard = ({
                         </FormControl>
                     </>
                 )}
-                <Button
-                    ref={addClassButtonRef}
-                    sx={{ margin: '.5rem 0' }}
-                    onClick={handleClick}
-                >
-                    <Typography>Add Class Ability</Typography>
-                    <Add />
-                </Button>
-                <Popover
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    anchorEl={addClassButtonRef.current}
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                >
-                    <AddClassAbility
-                        addAbility={handleAddAbility}
-                        updateAbility={handleUpdateAbility}
-                        editAbility={editClassAbility}
-                        handleClose={setOpen}
-                        className={className}
-                        handleDelete={handleDeleteClassAbility}
-                    />
-                </Popover>
                 {classAbilities
                     .sort((a, b) => a.level - b.level)
                     .map((abl: ClassAbility) => {
                         const name = !!abl.allegianceValue
                             ? `${abl.domain} Aspect`
                             : abl.name;
-                        return !!abl.description ? (
+                        return (
                             <Tooltip title={abl.description} key={name}>
-                                <div
-                                    key={name}
-                                    onClick={() => triggerAbilityUpdate(abl)}
-                                >
-                                    <ClassAbilityCard abl={abl} />
+                                <div key={name}>
+                                    <ClassAbilityCard
+                                        abl={abl}
+                                        handleSelection={handleChoiceSelection}
+                                        selectedOption={''}
+                                    />
                                 </div>
                             </Tooltip>
-                        ) : (
-                            <div
-                                key={name}
-                                onClick={() => triggerAbilityUpdate(abl)}
-                            >
-                                <ClassAbilityCard abl={abl} />
-                            </div>
                         );
                     })}
             </CardContent>
