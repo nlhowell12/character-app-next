@@ -30,6 +30,7 @@ import {
 } from '@mui/material';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import * as R from 'ramda';
+import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
 
 interface AddClassAbilityProps {
     addAbility: (ability: ClassAbility) => void;
@@ -145,6 +146,8 @@ export const AddClassCard = ({
     onSubmit,
     editClass,
 }: AddClassCardProps) => {
+    const { classAbilityResponse } = useClassAbilityService();
+
     const [className, setClassName] = useState<CharacterClassNames>(
         CharacterClassNames.Barbarian
     );
@@ -210,6 +213,13 @@ export const AddClassCard = ({
         }
     }, [editClass]);
 
+    useEffect(() => {
+        /* @ts-ignore */
+        const acquiredAbilities = classAbilityResponse[className].filter(
+            (x: ClassAbility) => x.level <= level
+        );
+        !!acquiredAbilities.length && setClassAbilities(acquiredAbilities);
+    }, [level]);
     const handleSubmitClick = () => {
         const cls: CharacterClass = {
             name: className,

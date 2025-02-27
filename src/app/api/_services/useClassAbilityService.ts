@@ -40,7 +40,7 @@ const initialClassAbilityState: ClassAbilityReturnObject = {
 };
 
 export default () => {
-    const [classAbilities, setClassAbilities] =
+    const [classAbilityResponse, setClassAbilities] =
         useState<ClassAbilityReturnObject>(initialClassAbilityState);
 
     useEffect(() => {
@@ -49,76 +49,76 @@ export default () => {
 
     const getClassAbilties = async () => {
         const res = await fetch('/api/classAbilities');
-        const classAbilities = await res.json();
-        const clericDomainAspects: ClassAbility[] = classAbilities.filter(
+        const allClassAbilities = await res.json();
+        const clericDomainAspects: ClassAbility[] = allClassAbilities.filter(
             (x: ClassAbility) =>
                 x.className === CharacterClassNames.Cleric &&
                 !!x.domain &&
                 !!x.allegianceValue
         );
-        const clericOrisons: ClassAbility[] = classAbilities.filter(
+        const clericOrisons: ClassAbility[] = allClassAbilities.filter(
             (x: ClassAbility) =>
                 x.className === CharacterClassNames.Cleric &&
                 !!x.domain &&
                 !x.level
         );
 
-        if (!!classAbilities) {
+        if (!!allClassAbilities) {
             setClassAbilities({
                 [CharacterClassNames.Cleric]: {
                     domainAspects: clericDomainAspects,
                     orisons: clericOrisons,
                 },
-                [CharacterClassNames.Fighter]: classAbilities.filter(
+                [CharacterClassNames.Fighter]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Fighter
                 ),
-                [CharacterClassNames.Barbarian]: classAbilities.filter(
+                [CharacterClassNames.Barbarian]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Barbarian
                 ),
-                [CharacterClassNames.Bard]: classAbilities.filter(
+                [CharacterClassNames.Bard]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Bard
                 ),
-                [CharacterClassNames.Hexblade]: classAbilities.filter(
+                [CharacterClassNames.Hexblade]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Hexblade
                 ),
-                [CharacterClassNames.Monk]: classAbilities.filter(
+                [CharacterClassNames.Monk]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Monk
                 ),
-                [CharacterClassNames.Oathsworn]: classAbilities.filter(
+                [CharacterClassNames.Oathsworn]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Oathsworn
                 ),
-                [CharacterClassNames.Psion]: classAbilities.filter(
+                [CharacterClassNames.Psion]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Psion
                 ),
-                [CharacterClassNames.PsychicWarrior]: classAbilities.filter(
+                [CharacterClassNames.PsychicWarrior]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.PsychicWarrior
                 ),
-                [CharacterClassNames.Rogue]: classAbilities.filter(
+                [CharacterClassNames.Rogue]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Rogue
                 ),
-                [CharacterClassNames.Shadowcaster]: classAbilities.filter(
+                [CharacterClassNames.Shadowcaster]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Shadowcaster
                 ),
-                [CharacterClassNames.Sorcerer]: classAbilities.filter(
+                [CharacterClassNames.Sorcerer]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Sorcerer
                 ),
-                [CharacterClassNames.Wizard]: classAbilities.filter(
+                [CharacterClassNames.Wizard]: allClassAbilities.filter(
                     (x: ClassAbility) =>
                         x.className === CharacterClassNames.Wizard
                 ),
             });
         }
     };
-    return { classAbilities };
+    return { classAbilityResponse };
 };

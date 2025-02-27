@@ -95,6 +95,10 @@ export enum CharacterClassNames {
     Wizard = 'Wizard',
     SorcWiz = 'Sorcerer - Wizard',
 }
+export type ReferencedClassNames = Omit<
+    CharacterClassNames,
+    CharacterClassNames.SorcWiz
+>;
 
 export type Attribute = {
     value: number;
