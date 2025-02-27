@@ -10,6 +10,8 @@ import {
     Dice,
     DBEquipment,
     Feat,
+    AttributeNames,
+    AbilityTypes,
 } from '@/_models';
 import { User } from '@/_models/user';
 import mongoose from 'mongoose';
@@ -111,11 +113,19 @@ function classAbilityModel() {
     const classAbilitySchema = new Schema<ClassAbility>({
         name: { type: String, required: true },
         level: { type: Number, required: true },
-        className: { type: String, required: true },
+        className: { type: String, required: true, enum: CharacterClassNames },
         description: { type: String, required: true },
+        abilityType: { type: String, enum: AbilityTypes },
         allegianceValue: { type: Number },
         domain: { type: String },
         school: { type: String },
+        discipline: { type: String },
+        choices: { type: Array },
+        saveAttribute: { type: String, enum: AttributeNames },
+        path: { type: String },
+        selectedChoice: { type: String },
+        isMusic: { type: Boolean },
+        isRefrain: { type: Boolean },
     });
     return (
         mongoose.models.ClassAbility ||

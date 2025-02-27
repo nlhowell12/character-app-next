@@ -215,9 +215,22 @@ export interface ClassAbility {
     level: number;
     className: Omit<CharacterClassNames, CharacterClassNames.SorcWiz>;
     description: string;
+    abilityType?: AbilityTypes;
     allegianceValue?: number;
     domain?: DivineDomain;
     school?: ArcaneSchool;
+    discipline?: PsionicDiscipline;
+    choices?: string[];
+    saveAttribute?: AttributeNames;
+    path?:
+        | BarbarianPath
+        | BardicTraditions
+        | MonkTraditions
+        | Oaths
+        | GuildPaths;
+    selectedChoice?: string;
+    isMusic?: boolean;
+    isRefrain?: boolean;
 }
 
 export interface ArchetypeAbility {
@@ -337,22 +350,6 @@ export interface SpecialResource {
     value: number;
 }
 
-export interface ClassAbility {
-    name: string;
-    level: number;
-    description: string;
-    abilityType?: AbilityTypes;
-    save?: AttributeNames;
-    choices?: string[] | OathChoice[];
-    path?:
-        | BarbarianPath
-        | BardicTraditions
-        | MonkTraditions
-        | Oaths
-        | GuildPaths;
-    selectedChoice?: string;
-}
-
 export interface BardicMusic extends ClassAbility {
     isMusic?: boolean;
 }
@@ -437,4 +434,6 @@ export interface OathChoice {
 export interface QiChoice {
     qiCost: number;
     description: string;
+    save: AttributeNames;
+    id: string;
 }
