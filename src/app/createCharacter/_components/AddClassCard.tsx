@@ -195,7 +195,7 @@ export const AddClassCard = ({
         []
     );
     /* @ts-ignore */
-    const [chosenPath, setPath] = useState<PathOptions>('');
+    const [chosenPath, setPath] = useState<PathOptions | undefined>(undefined);
 
     useEffect(() => {
         if (!!editClass) {
@@ -265,9 +265,11 @@ export const AddClassCard = ({
                     );
                 }
             });
-
+        if (level < 5 && className === CharacterClassNames.Bard) {
+            !!editClass?.path && setPath(undefined);
+        }
         !!updatedList.length && setClassAbilities(updatedList);
-    }, [level]);
+    }, [level, chosenPath]);
 
     const handleSubmitClick = () => {
         const cls: CharacterClass = {
@@ -337,7 +339,8 @@ export const AddClassCard = ({
             setPreferredDomains(value);
         }
     };
-
+    const shouldShowPathSelection =
+        className === CharacterClassNames.Bard && level >= 5;
     return (
         <Card variant='outlined' sx={{ overflow: 'scroll' }}>
             <CardHeader
@@ -611,26 +614,30 @@ export const AddClassCard = ({
                         </FormControl>
                     </>
                 )}
-                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                    <InputLabel id='spon-label'>
-                        Class Path Selection
-                    </InputLabel>
-                    <Select
-                        labelId='spon-label'
-                        id='classPathSelect'
-                        label='Class Path Selection'
-                        value={chosenPath}
-                        onChange={(e) => setPath(e.target.value as PathOptions)}
-                    >
-                        {getPathOptions(className).map((path) => {
-                            return (
-                                <MenuItem key={path} value={path}>
-                                    <ListItemText primary={path} />
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
+                {shouldShowPathSelection && (
+                    <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                        <InputLabel id='spon-label'>
+                            Class Path Selection
+                        </InputLabel>
+                        <Select
+                            labelId='spon-label'
+                            id='classPathSelect'
+                            label='Class Path Selection'
+                            value={chosenPath}
+                            onChange={(e) =>
+                                setPath(e.target.value as PathOptions)
+                            }
+                        >
+                            {getPathOptions(className).map((path) => {
+                                return (
+                                    <MenuItem key={path} value={path}>
+                                        <ListItemText primary={path} />
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                )}
                 {classAbilities
                     .sort((a, b) => a.level - b.level)
                     .filter((x) => !x.path || x.path === chosenPath)
