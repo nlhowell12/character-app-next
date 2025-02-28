@@ -9,9 +9,9 @@ export default function Home() {
     const { characters } = useCharacterService();
 
     useEffect(() => {
-        document.title = 'Rhedrah Character Sheet'
-    }, [])
-    
+        document.title = 'Rhedrah Character Sheet';
+    }, []);
+
     return (
         <Grid container>
             {!!characters && <CharacterCardList characters={characters} />}

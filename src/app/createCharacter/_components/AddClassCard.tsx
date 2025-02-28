@@ -29,27 +29,29 @@ import {
 import { useEffect, useState } from 'react';
 import * as R from 'ramda';
 import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
+import { getClassAbilityChoices } from '@/_utils/classUtils';
 
 const formControlStyling = { marginLeft: '.5rem' };
 
 interface SelectionWidgetProps {
     handleSelection: (ability: ClassAbility, selection: string) => void;
     abl: ClassAbility;
+    choices?: ClassAbility[];
 }
 
 const ChoiceSelectionWidget = ({
     handleSelection,
     abl,
+    choices,
 }: SelectionWidgetProps) => {
-    const { classAbilityResponse } = useClassAbilityService();
-    if (abl.name === 'Bardic Music') {
+    if (!!choices) {
         return (
             <Select
                 sx={{ marginLeft: '2rem' }}
                 onChange={(e) => handleSelection(abl, e.target.value)}
                 value={abl.selectedChoice}
             >
-                {classAbilityResponse.Bard.music.map((music) => {
+                {choices.map((music) => {
                     return (
                         <MenuItem key={music.name} value={music.name}>
                             {music.name}
@@ -85,8 +87,13 @@ const ChoiceSelectionWidget = ({
 interface ClassAbilityCardProps {
     abl: ClassAbility;
     handleSelection: (ability: ClassAbility, selection: string) => void;
+    choices?: ClassAbility[];
 }
-const ClassAbilityCard = ({ abl, handleSelection }: ClassAbilityCardProps) => {
+const ClassAbilityCard = ({
+    abl,
+    handleSelection,
+    choices,
+}: ClassAbilityCardProps) => {
     const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name;
     return (
         <Card sx={{ padding: '0 0 0 .5rem', margin: '0 0 .25rem 0' }}>
@@ -114,6 +121,7 @@ const ClassAbilityCard = ({ abl, handleSelection }: ClassAbilityCardProps) => {
                 <ChoiceSelectionWidget
                     abl={abl}
                     handleSelection={handleSelection}
+                    choices={choices}
                 />
             </div>
         </Card>
@@ -581,6 +589,11 @@ export const AddClassCard = ({
                                     <ClassAbilityCard
                                         abl={abl}
                                         handleSelection={handleChoiceSelection}
+                                        choices={getClassAbilityChoices(
+                                            className,
+                                            classAbilityResponse,
+                                            abl
+                                        )}
                                     />
                                 </div>
                             </Tooltip>

@@ -23,6 +23,7 @@ import {
 } from './attributeUtils';
 import * as R from 'ramda';
 import { v4 as uuidv4 } from 'uuid';
+import { ClassAbilityReturnObject } from '@/app/api/_services/useClassAbilityService';
 
 type ClassAbilityObject = {
     [key in CharacterClassNames]: ClassAbility[];
@@ -506,4 +507,21 @@ export const getRageHpIncrease = (character: Character) => {
     const barbClass = getBarbarianClass(character);
 
     return !!barbClass ? barbClass.level * 2 : 0;
+};
+
+export const getClassAbilityChoices = (
+    className: CharacterClassNames,
+    classAbilities: ClassAbilityReturnObject,
+    ability?: ClassAbility
+) => {
+    switch (className) {
+        case CharacterClassNames.Bard:
+            if (!!ability && ability.name === 'Bardic Music') {
+                return classAbilities.Bard.music;
+            }
+            return undefined;
+        default:
+            /* @ts-ignore */
+            return undefined;
+    }
 };

@@ -160,7 +160,7 @@ export const CombatInfoDisplay = ({
     const [domainTabValue, setDomainTabValue] = useState<number>(0);
 
     const { spells } = useSpellService();
-    const { classAbilities } = useClassAbilityService();
+    const { classAbilityResponse } = useClassAbilityService();
 
     const handleSpellBookOpen = () => {
         setOpenSpellbook(true);
@@ -440,7 +440,8 @@ export const CombatInfoDisplay = ({
                                         <TableBody>
                                             {getAlignedOrisons(
                                                 character,
-                                                classAbilities.Cleric.orisons
+                                                classAbilityResponse.Cleric
+                                                    .orisons
                                             ).map((ori) => {
                                                 return (
                                                     <TableRow key={ori.domain}>

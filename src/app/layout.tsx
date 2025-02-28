@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import useUserService from './api/_services/useUserService';
 import UserContext from './_auth/UserContext';
 import { UserSignIn } from './_components/UserSignIn';
-import {LoadSkeleton} from './_components/LoadSkeleton';
+import { LoadSkeleton } from './_components/LoadSkeleton';
 import * as Ably from 'ably';
 import { AblyProvider } from 'ably/react';
 import { v4 as uuidv4 } from 'uuid';
@@ -31,7 +31,10 @@ export const initialUser: User = {
     isDm: false,
 };
 
-const client = new Ably.Realtime.Promise({ key: '1ZOkeg.ZOkKzg:dAjzR3Y_22i_NBTizBCBt4AxfO_AcLFCkBTAKVAWi7k', clientId: uuidv4() });
+const client = new Ably.Realtime.Promise({
+    key: '1ZOkeg.ZOkKzg:dAjzR3Y_22i_NBTizBCBt4AxfO_AcLFCkBTAKVAWi7k',
+    clientId: uuidv4(),
+});
 
 export default function RootLayout({
     children,
@@ -49,7 +52,7 @@ export default function RootLayout({
             const parsedUser = JSON.parse(storedUser);
             setUser(parsedUser);
         }
-        setLoading(false)
+        setLoading(false);
     }, []);
 
     const login = async (user: User) => {
@@ -57,9 +60,12 @@ export default function RootLayout({
         const res = await loginUser(user);
         if (res.name) {
             setUser(res);
-            localStorage.setItem(localStorageKey, JSON.stringify({name: res.name, isDm: res.isDm}));
+            localStorage.setItem(
+                localStorageKey,
+                JSON.stringify({ name: res.name, isDm: res.isDm })
+            );
         }
-        setLoading(false)
+        setLoading(false);
     };
     const createNewUser = async (user: User) => {
         const res = await createUser(user);
@@ -73,35 +79,37 @@ export default function RootLayout({
         localStorage.removeItem(localStorageKey);
     };
 
-
     return (
         <html lang='en'>
-            <body className={inter.className} style={{backgroundColor: 'black'}}>
-            <AblyProvider client={client}>
-                <AppRouterCacheProvider>
-                    <ThemeRegistry options={{ key: 'mui-theme' }}>
-                        <UserContext.Provider
-                            value={{ user, login, createNewUser, logout }}
-                        >
-                            <LoadSkeleton loading={isLoading}>
-                                {!user?.name ? (
-                                    <UserSignIn />
-                                ) : (
-                                    <Grid
-                                        sx={{
-                                            marginLeft: '6rem',
-                                            marginTop: '5rem',
-                                            height: '100vh',
-                                        }}
-                                    >
-                                        <Header />
-                                        {children}
-                                    </Grid>
-                                )}
-                            </LoadSkeleton>
-                        </UserContext.Provider>
-                    </ThemeRegistry>
-                </AppRouterCacheProvider>
+            <body
+                className={inter.className}
+                style={{ backgroundColor: 'black' }}
+            >
+                <AblyProvider client={client}>
+                    <AppRouterCacheProvider>
+                        <ThemeRegistry options={{ key: 'mui-theme' }}>
+                            <UserContext.Provider
+                                value={{ user, login, createNewUser, logout }}
+                            >
+                                <LoadSkeleton loading={isLoading}>
+                                    {!user?.name ? (
+                                        <UserSignIn />
+                                    ) : (
+                                        <Grid
+                                            sx={{
+                                                marginLeft: '6rem',
+                                                marginTop: '5rem',
+                                                height: '100vh',
+                                            }}
+                                        >
+                                            <Header />
+                                            {children}
+                                        </Grid>
+                                    )}
+                                </LoadSkeleton>
+                            </UserContext.Provider>
+                        </ThemeRegistry>
+                    </AppRouterCacheProvider>
                 </AblyProvider>
             </body>
         </html>

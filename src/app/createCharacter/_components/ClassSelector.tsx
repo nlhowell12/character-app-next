@@ -36,6 +36,7 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
     const handleClose = (event: any, reason: any) => {
         if (reason !== 'backdropClick') {
             setOpen(false);
+            setEdit(undefined);
         }
     };
     const handleSubmit = (cls: CharacterClass) => {
@@ -43,15 +44,22 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
             updateAction(CharacterKeys.classes, [...character.classes, cls])
         );
     };
-    const handleEditSubmit = (cls:CharacterClass) => {
-        const updateIndex = R.findIndex(R.propEq(cls.name, 'name'))(character.classes)
-        dispatch(updateAction(CharacterKeys.classes, R.update(updateIndex, cls, character.classes)))
-        setEdit(undefined)
+    const handleEditSubmit = (cls: CharacterClass) => {
+        const updateIndex = R.findIndex(R.propEq(cls.name, 'name'))(
+            character.classes
+        );
+        dispatch(
+            updateAction(
+                CharacterKeys.classes,
+                R.update(updateIndex, cls, character.classes)
+            )
+        );
+        setEdit(undefined);
     };
     const handleEdit = (cls: CharacterClass) => {
         setEdit(cls);
-        setOpen(true)
-    }
+        setOpen(true);
+    };
     return (
         <div
             style={{
@@ -63,7 +71,11 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                 <Add />
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <AddClassCard onClose={handleClose} onSubmit={edit ? handleEditSubmit : handleSubmit} editClass={edit}/>
+                <AddClassCard
+                    onClose={handleClose}
+                    onSubmit={edit ? handleEditSubmit : handleSubmit}
+                    editClass={edit}
+                />
             </Dialog>
             <Grid
                 direction='row'
@@ -101,7 +113,9 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                                 {!!cls.classAbilities.length && (
                                     <List subheader={'Class Abilities:'}>
                                         {cls.classAbilities.map((abl) => {
-                                            const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name
+                                            const name = !!abl.allegianceValue
+                                                ? `${abl.domain} Aspect`
+                                                : abl.name;
                                             return (
                                                 <ListItem key={name}>
                                                     <ListItemText
