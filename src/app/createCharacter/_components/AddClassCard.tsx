@@ -17,6 +17,7 @@ import {
     CardHeader,
     Checkbox,
     Chip,
+    Divider,
     FormControl,
     InputLabel,
     ListItemText,
@@ -267,6 +268,40 @@ export const AddClassCard = ({
         onClose({}, 'buttonClose');
     };
 
+    const getDescription = (ability: ClassAbility) => {
+        const { description } = ability;
+        switch (ability.name) {
+            case 'Bardic Music':
+                return (
+                    <div key={ability.name + ability.level}>
+                        <p style={{ marginBottom: '.5rem' }}>{description}</p>
+                        <Divider />
+                        <p style={{ marginTop: '.5rem' }}>
+                            {
+                                classAbilityResponse.Bard.music.find(
+                                    (x) => x.name === ability.selectedChoice
+                                )?.description
+                            }
+                        </p>
+                        {classAbilityResponse.Bard.refrains
+                            .filter((x) => x.name === ability.selectedChoice)
+                            .map((ref) => {
+                                return (
+                                    <p
+                                        key={ref.name + ref.level}
+                                        style={{ marginTop: '.5rem' }}
+                                    >
+                                        <strong>{`Refrain (Level ${ref.level}) : `}</strong>
+                                        {ref.description}
+                                    </p>
+                                );
+                            })}
+                    </div>
+                );
+            default:
+                return description;
+        }
+    };
     const handleChoiceSelection = (
         ability: ClassAbility,
         selection: string
@@ -582,7 +617,7 @@ export const AddClassCard = ({
                             : abl.name;
                         return (
                             <Tooltip
-                                title={abl.description}
+                                title={getDescription(abl)}
                                 key={name + abl.level}
                             >
                                 <div key={name + abl.level}>

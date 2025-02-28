@@ -140,6 +140,5 @@ export default () => {
             });
         }
     };
-    console.log(classAbilityResponse);
     return { classAbilityResponse };
 };
