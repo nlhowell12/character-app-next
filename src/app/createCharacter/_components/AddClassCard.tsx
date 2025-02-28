@@ -161,8 +161,28 @@ export const AddClassCard = ({
         const acquiredAbilities = classAbilityResponse[className].filter(
             (x: ClassAbility) => x.level <= level
         );
-        !!acquiredAbilities.length && setClassAbilities(acquiredAbilities);
+        let updatedList: ClassAbility[] = [...classAbilities];
+        acquiredAbilities.forEach((abl: ClassAbility) => {
+            if (level >= updatedList[updatedList.length - 1].level) {
+                if (
+                    R.findIndex(
+                        (x: ClassAbility) =>
+                            x.name === abl.name && x.level === abl.level
+                    )(updatedList) === -1
+                ) {
+                    updatedList.push(abl);
+                }
+            } else {
+                updatedList = R.reject(
+                    (x: ClassAbility) => x.level > level,
+                    updatedList
+                );
+            }
+        });
+
+        !!updatedList.length && setClassAbilities(updatedList);
     }, [level]);
+
     const handleSubmitClick = () => {
         const cls: CharacterClass = {
             name: className,
@@ -193,21 +213,6 @@ export const AddClassCard = ({
         };
         onSubmit(cls);
         onClose({}, 'buttonClose');
-    };
-
-    const handleUpdateAbility = (
-        priorAbility: ClassAbility,
-        ability: ClassAbility
-    ) => {
-        const updateIndex = R.findIndex(R.propEq(priorAbility.name, 'name'))(
-            classAbilities
-        );
-        const updatedClassAbilities = R.update(
-            updateIndex,
-            ability,
-            classAbilities
-        );
-        setClassAbilities(updatedClassAbilities);
     };
 
     const handleChoiceSelection = (
@@ -245,7 +250,6 @@ export const AddClassCard = ({
             setPreferredDomains(value);
         }
     };
-    const addClassButtonRef = useRef(null);
 
     return (
         <Card variant='outlined' sx={{ overflow: 'scroll' }}>
