@@ -17,7 +17,6 @@ import {
     CardHeader,
     Checkbox,
     Chip,
-    Divider,
     FormControl,
     InputLabel,
     ListItemText,
