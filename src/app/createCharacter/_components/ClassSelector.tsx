@@ -117,7 +117,9 @@ export const ClassSelector = ({ character, dispatch }: ClassSelectorProps) => {
                                                 ? `${abl.domain} Aspect`
                                                 : abl.name;
                                             return (
-                                                <ListItem key={name}>
+                                                <ListItem
+                                                    key={name + abl.level}
+                                                >
                                                     <ListItemText
                                                         primary={`Level ${abl.level}`}
                                                     />

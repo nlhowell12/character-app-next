@@ -12,6 +12,7 @@ import {
     Modifier,
     ModifierSource,
     Movement,
+    PathOptions,
     SpecialResource,
     SpecialResourceType,
     StatusEffects,
@@ -513,12 +514,15 @@ export const getRageHpIncrease = (character: Character) => {
 export const getClassAbilityChoices = (
     className: CharacterClassNames,
     classAbilities: ClassAbilityReturnObject,
-    ability?: ClassAbility
+    ability?: ClassAbility,
+    path?: PathOptions
 ) => {
     switch (className) {
         case CharacterClassNames.Bard:
             if (!!ability && ability.name === 'Bardic Music') {
-                return classAbilities.Bard.music;
+                return classAbilities.Bard.music.filter(
+                    (x) => !x.path || x.path === path
+                );
             }
             return undefined;
         default:

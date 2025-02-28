@@ -56,6 +56,7 @@ const AbilityRow = ({ ability }: AbilityRowProps) => {
         <Tooltip
             title={getAbilityDescription(ability, classAbilityResponse)}
             placement='right'
+            key={ability.name + ability.level}
         >
             <TableRow
                 sx={{
@@ -124,7 +125,9 @@ export const ClassAbilityDisplay = ({
                             return (
                                 <AbilityRow
                                     key={
-                                        ability.className + ability.description
+                                        ability.className +
+                                        ability.description +
+                                        ability.level
                                     }
                                     ability={ability}
                                 />

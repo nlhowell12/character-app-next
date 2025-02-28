@@ -62,7 +62,10 @@ const ChoiceSelectionWidget = ({
             >
                 {choices.map((music) => {
                     return (
-                        <MenuItem key={music.name} value={music.name}>
+                        <MenuItem
+                            key={music.name + music.level}
+                            value={music.name}
+                        >
                             {music.name}
                         </MenuItem>
                     );
@@ -191,7 +194,8 @@ export const AddClassCard = ({
     const [preferredDomains, setPreferredDomains] = useState<DivineDomain[]>(
         []
     );
-    const [path, setPath] = useState<PathOptions>();
+    /* @ts-ignore */
+    const [chosenPath, setPath] = useState<PathOptions>('');
 
     useEffect(() => {
         if (!!editClass) {
@@ -224,7 +228,6 @@ export const AddClassCard = ({
             !!path && setPath(path);
         }
     }, [editClass]);
-
     const getAbilities = () => {
         switch (className) {
             case CharacterClassNames.Bard:
@@ -241,25 +244,27 @@ export const AddClassCard = ({
     useEffect(() => {
         const acquiredAbilities = getAbilities();
         let updatedList: ClassAbility[] = [...classAbilities];
-        acquiredAbilities.forEach((abl: ClassAbility) => {
-            if (!updatedList.length) {
-                updatedList.push(abl);
-            } else if (level >= updatedList[updatedList.length - 1].level) {
-                if (
-                    R.findIndex(
-                        (x: ClassAbility) =>
-                            x.name === abl.name && x.level === abl.level
-                    )(updatedList) === -1
-                ) {
+        acquiredAbilities
+            .filter((x: ClassAbility) => !x.path || x.path === chosenPath)
+            .forEach((abl: ClassAbility) => {
+                if (!updatedList.length) {
                     updatedList.push(abl);
+                } else if (level >= updatedList[updatedList.length - 1].level) {
+                    if (
+                        R.findIndex(
+                            (x: ClassAbility) =>
+                                x.name === abl.name && x.level === abl.level
+                        )(updatedList) === -1
+                    ) {
+                        updatedList.push(abl);
+                    }
+                } else {
+                    updatedList = R.reject(
+                        (x: ClassAbility) => x.level > level,
+                        updatedList
+                    );
                 }
-            } else {
-                updatedList = R.reject(
-                    (x: ClassAbility) => x.level > level,
-                    updatedList
-                );
-            }
-        });
+            });
 
         !!updatedList.length && setClassAbilities(updatedList);
     }, [level]);
@@ -291,6 +296,7 @@ export const AddClassCard = ({
                 className === CharacterClassNames.Cleric
                     ? preferredDomains
                     : undefined,
+            path: chosenPath,
         };
         onSubmit(cls);
         onClose({}, 'buttonClose');
@@ -613,7 +619,7 @@ export const AddClassCard = ({
                         labelId='spon-label'
                         id='classPathSelect'
                         label='Class Path Selection'
-                        value={path}
+                        value={chosenPath}
                         onChange={(e) => setPath(e.target.value as PathOptions)}
                     >
                         {getPathOptions(className).map((path) => {
@@ -627,6 +633,7 @@ export const AddClassCard = ({
                 </FormControl>
                 {classAbilities
                     .sort((a, b) => a.level - b.level)
+                    .filter((x) => !x.path || x.path === chosenPath)
                     .map((abl: ClassAbility) => {
                         const name = !!abl.allegianceValue
                             ? `${abl.domain} Aspect`
@@ -639,14 +646,15 @@ export const AddClassCard = ({
                                 )}
                                 key={name + abl.level}
                             >
-                                <div key={name + abl.level}>
+                                <div key={name + abl.level + abl.level}>
                                     <ClassAbilityCard
                                         abl={abl}
                                         handleSelection={handleChoiceSelection}
                                         choices={getClassAbilityChoices(
                                             className,
                                             classAbilityResponse,
-                                            abl
+                                            abl,
+                                            chosenPath
                                         )}
                                     />
                                 </div>
