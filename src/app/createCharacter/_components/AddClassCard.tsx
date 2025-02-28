@@ -26,16 +26,65 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as R from 'ramda';
 import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
 
 const formControlStyling = { marginLeft: '.5rem' };
 
+interface SelectionWidgetProps {
+    handleSelection: (ability: ClassAbility, selection: string) => void;
+    abl: ClassAbility;
+}
+
+const ChoiceSelectionWidget = ({
+    handleSelection,
+    abl,
+}: SelectionWidgetProps) => {
+    const { classAbilityResponse } = useClassAbilityService();
+    if (abl.name === 'Bardic Music') {
+        return (
+            <Select
+                sx={{ marginLeft: '2rem' }}
+                onChange={(e) => handleSelection(abl, e.target.value)}
+                value={abl.selectedChoice}
+            >
+                {classAbilityResponse.Bard.music.map((music) => {
+                    return (
+                        <MenuItem key={music.name} value={music.name}>
+                            {music.name}
+                        </MenuItem>
+                    );
+                })}
+            </Select>
+        );
+    }
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginLeft: '2rem',
+            }}
+        >
+            {abl.choices?.map((x) => {
+                return (
+                    <Chip
+                        variant={
+                            abl.selectedChoice === x ? undefined : 'outlined'
+                        }
+                        onClick={() => handleSelection(abl, x)}
+                        label={x}
+                    />
+                );
+            })}
+        </div>
+    );
+};
+
 interface ClassAbilityCardProps {
     abl: ClassAbility;
     handleSelection: (ability: ClassAbility, selection: string) => void;
-    selectedOption: string;
 }
 const ClassAbilityCard = ({ abl, handleSelection }: ClassAbilityCardProps) => {
     const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name;
@@ -62,27 +111,10 @@ const ClassAbilityCard = ({ abl, handleSelection }: ClassAbilityCardProps) => {
                         </div>
                     ) : null}
                 </div>
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginLeft: '2rem',
-                    }}
-                >
-                    {abl.choices?.map((x) => {
-                        return (
-                            <Chip
-                                variant={
-                                    abl.selectedChoice === x
-                                        ? undefined
-                                        : 'outlined'
-                                }
-                                onClick={() => handleSelection(abl, x)}
-                                label={x}
-                            />
-                        );
-                    })}
-                </div>
+                <ChoiceSelectionWidget
+                    abl={abl}
+                    handleSelection={handleSelection}
+                />
             </div>
         </Card>
     );
@@ -156,14 +188,26 @@ export const AddClassCard = ({
         }
     }, [editClass]);
 
+    const getAbilities = () => {
+        switch (className) {
+            case CharacterClassNames.Bard:
+                return classAbilityResponse[
+                    CharacterClassNames.Bard
+                ].abilities.filter((x: ClassAbility) => x.level <= level);
+            default:
+                /* @ts-ignore */
+                return classAbilityResponse[className].filter(
+                    (x: ClassAbility) => x.level <= level
+                );
+        }
+    };
     useEffect(() => {
-        /* @ts-ignore */
-        const acquiredAbilities = classAbilityResponse[className].filter(
-            (x: ClassAbility) => x.level <= level
-        );
+        const acquiredAbilities = getAbilities();
         let updatedList: ClassAbility[] = [...classAbilities];
         acquiredAbilities.forEach((abl: ClassAbility) => {
-            if (level >= updatedList[updatedList.length - 1].level) {
+            if (!updatedList.length) {
+                updatedList.push(abl);
+            } else if (level >= updatedList[updatedList.length - 1].level) {
                 if (
                     R.findIndex(
                         (x: ClassAbility) =>
@@ -529,12 +573,14 @@ export const AddClassCard = ({
                             ? `${abl.domain} Aspect`
                             : abl.name;
                         return (
-                            <Tooltip title={abl.description} key={name}>
-                                <div key={name}>
+                            <Tooltip
+                                title={abl.description}
+                                key={name + abl.level}
+                            >
+                                <div key={name + abl.level}>
                                     <ClassAbilityCard
                                         abl={abl}
                                         handleSelection={handleChoiceSelection}
-                                        selectedOption={''}
                                     />
                                 </div>
                             </Tooltip>
