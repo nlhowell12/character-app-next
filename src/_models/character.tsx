@@ -246,7 +246,12 @@ export interface Archetype {
     name: string;
     abilities: ArchetypeAbility[];
 }
-
+export type PathOptions =
+    | BarbarianPath
+    | BardicTraditions
+    | MonkTraditions
+    | Oaths
+    | GuildPaths;
 export interface CharacterClass {
     name: CharacterClassNames;
     primarySave: AttributeNames;
@@ -259,6 +264,7 @@ export interface CharacterClass {
     rebukeDomain?: DivineDomain;
     spontaneousChannelDomain?: DivineDomain;
     preferredDomains?: DivineDomain[];
+    path?: PathOptions;
 }
 
 export enum ModifierSource {

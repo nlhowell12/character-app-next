@@ -522,7 +522,6 @@ export const getClassAbilityChoices = (
             }
             return undefined;
         default:
-            /* @ts-ignore */
             return undefined;
     }
 };

@@ -1,9 +1,15 @@
 import {
     AttributeNames,
+    BarbarianPath,
+    BardicTraditions,
     CharacterClass,
     CharacterClassNames,
     ClassAbility,
     DivineDomain,
+    GuildPaths,
+    MonkTraditions,
+    Oaths,
+    PathOptions,
     SkillTypes,
 } from '@/_models';
 import { NumberInput } from '@/app/_components/NumberInput';
@@ -130,6 +136,23 @@ const ClassAbilityCard = ({
         </Card>
     );
 };
+
+const getPathOptions = (className: CharacterClassNames) => {
+    switch (className) {
+        case CharacterClassNames.Barbarian:
+            return Object.values(BarbarianPath);
+        case CharacterClassNames.Bard:
+            return Object.values(BardicTraditions);
+        case CharacterClassNames.Monk:
+            return Object.values(MonkTraditions);
+        case CharacterClassNames.Oathsworn:
+            return Object.values(Oaths);
+        case CharacterClassNames.Rogue:
+            return Object.values(GuildPaths);
+        default:
+            return [];
+    }
+};
 interface AddClassCardProps {
     onClose: (event: any, reason: any) => void;
     onSubmit: (cls: CharacterClass) => void;
@@ -168,6 +191,7 @@ export const AddClassCard = ({
     const [preferredDomains, setPreferredDomains] = useState<DivineDomain[]>(
         []
     );
+    const [path, setPath] = useState<PathOptions>();
 
     useEffect(() => {
         if (!!editClass) {
@@ -183,6 +207,7 @@ export const AddClassCard = ({
                 rebukeDomain,
                 spontaneousChannelDomain,
                 preferredDomains,
+                path,
             } = editClass;
             setClassName(name as CharacterClassNames);
             setLevel(level);
@@ -196,6 +221,7 @@ export const AddClassCard = ({
             !!spontaneousChannelDomain &&
                 setSponDomain(spontaneousChannelDomain);
             !!preferredDomains && setPreferredDomains(preferredDomains);
+            !!path && setPath(path);
         }
     }, [editClass]);
 
@@ -579,6 +605,26 @@ export const AddClassCard = ({
                         </FormControl>
                     </>
                 )}
+                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                    <InputLabel id='spon-label'>
+                        Class Path Selection
+                    </InputLabel>
+                    <Select
+                        labelId='spon-label'
+                        id='classPathSelect'
+                        label='Class Path Selection'
+                        value={path}
+                        onChange={(e) => setPath(e.target.value as PathOptions)}
+                    >
+                        {getPathOptions(className).map((path) => {
+                            return (
+                                <MenuItem key={path} value={path}>
+                                    <ListItemText primary={path} />
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
                 {classAbilities
                     .sort((a, b) => a.level - b.level)
                     .map((abl: ClassAbility) => {
