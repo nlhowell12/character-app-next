@@ -275,8 +275,8 @@ export const AddClassCard = ({
         ability: ClassAbility,
         selection: string
     ) => {
-        const updateIndex = R.findIndex(R.propEq(ability.name, 'name'))(
-            classAbilities
+        const updateIndex = classAbilities.findIndex(
+            (x) => x.name === ability.name && x.level === ability.level
         );
         const updatedAbility = {
             ...classAbilities[updateIndex],
