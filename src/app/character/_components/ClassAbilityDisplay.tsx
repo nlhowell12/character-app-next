@@ -1,4 +1,4 @@
-import { Character, ClassAbility } from '@/_models';
+import { AbilityTypes, Character, ClassAbility } from '@/_models';
 
 import {
     Card,
@@ -23,8 +23,33 @@ interface AbilityRowProps {
     ability: ClassAbility;
 }
 const AbilityRow = ({ ability }: AbilityRowProps) => {
+    const getAbiltyTitle = (ability: ClassAbility) => {
+        const selection = ability.selectedChoice
+            ? ` (${ability.selectedChoice})`
+            : '';
+        return `${ability.name}${selection}`;
+    };
+    const getAbiltyDescription = (ability: ClassAbility) => {
+        return ability.description;
+    };
+    const getAbilityType = (ability: ClassAbility) => {
+        switch (ability.abilityType) {
+            case AbilityTypes.Extraordinary:
+                return 'Ex';
+            case AbilityTypes.Prayer:
+                return 'Pr';
+            case AbilityTypes.PsiLike:
+                return 'Psi';
+            case AbilityTypes.SpellLike:
+                return 'Sp';
+            case AbilityTypes.Supernatural:
+                return 'Su';
+            default:
+                return '';
+        }
+    };
     return (
-        <Tooltip title={ability.description} placement='right'>
+        <Tooltip title={getAbiltyDescription(ability)} placement='right'>
             <TableRow
                 sx={{
                     alignItems: 'center',
@@ -43,7 +68,8 @@ const AbilityRow = ({ ability }: AbilityRowProps) => {
                     </Typography>
                 </TableCell>
                 <TableCell>{ability.level}</TableCell>
-                <TableCell>{ability.name}</TableCell>
+                <TableCell>{getAbiltyTitle(ability)}</TableCell>
+                <TableCell>{getAbilityType(ability)}</TableCell>
             </TableRow>
         </Tooltip>
     );

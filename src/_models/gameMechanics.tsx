@@ -56,7 +56,11 @@ export enum PhysicalDamage {
     Slashing = 'Slashing',
 }
 
-export const Damage = {...EnergyType, ...ExtraordinaryDamage, ...PhysicalDamage};
+export const Damage = {
+    ...EnergyType,
+    ...ExtraordinaryDamage,
+    ...PhysicalDamage,
+};
 export type Damage = EnergyType | ExtraordinaryDamage | PhysicalDamage;
 
 export enum Sizes {
@@ -70,55 +74,55 @@ export enum Sizes {
     Gargantuan = 'Gargantuan',
     Colossal = 'Colossal',
     ColossalPlus = 'Colossal+',
-};
+}
 
 type SizeModiferObject = {
     [key in Sizes]: {
         combatModifier: number;
         stealthModifier: number;
-    }
+    };
 };
 
 export const SizeModifiers: SizeModiferObject = {
-    'Fine': {
+    Fine: {
         combatModifier: 8,
-        stealthModifier: 16
+        stealthModifier: 16,
     },
-    'Diminutive': {
+    Diminutive: {
         combatModifier: 4,
-        stealthModifier: 12
+        stealthModifier: 12,
     },
-    'Tiny': {
+    Tiny: {
         combatModifier: 2,
-        stealthModifier: 8
+        stealthModifier: 8,
     },
-    'Small': {
+    Small: {
         combatModifier: 1,
-        stealthModifier: 4
+        stealthModifier: 4,
     },
-    'Medium': {
+    Medium: {
         combatModifier: 0,
-        stealthModifier: 0
+        stealthModifier: 0,
     },
-    'Large': {
+    Large: {
         combatModifier: -1,
-        stealthModifier: -4
+        stealthModifier: -4,
     },
-    'Huge': {
+    Huge: {
         combatModifier: -2,
-        stealthModifier: -8
+        stealthModifier: -8,
     },
-    'Gargantuan': {
+    Gargantuan: {
         combatModifier: -4,
-        stealthModifier: -12
+        stealthModifier: -12,
     },
-    'Colossal': {
+    Colossal: {
         combatModifier: -8,
-        stealthModifier: -16
+        stealthModifier: -16,
     },
     'Colossal+': {
         combatModifier: -8,
-        stealthModifier: -16
+        stealthModifier: -16,
     },
 };
 
@@ -127,6 +131,7 @@ export enum AbilityTypes {
     PsiLike = 'Psi-Like',
     Extraordinary = 'Extraordinary',
     Supernatural = 'Supernatural',
+    Prayer = 'Prayer-Like',
 }
 
 export interface CarryingCapacityObject {
@@ -173,17 +178,17 @@ export enum StatusEffects {
     Staggered = 'Staggered',
     Stunned = 'Stunned',
     Turned = 'Turned',
-    Unconscious = 'Unconscious'
+    Unconscious = 'Unconscious',
 }
 
 export const unableToActStatus = [
- StatusEffects.Dazed,
- StatusEffects.Disabled,
- StatusEffects.Dying,
- StatusEffects.Helpless,
- StatusEffects.Petrified,
- StatusEffects.Stunned,
- StatusEffects.Unconscious,
+    StatusEffects.Dazed,
+    StatusEffects.Disabled,
+    StatusEffects.Dying,
+    StatusEffects.Helpless,
+    StatusEffects.Petrified,
+    StatusEffects.Stunned,
+    StatusEffects.Unconscious,
 ];
 
 export const immobilzedStatusEffects = [
