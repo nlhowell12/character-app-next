@@ -24,6 +24,7 @@ import {
 import * as R from 'ramda';
 import { v4 as uuidv4 } from 'uuid';
 import { ClassAbilityReturnObject } from '@/app/api/_services/useClassAbilityService';
+import { Divider } from '@mui/material';
 
 type ClassAbilityObject = {
     [key in CharacterClassNames]: ClassAbility[];
@@ -523,5 +524,43 @@ export const getClassAbilityChoices = (
         default:
             /* @ts-ignore */
             return undefined;
+    }
+};
+
+export const getAbilityDescription = (
+    ability: ClassAbility,
+    classAbilityResponse: ClassAbilityReturnObject
+) => {
+    const { description } = ability;
+    switch (ability.name) {
+        case 'Bardic Music':
+            return (
+                <div key={ability.name + ability.level}>
+                    <p style={{ marginBottom: '.5rem' }}>{description}</p>
+                    <Divider />
+                    <p style={{ marginTop: '.5rem' }}>
+                        {
+                            classAbilityResponse.Bard.music.find(
+                                (x) => x.name === ability.selectedChoice
+                            )?.description
+                        }
+                    </p>
+                    {classAbilityResponse.Bard.refrains
+                        .filter((x) => x.name === ability.selectedChoice)
+                        .map((ref) => {
+                            return (
+                                <p
+                                    key={ref.name + ref.level}
+                                    style={{ marginTop: '.5rem' }}
+                                >
+                                    <strong>{`Refrain (Level ${ref.level}) : `}</strong>
+                                    {ref.description}
+                                </p>
+                            );
+                        })}
+                </div>
+            );
+        default:
+            return description;
     }
 };

@@ -30,7 +30,10 @@ import {
 import { useEffect, useState } from 'react';
 import * as R from 'ramda';
 import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
-import { getClassAbilityChoices } from '@/_utils/classUtils';
+import {
+    getAbilityDescription,
+    getClassAbilityChoices,
+} from '@/_utils/classUtils';
 
 const formControlStyling = { marginLeft: '.5rem' };
 
@@ -268,40 +271,6 @@ export const AddClassCard = ({
         onClose({}, 'buttonClose');
     };
 
-    const getDescription = (ability: ClassAbility) => {
-        const { description } = ability;
-        switch (ability.name) {
-            case 'Bardic Music':
-                return (
-                    <div key={ability.name + ability.level}>
-                        <p style={{ marginBottom: '.5rem' }}>{description}</p>
-                        <Divider />
-                        <p style={{ marginTop: '.5rem' }}>
-                            {
-                                classAbilityResponse.Bard.music.find(
-                                    (x) => x.name === ability.selectedChoice
-                                )?.description
-                            }
-                        </p>
-                        {classAbilityResponse.Bard.refrains
-                            .filter((x) => x.name === ability.selectedChoice)
-                            .map((ref) => {
-                                return (
-                                    <p
-                                        key={ref.name + ref.level}
-                                        style={{ marginTop: '.5rem' }}
-                                    >
-                                        <strong>{`Refrain (Level ${ref.level}) : `}</strong>
-                                        {ref.description}
-                                    </p>
-                                );
-                            })}
-                    </div>
-                );
-            default:
-                return description;
-        }
-    };
     const handleChoiceSelection = (
         ability: ClassAbility,
         selection: string
@@ -383,11 +352,13 @@ export const AddClassCard = ({
                             value={level}
                             label='Level'
                             onChange={(e) => setLevel(Number(e.target.value))}
+                            minZero
                         />
                         <NumberInput
                             value={BAB}
                             label='Base Attack Bonus'
                             onChange={(e) => setBAB(Number(e.target.value))}
+                            minZero
                         />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -617,7 +588,10 @@ export const AddClassCard = ({
                             : abl.name;
                         return (
                             <Tooltip
-                                title={getDescription(abl)}
+                                title={getAbilityDescription(
+                                    abl,
+                                    classAbilityResponse
+                                )}
                                 key={name + abl.level}
                             >
                                 <div key={name + abl.level}>

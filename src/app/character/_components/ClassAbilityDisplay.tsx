@@ -10,7 +10,12 @@ import {
     Typography,
     useTheme,
 } from '@mui/material';
-import { getAllClassAbilities, getHexbladeCurseDC } from '@/_utils/classUtils';
+import {
+    getAbilityDescription,
+    getAllClassAbilities,
+    getHexbladeCurseDC,
+} from '@/_utils/classUtils';
+import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
 
 export enum CardTitles {
     Total = 'Total',
@@ -23,14 +28,13 @@ interface AbilityRowProps {
     ability: ClassAbility;
 }
 const AbilityRow = ({ ability }: AbilityRowProps) => {
+    const { classAbilityResponse } = useClassAbilityService();
+
     const getAbiltyTitle = (ability: ClassAbility) => {
         const selection = ability.selectedChoice
             ? ` (${ability.selectedChoice})`
             : '';
         return `${ability.name}${selection}`;
-    };
-    const getAbiltyDescription = (ability: ClassAbility) => {
-        return ability.description;
     };
     const getAbilityType = (ability: ClassAbility) => {
         switch (ability.abilityType) {
@@ -49,7 +53,10 @@ const AbilityRow = ({ ability }: AbilityRowProps) => {
         }
     };
     return (
-        <Tooltip title={getAbiltyDescription(ability)} placement='right'>
+        <Tooltip
+            title={getAbilityDescription(ability, classAbilityResponse)}
+            placement='right'
+        >
             <TableRow
                 sx={{
                     alignItems: 'center',
