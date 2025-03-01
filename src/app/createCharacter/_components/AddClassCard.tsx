@@ -240,6 +240,29 @@ export const AddClassCard = ({
                 return classAbilityResponse[
                     CharacterClassNames.Bard
                 ].abilities.filter((x: ClassAbility) => x.level <= level);
+            case CharacterClassNames.Cleric:
+                const clericAbilities =
+                    classAbilityResponse[CharacterClassNames.Cleric].abilities;
+                const sponCasting = clericAbilities.filter(
+                    (x) =>
+                        x.name === 'Spontaneous Channeling' &&
+                        x.domain === sponDomain
+                );
+                const turn = clericAbilities.filter(
+                    (x) => x.name === 'Turn' && x.domain === turnDomain
+                );
+                const rebuke = clericAbilities.filter(
+                    (x) => x.name === 'Rebuke' && x.domain === rebukeDomain
+                );
+                const counterMagick =
+                    level >= 5
+                        ? [
+                              clericAbilities.find(
+                                  (x) => x.name === 'Countermagick'
+                              ),
+                          ]
+                        : [];
+                return [...sponCasting, ...turn, ...rebuke, ...counterMagick];
             default:
                 /* @ts-ignore */
                 return classAbilityResponse[className].filter(
@@ -249,20 +272,22 @@ export const AddClassCard = ({
     };
     useEffect(() => {
         const acquiredAbilities = getAbilities();
+        console.log(acquiredAbilities, classAbilities);
         let updatedList: ClassAbility[] = [...classAbilities];
         acquiredAbilities
             .filter((x: ClassAbility) => !x.path || x.path === chosenPath)
             .forEach((abl: ClassAbility) => {
+                const abilityIndex = R.findIndex(
+                    (x: ClassAbility) =>
+                        x.name === abl.name && x.level === abl.level
+                )(updatedList);
                 if (!updatedList.length) {
                     updatedList.push(abl);
                 } else if (level >= updatedList[updatedList.length - 1].level) {
-                    if (
-                        R.findIndex(
-                            (x: ClassAbility) =>
-                                x.name === abl.name && x.level === abl.level
-                        )(updatedList) === -1
-                    ) {
+                    if (abilityIndex === -1) {
                         updatedList.push(abl);
+                    } else {
+                        updatedList[abilityIndex] = abl;
                     }
                 } else {
                     updatedList = R.reject(
@@ -278,7 +303,7 @@ export const AddClassCard = ({
             !!editClass?.path && setPath(undefined);
         }
         !!updatedList.length && setClassAbilities(updatedList);
-    }, [level, chosenPath, secondPath]);
+    }, [level, chosenPath, secondPath, sponDomain, turnDomain, rebukeDomain]);
 
     const handleSubmitClick = () => {
         const cls: CharacterClass = {

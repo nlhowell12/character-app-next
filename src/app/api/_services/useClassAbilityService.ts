@@ -5,6 +5,7 @@ export interface ClassAbilityReturnObject {
     [CharacterClassNames.Cleric]: {
         domainAspects: ClassAbility[];
         orisons: ClassAbility[];
+        abilities: ClassAbility[];
     };
     [CharacterClassNames.Fighter]: ClassAbility[];
     [CharacterClassNames.Barbarian]: ClassAbility[];
@@ -28,6 +29,7 @@ const initialClassAbilityState: ClassAbilityReturnObject = {
     [CharacterClassNames.Cleric]: {
         domainAspects: [],
         orisons: [],
+        abilities: [],
     },
     [CharacterClassNames.Fighter]: [],
     [CharacterClassNames.Barbarian]: [],
@@ -63,6 +65,12 @@ export default () => {
             classAbilityRef.current = allClassAbilities;
         }
         const cachedResponse = classAbilityRef.current;
+        const clericAbilities = cachedResponse.filter(
+            (x: ClassAbility) =>
+                x.className === CharacterClassNames.Cleric &&
+                !!x.level &&
+                !x.allegianceValue
+        );
         const clericDomainAspects: ClassAbility[] = cachedResponse.filter(
             (x: ClassAbility) =>
                 x.className === CharacterClassNames.Cleric &&
@@ -83,6 +91,7 @@ export default () => {
                 [CharacterClassNames.Cleric]: {
                     domainAspects: clericDomainAspects,
                     orisons: clericOrisons,
+                    abilities: clericAbilities,
                 },
                 [CharacterClassNames.Fighter]: cachedResponse.filter(
                     (x: ClassAbility) =>
