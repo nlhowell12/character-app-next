@@ -563,6 +563,20 @@ export const getAbilityDescription = (
                         })}
                 </div>
             );
+        case 'Lethality':
+            return (
+                <div key={ability.name + ability.level}>
+                    <p style={{ marginBottom: '.5rem' }}>{description}</p>
+                    <Divider />
+                    <p style={{ marginTop: '.5rem' }}>
+                        {
+                            classAbilityResponse.Rogue.find(
+                                (x) => x.name === ability.selectedChoice
+                            )?.description
+                        }
+                    </p>
+                </div>
+            );
         default:
             return description;
     }
