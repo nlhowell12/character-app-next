@@ -79,6 +79,7 @@ const ChoiceSelectionWidget = ({
                 display: 'flex',
                 alignItems: 'center',
                 marginLeft: '2rem',
+                flexWrap: 'wrap',
             }}
         >
             {abl.choices?.map((x) => {
@@ -196,6 +197,9 @@ export const AddClassCard = ({
     );
     /* @ts-ignore */
     const [chosenPath, setPath] = useState<PathOptions | undefined>(undefined);
+    const [secondPath, setSecondPath] = useState<GuildPaths | undefined>(
+        undefined
+    );
 
     useEffect(() => {
         if (!!editClass) {
@@ -212,6 +216,7 @@ export const AddClassCard = ({
                 spontaneousChannelDomain,
                 preferredDomains,
                 path,
+                secondGuildPath,
             } = editClass;
             setClassName(name as CharacterClassNames);
             setLevel(level);
@@ -226,6 +231,7 @@ export const AddClassCard = ({
                 setSponDomain(spontaneousChannelDomain);
             !!preferredDomains && setPreferredDomains(preferredDomains);
             !!path && setPath(path);
+            !!secondGuildPath && setSecondPath(secondPath);
         }
     }, [editClass]);
     const getAbilities = () => {
@@ -265,11 +271,14 @@ export const AddClassCard = ({
                     );
                 }
             });
-        if (level < 5 && className === CharacterClassNames.Bard) {
+        if (
+            (level < 5 && className === CharacterClassNames.Bard) ||
+            (level < 3 && className === CharacterClassNames.Rogue)
+        ) {
             !!editClass?.path && setPath(undefined);
         }
         !!updatedList.length && setClassAbilities(updatedList);
-    }, [level, chosenPath]);
+    }, [level, chosenPath, secondPath]);
 
     const handleSubmitClick = () => {
         const cls: CharacterClass = {
@@ -340,7 +349,8 @@ export const AddClassCard = ({
         }
     };
     const shouldShowPathSelection =
-        className === CharacterClassNames.Bard && level >= 5;
+        (className === CharacterClassNames.Bard && level >= 5) ||
+        (className === CharacterClassNames.Rogue && level >= 3);
     return (
         <Card variant='outlined' sx={{ overflow: 'scroll' }}>
             <CardHeader
@@ -635,6 +645,32 @@ export const AddClassCard = ({
                                     </MenuItem>
                                 );
                             })}
+                        </Select>
+                    </FormControl>
+                )}
+                {className === CharacterClassNames.Rogue && level >= 10 && (
+                    <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                        <InputLabel id='spon-label'>
+                            Second Guild Path Selection
+                        </InputLabel>
+                        <Select
+                            labelId='spon-label'
+                            id='secondPathSelect'
+                            label='Second Guild Path Selection'
+                            value={secondPath}
+                            onChange={(e) =>
+                                setPath(e.target.value as PathOptions)
+                            }
+                        >
+                            {getPathOptions(className)
+                                .filter((x) => x !== chosenPath)
+                                .map((path) => {
+                                    return (
+                                        <MenuItem key={path} value={path}>
+                                            <ListItemText primary={path} />
+                                        </MenuItem>
+                                    );
+                                })}
                         </Select>
                     </FormControl>
                 )}

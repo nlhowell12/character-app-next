@@ -265,6 +265,7 @@ export interface CharacterClass {
     spontaneousChannelDomain?: DivineDomain;
     preferredDomains?: DivineDomain[];
     path?: PathOptions;
+    secondGuildPath?: GuildPaths;
 }
 
 export enum ModifierSource {

@@ -204,3 +204,5 @@ export const immobilzedStatusEffects = [
     StatusEffects.Fascinated,
     StatusEffects.Cowering,
 ];
+
+export enum Languages {}

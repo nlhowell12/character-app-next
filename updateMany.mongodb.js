@@ -19,7 +19,7 @@ use('character_sheet');
 //     'Oathsworn': []
 // }}})
 
-db.getCollection('feats').deleteMany({})
+// db.getCollection('feats').deleteMany({})
 
 //setting modifiers on equipment
 // db.getCollection('equipment').update({},
@@ -39,3 +39,8 @@ db.getCollection('feats').deleteMany({})
 //   }],
 //   { multi: true }
 // )
+
+//splitting string with delimiters into an array
+db.getCollection('class_abilities').updateMany({ className: 'Rogue' }, [
+    { $set: { choices: { $split: ['$choices', ', '] } } },
+]);
