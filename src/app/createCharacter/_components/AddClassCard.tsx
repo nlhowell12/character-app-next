@@ -195,6 +195,9 @@ export const AddClassCard = ({
     const [preferredDomains, setPreferredDomains] = useState<DivineDomain[]>(
         []
     );
+    const [impCounter, setImpCounter] = useState<DivineDomain>(
+        DivineDomain.Air
+    );
     /* @ts-ignore */
     const [chosenPath, setPath] = useState<PathOptions | undefined>(undefined);
     const [secondPath, setSecondPath] = useState<GuildPaths | undefined>(
@@ -217,6 +220,7 @@ export const AddClassCard = ({
                 preferredDomains,
                 path,
                 secondGuildPath,
+                impCounter,
             } = editClass;
             setClassName(name as CharacterClassNames);
             setLevel(level);
@@ -230,6 +234,7 @@ export const AddClassCard = ({
             !!spontaneousChannelDomain &&
                 setSponDomain(spontaneousChannelDomain);
             !!preferredDomains && setPreferredDomains(preferredDomains);
+            !!impCounter && setImpCounter(impCounter);
             !!path && setPath(path);
             !!secondGuildPath && setSecondPath(secondPath);
         }
@@ -254,6 +259,11 @@ export const AddClassCard = ({
                 const rebuke = clericAbilities.filter(
                     (x) => x.name === 'Rebuke' && x.domain === rebukeDomain
                 );
+                const impCounterFeat = clericAbilities.filter(
+                    (x) =>
+                        x.name === 'Improved Counterchannel' &&
+                        x.domain === impCounter
+                );
                 const counterMagick =
                     level >= 5
                         ? [
@@ -262,7 +272,13 @@ export const AddClassCard = ({
                               ),
                           ]
                         : [];
-                return [...sponCasting, ...turn, ...rebuke, ...counterMagick];
+                return [
+                    ...impCounterFeat,
+                    ...sponCasting,
+                    ...turn,
+                    ...rebuke,
+                    ...counterMagick,
+                ];
             default:
                 /* @ts-ignore */
                 return classAbilityResponse[className].filter(
@@ -303,7 +319,15 @@ export const AddClassCard = ({
             !!editClass?.path && setPath(undefined);
         }
         !!updatedList.length && setClassAbilities(updatedList);
-    }, [level, chosenPath, secondPath, sponDomain, turnDomain, rebukeDomain]);
+    }, [
+        level,
+        chosenPath,
+        secondPath,
+        sponDomain,
+        turnDomain,
+        rebukeDomain,
+        impCounter,
+    ]);
 
     const handleSubmitClick = () => {
         const cls: CharacterClass = {
@@ -331,6 +355,10 @@ export const AddClassCard = ({
             preferredDomains:
                 className === CharacterClassNames.Cleric
                     ? preferredDomains
+                    : undefined,
+            impCounter:
+                className === CharacterClassNames.Cleric
+                    ? impCounter
                     : undefined,
             path: chosenPath,
         };
@@ -519,6 +547,36 @@ export const AddClassCard = ({
                 </FormControl>
                 {className === CharacterClassNames.Cleric && (
                     <>
+                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                            <InputLabel id='turn-label'>
+                                Improved Counterchannel
+                            </InputLabel>
+                            <Select
+                                labelId='imp-counter-label'
+                                id='impCounter'
+                                label='Improved Counterchannel'
+                                value={impCounter}
+                                onChange={(e) =>
+                                    setImpCounter(
+                                        e.target.value as DivineDomain
+                                    )
+                                }
+                            >
+                                {Object.keys(DivineDomain).map((dom) => {
+                                    return (
+                                        <MenuItem key={dom} value={dom}>
+                                            <ListItemText
+                                                primary={
+                                                    DivineDomain[
+                                                        dom as DivineDomain
+                                                    ]
+                                                }
+                                            />
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
                         <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
                             <InputLabel id='turn-label'>Turn Domain</InputLabel>
                             <Select

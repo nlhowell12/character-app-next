@@ -1,8 +1,4 @@
-import {
-    Character,
-    CharacterClassNames,
-    DivineDomain,
-} from '@/_models';
+import { Character, CharacterClassNames, DivineDomain } from '@/_models';
 import {
     Card,
     Checkbox,
@@ -40,10 +36,10 @@ export const DomainAspectsTable = ({
     character,
     dispatch,
 }: DomainAspectsTableProps) => {
-    const { classAbilities } = useClassAbilityService();
+    const { classAbilityResponse } = useClassAbilityService();
     const sortByDomain = useMemo(() => R.sortBy(R.prop('domain')), []);
     const domainAspects =
-        classAbilities[CharacterClassNames.Cleric].domainAspects;
+        classAbilityResponse[CharacterClassNames.Cleric].domainAspects;
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 

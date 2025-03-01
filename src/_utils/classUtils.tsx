@@ -139,6 +139,7 @@ export const getAllegianceTotal = (character: Character) => {
         }
     });
     character.classes.forEach((cls) => {
+        console.log(cls.impCounter);
         if (cls.name === CharacterClassNames.Cleric) {
             if (!!cls.turnDomain) {
                 allegianceObject[cls.turnDomain] += 3;
@@ -148,6 +149,10 @@ export const getAllegianceTotal = (character: Character) => {
             }
             if (!!cls.spontaneousChannelDomain) {
                 allegianceObject[cls.spontaneousChannelDomain] += 1;
+            }
+            if (!!cls.impCounter) {
+                console.log(cls.impCounter);
+                allegianceObject[cls.impCounter] += 1;
             }
         }
     });

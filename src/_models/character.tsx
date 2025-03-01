@@ -250,6 +250,7 @@ export interface CharacterClass {
     rebukeDomain?: DivineDomain;
     spontaneousChannelDomain?: DivineDomain;
     preferredDomains?: DivineDomain[];
+    impCounter?: DivineDomain;
     path?: PathOptions;
     secondGuildPath?: GuildPaths;
 }
