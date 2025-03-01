@@ -99,6 +99,7 @@ export const ClassAbilityDisplay = ({
                 height: 'fit-content',
                 [theme.breakpoints.up('xl')]: {
                     marginTop: '1.5rem',
+                    maxWidth: '30rem',
                 },
             }}
         >

@@ -1,4 +1,5 @@
 import {
+    ArcaneSchool,
     AttributeNames,
     BarbarianPath,
     BardicTraditions,
@@ -10,6 +11,7 @@ import {
     MonkTraditions,
     Oaths,
     PathOptions,
+    PsionicDiscipline,
     SkillTypes,
 } from '@/_models';
 import { NumberInput } from '@/app/_components/NumberInput';
@@ -198,6 +200,13 @@ export const AddClassCard = ({
     const [impCounter, setImpCounter] = useState<DivineDomain>(
         DivineDomain.Air
     );
+    const [chosenSchool, setChosenSchool] = useState<ArcaneSchool | 'General'>(
+        'General'
+    );
+    const [chosenDiscipline, setChosenDiscipline] = useState<PsionicDiscipline>(
+        PsionicDiscipline.Clairsentience
+    );
+
     /* @ts-ignore */
     const [chosenPath, setPath] = useState<PathOptions | undefined>(undefined);
     const [secondPath, setSecondPath] = useState<GuildPaths | undefined>(
@@ -221,6 +230,8 @@ export const AddClassCard = ({
                 path,
                 secondGuildPath,
                 impCounter,
+                school,
+                discipline,
             } = editClass;
             setClassName(name as CharacterClassNames);
             setLevel(level);
@@ -237,6 +248,8 @@ export const AddClassCard = ({
             !!impCounter && setImpCounter(impCounter);
             !!path && setPath(path);
             !!secondGuildPath && setSecondPath(secondPath);
+            !!school && setChosenSchool(school);
+            !!discipline && setChosenDiscipline(discipline);
         }
     }, [editClass]);
     const getAbilities = () => {
@@ -280,7 +293,6 @@ export const AddClassCard = ({
                     ...counterMagick,
                 ];
             default:
-                console.log(classAbilityResponse, className);
                 /* @ts-ignore */
                 return classAbilityResponse[className].filter(
                     (x: ClassAbility) => x.level <= level
@@ -288,11 +300,25 @@ export const AddClassCard = ({
         }
     };
     useEffect(() => {
+        setClassAbilities(getAbilities());
+    }, []);
+    useEffect(() => {
         const acquiredAbilities = getAbilities();
-        console.log(acquiredAbilities, classAbilities);
-        let updatedList: ClassAbility[] = [...classAbilities];
+        let updatedList: ClassAbility[] = [
+            ...classAbilities.filter((x) => x.className === className),
+        ];
         acquiredAbilities
             .filter((x: ClassAbility) => !x.path || x.path === chosenPath)
+            .filter(
+                (x: ClassAbility) =>
+                    (!x.school && !x.name.includes('General')) ||
+                    x.school === chosenSchool ||
+                    (chosenSchool === 'General' && !x.school)
+            )
+            .filter(
+                (x: ClassAbility) =>
+                    !x.discipline || x.discipline === chosenDiscipline
+            )
             .forEach((abl: ClassAbility) => {
                 const abilityIndex = R.findIndex(
                     (x: ClassAbility) =>
@@ -328,6 +354,9 @@ export const AddClassCard = ({
         turnDomain,
         rebukeDomain,
         impCounter,
+        className,
+        chosenDiscipline,
+        chosenSchool,
     ]);
 
     const handleSubmitClick = () => {
@@ -397,7 +426,6 @@ export const AddClassCard = ({
         const {
             target: { value },
         } = event;
-        console.log(value);
         if (value.length < 6) {
             setPreferredDomains(value);
         }
@@ -754,6 +782,29 @@ export const AddClassCard = ({
                                         </MenuItem>
                                     );
                                 })}
+                        </Select>
+                    </FormControl>
+                )}
+                {className === CharacterClassNames.Wizard && (
+                    <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                        <InputLabel id='spon-label'>Specialization</InputLabel>
+                        <Select
+                            labelId='specialization-label'
+                            id='SpecializationSelect'
+                            label='Specialization'
+                            value={chosenSchool}
+                            onChange={(e) =>
+                                setChosenSchool(e.target.value as ArcaneSchool)
+                            }
+                        >
+                            <MenuItem value={'General'}>General</MenuItem>
+                            {Object.values(ArcaneSchool).map((school) => {
+                                return (
+                                    <MenuItem key={school} value={school}>
+                                        <ListItemText primary={school} />
+                                    </MenuItem>
+                                );
+                            })}
                         </Select>
                     </FormControl>
                 )}

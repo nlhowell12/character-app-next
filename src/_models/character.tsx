@@ -251,6 +251,8 @@ export interface CharacterClass {
     spontaneousChannelDomain?: DivineDomain;
     preferredDomains?: DivineDomain[];
     impCounter?: DivineDomain;
+    school?: ArcaneSchool;
+    discipline?: PsionicDiscipline;
     path?: PathOptions;
     secondGuildPath?: GuildPaths;
 }
