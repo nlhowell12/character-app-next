@@ -1,4 +1,4 @@
-import { Character, CharacterKeys, Note } from '@/_models';
+import { Character, CharacterKeys, Languages, Note } from '@/_models';
 import {
     Typography,
     List,
@@ -21,6 +21,13 @@ import {
     Stack,
     Chip,
     TableBody,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Dispatch, useState } from 'react';
@@ -57,48 +64,54 @@ interface NoteItemProps {
 interface OtherInfoTooltipProps {
     display: any[];
 }
-const OtherInfoTooltip = ({ display}: OtherInfoTooltipProps) => {
+const OtherInfoTooltip = ({ display }: OtherInfoTooltipProps) => {
     const tableCellStyling = { borderBottom: 'none' };
     return (
         <Table size='small'>
             <TableBody>
-            {display.map((x) => {
-                return (
-                    <TableRow key={x}>
-                        <TableCell sx={tableCellStyling}>
-                            <Typography>{x}</Typography>
-                        </TableCell>
-                    </TableRow>
-                );
-            })}
-            </TableBody>   
+                {display.map((x) => {
+                    return (
+                        <TableRow key={x}>
+                            <TableCell sx={tableCellStyling}>
+                                <Typography>{x}</Typography>
+                            </TableCell>
+                        </TableRow>
+                    );
+                })}
+            </TableBody>
         </Table>
     );
 };
 
 interface OtherInfoListItemProps {
-    display: any[]
+    display: any[];
     onEdit: () => void;
     title: string;
-};
+}
 
-const OtherInfoListItem = ({display, onEdit, title}: OtherInfoListItemProps) => {
-    return display.length ? <Tooltip
-                title={<OtherInfoTooltip display={display} />}
-                followCursor
-                placement='left'
-            >
-                <ListItem
-                    secondaryAction={
-                        <IconButton onClick={onEdit}>
-                            <EditIcon />
-                        </IconButton>
-                    }
-                >
-                    <ListItemText primary={title} />
-                </ListItem>
-            </Tooltip> : 
+const OtherInfoListItem = ({
+    display,
+    onEdit,
+    title,
+}: OtherInfoListItemProps) => {
+    return display.length ? (
+        <Tooltip
+            title={<OtherInfoTooltip display={display} />}
+            followCursor
+            placement='left'
+        >
             <ListItem
+                secondaryAction={
+                    <IconButton onClick={onEdit}>
+                        <EditIcon />
+                    </IconButton>
+                }
+            >
+                <ListItemText primary={title} />
+            </ListItem>
+        </Tooltip>
+    ) : (
+        <ListItem
             secondaryAction={
                 <IconButton onClick={onEdit}>
                     <EditIcon />
@@ -107,6 +120,7 @@ const OtherInfoListItem = ({display, onEdit, title}: OtherInfoListItemProps) => 
         >
             <ListItemText primary={title} />
         </ListItem>
+    );
 };
 
 const NoteItem = ({ note, dispatch }: NoteItemProps) => {
@@ -210,7 +224,7 @@ interface StringArrayDialogProps {
     onAdd: () => void;
     onRemove: (x: string) => void;
     display: string[];
-    label: string
+    label: string;
 }
 const StringArrayDialog = ({
     open,
@@ -220,7 +234,7 @@ const StringArrayDialog = ({
     onAdd,
     onRemove,
     display,
-    label
+    label,
 }: StringArrayDialogProps) => {
     const textFieldStyling = {
         marginBottom: '.5rem',
@@ -252,12 +266,87 @@ const StringArrayDialog = ({
             </Card>
             <Stack>
                 {display.map((x) => {
-                    return <Chip key={x} label={x} onDelete={() => onRemove(x)} />;
+                    return (
+                        <Chip key={x} label={x} onDelete={() => onRemove(x)} />
+                    );
                 })}
             </Stack>
         </Dialog>
     );
 };
+interface LanguageDialogProps {
+    open: boolean;
+    onClose: () => void;
+    languages: string[];
+    dispatch: Dispatch<CharacterAction>;
+}
+
+const LanguageDialog = ({
+    open,
+    onClose,
+    languages,
+    dispatch,
+}: LanguageDialogProps) => {
+    const handleChangeLanguages = (event: SelectChangeEvent<string[]>) => {
+        const {
+            target: { value },
+        } = event;
+        dispatch(updateAction(CharacterKeys.languages, value));
+    };
+
+    return (
+        <Dialog open={open} onClose={onClose}>
+            <Card
+                sx={{
+                    padding: '.5rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <FormControl>
+                    <InputLabel id='bonus-type-id'>Languages</InputLabel>
+                    <Select
+                        labelId='language-label'
+                        id='languages'
+                        label='Languages'
+                        multiple
+                        value={languages}
+                        onChange={handleChangeLanguages}
+                        renderValue={(selected) => (
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 0.5,
+                                }}
+                            >
+                                {selected.map((value) => (
+                                    <Chip key={value} label={value} />
+                                ))}
+                            </Box>
+                        )}
+                    >
+                        {Object.values(Languages).map((lang) => {
+                            return (
+                                <MenuItem key={lang} value={lang}>
+                                    {lang}
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
+
+                <CardActions sx={{ justifyContent: 'right' }}>
+                    <Button onClick={onClose}>
+                        <CancelRounded />
+                    </Button>
+                    <Button></Button>
+                </CardActions>
+            </Card>
+        </Dialog>
+    );
+};
+
 export const NoteDialog = ({
     character,
     open,
@@ -266,37 +355,19 @@ export const NoteDialog = ({
 }: NoteDialogProps) => {
     const [newNoteOpen, setNewNoteOpen] = useState(false);
     const [openLang, setOpenLang] = useState(false);
-    const [newLang, setNewLang] = useState('');
     const [openProf, setOpenProf] = useState(false);
     const [newProf, setNewProf] = useState('');
     const [openSpec, setOpenSpec] = useState(false);
     const [newSpec, setNewSpec] = useState('');
 
-    const handleAddLang = () => {
-        dispatch(
-            updateAction(CharacterKeys.languages, [
-                ...character.languages,
-                newLang,
-            ])
-        );
-        setNewLang('');
-    };
-
-    const handleRemoveLang = (lang: string) => {
-        dispatch(
-            updateAction(
-                CharacterKeys.languages,
-                character.languages.filter((x) => x !== lang)
-            )
-        );
-    };
     const handleAddProf = () => {
-        !!newProf && dispatch(
-            updateAction(CharacterKeys.proficiencies, [
-                ...character.proficiencies,
-                newProf,
-            ])
-        );
+        !!newProf &&
+            dispatch(
+                updateAction(CharacterKeys.proficiencies, [
+                    ...character.proficiencies,
+                    newProf,
+                ])
+            );
         setNewProf('');
     };
 
@@ -309,12 +380,13 @@ export const NoteDialog = ({
         );
     };
     const handleAddSpec = () => {
-        !!newSpec && dispatch(
-            updateAction(CharacterKeys.specialAbilities, [
-                ...character.specialAbilities,
-                newSpec,
-            ])
-        );
+        !!newSpec &&
+            dispatch(
+                updateAction(CharacterKeys.specialAbilities, [
+                    ...character.specialAbilities,
+                    newSpec,
+                ])
+            );
         setNewSpec('');
     };
 
@@ -356,23 +428,23 @@ export const NoteDialog = ({
                                     aria-label='add'
                                     onClick={() => setNewNoteOpen(true)}
                                 >
-                                    <Add/>
+                                    <Add />
                                 </IconButton>
-                            </Tooltip>    
+                            </Tooltip>
                         </ListSubheader>
                     }
                 >
-                    <StringArrayDialog
+                    <LanguageDialog
                         open={openLang}
-                        value={newLang}
-                        display={character.languages}
+                        languages={character.languages}
                         onClose={() => setOpenLang(false)}
-                        onChange={(e) => setNewLang(e.target.value)}
-                        onAdd={handleAddLang}
-                        onRemove={handleRemoveLang}
-                        label='Add New Language'
+                        dispatch={dispatch}
                     />
-                    <OtherInfoListItem title='Languages' display={character.languages} onEdit={() => setOpenLang(true)}/>
+                    <OtherInfoListItem
+                        title='Languages'
+                        display={character.languages}
+                        onEdit={() => setOpenLang(true)}
+                    />
                     <StringArrayDialog
                         open={openProf}
                         value={newProf}
@@ -383,7 +455,11 @@ export const NoteDialog = ({
                         onRemove={handleRemoveProf}
                         label='Add New Proficiency'
                     />
-                    <OtherInfoListItem title='Proficiencies' display={character.proficiencies} onEdit={() => setOpenProf(true)}/>
+                    <OtherInfoListItem
+                        title='Proficiencies'
+                        display={character.proficiencies}
+                        onEdit={() => setOpenProf(true)}
+                    />
                     <StringArrayDialog
                         open={openSpec}
                         value={newSpec}
@@ -394,7 +470,11 @@ export const NoteDialog = ({
                         onRemove={handleRemoveSpec}
                         label='Add New Special Ability'
                     />
-                    <OtherInfoListItem title='Special Abilities' display={character.specialAbilities} onEdit={() => setOpenSpec(true)}/>
+                    <OtherInfoListItem
+                        title='Special Abilities'
+                        display={character.specialAbilities}
+                        onEdit={() => setOpenSpec(true)}
+                    />
                     {character.notes?.map((note: Note) => {
                         return (
                             <NoteItem

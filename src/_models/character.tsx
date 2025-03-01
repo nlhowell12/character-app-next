@@ -65,20 +65,6 @@ export enum RaceNames {
     Xeph = 'Xeph',
 }
 
-export enum Languages {
-    Dromish = 'Dromish',
-    DromiteCasteLanguage = 'Dromite Sub-Caste Language',
-    Dwarven = 'Dwarven',
-    Elven = 'Elven',
-    KaeThaelisBodyLanguage = "Kae'thalis Body Language",
-    Sylvan = 'Sylvan',
-    Gnomish = 'Gnomish',
-    Hinnish = 'Hinnish',
-    Orcish = 'Orcish',
-    Goblinoid = 'Goblinoid',
-    Xephin = 'Xephin',
-}
-
 export enum CharacterClassNames {
     Barbarian = 'Barbarian',
     Bard = 'Bard',
