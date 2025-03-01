@@ -280,6 +280,7 @@ export const AddClassCard = ({
                     ...counterMagick,
                 ];
             default:
+                console.log(classAbilityResponse, className);
                 /* @ts-ignore */
                 return classAbilityResponse[className].filter(
                     (x: ClassAbility) => x.level <= level
@@ -429,12 +430,11 @@ export const AddClassCard = ({
                                     )
                                 }
                             >
-                                {Object.keys(CharacterClassNames)
+                                {Object.values(CharacterClassNames)
                                     .filter(
                                         (x) =>
                                             /* @ts-ignore */
-                                            CharacterClassNames[x] !==
-                                            CharacterClassNames.SorcWiz
+                                            x !== CharacterClassNames.SorcWiz
                                     )
                                     .map((cls) => {
                                         return (

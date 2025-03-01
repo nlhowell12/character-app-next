@@ -41,6 +41,7 @@ use('character_sheet');
 // )
 
 //splitting string with delimiters into an array
-db.getCollection('class_abilities').updateMany({ className: 'Wizard' }, [
-    { $set: { choices: { $split: ['$choices', ', '] } } },
-]);
+db.getCollection('class_abilities').updateMany(
+    { className: 'Psychic Warrior' },
+    [{ $set: { choices: { $split: ['$choices', ', '] } } }]
+);

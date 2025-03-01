@@ -139,7 +139,6 @@ export const getAllegianceTotal = (character: Character) => {
         }
     });
     character.classes.forEach((cls) => {
-        console.log(cls.impCounter);
         if (cls.name === CharacterClassNames.Cleric) {
             if (!!cls.turnDomain) {
                 allegianceObject[cls.turnDomain] += 3;
