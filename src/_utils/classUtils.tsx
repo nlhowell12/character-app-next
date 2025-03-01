@@ -534,12 +534,13 @@ export const getAbilityDescription = (
     ability: ClassAbility,
     classAbilityResponse: ClassAbilityReturnObject
 ) => {
-    const { description } = ability;
+    const { description, path } = ability;
+    const descriptionString = `${!!path ? `(${path}) ` : ''}${description}`;
     switch (ability.name) {
         case 'Bardic Music':
             return (
                 <div key={ability.name + ability.level}>
-                    <p style={{ marginBottom: '.5rem' }}>{description}</p>
+                    <p style={{ marginBottom: '.5rem' }}>{descriptionString}</p>
                     <Divider />
                     <p style={{ marginTop: '.5rem' }}>
                         {
@@ -566,7 +567,7 @@ export const getAbilityDescription = (
         case 'Lethality':
             return (
                 <div key={ability.name + ability.level}>
-                    <p style={{ marginBottom: '.5rem' }}>{description}</p>
+                    <p style={{ marginBottom: '.5rem' }}>{descriptionString}</p>
                     <Divider />
                     <p style={{ marginTop: '.5rem' }}>
                         {
@@ -578,6 +579,6 @@ export const getAbilityDescription = (
                 </div>
             );
         default:
-            return description;
+            return descriptionString;
     }
 };
