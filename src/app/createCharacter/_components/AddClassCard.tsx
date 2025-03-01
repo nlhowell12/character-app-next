@@ -171,7 +171,6 @@ export const AddClassCard = ({
     editClass,
 }: AddClassCardProps) => {
     const { classAbilityResponse } = useClassAbilityService();
-
     const [className, setClassName] = useState<CharacterClassNames>(
         CharacterClassNames.Barbarian
     );
@@ -299,9 +298,6 @@ export const AddClassCard = ({
                 );
         }
     };
-    useEffect(() => {
-        setClassAbilities(getAbilities());
-    }, []);
     useEffect(() => {
         const acquiredAbilities = getAbilities();
         let updatedList: ClassAbility[] = [
@@ -802,6 +798,31 @@ export const AddClassCard = ({
                                 return (
                                     <MenuItem key={school} value={school}>
                                         <ListItemText primary={school} />
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                )}
+                {(className === CharacterClassNames.Psion ||
+                    className === CharacterClassNames.PsychicWarrior) && (
+                    <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                        <InputLabel id='spon-label'>Discipline</InputLabel>
+                        <Select
+                            labelId='specialization-label'
+                            id='SpecializationSelect'
+                            label='Discipline'
+                            value={chosenDiscipline}
+                            onChange={(e) =>
+                                setChosenDiscipline(
+                                    e.target.value as PsionicDiscipline
+                                )
+                            }
+                        >
+                            {Object.values(PsionicDiscipline).map((disc) => {
+                                return (
+                                    <MenuItem key={disc} value={disc}>
+                                        <ListItemText primary={disc} />
                                     </MenuItem>
                                 );
                             })}
