@@ -1,9 +1,7 @@
 import {
-    Attribute,
     AttributeNames,
     BonusTypes,
     Character,
-    CharacterAttributes,
     CharacterClass,
     CharacterClassNames,
     ClassAbility,

@@ -442,7 +442,8 @@ export const AddClassCard = ({
     const shouldShowPathSelection =
         (className === CharacterClassNames.Bard && level >= 5) ||
         (className === CharacterClassNames.Rogue && level >= 3) ||
-        className === CharacterClassNames.Barbarian;
+        className === CharacterClassNames.Barbarian ||
+        className === CharacterClassNames.Oathsworn;
     return (
         <Card variant='outlined' sx={{ overflow: 'scroll' }}>
             <CardHeader
@@ -850,6 +851,12 @@ export const AddClassCard = ({
                         const name = !!abl.allegianceValue
                             ? `${abl.domain} Aspect`
                             : abl.name;
+                        if (!!chosenPath && abl.name === 'Avowal') {
+                            abl.choices = classAbilityResponse.Oathsworn.filter(
+                                (x) =>
+                                    x.isAvowalChoices && x.path === chosenPath
+                            )[0].choices;
+                        }
                         return (
                             <Tooltip
                                 title={getAbilityDescription(

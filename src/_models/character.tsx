@@ -221,6 +221,9 @@ export interface ClassAbility {
     selectedChoice?: string;
     isMusic?: boolean;
     isRefrain?: boolean;
+    isAvowal?: boolean;
+    isQiFocus?: boolean;
+    isAvowalChoices?: boolean;
 }
 
 export interface ArchetypeAbility {
