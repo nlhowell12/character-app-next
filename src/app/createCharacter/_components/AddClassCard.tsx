@@ -89,6 +89,7 @@ const ChoiceSelectionWidget = ({
             {abl.choices?.map((x) => {
                 return (
                     <Chip
+                        key={x}
                         variant={value === x ? undefined : 'outlined'}
                         onClick={() => handleSelection(abl, x)}
                         label={x}
