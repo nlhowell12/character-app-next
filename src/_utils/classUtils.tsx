@@ -580,6 +580,20 @@ export const getAbilityDescription = (
                     </p>
                 </div>
             );
+        case 'Avowal':
+            return (
+                <div key={ability.name + ability.level}>
+                    <p style={{ marginBottom: '.5rem' }}>{descriptionString}</p>
+                    <Divider />
+                    <p style={{ marginTop: '.5rem' }}>
+                        {
+                            classAbilityResponse.Oathsworn.find(
+                                (x) => x.name === ability.selectedChoice
+                            )?.description
+                        }
+                    </p>
+                </div>
+            );
         default:
             return descriptionString;
     }
