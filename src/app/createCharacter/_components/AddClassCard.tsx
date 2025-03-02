@@ -298,7 +298,8 @@ export const AddClassCard = ({
                 );
         }
     };
-    useEffect(() => {
+
+    const updateAbilities = () => {
         const acquiredAbilities = getAbilities();
         let updatedList: ClassAbility[] = [
             ...classAbilities.filter((x) => x.className === className),
@@ -342,6 +343,18 @@ export const AddClassCard = ({
             !!editClass?.path && setPath(undefined);
         }
         !!updatedList.length && setClassAbilities(updatedList);
+    };
+
+    useEffect(() => {
+        if (className === CharacterClassNames.Barbarian) {
+            setClassAbilities(
+                classAbilityResponse.Barbarian.filter((x) => x.level <= level)
+            );
+        }
+    }, [classAbilityResponse.Barbarian.length]);
+
+    useEffect(() => {
+        updateAbilities();
     }, [
         level,
         chosenPath,
@@ -428,7 +441,8 @@ export const AddClassCard = ({
     };
     const shouldShowPathSelection =
         (className === CharacterClassNames.Bard && level >= 5) ||
-        (className === CharacterClassNames.Rogue && level >= 3);
+        (className === CharacterClassNames.Rogue && level >= 3) ||
+        className === CharacterClassNames.Barbarian;
     return (
         <Card variant='outlined' sx={{ overflow: 'scroll' }}>
             <CardHeader
