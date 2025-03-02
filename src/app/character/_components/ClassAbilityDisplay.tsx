@@ -31,9 +31,13 @@ const AbilityRow = ({ ability }: AbilityRowProps) => {
     const { classAbilityResponse } = useClassAbilityService();
 
     const getAbiltyTitle = (ability: ClassAbility) => {
-        const selection = ability.selectedChoice
-            ? ` (${ability.selectedChoice})`
+        const secondSelection = ability.secondSelectedChoice
+            ? `, ${ability.secondSelectedChoice}`
             : '';
+        const selection = ability.selectedChoice
+            ? ` (${ability.selectedChoice}${secondSelection})`
+            : '';
+
         return `${ability.name}${selection}`;
     };
     const getAbilityType = (ability: ClassAbility) => {
