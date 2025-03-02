@@ -48,19 +48,21 @@ interface SelectionWidgetProps {
     handleSelection: (ability: ClassAbility, selection: string) => void;
     abl: ClassAbility;
     choices?: ClassAbility[];
+    value: string;
 }
 
 const ChoiceSelectionWidget = ({
     handleSelection,
     abl,
     choices,
+    value,
 }: SelectionWidgetProps) => {
     if (!!choices) {
         return (
             <Select
                 sx={{ marginLeft: '2rem' }}
                 onChange={(e) => handleSelection(abl, e.target.value)}
-                value={abl.selectedChoice}
+                value={value}
             >
                 {choices.map((music) => {
                     return (
@@ -87,9 +89,7 @@ const ChoiceSelectionWidget = ({
             {abl.choices?.map((x) => {
                 return (
                     <Chip
-                        variant={
-                            abl.selectedChoice === x ? undefined : 'outlined'
-                        }
+                        variant={value === x ? undefined : 'outlined'}
                         onClick={() => handleSelection(abl, x)}
                         label={x}
                     />
@@ -103,10 +103,12 @@ interface ClassAbilityCardProps {
     abl: ClassAbility;
     handleSelection: (ability: ClassAbility, selection: string) => void;
     choices?: ClassAbility[];
+    value: string;
 }
 const ClassAbilityCard = ({
     abl,
     handleSelection,
+    value,
     choices,
 }: ClassAbilityCardProps) => {
     const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name;
@@ -137,6 +139,7 @@ const ClassAbilityCard = ({
                     abl={abl}
                     handleSelection={handleSelection}
                     choices={choices}
+                    value={value}
                 />
             </div>
         </Card>
@@ -326,8 +329,6 @@ export const AddClassCard = ({
                 } else if (level >= updatedList[updatedList.length - 1].level) {
                     if (abilityIndex === -1) {
                         updatedList.push(abl);
-                    } else {
-                        updatedList[abilityIndex] = abl;
                     }
                 } else {
                     updatedList = R.reject(
@@ -418,6 +419,24 @@ export const AddClassCard = ({
         const updatedAbility = {
             ...classAbilities[updateIndex],
             selectedChoice: selection,
+        };
+        const updatedClassAbilities = R.update(
+            updateIndex,
+            updatedAbility,
+            classAbilities
+        );
+        setClassAbilities(updatedClassAbilities);
+    };
+    const handleSecondChoiceSelection = (
+        ability: ClassAbility,
+        selection: string
+    ) => {
+        const updateIndex = classAbilities.findIndex(
+            (x) => x.name === ability.name && x.level === ability.level
+        );
+        const updatedAbility = {
+            ...classAbilities[updateIndex],
+            secondSelectedChoice: selection,
         };
         const updatedClassAbilities = R.update(
             updateIndex,
@@ -863,28 +882,73 @@ export const AddClassCard = ({
                             )[0].choices;
                         }
                         return (
-                            <Tooltip
-                                title={getAbilityDescription(
-                                    abl,
-                                    classAbilityResponse
-                                )}
-                                key={name + abl.level}
-                            >
-                                <div key={name + abl.level + abl.level}>
-                                    <ClassAbilityCard
-                                        abl={abl}
-                                        handleSelection={handleChoiceSelection}
-                                        choices={getClassAbilityChoices(
-                                            className,
-                                            classAbilityResponse,
-                                            abl,
-                                            !!chosenPath
-                                                ? chosenPath
-                                                : undefined
-                                        )}
-                                    />
-                                </div>
-                            </Tooltip>
+                            <>
+                                <Tooltip
+                                    title={getAbilityDescription(
+                                        abl,
+                                        classAbilityResponse
+                                    )}
+                                    key={name + abl.level}
+                                >
+                                    <div key={name + abl.level + abl.level}>
+                                        <ClassAbilityCard
+                                            abl={abl}
+                                            value={
+                                                !!abl.selectedChoice
+                                                    ? abl.selectedChoice
+                                                    : ''
+                                            }
+                                            handleSelection={
+                                                handleChoiceSelection
+                                            }
+                                            choices={getClassAbilityChoices(
+                                                className,
+                                                classAbilityResponse,
+                                                abl,
+                                                !!chosenPath
+                                                    ? chosenPath
+                                                    : undefined
+                                            )}
+                                        />
+                                    </div>
+                                </Tooltip>
+                                {abl.name === 'Favored Enemy' &&
+                                    abl.level > 1 && (
+                                        <Tooltip
+                                            title={getAbilityDescription(
+                                                abl,
+                                                classAbilityResponse
+                                            )}
+                                            key={name + abl.level}
+                                        >
+                                            <div
+                                                key={
+                                                    name + abl.level + abl.level
+                                                }
+                                            >
+                                                <ClassAbilityCard
+                                                    abl={abl}
+                                                    value={
+                                                        !!abl.secondSelectedChoice
+                                                            ? abl.secondSelectedChoice
+                                                            : ''
+                                                    }
+                                                    handleSelection={
+                                                        handleSecondChoiceSelection
+                                                    }
+                                                    choices={getClassAbilityChoices(
+                                                        className,
+                                                        classAbilityResponse,
+                                                        abl,
+                                                        !!chosenPath
+                                                            ? chosenPath
+                                                            : undefined
+                                                    )}
+                                                />
+                                            </div>
+                                        </Tooltip>
+                                    )}
+                            </>
                         );
                     })}
             </CardContent>

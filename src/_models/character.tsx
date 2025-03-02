@@ -219,6 +219,7 @@ export interface ClassAbility {
         | Oaths
         | GuildPaths;
     selectedChoice?: string;
+    secondSelectedChoice?: string;
     isMusic?: boolean;
     isRefrain?: boolean;
     isAvowal?: boolean;
