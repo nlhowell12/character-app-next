@@ -312,15 +312,17 @@ export const getSpecialResources = (
                 return;
             case CharacterClassNames.Oathsworn:
                 const layOnHands = SpecialResourceType.LayOnHands;
-                resources.push({
-                    name: layOnHands,
-                    value: getSpecialResourceValue(
-                        x.level,
-                        layOnHands,
-                        feats,
-                        chaMod
-                    ),
-                });
+                getTotalAttributeModifier(character, AttributeNames.Charisma) >=
+                    1 &&
+                    resources.push({
+                        name: layOnHands,
+                        value: getSpecialResourceValue(
+                            x.level,
+                            layOnHands,
+                            feats,
+                            chaMod
+                        ),
+                    });
                 resources.push({
                     name: SpecialResourceType.Turn,
                     value: oathTurnCount(x.level, feats),
