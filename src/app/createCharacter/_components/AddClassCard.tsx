@@ -207,7 +207,7 @@ export const AddClassCard = ({
     );
 
     /* @ts-ignore */
-    const [chosenPath, setPath] = useState<PathOptions | undefined>(undefined);
+    const [chosenPath, setPath] = useState<PathOptions | ''>('');
     const [secondPath, setSecondPath] = useState<GuildPaths | undefined>(
         undefined
     );
@@ -245,7 +245,7 @@ export const AddClassCard = ({
                 setSponDomain(spontaneousChannelDomain);
             !!preferredDomains && setPreferredDomains(preferredDomains);
             !!impCounter && setImpCounter(impCounter);
-            !!path && setPath(path);
+            setPath(path || '');
             !!secondGuildPath && setSecondPath(secondPath);
             !!school && setChosenSchool(school);
             !!discipline && setChosenDiscipline(discipline);
@@ -340,13 +340,16 @@ export const AddClassCard = ({
             (level < 5 && className === CharacterClassNames.Bard) ||
             (level < 3 && className === CharacterClassNames.Rogue)
         ) {
-            !!editClass?.path && setPath(undefined);
+            !!editClass?.path && setPath('');
         }
         !!updatedList.length && setClassAbilities(updatedList);
     };
 
     useEffect(() => {
-        if (className === CharacterClassNames.Barbarian) {
+        if (
+            className === CharacterClassNames.Barbarian &&
+            !!classAbilityResponse.Barbarian.length
+        ) {
             setClassAbilities(
                 classAbilityResponse.Barbarian.filter((x) => x.level <= level)
             );
@@ -399,7 +402,7 @@ export const AddClassCard = ({
                 className === CharacterClassNames.Cleric
                     ? impCounter
                     : undefined,
-            path: chosenPath,
+            path: !!chosenPath ? chosenPath : undefined,
         };
         onSubmit(cls);
         onClose({}, 'buttonClose');
@@ -781,18 +784,16 @@ export const AddClassCard = ({
                             label='Second Guild Path Selection'
                             value={secondPath}
                             onChange={(e) =>
-                                setPath(e.target.value as PathOptions)
+                                setSecondPath(e.target.value as GuildPaths)
                             }
                         >
-                            {getPathOptions(className)
-                                .filter((x) => x !== chosenPath)
-                                .map((path) => {
-                                    return (
-                                        <MenuItem key={path} value={path}>
-                                            <ListItemText primary={path} />
-                                        </MenuItem>
-                                    );
-                                })}
+                            {Object.values(GuildPaths).map((path) => {
+                                return (
+                                    <MenuItem key={path} value={path}>
+                                        <ListItemText primary={path} />
+                                    </MenuItem>
+                                );
+                            })}
                         </Select>
                     </FormControl>
                 )}
@@ -851,7 +852,11 @@ export const AddClassCard = ({
                         const name = !!abl.allegianceValue
                             ? `${abl.domain} Aspect`
                             : abl.name;
-                        if (!!chosenPath && abl.name === 'Avowal') {
+                        if (
+                            !!chosenPath &&
+                            abl.name === 'Avowal' &&
+                            classAbilityResponse.Oathsworn.length
+                        ) {
                             abl.choices = classAbilityResponse.Oathsworn.filter(
                                 (x) =>
                                     x.isAvowalChoices && x.path === chosenPath
@@ -873,7 +878,9 @@ export const AddClassCard = ({
                                             className,
                                             classAbilityResponse,
                                             abl,
-                                            chosenPath
+                                            !!chosenPath
+                                                ? chosenPath
+                                                : undefined
                                         )}
                                     />
                                 </div>
