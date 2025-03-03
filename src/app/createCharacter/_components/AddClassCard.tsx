@@ -58,24 +58,46 @@ const ChoiceSelectionWidget = ({
     value,
 }: SelectionWidgetProps) => {
     if (!!choices) {
-        return (
-            <Select
-                sx={{ marginLeft: '2rem' }}
-                onChange={(e) => handleSelection(abl, e.target.value)}
-                value={value}
-            >
-                {choices.map((music) => {
-                    return (
-                        <MenuItem
-                            key={music.name + music.level}
-                            value={music.name}
-                        >
-                            {music.name}
-                        </MenuItem>
-                    );
-                })}
-            </Select>
-        );
+        if (choices[0].className === CharacterClassNames.Bard) {
+            return (
+                <Select
+                    sx={{ marginLeft: '2rem' }}
+                    onChange={(e) => handleSelection(abl, e.target.value)}
+                    value={value}
+                >
+                    {choices.map((music) => {
+                        return (
+                            <MenuItem
+                                key={music.name + music.level}
+                                value={music.name}
+                            >
+                                {music.name}
+                            </MenuItem>
+                        );
+                    })}
+                </Select>
+            );
+        }
+        if (choices[0].isQiFocus) {
+            return (
+                <Select
+                    sx={{ marginLeft: '2rem' }}
+                    onChange={(e) => handleSelection(abl, e.target.value)}
+                    value={value}
+                >
+                    {choices.map((choice) => {
+                        return (
+                            <MenuItem
+                                key={choice.description}
+                                value={choice.description}
+                            >
+                                {choice.description}
+                            </MenuItem>
+                        );
+                    })}
+                </Select>
+            );
+        }
     }
     return (
         <div

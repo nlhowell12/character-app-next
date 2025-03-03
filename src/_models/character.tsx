@@ -225,6 +225,7 @@ export interface ClassAbility {
     isAvowal?: boolean;
     isQiFocus?: boolean;
     isAvowalChoices?: boolean;
+    qiCost: number;
 }
 
 export interface ArchetypeAbility {

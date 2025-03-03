@@ -529,6 +529,13 @@ export const getClassAbilityChoices = (
                 );
             }
             return undefined;
+        case CharacterClassNames.Monk:
+            if (!!ability && ability.name === 'Qi Focus') {
+                return classAbilities.Monk.filter(
+                    (x) => x.isQiFocus && x.path === path
+                );
+            }
+            return undefined;
         default:
             return undefined;
     }
@@ -538,8 +545,11 @@ export const getAbilityDescription = (
     ability: ClassAbility,
     classAbilityResponse: ClassAbilityReturnObject
 ) => {
-    const { description, path } = ability;
-    const descriptionString = `${!!path ? `(${path}) ` : ''}${description}`;
+    const { description, path, name } = ability;
+    const alternate = `${name === 'Qi Focus' ? name : ''}`;
+    const descriptionString = `${!!path ? `(${path}) ` : ''}${
+        description ? description : alternate
+    }`;
     switch (ability.name) {
         case 'Bardic Music':
             return (
@@ -593,6 +603,21 @@ export const getAbilityDescription = (
                                 (x) => x.name === ability.selectedChoice
                             )?.description
                         }
+                    </p>
+                </div>
+            );
+        case 'Qi Focus':
+            const selectedChoice = classAbilityResponse.Monk.find(
+                (x) => x.description === ability.selectedChoice
+            );
+            return (
+                <div key={ability.description + ability.level}>
+                    <p style={{ marginBottom: '.5rem' }}>
+                        {descriptionString}: {selectedChoice?.qiCost}
+                    </p>
+                    <Divider />
+                    <p style={{ marginTop: '.5rem' }}>
+                        {selectedChoice?.description}
                     </p>
                 </div>
             );
