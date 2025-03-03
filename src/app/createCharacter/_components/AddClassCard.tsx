@@ -928,6 +928,7 @@ export const AddClassCard = ({
                                         classAbilityResponse
                                     )}
                                     key={name + abl.level}
+                                    followCursor
                                 >
                                     <div key={name + abl.level + abl.level}>
                                         <ClassAbilityCard
@@ -960,6 +961,7 @@ export const AddClassCard = ({
                                                 classAbilityResponse
                                             )}
                                             key={name + abl.level + 2}
+                                            followCursor
                                         >
                                             <div
                                                 key={
