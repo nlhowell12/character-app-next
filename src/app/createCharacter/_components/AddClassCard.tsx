@@ -41,6 +41,7 @@ import {
     getAbilityDescription,
     getClassAbilityChoices,
     removeLowerClassAbilites,
+    removeSelectedChoices,
 } from '@/_utils/classUtils';
 
 const formControlStyling = { marginLeft: '.5rem' };
@@ -50,6 +51,7 @@ interface SelectionWidgetProps {
     abl: ClassAbility;
     choices?: ClassAbility[];
     value: string;
+    classAbilities: ClassAbility[];
 }
 
 const ChoiceSelectionWidget = ({
@@ -57,6 +59,7 @@ const ChoiceSelectionWidget = ({
     abl,
     choices,
     value,
+    classAbilities,
 }: SelectionWidgetProps) => {
     if (!!choices && choices.length) {
         if (choices[0].className === CharacterClassNames.Bard) {
@@ -86,16 +89,18 @@ const ChoiceSelectionWidget = ({
                     onChange={(e) => handleSelection(abl, e.target.value)}
                     value={value}
                 >
-                    {choices.map((choice) => {
-                        return (
-                            <MenuItem
-                                key={choice.description}
-                                value={choice.description}
-                            >
-                                {choice.description}
-                            </MenuItem>
-                        );
-                    })}
+                    {removeSelectedChoices(abl, classAbilities, choices).map(
+                        (choice) => {
+                            return (
+                                <MenuItem
+                                    key={choice.description}
+                                    value={choice.description}
+                                >
+                                    {choice.description}
+                                </MenuItem>
+                            );
+                        }
+                    )}
                 </Select>
             );
         }
@@ -128,12 +133,14 @@ interface ClassAbilityCardProps {
     handleSelection: (ability: ClassAbility, selection: string) => void;
     choices?: ClassAbility[];
     value: string;
+    classAbilities: ClassAbility[];
 }
 const ClassAbilityCard = ({
     abl,
     handleSelection,
     value,
     choices,
+    classAbilities,
 }: ClassAbilityCardProps) => {
     const name = !!abl.allegianceValue ? `${abl.domain} Aspect` : abl.name;
     return (
@@ -164,6 +171,7 @@ const ClassAbilityCard = ({
                     handleSelection={handleSelection}
                     choices={choices}
                     value={value}
+                    classAbilities={classAbilities}
                 />
             </div>
         </Card>
@@ -382,6 +390,9 @@ export const AddClassCard = ({
         }
     }, [classAbilityResponse.Barbarian.length]);
 
+    useEffect(() => {
+        setPath('');
+    }, [className]);
     useEffect(() => {
         updateAbilities();
     }, [
@@ -900,7 +911,7 @@ export const AddClassCard = ({
                         if (
                             !!chosenPath &&
                             abl.name === 'Avowal' &&
-                            classAbilityResponse.Oathsworn.length
+                            !!classAbilityResponse.Oathsworn.length
                         ) {
                             abl.choices = classAbilityResponse.Oathsworn.filter(
                                 (x) =>
@@ -935,6 +946,7 @@ export const AddClassCard = ({
                                                     ? chosenPath
                                                     : undefined
                                             )}
+                                            classAbilities={classAbilities}
                                         />
                                     </div>
                                 </Tooltip>
@@ -973,6 +985,9 @@ export const AddClassCard = ({
                                                             ? chosenPath
                                                             : undefined
                                                     )}
+                                                    classAbilities={
+                                                        classAbilities
+                                                    }
                                                 />
                                             </div>
                                         </Tooltip>

@@ -649,3 +649,21 @@ export const removeLowerClassAbilites = (classAbilities: ClassAbility[]) => {
     });
     return parsedAbilities;
 };
+
+export const removeSelectedChoices = (
+    ability: ClassAbility,
+    classAbilities: ClassAbility[],
+    choices: ClassAbility[]
+): ClassAbility[] => {
+    const selections: string[] = [];
+    classAbilities.forEach((x) => {
+        if (!!x.selectedChoice) {
+            selections.push(x.selectedChoice);
+        }
+    });
+    return choices.filter(
+        (choice) =>
+            choice.description === ability.selectedChoice ||
+            !selections.includes(choice.description)
+    );
+};
