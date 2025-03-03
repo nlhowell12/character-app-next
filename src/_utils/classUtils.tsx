@@ -149,7 +149,6 @@ export const getAllegianceTotal = (character: Character) => {
                 allegianceObject[cls.spontaneousChannelDomain] += 1;
             }
             if (!!cls.impCounter) {
-                console.log(cls.impCounter);
                 allegianceObject[cls.impCounter] += 1;
             }
         }
