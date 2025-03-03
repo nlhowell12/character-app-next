@@ -40,6 +40,7 @@ import useClassAbilityService from '@/app/api/_services/useClassAbilityService';
 import {
     getAbilityDescription,
     getClassAbilityChoices,
+    removeLowerClassAbilites,
 } from '@/_utils/classUtils';
 
 const formControlStyling = { marginLeft: '.5rem' };
@@ -57,7 +58,7 @@ const ChoiceSelectionWidget = ({
     choices,
     value,
 }: SelectionWidgetProps) => {
-    if (!!choices) {
+    if (!!choices && choices.length) {
         if (choices[0].className === CharacterClassNames.Bard) {
             return (
                 <Select
@@ -366,7 +367,8 @@ export const AddClassCard = ({
         ) {
             !!editClass?.path && setPath('');
         }
-        !!updatedList.length && setClassAbilities(updatedList);
+        !!updatedList.length &&
+            setClassAbilities(removeLowerClassAbilites(updatedList));
     };
 
     useEffect(() => {
@@ -943,11 +945,14 @@ export const AddClassCard = ({
                                                 abl,
                                                 classAbilityResponse
                                             )}
-                                            key={name + abl.level}
+                                            key={name + abl.level + 2}
                                         >
                                             <div
                                                 key={
-                                                    name + abl.level + abl.level
+                                                    name +
+                                                    abl.level +
+                                                    abl.level +
+                                                    2
                                                 }
                                             >
                                                 <ClassAbilityCard

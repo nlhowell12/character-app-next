@@ -628,3 +628,24 @@ export const getAbilityDescription = (
             return descriptionString;
     }
 };
+
+export const removeLowerClassAbilites = (classAbilities: ClassAbility[]) => {
+    const allowDuplicates = ['Qi Focus', 'Avowal', 'Favored Enemy'];
+    let sortedAbilities = classAbilities.sort((a, b) => {
+        return b.level - a.level;
+    });
+    const parsedAbilities = sortedAbilities.filter((abl) => {
+        const otherAbility = classAbilities.findIndex(
+            (x) => x.name === abl.name && abl.level !== x.level
+        );
+        const thisAbility = classAbilities.findIndex(
+            (x) => x.name === abl.name && x.level === abl.level
+        );
+        return (
+            thisAbility < otherAbility ||
+            otherAbility === -1 ||
+            allowDuplicates.includes(abl.name)
+        );
+    });
+    return parsedAbilities;
+};
