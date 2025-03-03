@@ -69,16 +69,18 @@ const ChoiceSelectionWidget = ({
                     onChange={(e) => handleSelection(abl, e.target.value)}
                     value={value}
                 >
-                    {choices.map((music) => {
-                        return (
-                            <MenuItem
-                                key={music.name + music.level}
-                                value={music.name}
-                            >
-                                {music.name}
-                            </MenuItem>
-                        );
-                    })}
+                    {removeSelectedChoices(abl, classAbilities, choices).map(
+                        (music) => {
+                            return (
+                                <MenuItem
+                                    key={music.name + music.level}
+                                    value={music.name}
+                                >
+                                    {music.name}
+                                </MenuItem>
+                            );
+                        }
+                    )}
                 </Select>
             );
         }

@@ -630,7 +630,12 @@ export const getAbilityDescription = (
 };
 
 export const removeLowerClassAbilites = (classAbilities: ClassAbility[]) => {
-    const allowDuplicates = ['Qi Focus', 'Avowal', 'Favored Enemy'];
+    const allowDuplicates = [
+        'Qi Focus',
+        'Avowal',
+        'Favored Enemy',
+        'Bardic Music',
+    ];
     let sortedAbilities = classAbilities.sort((a, b) => {
         return b.level - a.level;
     });
@@ -664,6 +669,8 @@ export const removeSelectedChoices = (
     return choices.filter(
         (choice) =>
             choice.description === ability.selectedChoice ||
-            !selections.includes(choice.description)
+            choice.name === ability.selectedChoice ||
+            (!selections.includes(choice.name) &&
+                !selections.includes(choice.description))
     );
 };
