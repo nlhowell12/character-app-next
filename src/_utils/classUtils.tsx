@@ -674,3 +674,23 @@ export const removeSelectedChoices = (
                 !selections.includes(choice.description))
     );
 };
+
+export const removeSelectedStringChoices = (
+    ability: ClassAbility,
+    classAbilities: ClassAbility[],
+    choices: string[]
+): string[] => {
+    const multiplesAllowed = ['Favored Enemy'];
+    const selections: string[] = [];
+    classAbilities.forEach((x) => {
+        if (!!x.selectedChoice) {
+            selections.push(x.selectedChoice);
+        }
+    });
+    return choices.filter(
+        (choice) =>
+            choice === ability.selectedChoice ||
+            !selections.includes(choice) ||
+            multiplesAllowed.includes(ability.name)
+    );
+};

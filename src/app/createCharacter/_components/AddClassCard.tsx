@@ -42,6 +42,7 @@ import {
     getClassAbilityChoices,
     removeLowerClassAbilites,
     removeSelectedChoices,
+    removeSelectedStringChoices,
 } from '@/_utils/classUtils';
 
 const formControlStyling = { marginLeft: '.5rem' };
@@ -116,7 +117,11 @@ const ChoiceSelectionWidget = ({
                 flexWrap: 'wrap',
             }}
         >
-            {abl.choices?.map((x) => {
+            {removeSelectedStringChoices(
+                abl,
+                classAbilities,
+                abl.choices || []
+            ).map((x) => {
                 return (
                     <Chip
                         key={x}
