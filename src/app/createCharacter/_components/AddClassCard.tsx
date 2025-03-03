@@ -488,7 +488,8 @@ export const AddClassCard = ({
         (className === CharacterClassNames.Bard && level >= 5) ||
         (className === CharacterClassNames.Rogue && level >= 3) ||
         className === CharacterClassNames.Barbarian ||
-        className === CharacterClassNames.Oathsworn;
+        className === CharacterClassNames.Oathsworn ||
+        className === CharacterClassNames.Monk;
     return (
         <Card variant='outlined' sx={{ overflow: 'scroll' }}>
             <CardHeader

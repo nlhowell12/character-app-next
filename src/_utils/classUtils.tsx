@@ -9,6 +9,7 @@ import {
     Feat,
     Modifier,
     ModifierSource,
+    MonkTraditions,
     Movement,
     PathOptions,
     SpecialResource,
@@ -532,7 +533,9 @@ export const getClassAbilityChoices = (
         case CharacterClassNames.Monk:
             if (!!ability && ability.name === 'Qi Focus') {
                 return classAbilities.Monk.filter(
-                    (x) => x.isQiFocus && x.path === path
+                    (x) =>
+                        x.isQiFocus &&
+                        (x.path === path || path === MonkTraditions.Hexad)
                 );
             }
             return undefined;
