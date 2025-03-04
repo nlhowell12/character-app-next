@@ -1,4 +1,5 @@
 import {
+    AnyMagickType,
     ArcaneSchool,
     AttributeNames,
     BarbarianPath,
@@ -44,6 +45,7 @@ import {
     removeSelectedChoices,
     removeSelectedStringChoices,
 } from '@/_utils/classUtils';
+import useSpellService from '@/app/api/_services/useSpellService';
 
 const formControlStyling = { marginLeft: '.5rem' };
 
@@ -62,6 +64,48 @@ const ChoiceSelectionWidget = ({
     value,
     classAbilities,
 }: SelectionWidgetProps) => {
+    if (!!abl.name && abl.name === 'Jack of All Trades') {
+        const { spells } = useSpellService();
+        const combinedSpells: AnyMagickType[] = [];
+        !!spells &&
+            Object.keys(spells).forEach((x) => {
+                /* @ts-ignore */
+                combinedSpells.push(spells[x as keyof SpellObject]);
+            });
+        const flat: AnyMagickType[] = R.flatten(combinedSpells).sort((a, b) =>
+            a.name.localeCompare(b.name)
+        );
+        const parsedSpells = flat
+            .filter(
+                (spell, index) =>
+                    index ===
+                    flat.findIndex((other) => spell.name === other.name)
+            )
+            .filter((x) => x.level <= abl.level / 2);
+        return (
+            <Select
+                sx={{ marginLeft: '2rem' }}
+                onChange={(e) => handleSelection(abl, e.target.value)}
+                value={value}
+            >
+                {removeSelectedChoices(abl, classAbilities, parsedSpells).map(
+                    (spell) => {
+                        return (
+                            <Tooltip title={spell.description}>
+                                <MenuItem
+                                    /* @ts-ignore */
+                                    key={spell.name + spell.level + spell.class}
+                                    value={spell.name}
+                                >
+                                    {`${spell.name} (Level: ${spell.level})`}
+                                </MenuItem>
+                            </Tooltip>
+                        );
+                    }
+                )}
+            </Select>
+        );
+    }
     if (!!choices && choices.length) {
         if (choices[0].className === CharacterClassNames.Bard) {
             return (
@@ -954,37 +998,40 @@ export const AddClassCard = ({
                         }
                         return (
                             <>
-                                <Tooltip
-                                    title={getAbilityDescription(
-                                        abl,
-                                        classAbilityResponse
-                                    )}
-                                    key={name + abl.level}
-                                    followCursor
-                                >
-                                    <div key={name + abl.level + abl.level}>
-                                        <ClassAbilityCard
-                                            abl={abl}
-                                            value={
-                                                !!abl.selectedChoice
-                                                    ? abl.selectedChoice
-                                                    : ''
-                                            }
-                                            handleSelection={
-                                                handleChoiceSelection
-                                            }
-                                            choices={getClassAbilityChoices(
-                                                className,
-                                                classAbilityResponse,
-                                                abl,
-                                                !!chosenPath
-                                                    ? chosenPath
-                                                    : undefined
-                                            )}
-                                            classAbilities={classAbilities}
-                                        />
-                                    </div>
-                                </Tooltip>
+                                {
+                                    <Tooltip
+                                        title={getAbilityDescription(
+                                            abl,
+                                            classAbilityResponse
+                                        )}
+                                        key={name + abl.level}
+                                        followCursor
+                                        placement='top'
+                                    >
+                                        <div key={name + abl.level + abl.level}>
+                                            <ClassAbilityCard
+                                                abl={abl}
+                                                value={
+                                                    !!abl.selectedChoice
+                                                        ? abl.selectedChoice
+                                                        : ''
+                                                }
+                                                handleSelection={
+                                                    handleChoiceSelection
+                                                }
+                                                choices={getClassAbilityChoices(
+                                                    className,
+                                                    classAbilityResponse,
+                                                    abl,
+                                                    !!chosenPath
+                                                        ? chosenPath
+                                                        : undefined
+                                                )}
+                                                classAbilities={classAbilities}
+                                            />
+                                        </div>
+                                    </Tooltip>
+                                }
                                 {abl.name === 'Favored Enemy' &&
                                     abl.level > 1 && (
                                         <Tooltip

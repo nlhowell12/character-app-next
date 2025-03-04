@@ -1,4 +1,5 @@
 import {
+    AnyMagickType,
     AttributeNames,
     BonusTypes,
     Character,
@@ -635,6 +636,7 @@ export const removeLowerClassAbilites = (classAbilities: ClassAbility[]) => {
         'Favored Enemy',
         'Bardic Music',
         'Lethality',
+        'Jack of All Trades',
     ];
     let sortedAbilities = classAbilities.sort((a, b) => {
         return b.level - a.level;
@@ -662,8 +664,8 @@ export const removeLowerClassAbilites = (classAbilities: ClassAbility[]) => {
 export const removeSelectedChoices = (
     ability: ClassAbility,
     classAbilities: ClassAbility[],
-    choices: ClassAbility[]
-): ClassAbility[] => {
+    choices: ClassAbility[] | AnyMagickType[]
+): (ClassAbility | AnyMagickType)[] => {
     const selections: string[] = [];
     classAbilities.forEach((x) => {
         if (!!x.selectedChoice) {

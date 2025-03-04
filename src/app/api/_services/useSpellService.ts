@@ -1,20 +1,23 @@
-import { SpellObject } from "@/_models";
-import { useEffect, useState } from "react";
+import { SpellObject } from '@/_models';
+import { useEffect, useRef, useState } from 'react';
 
 export default () => {
     const [spells, setSpells] = useState<SpellObject>();
+    const cachedSpells = useRef();
 
     useEffect(() => {
-        getSpells()
-    }, [])
+        getSpells();
+    }, []);
 
     const getSpells = async () => {
-        const res = await fetch('/api/spells');
-        const spells = await res.json();
-        if(!!spells)
-        {
-            setSpells(spells);
+        if (!cachedSpells.current) {
+            const res = await fetch('/api/spells');
+            const spells = await res.json();
+            cachedSpells.current = spells;
         }
-    }
-    return { spells }
-}
+        if (!!cachedSpells.current) {
+            setSpells(cachedSpells.current);
+        }
+    };
+    return { spells };
+};
