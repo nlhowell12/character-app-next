@@ -64,8 +64,8 @@ const ChoiceSelectionWidget = ({
     value,
     classAbilities,
 }: SelectionWidgetProps) => {
+    const { spells } = useSpellService();
     if (!!abl.name && abl.name === 'Jack of All Trades') {
-        const { spells } = useSpellService();
         const combinedSpells: AnyMagickType[] = [];
         !!spells &&
             Object.keys(spells).forEach((x) => {
@@ -82,12 +82,10 @@ const ChoiceSelectionWidget = ({
                     flat.findIndex((other) => spell.name === other.name)
             )
             .filter((x) => x.level <= abl.level / 2);
-        console.log(parsedSpells);
         return (
             <Select
                 sx={{ marginLeft: '2rem' }}
                 onChange={(e) => {
-                    console.log(e);
                     handleSelection(abl, e.target.value);
                 }}
                 value={value}
@@ -551,8 +549,6 @@ export const AddClassCard = ({
             ...classAbilities[updateIndex],
             selectedChoice: selection,
         };
-        console.log(ability, selection);
-        console.log(updatedAbility);
         const updatedClassAbilities = R.update(
             updateIndex,
             updatedAbility,
