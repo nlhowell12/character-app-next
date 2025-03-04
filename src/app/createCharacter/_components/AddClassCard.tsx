@@ -300,9 +300,7 @@ export const AddClassCard = ({
 
     /* @ts-ignore */
     const [chosenPath, setPath] = useState<PathOptions | ''>('');
-    const [secondPath, setSecondPath] = useState<GuildPaths | undefined>(
-        undefined
-    );
+    const [secondPath, setSecondPath] = useState<GuildPaths | ''>('');
 
     useEffect(() => {
         if (!!editClass) {
@@ -324,7 +322,6 @@ export const AddClassCard = ({
                 school,
                 discipline,
             } = editClass;
-            console.log(path);
             setClassName(name as CharacterClassNames);
             setLevel(level);
             setPrimarySave(primarySave);
@@ -339,7 +336,7 @@ export const AddClassCard = ({
             !!preferredDomains && setPreferredDomains(preferredDomains);
             !!impCounter && setImpCounter(impCounter);
             setPath(path || '');
-            !!secondGuildPath && setSecondPath(secondPath);
+            setSecondPath(secondGuildPath || '');
             !!school && setChosenSchool(school);
             !!discipline && setChosenDiscipline(discipline);
         }
@@ -397,8 +394,8 @@ export const AddClassCard = ({
         const currentChoices = [...classAbilities];
 
         const removeUnwanted = (x: ClassAbility) => {
-            if (!!x.path && x.path !== chosenPath) {
-                return true;
+            if (!!x.path && (x.path === chosenPath || x.path === secondPath)) {
+                return false;
             }
             if (x.level > level) {
                 return true;
@@ -524,6 +521,7 @@ export const AddClassCard = ({
                     ? impCounter
                     : undefined,
             path: !!chosenPath ? chosenPath : undefined,
+            secondGuildPath: !!secondPath ? secondPath : undefined,
         };
         onSubmit(cls);
         onClose({}, 'buttonClose');
@@ -989,7 +987,12 @@ export const AddClassCard = ({
                 )}
                 {classAbilities
                     .sort((a, b) => a.level - b.level)
-                    .filter((x) => !x.path || x.path === chosenPath)
+                    .filter(
+                        (x) =>
+                            !x.path ||
+                            x.path === chosenPath ||
+                            x.path === secondPath
+                    )
                     .map((abl: ClassAbility) => {
                         const name = !!abl.allegianceValue
                             ? `${abl.domain} Aspect`
