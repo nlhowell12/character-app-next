@@ -379,6 +379,26 @@ export const AddClassCard = ({
             if (alreadySelected && alreadySelected.secondSelectedChoice) {
                 x.secondSelectedChoice = alreadySelected.secondSelectedChoice;
             }
+            if (
+                x.name === 'Traditional Mastery' &&
+                x.path === MonkTraditions.Hexad
+            ) {
+                const marking = updatedList.find((x) => x.name === 'Marking');
+                const tradStudy = updatedList.find(
+                    (x) => x.name === 'Traditional Study'
+                );
+                const tradStudyChoice = [
+                    tradStudy?.selectedChoice ? tradStudy?.selectedChoice : '',
+                ];
+                const markingChoice = [
+                    marking?.selectedChoice ? marking?.selectedChoice : '',
+                ];
+                x = {
+                    ...x,
+                    choices: [...markingChoice, ...tradStudyChoice],
+                    selectedChoice: marking?.selectedChoice,
+                };
+            }
         });
         if (
             (level < 5 && className === CharacterClassNames.Bard) ||

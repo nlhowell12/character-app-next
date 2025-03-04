@@ -690,6 +690,7 @@ export const removeSelectedStringChoices = (
         'Moderate Arcana (General)',
         'Major Arcana (General)',
         'High Arcana (General)',
+        'Traditional Mastery',
     ];
     const selections: string[] = [];
     classAbilities.forEach((x) => {
