@@ -96,6 +96,7 @@ export const ClassAbilityDisplay = ({
     const abilities = getAllClassAbilities(character);
     const theme = useTheme();
     const hexbladeDC = getHexbladeCurseDC(character);
+    console.log(abilities);
     return (
         <Card
             sx={{

@@ -405,8 +405,15 @@ export const AddClassCard = ({
         const currentChoices = [...classAbilities];
 
         const removeUnwanted = (x: ClassAbility) => {
-            if (!!x.path && (x.path === chosenPath || x.path === secondPath)) {
+            if (
+                !!x.path &&
+                (x.path === chosenPath ||
+                    (!!secondPath && x.path === secondPath))
+            ) {
                 return false;
+            }
+            if (!!x.path && x.path !== chosenPath && x.path !== secondPath) {
+                return true;
             }
             if (x.level > level) {
                 return true;
@@ -471,10 +478,11 @@ export const AddClassCard = ({
     useEffect(() => {
         if (
             className === CharacterClassNames.Barbarian &&
-            !!classAbilityResponse.Barbarian.length
+            !!classAbilityResponse.Barbarian.length &&
+            level === 1
         ) {
             setClassAbilities(
-                classAbilityResponse.Barbarian.filter((x) => x.level <= level)
+                classAbilityResponse.Barbarian.filter((x) => x.level === level)
             );
         }
     }, [classAbilityResponse.Barbarian.length]);
