@@ -645,10 +645,14 @@ export const removeLowerClassAbilites = (classAbilities: ClassAbility[]) => {
         const thisAbility = classAbilities.findIndex(
             (x) => x.name === abl.name && x.level === abl.level
         );
+        const thisAbilityFull = classAbilities[thisAbility];
         return (
             thisAbility < otherAbility ||
             otherAbility === -1 ||
-            allowDuplicates.includes(abl.name)
+            allowDuplicates.includes(abl.name) ||
+            (thisAbilityFull.name === 'Qi Strike' &&
+                thisAbilityFull.level === 4 &&
+                thisAbilityFull.path === MonkTraditions.Hexad)
         );
     });
     return parsedAbilities;
@@ -668,7 +672,7 @@ export const removeSelectedChoices = (
     return choices.filter(
         (choice) =>
             choice.description === ability.selectedChoice ||
-            choice.name === ability.selectedChoice ||
+            (!!choice.name && choice.name === ability.selectedChoice) ||
             (!selections.includes(choice.name) &&
                 !selections.includes(choice.description))
     );
@@ -679,7 +683,13 @@ export const removeSelectedStringChoices = (
     classAbilities: ClassAbility[],
     choices: string[]
 ): string[] => {
-    const multiplesAllowed = ['Favored Enemy'];
+    const multiplesAllowed = [
+        'Favored Enemy',
+        'Minor Arcana (General)',
+        'Moderate Arcana (General)',
+        'Major Arcana (General)',
+        'High Arcana (General)',
+    ];
     const selections: string[] = [];
     classAbilities.forEach((x) => {
         if (!!x.selectedChoice) {

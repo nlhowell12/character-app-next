@@ -274,6 +274,7 @@ export const AddClassCard = ({
                 school,
                 discipline,
             } = editClass;
+            console.log(path);
             setClassName(name as CharacterClassNames);
             setLevel(level);
             setPrimarySave(primarySave);
@@ -342,40 +343,43 @@ export const AddClassCard = ({
     };
 
     const updateAbilities = () => {
-        const acquiredAbilities = getAbilities();
-        let updatedList: ClassAbility[] = [
-            ...classAbilities.filter((x) => x.className === className),
-        ];
-        acquiredAbilities
-            .filter((x: ClassAbility) => !x.path || x.path === chosenPath)
-            .filter(
-                (x: ClassAbility) =>
-                    (!x.school && !x.name.includes('General')) ||
-                    x.school === chosenSchool ||
-                    (chosenSchool === 'General' && !x.school)
-            )
-            .filter(
-                (x: ClassAbility) =>
-                    !x.discipline || x.discipline === chosenDiscipline
-            )
-            .forEach((abl: ClassAbility) => {
-                const abilityIndex = R.findIndex(
-                    (x: ClassAbility) =>
-                        x.name === abl.name && x.level === abl.level
-                )(updatedList);
-                if (!updatedList.length) {
-                    updatedList.push(abl);
-                } else if (level >= updatedList[updatedList.length - 1].level) {
-                    if (abilityIndex === -1) {
-                        updatedList.push(abl);
-                    }
-                } else {
-                    updatedList = R.reject(
-                        (x: ClassAbility) => x.level > level,
-                        updatedList
-                    );
-                }
-            });
+        const acquiredAbilities: ClassAbility[] = getAbilities();
+        const currentChoices = [...classAbilities];
+
+        const removeUnwanted = (x: ClassAbility) => {
+            if (!!x.path && x.path !== chosenPath) {
+                return true;
+            }
+            if (x.level > level) {
+                return true;
+            }
+            if (!!x.school && chosenSchool !== x.school) {
+                return true;
+            }
+            if (
+                !x.school &&
+                x.name.includes('General') &&
+                chosenSchool !== 'General'
+            ) {
+                return true;
+            }
+            if (!!x.discipline && chosenDiscipline !== x.discipline) {
+                return true;
+            }
+            return false;
+        };
+        const updatedList = R.reject(removeUnwanted, acquiredAbilities);
+        updatedList.map((x: ClassAbility) => {
+            const alreadySelected = currentChoices.find(
+                (abl) => abl.level === x.level && abl.name === x.name
+            );
+            if (alreadySelected && alreadySelected.selectedChoice) {
+                x.selectedChoice = alreadySelected.selectedChoice;
+            }
+            if (alreadySelected && alreadySelected.secondSelectedChoice) {
+                x.secondSelectedChoice = alreadySelected.secondSelectedChoice;
+            }
+        });
         if (
             (level < 5 && className === CharacterClassNames.Bard) ||
             (level < 3 && className === CharacterClassNames.Rogue)
@@ -398,7 +402,10 @@ export const AddClassCard = ({
     }, [classAbilityResponse.Barbarian.length]);
 
     useEffect(() => {
-        setPath('');
+        /* @ts-ignore */
+        if (!!chosenPath && !getPathOptions(className).includes(chosenPath)) {
+            setPath('');
+        }
     }, [className]);
     useEffect(() => {
         updateAbilities();
