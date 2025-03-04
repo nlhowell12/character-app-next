@@ -144,14 +144,24 @@ export interface SpellObject {
     [CharacterClassNames.Psion]: Power[];
     [CharacterClassNames.Shadowcaster]: Mystery[];
     [CharacterClassNames.SorcWiz]: Spell[];
-};
+}
 
+export interface SpellTableObject {
+    [CharacterClassNames.Cleric]: SpellsPerDay[][];
+    [CharacterClassNames.Hexblade]: SpellsPerDay[][];
+    [CharacterClassNames.Oathsworn]: SpellsPerDay[][];
+    [CharacterClassNames.PsychicWarrior]: SpellsPerDay[][];
+    [CharacterClassNames.Psion]: SpellsPerDay[][];
+    [CharacterClassNames.Shadowcaster]: SpellsPerDay[][];
+    [CharacterClassNames.Wizard]: SpellsPerDay[][];
+    [CharacterClassNames.Sorcerer]: SpellsPerDay[][];
+}
 export interface MartialQueue {
     [CharacterClassNames.Hexblade]: Maneuver[];
     [CharacterClassNames.Oathsworn]: Maneuver[];
     [CharacterClassNames.Fighter]: Maneuver[];
     [CharacterClassNames.PsychicWarrior]: Maneuver[];
-};
+}
 
 export interface Spell extends Magick {
     school: ArcaneSchool;
@@ -196,3 +206,11 @@ export type AnyMagickType =
     | Maneuver
     | Power
     | Mystery;
+
+export interface SpellsPerDay {
+    level: number;
+    perDay: number[] | number;
+    className: CharacterClassNames;
+    known?: number[] | number;
+    maxLevel?: number;
+}

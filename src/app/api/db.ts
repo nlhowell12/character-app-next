@@ -12,6 +12,7 @@ import {
     Feat,
     AttributeNames,
     AbilityTypes,
+    SpellsPerDay,
 } from '@/_models';
 import { User } from '@/_models/user';
 import mongoose from 'mongoose';
@@ -33,6 +34,7 @@ export const db = {
     ClassAbility: classAbilityModel(),
     Equipment: equipmentModel(),
     Feat: featModel(),
+    SpellsPerDay: spellsPerDayModel(),
 };
 
 function userModel() {
@@ -174,4 +176,18 @@ function featModel() {
         requiredOption: Boolean,
     });
     return mongoose.models.Feat || mongoose.model('Feat', featSchema, 'feats');
+}
+
+function spellsPerDayModel() {
+    const spellPerDaySchema = new Schema<SpellsPerDay>({
+        level: { type: Number, required: true },
+        perDay: { type: mongoose.Schema.Types.Mixed },
+        className: { type: String, enum: CharacterClassNames, required: true },
+        known: { type: mongoose.Schema.Types.Mixed },
+        maxLevel: { type: Number },
+    });
+    return (
+        mongoose.models.SpellsPerDay ||
+        mongoose.model('SpellsPerDay', spellPerDaySchema, 'class_spell_tables')
+    );
 }

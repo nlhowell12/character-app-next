@@ -1,12 +1,15 @@
-import { SpellObject } from '@/_models';
+import { SpellObject, SpellTableObject } from '@/_models';
 import { useEffect, useRef, useState } from 'react';
 
 export default () => {
     const [spells, setSpells] = useState<SpellObject>();
+    const [spellTables, setSpellTables] = useState<SpellTableObject>();
     const cachedSpells = useRef();
+    const cachedSpellTables = useRef();
 
     useEffect(() => {
         getSpells();
+        getSpellTables();
     }, []);
 
     const getSpells = async () => {
@@ -19,5 +22,15 @@ export default () => {
             setSpells(cachedSpells.current);
         }
     };
-    return { spells };
+    const getSpellTables = async () => {
+        if (!cachedSpellTables.current) {
+            const res = await fetch('/api/spelltables');
+            const spellTables = await res.json();
+            cachedSpellTables.current = spellTables;
+        }
+        if (!!cachedSpellTables.current) {
+            setSpellTables(cachedSpellTables.current);
+        }
+    };
+    return { spells, spellTables };
 };

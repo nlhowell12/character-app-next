@@ -435,10 +435,3 @@ export interface OathChoice {
     oath: Oaths;
     choices: string[];
 }
-
-export interface QiChoice {
-    qiCost: number;
-    description: string;
-    save: AttributeNames;
-    id: string;
-}
