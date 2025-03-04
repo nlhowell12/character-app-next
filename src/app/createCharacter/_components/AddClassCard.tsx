@@ -82,24 +82,30 @@ const ChoiceSelectionWidget = ({
                     flat.findIndex((other) => spell.name === other.name)
             )
             .filter((x) => x.level <= abl.level / 2);
+        console.log(parsedSpells);
         return (
             <Select
                 sx={{ marginLeft: '2rem' }}
-                onChange={(e) => handleSelection(abl, e.target.value)}
+                onChange={(e) => {
+                    console.log(e);
+                    handleSelection(abl, e.target.value);
+                }}
                 value={value}
             >
                 {removeSelectedChoices(abl, classAbilities, parsedSpells).map(
                     (spell) => {
                         return (
-                            <Tooltip title={spell.description}>
-                                <MenuItem
-                                    /* @ts-ignore */
-                                    key={spell.name + spell.level + spell.class}
-                                    value={spell.name}
-                                >
-                                    {`${spell.name} (Level: ${spell.level})`}
-                                </MenuItem>
-                            </Tooltip>
+                            <MenuItem
+                                /* @ts-ignore */
+                                key={spell.name + spell.level + spell.class}
+                                value={spell.name}
+                            >
+                                <Tooltip title={spell.description}>
+                                    <div style={{ width: '100%' }}>
+                                        <p>{`${spell.name} (Level: ${spell.level})`}</p>
+                                    </div>
+                                </Tooltip>
+                            </MenuItem>
                         );
                     }
                 )}
@@ -534,6 +540,8 @@ export const AddClassCard = ({
             ...classAbilities[updateIndex],
             selectedChoice: selection,
         };
+        console.log(ability, selection);
+        console.log(updatedAbility);
         const updatedClassAbilities = R.update(
             updateIndex,
             updatedAbility,
