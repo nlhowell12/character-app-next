@@ -381,6 +381,19 @@ export const AddClassCard = ({
                     ...rebuke,
                     ...counterMagick,
                 ];
+            case CharacterClassNames.Rogue:
+                const rogueAbilities =
+                    classAbilityResponse[CharacterClassNames.Rogue];
+                if (!!secondPath) {
+                    rogueAbilities.map((x) => {
+                        if (x.path === secondPath && x.level < 10) {
+                            x.level = x.level + 9;
+                        }
+                    });
+                }
+                return rogueAbilities.filter(
+                    (x: ClassAbility) => x.level <= level
+                );
             default:
                 /* @ts-ignore */
                 return classAbilityResponse[className].filter(
