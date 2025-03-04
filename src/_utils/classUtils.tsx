@@ -634,6 +634,7 @@ export const removeLowerClassAbilites = (classAbilities: ClassAbility[]) => {
         'Avowal',
         'Favored Enemy',
         'Bardic Music',
+        'Lethality',
     ];
     let sortedAbilities = classAbilities.sort((a, b) => {
         return b.level - a.level;
