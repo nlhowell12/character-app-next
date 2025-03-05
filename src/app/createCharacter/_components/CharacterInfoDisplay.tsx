@@ -41,16 +41,16 @@ interface CharacterInfoDisplayProps {
     onUpdate?: () => void;
 }
 
-
 export const CharacterInfoDisplay = ({
     character,
     dispatch,
     onUpdate,
 }: CharacterInfoDisplayProps) => {
     const [openModifiers, setOpenModifers] = useState<boolean>(false);
-    const { createCharacter, updateCharacter, deleteCharacter } = useCharacterService();
+    const { createCharacter, updateCharacter, deleteCharacter } =
+        useCharacterService();
     const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-    const {user} = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     const [error, setError] = useState(false);
     const router = useRouter();
@@ -64,10 +64,10 @@ export const CharacterInfoDisplay = ({
     const handleDelete = async () => {
         const res: Response = await deleteCharacter(character);
         if (res.ok) {
-            router.push('/')
+            router.push('/');
         }
     };
-    
+
     const handleSave = async () => {
         const validateSubmit = true;
         if (!!validateSubmit) {
@@ -105,7 +105,8 @@ export const CharacterInfoDisplay = ({
     const buttonStlying = {
         margin: '.25rem',
     };
-    const userAdminPrivelages = !!user && (user.isDm || user.name === character.playerName);
+    const userAdminPrivelages =
+        !!user && (user.isDm || user.name === character.playerName);
 
     return (
         <>
@@ -139,28 +140,44 @@ export const CharacterInfoDisplay = ({
                     value={character.playerName}
                     disabled
                 />
-                {userAdminPrivelages &&
-                        <>
-                            <Button
-                                variant='outlined'
-                                onClick={() => setOpenDeleteDialog(true)}
-                                sx={buttonStlying}
-                                color='error'
-                            >
-                                <Typography>Delete Character</Typography>
-                                <DeleteForeverIcon sx={{ marginLeft: '.5rem' }} />
-                            </Button>
-                            <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-                                <Card>
-                                    <CardHeader title='This will permanently delete this character, it cannot be recovered!'/>
-                                    <CardActions sx={{justifyContent: 'flex-end'}}>
-                                        <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-                                        <Button color='error' onClick={handleDelete}>Delete</Button>
-                                    </CardActions>
-                                </Card>
-                            </Dialog>
-                        </>
-                    }
+                {userAdminPrivelages && (
+                    <>
+                        <Button
+                            variant='outlined'
+                            onClick={() => setOpenDeleteDialog(true)}
+                            sx={buttonStlying}
+                            color='error'
+                        >
+                            <Typography>Delete Character</Typography>
+                            <DeleteForeverIcon sx={{ marginLeft: '.5rem' }} />
+                        </Button>
+                        <Dialog
+                            open={openDeleteDialog}
+                            onClose={() => setOpenDeleteDialog(false)}
+                        >
+                            <Card>
+                                <CardHeader title='This will permanently delete this character, it cannot be recovered!' />
+                                <CardActions
+                                    sx={{ justifyContent: 'flex-end' }}
+                                >
+                                    <Button
+                                        onClick={() =>
+                                            setOpenDeleteDialog(false)
+                                        }
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        color='error'
+                                        onClick={handleDelete}
+                                    >
+                                        Delete
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Dialog>
+                    </>
+                )}
                 <Grid item xs={12} sx={{ margin: '.25rem .5rem' }}>
                     <Button
                         variant='outlined'
@@ -183,7 +200,6 @@ export const CharacterInfoDisplay = ({
                         </Typography>
                         <SaveIcon sx={{ marginLeft: '.5rem' }} />
                     </Button>
-                    
                 </Grid>
                 <DisplayCell
                     editable
@@ -259,7 +275,7 @@ export const CharacterInfoDisplay = ({
                 {isCharacterPsionic(character) ? (
                     <DisplayCell
                         editable
-                        cellTitle='Max Power Points:'
+                        cellTitle='Bonus Power Points:'
                         value={character.maxPowerPoints}
                         onChange={(e) => {
                             dispatch(

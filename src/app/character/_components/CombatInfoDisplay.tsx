@@ -56,6 +56,7 @@ import {
     checkForHalfMovement,
     getAlignedOrisons,
     getInitiativeScore,
+    getTotalClassLevels,
     hasMartialClass,
 } from '@/_utils/classUtils';
 import { getTotalEnergyDrained } from '@/_utils/statusEffectUtils';
@@ -208,6 +209,34 @@ export const CombatInfoDisplay = ({
     const clericClass: CharacterClass | undefined = character.classes.find(
         (x) => x.name === CharacterClassNames.Cleric
     );
+
+    const adjustedMaxPowerPoints = () => {
+        const psionClass = character.classes.find(
+            (x) => x.name === CharacterClassNames.Psion
+        );
+        const psyWarClass = character.classes.find(
+            (x) => x.name === CharacterClassNames.PsychicWarrior
+        );
+        const psionPP =
+            !!psionClass && !!spellTables
+                ? /* @ts-ignore */
+                  spellTables?.Psion.find((x) => x.level === psionClass.level)
+                      .perDay
+                : 0;
+        const psyWarPP =
+            !!psyWarClass && !!spellTables
+                ? /* @ts-ignore */
+                  spellTables?.['Psychic Warrior'].find(
+                      (x) => x.level === psyWarClass.level
+                  ).perDay
+                : 0;
+
+        const innatePP = !!character.isPsionic
+            ? 3 + Math.floor((getTotalClassLevels(character) / 4) * 3)
+            : 0;
+        /* @ts-ignore */
+        return character.maxPowerPoints + psionPP + psyWarPP + innatePP;
+    };
     return (
         <>
             <DisplayCell
@@ -314,10 +343,10 @@ export const CombatInfoDisplay = ({
                     )
                 }
             />
-            {!!character.maxPowerPoints && isCharacterPsionic(character) && (
+            {isCharacterPsionic(character) && (
                 <DisplayCell
                     variant='body1'
-                    cellTitle='Power Points:'
+                    cellTitle={`Power Points (max ${adjustedMaxPowerPoints()}):`}
                     value={character.powerPoints}
                     editable={true}
                     isNumber

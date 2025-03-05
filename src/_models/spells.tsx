@@ -147,14 +147,14 @@ export interface SpellObject {
 }
 
 export interface SpellTableObject {
-    [CharacterClassNames.Cleric]: SpellsPerDay[][];
-    [CharacterClassNames.Hexblade]: SpellsPerDay[][];
-    [CharacterClassNames.Oathsworn]: SpellsPerDay[][];
-    [CharacterClassNames.PsychicWarrior]: SpellsPerDay[][];
-    [CharacterClassNames.Psion]: SpellsPerDay[][];
-    [CharacterClassNames.Shadowcaster]: SpellsPerDay[][];
-    [CharacterClassNames.Wizard]: SpellsPerDay[][];
-    [CharacterClassNames.Sorcerer]: SpellsPerDay[][];
+    [CharacterClassNames.Cleric]: SpellsPerDay[];
+    [CharacterClassNames.Hexblade]: SpellsPerDay[];
+    [CharacterClassNames.Oathsworn]: SpellsPerDay[];
+    [CharacterClassNames.PsychicWarrior]: SpellsPerDay[];
+    [CharacterClassNames.Psion]: SpellsPerDay[];
+    [CharacterClassNames.Shadowcaster]: SpellsPerDay[];
+    [CharacterClassNames.Wizard]: SpellsPerDay[];
+    [CharacterClassNames.Sorcerer]: SpellsPerDay[];
 }
 export interface MartialQueue {
     [CharacterClassNames.Hexblade]: Maneuver[];
