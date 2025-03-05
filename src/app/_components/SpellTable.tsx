@@ -222,7 +222,7 @@ export const SpellTable = ({
         /* @ts-ignore */
         const classTable = spellTables[filterClass];
         const classLevelTable: SpellsPerDay = !!classTable
-            ? classTable[characterLevel]
+            ? classTable.find((x: SpellsPerDay) => (x.level = characterLevel))
             : undefined;
         return spells.filter((x) => {
             if (selectedSubtype === MagickCategory.Maneuver) {
