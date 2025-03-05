@@ -31,14 +31,16 @@ const AbilityRow = ({ ability }: AbilityRowProps) => {
     const { classAbilityResponse } = useClassAbilityService();
 
     const getAbiltyTitle = (ability: ClassAbility) => {
-        const secondSelection = ability.secondSelectedChoice
-            ? `, ${ability.secondSelectedChoice}`
+        const { name, domain, secondSelectedChoice, selectedChoice } = ability;
+        const abilityName = name ? name : `${domain} Aspect`;
+        const secondSelection = secondSelectedChoice
+            ? `, ${secondSelectedChoice}`
             : '';
-        const selection = ability.selectedChoice
-            ? ` (${ability.selectedChoice}${secondSelection})`
+        const selection = selectedChoice
+            ? ` (${selectedChoice}${secondSelection})`
             : '';
 
-        return `${ability.name}${selection}`;
+        return `${abilityName}${selection}`;
     };
     const getAbilityType = (ability: ClassAbility) => {
         switch (ability.abilityType) {
@@ -56,6 +58,7 @@ const AbilityRow = ({ ability }: AbilityRowProps) => {
                 return '';
         }
     };
+    console.log(ability);
     return (
         <Tooltip
             title={getAbilityDescription(ability, classAbilityResponse)}
