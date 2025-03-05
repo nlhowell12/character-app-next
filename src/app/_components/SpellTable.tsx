@@ -29,6 +29,7 @@ import {
     MartialQueue,
     SpellTableObject,
     SpellsPerDay,
+    Mystery,
 } from '@/_models';
 import { camelToTitle, linkToSpellCompendium } from '@/_utils/stringUtils';
 import * as R from 'ramda';
@@ -209,7 +210,26 @@ export const SpellTable = ({
             : [];
     };
     const filterClass = selectedClass as keyof SpellObject;
+    const shadowCasterFilter = (spell: Mystery, character: Character) => {
+        const { spellBook } = character;
+        const { level, path } = spell;
+        const knownMysteries = spellBook.Shadowcaster;
 
+        if (level === 1 || level === 4 || level === 7) {
+            return true;
+        }
+        if (knownMysteries.filter((x) => x.level === level - 1).length < 2) {
+            return false;
+        }
+        if (
+            !knownMysteries.find(
+                (x) => x.level === level - 1 && x.path === path
+            )
+        ) {
+            return false;
+        }
+        return true;
+    };
     const filterByCastable = (
         spells: AnyMagickType[],
         spellTables: SpellTableObject,
@@ -222,11 +242,21 @@ export const SpellTable = ({
         /* @ts-ignore */
         const classTable = spellTables[filterClass];
         const classLevelTable: SpellsPerDay = !!classTable
-            ? classTable.find((x: SpellsPerDay) => (x.level = characterLevel))
+            ? classTable.find((x: SpellsPerDay) => x.level === characterLevel)
             : undefined;
         return spells.filter((x) => {
-            if (selectedSubtype === MagickCategory.Maneuver) {
+            if (
+                selectedSubtype === MagickCategory.Maneuver &&
+                x.category === MagickCategory.Maneuver
+            ) {
                 return x.level <= Math.ceil(characterLevel / 2);
+            }
+            if (x.class === CharacterClassNames.Shadowcaster) {
+                return (
+                    /* @ts-ignore */
+                    x.level <= classLevelTable.maxLevel &&
+                    shadowCasterFilter(x as Mystery, character)
+                );
             }
             if (!!classTable && !!classLevelTable) {
                 /* @ts-ignore */
@@ -269,7 +299,7 @@ export const SpellTable = ({
                 : setRows(filteredSpells);
             setColumns(getColumns(filteredSpells));
         }
-    }, [spells, selectedClass, onlyPrepared, columnFilter]);
+    }, [spells, selectedClass, onlyPrepared, columnFilter, characterSpellbook]);
 
     useEffect(() => {
         if (!!rows && isHybridClass && !!spells) {
