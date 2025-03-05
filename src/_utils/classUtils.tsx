@@ -36,10 +36,8 @@ export enum DomainAspectFeats {
 }
 
 export const getAllClassAbilities = (character: Character): ClassAbility[] => {
-    console.log(character);
     const abilities: ClassAbility[][] = [];
     character.classes.forEach((cls) => {
-        console.log(cls.classAbilities);
         abilities.push(cls.classAbilities);
     });
     return abilities.flat();

@@ -32,8 +32,8 @@ const statusMessageNames = {
     trackerDelete: 'tracker-delete',
     trackerClear: 'tracker-clear',
     currentChar: 'currentChar',
-    turnUpdate: 'turn-update'
-}
+    turnUpdate: 'turn-update',
+};
 export const InitiativeTracker = () => {
     const [messages, updateMessages] = useState<TrackerMessage[]>([]);
     const [name, setName] = useState('');
@@ -45,19 +45,23 @@ export const InitiativeTracker = () => {
         const messageIndex = R.findIndex(R.propEq(message.name, 'name'))(
             messages
         );
-        switch(message.name){
+        switch (message.name) {
             case statusMessageNames.trackerDelete:
-                handleDelete(message)
-                return
+                handleDelete(message);
+                return;
             case statusMessageNames.trackerClear:
                 updateMessages([]);
-                return
+                return;
             default:
                 if (messageIndex === -1) {
                     updateMessages([...messages, message]);
                 } else {
                     updateMessages(
-                        R.update(messageIndex, message as TrackerMessage, messages)
+                        R.update(
+                            messageIndex,
+                            message as TrackerMessage,
+                            messages
+                        )
                     );
                 }
         }
@@ -67,17 +71,25 @@ export const InitiativeTracker = () => {
         setTurn(message.data.value);
     });
 
-    const { channel: currentCharChannel } = useChannel('currentChar', (message) => {
-        setCurrentCharacter(message.data.value);
-    });
+    const { channel: currentCharChannel } = useChannel(
+        'currentChar',
+        (message) => {
+            setCurrentCharacter(message.data.value);
+        }
+    );
 
-    const isStatusMessage = (m: TrackerMessage) => Object.values(statusMessageNames).some(x => x === m.name);
+    const isStatusMessage = (m: TrackerMessage) =>
+        Object.values(statusMessageNames).some((x) => x === m.name);
     const getTrackerHistory = async () => {
         const messages = await channel.history();
         const turns = await turnChannel.history();
         const currentCharacter = await currentCharChannel.history();
         const sortedFilteredMessages: TrackerMessage[] = [];
-        const lastTrackerClearTimestamp = R.last(messages.items.sort((a, b) => a.timestamp - b.timestamp).filter(x => x.name === statusMessageNames.trackerClear))?.timestamp;
+        const lastTrackerClearTimestamp = R.last(
+            messages.items
+                .sort((a, b) => a.timestamp - b.timestamp)
+                .filter((x) => x.name === statusMessageNames.trackerClear)
+        )?.timestamp;
         messages.items.forEach((m) => {
             const messageIndex = R.findIndex(R.propEq(m.name, 'name'))(
                 sortedFilteredMessages
@@ -88,66 +100,110 @@ export const InitiativeTracker = () => {
                         .filter((x) => x.name === m.name)
                         .sort((a, b) => a.timestamp - b.timestamp)
                 );
-                const isDeleted = !!lastMessage && messages.items.some(x => x.name === statusMessageNames.trackerDelete && x.data.id === lastMessage.id && x.timestamp > lastMessage.timestamp);
-                if(!!lastTrackerClearTimestamp && !!lastMessage && (lastMessage.timestamp > lastTrackerClearTimestamp) && !isDeleted && !isStatusMessage(m)){
+                const isDeleted =
+                    !!lastMessage &&
+                    messages.items.some(
+                        (x) =>
+                            x.name === statusMessageNames.trackerDelete &&
+                            x.data.id === lastMessage.id &&
+                            x.timestamp > lastMessage.timestamp
+                    );
+                if (
+                    !!lastTrackerClearTimestamp &&
+                    !!lastMessage &&
+                    lastMessage.timestamp > lastTrackerClearTimestamp &&
+                    !isDeleted &&
+                    !isStatusMessage(m)
+                ) {
                     sortedFilteredMessages.push(lastMessage as TrackerMessage);
                 }
             }
         });
         updateMessages(sortedFilteredMessages);
-        const lastTurn = R.last(turns.items.sort((a, b) => a.timestamp - b.timestamp))
+        const lastTurn = R.last(
+            turns.items.sort((a, b) => a.timestamp - b.timestamp)
+        );
         !!lastTurn && setTurn(lastTurn.data.value);
-        const lastCurrent = R.last(currentCharacter.items.sort((a, b) => a.timestamp - b.timestamp))
-        const lastCurrentIndex = !!lastCurrent && lastCurrent.data.value < sortedFilteredMessages.length ? lastCurrent.data.value : 0
+        const lastCurrent = R.last(
+            currentCharacter.items.sort((a, b) => a.timestamp - b.timestamp)
+        );
+        const lastCurrentIndex =
+            !!lastCurrent &&
+            lastCurrent.data.value < sortedFilteredMessages.length
+                ? lastCurrent.data.value
+                : 0;
         setCurrentCharacter(lastCurrentIndex);
     };
 
     const updateTurn = () => {
         const newTurn = turn + 1;
-        setTurn(newTurn)
-        turnChannel.publish(statusMessageNames.turnUpdate, {value: newTurn, delete: true})
-    }
+        setTurn(newTurn);
+        turnChannel.publish(statusMessageNames.turnUpdate, {
+            value: newTurn,
+            delete: true,
+        });
+    };
     const nextCharacter = () => {
         const sortedMessages = getSortedMessages();
         let nextCharacter;
-        if(currentCharacter === sortedMessages.length - 1) {
-            nextCharacter = 0
-            updateTurn()
+        if (currentCharacter === sortedMessages.length - 1) {
+            nextCharacter = 0;
+            updateTurn();
         } else {
-            nextCharacter = currentCharacter + 1
+            nextCharacter = currentCharacter + 1;
         }
-        currentCharChannel.publish(statusMessageNames.currentChar, {value: nextCharacter, delete: true})
-        setCurrentCharacter(nextCharacter)
+        currentCharChannel.publish(statusMessageNames.currentChar, {
+            value: nextCharacter,
+            delete: true,
+        });
+        setCurrentCharacter(nextCharacter);
     };
     const deleteChip = (m: TrackerMessage) => {
-        channel.publish(statusMessageNames.trackerDelete, {value: m.data.value, delete: true, id: m.id})
+        channel.publish(statusMessageNames.trackerDelete, {
+            value: m.data.value,
+            delete: true,
+            id: m.id,
+        });
         handleDelete(m);
     };
     const handleDelete = (m: TrackerMessage) => {
-        const filter = (x: TrackerMessage) => m.name === statusMessageNames.trackerDelete ? m.data.id !== x.id : x.id !== m.id;
-        const filteredMessages = R.filter(filter, messages)
-        console.log(filteredMessages)
-        if(!filteredMessages.filter(x => !isStatusMessage(x)).length){
-            setCurrentCharacter(0)
-            setTurn(1)
+        const filter = (x: TrackerMessage) =>
+            m.name === statusMessageNames.trackerDelete
+                ? m.data.id !== x.id
+                : x.id !== m.id;
+        const filteredMessages = R.filter(filter, messages);
+        if (!filteredMessages.filter((x) => !isStatusMessage(x)).length) {
+            setCurrentCharacter(0);
+            setTurn(1);
         }
         updateMessages(filteredMessages);
     };
     const handleClear = () => {
         updateMessages([]);
-        channel.publish(statusMessageNames.trackerClear, {value: 0, delete: true, id: uuidv4()}) 
+        channel.publish(statusMessageNames.trackerClear, {
+            value: 0,
+            delete: true,
+            id: uuidv4(),
+        });
         setTurn(1);
-        turnChannel.publish(statusMessageNames.turnUpdate, {value: 1})
-        currentCharChannel.publish(statusMessageNames.currentChar, {value: 0, delete: true});
+        turnChannel.publish(statusMessageNames.turnUpdate, { value: 1 });
+        currentCharChannel.publish(statusMessageNames.currentChar, {
+            value: 0,
+            delete: true,
+        });
     };
 
     const getIsCurrentCharacterChip = (m: TrackerMessage) => {
         const sortedMessages = getSortedMessages();
         let isCurrent = false;
-        if(!!sortedMessages.length && currentCharacter < sortedMessages.length && m.id === sortedMessages[currentCharacter].id) {
+        if (
+            !!sortedMessages.length &&
+            currentCharacter < sortedMessages.length &&
+            m.id === sortedMessages[currentCharacter].id
+        ) {
             isCurrent = true;
         }
-        return !!isCurrent ? { backgroundColor: '#092e01' } : {}
+        return !!isCurrent ? { backgroundColor: '#092e01' } : {};
     };
 
     useEffect(() => {
@@ -155,36 +211,45 @@ export const InitiativeTracker = () => {
     }, []);
 
     const getSortedMessages = () => {
-        return messages.filter(m => !!m.data.value && !isStatusMessage(m)).map(x => {return {...x, data: {...x.data, value: +x.data.value}}}).sort(
-            (a, b) =>
-                b.data.value - a.data.value
-        );
+        return messages
+            .filter((m) => !!m.data.value && !isStatusMessage(m))
+            .map((x) => {
+                return { ...x, data: { ...x.data, value: +x.data.value } };
+            })
+            .sort((a, b) => b.data.value - a.data.value);
     };
 
     const splitTrackerChips = useMemo(() => {
         const sortedMessages = getSortedMessages();
         const displayArrays = [];
         const columnSize = 6;
-        while(!!sortedMessages.length) {
-            displayArrays.push(sortedMessages.splice(0, columnSize))
+        while (!!sortedMessages.length) {
+            displayArrays.push(sortedMessages.splice(0, columnSize));
         }
         return displayArrays;
-    }, [messages])
-    
+    }, [messages]);
+
     return (
-        <Card sx={{root: {maxWidth: 'fit-content'}, overflowY: 'scroll'}}>
+        <Card sx={{ root: { maxWidth: 'fit-content' }, overflowY: 'scroll' }}>
             <CardHeader title='Initiative Tracker' />
-           
+
             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{display: 'flex', alignItems: 'center', marginBottom: '1rem'}}>
-                <h2 style={{fontSize: '1.5rem'}}>Turn: {turn}</h2>
-                {!!user?.isDm && 
-                <Button
-                    onClick={() => nextCharacter()}
-                    sx={{marginLeft: '2rem'}}
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: '1rem',
+                    }}
                 >
-                    Next Character
-                </Button>}
+                    <h2 style={{ fontSize: '1.5rem' }}>Turn: {turn}</h2>
+                    {!!user?.isDm && (
+                        <Button
+                            onClick={() => nextCharacter()}
+                            sx={{ marginLeft: '2rem' }}
+                        >
+                            Next Character
+                        </Button>
+                    )}
                 </div>
                 <Grid container>
                     <Grid item xs={12} sm={6}>
@@ -203,42 +268,71 @@ export const InitiativeTracker = () => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         {!!messages.length && (
-                            <div style={{display: 'flex'}}>
+                            <div style={{ display: 'flex' }}>
                                 {splitTrackerChips.map((display) => {
-                                    return(
+                                    return (
                                         <List key={uuidv4()}>
-                                        {display.filter(x => !!x.data.value && !x.data.delete)
-                                            .map((m: TrackerMessage) => {
-                                                return (
-                                                    <ListItem key={m.name} sx={{justifyContent: 'center'}}>
-                                                    <Chip label={`${m.name} ${Number(m.data.value)}`} 
-                                                        onClick={() => deleteChip(m)}
-                                                        sx={{ 
-                                                            '&:hover': { 
-                                                                opacity: '.6',
-                                                                cursor: 'pointer',
-                                                                textDecoration: 'line-through'
-                                                            },
-                                                            ...getIsCurrentCharacterChip(m)
-                                                        }}
-                                                    />
-                                                    </ListItem>
-                                                );
-                                            })}
+                                            {display
+                                                .filter(
+                                                    (x) =>
+                                                        !!x.data.value &&
+                                                        !x.data.delete
+                                                )
+                                                .map((m: TrackerMessage) => {
+                                                    return (
+                                                        <ListItem
+                                                            key={m.name}
+                                                            sx={{
+                                                                justifyContent:
+                                                                    'center',
+                                                            }}
+                                                        >
+                                                            <Chip
+                                                                label={`${
+                                                                    m.name
+                                                                } ${Number(
+                                                                    m.data.value
+                                                                )}`}
+                                                                onClick={() =>
+                                                                    deleteChip(
+                                                                        m
+                                                                    )
+                                                                }
+                                                                sx={{
+                                                                    '&:hover': {
+                                                                        opacity:
+                                                                            '.6',
+                                                                        cursor: 'pointer',
+                                                                        textDecoration:
+                                                                            'line-through',
+                                                                    },
+                                                                    ...getIsCurrentCharacterChip(
+                                                                        m
+                                                                    ),
+                                                                }}
+                                                            />
+                                                        </ListItem>
+                                                    );
+                                                })}
                                         </List>
-                                    )
+                                    );
                                 })}
                             </div>
-                            
                         )}
                     </Grid>
                 </Grid>
             </CardContent>
-            <CardActions sx={{justifyContent: 'flex-end'}}>
-                {user?.isDm && <Button color='error' onClick={() => handleClear()}>
-                    Clear Initiative
-                </Button>}
-                <Button onClick={() => channel.publish(name, {value: score, delete: false})}>
+            <CardActions sx={{ justifyContent: 'flex-end' }}>
+                {user?.isDm && (
+                    <Button color='error' onClick={() => handleClear()}>
+                        Clear Initiative
+                    </Button>
+                )}
+                <Button
+                    onClick={() =>
+                        channel.publish(name, { value: score, delete: false })
+                    }
+                >
                     Update Initiative
                 </Button>
             </CardActions>

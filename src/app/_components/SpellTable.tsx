@@ -28,6 +28,7 @@ import {
     Magick,
     MartialQueue,
     SpellTableObject,
+    SpellsPerDay,
 } from '@/_models';
 import { camelToTitle, linkToSpellCompendium } from '@/_utils/stringUtils';
 import * as R from 'ramda';
@@ -215,13 +216,24 @@ export const SpellTable = ({
         character: Character
     ) => {
         /* @ts-ignore */
+        const characterLevel = character.classes.find(
+            (x) => x.name === filterClass
+        ).level;
+        /* @ts-ignore */
         const classTable = spellTables[filterClass];
-        const classLevelTable =
-            classTable[
+        const classLevelTable: SpellsPerDay = !!classTable
+            ? classTable[characterLevel]
+            : undefined;
+        return spells.filter((x) => {
+            if (selectedSubtype === MagickCategory.Maneuver) {
+                return x.level <= Math.ceil(characterLevel / 2);
+            }
+            if (!!classTable && !!classLevelTable) {
                 /* @ts-ignore */
-                character.classes.find((x) => x.name === filterClass).level
-            ].perDay;
-        return spells.filter((x) => x.level <= classLevelTable.length);
+                return x.level <= classLevelTable.maxLevel;
+            }
+            return true;
+        });
     };
     useEffect(() => {
         setSelectedSubtype(MagickCategory.Maneuver);
@@ -249,8 +261,12 @@ export const SpellTable = ({
                     (x) => x[columnFilter.column] === columnFilter.value
                 );
             }
-            /* @ts-ignore */
-            setRows(filterByCastable(filteredSpells, spellTables, character));
+            !!spellTables!! && !!characterSpellbook
+                ? setRows(
+                      /* @ts-ignore */
+                      filterByCastable(filteredSpells, spellTables, character)
+                  )
+                : setRows(filteredSpells);
             setColumns(getColumns(filteredSpells));
         }
     }, [spells, selectedClass, onlyPrepared, columnFilter]);
@@ -261,7 +277,12 @@ export const SpellTable = ({
                 spells[filterClass]
             );
             setColumns(getColumns(filteredSpells));
-            setRows(filteredSpells);
+            !!spellTables!! && !!characterSpellbook
+                ? setRows(
+                      /* @ts-ignore */
+                      filterByCastable(filteredSpells, spellTables, character)
+                  )
+                : setRows(filteredSpells);
         }
     }, [selectedSubtype]);
 

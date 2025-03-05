@@ -45,6 +45,6 @@ use('character_sheet');
 //     { $set: { choices: { $split: ['$choices', ', '] } } },
 // ]);
 
-db.getCollection('class_spell_tables').updateMany({ className: 'Cleric' }, [
+db.getCollection('class_spell_tables').updateMany({ className: 'Oathsworn' }, [
     { $set: { perDay: { $split: ['$perDay', ','] } } },
 ]);
