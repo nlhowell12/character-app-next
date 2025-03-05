@@ -25,8 +25,8 @@ export default () => {
     const getSpellTables = async () => {
         if (!cachedSpellTables.current) {
             const res = await fetch('/api/spelltables');
-            const spellTables = await res.json();
-            cachedSpellTables.current = spellTables;
+            const spellTablesRes = await res.json();
+            cachedSpellTables.current = spellTablesRes;
         }
         if (!!cachedSpellTables.current) {
             setSpellTables(cachedSpellTables.current);

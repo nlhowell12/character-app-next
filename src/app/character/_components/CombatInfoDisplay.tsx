@@ -159,7 +159,7 @@ export const CombatInfoDisplay = ({
     const [openDomainAspect, setOpenDomainAspect] = useState(false);
     const [domainTabValue, setDomainTabValue] = useState<number>(0);
 
-    const { spells } = useSpellService();
+    const { spells, spellTables } = useSpellService();
     const { classAbilityResponse } = useClassAbilityService();
 
     const handleSpellBookOpen = () => {
@@ -337,60 +337,66 @@ export const CombatInfoDisplay = ({
                 value={getInitiativeScore(character)}
             />
 
-            {!!character.spellBook && !!spells && hasSpellCastingClass() && (
-                <Grid item xs={4} sx={cellStylingObject}>
-                    <Button
-                        sx={{ padding: '0 .5rem' }}
-                        variant='outlined'
-                        onClick={handleSpellBookOpen}
-                    >
-                        <Typography>Spell Book</Typography>
-                        <MenuBook sx={{ marginLeft: '.5rem' }} />
-                    </Button>
-                    <Dialog
-                        open={openSpellbook}
-                        onClose={() => setOpenSpellbook(false)}
-                        fullWidth
-                        maxWidth='lg'
-                        keepMounted
-                    >
-                        <SpellbookTabsContainer>
-                            <SpellTable
-                                spells={filterSpellObjectByCharacter(
-                                    character,
-                                    spells
-                                )}
-                                characterSpellbook
-                                character={character}
-                                onChange={handleLearnSpell}
-                            />
-                            <SpellTable
-                                spells={filterSpellObjectByCharacter(
-                                    character,
-                                    character.spellBook
-                                )}
-                                characterSpellbook
-                                personal
-                                character={character}
-                                onChange={handlePrepareSpell}
-                            />
-                            {hasMartialClass(character) && (
+            {!!character.spellBook &&
+                !!spells &&
+                !!spellTables &&
+                hasSpellCastingClass() && (
+                    <Grid item xs={4} sx={cellStylingObject}>
+                        <Button
+                            sx={{ padding: '0 .5rem' }}
+                            variant='outlined'
+                            onClick={handleSpellBookOpen}
+                        >
+                            <Typography>Spell Book</Typography>
+                            <MenuBook sx={{ marginLeft: '.5rem' }} />
+                        </Button>
+                        <Dialog
+                            open={openSpellbook}
+                            onClose={() => setOpenSpellbook(false)}
+                            fullWidth
+                            maxWidth='lg'
+                            keepMounted
+                        >
+                            <SpellbookTabsContainer>
                                 <SpellTable
                                     spells={filterSpellObjectByCharacter(
                                         character,
-                                        character.martialQueue,
-                                        true
+                                        spells
+                                    )}
+                                    characterSpellbook
+                                    character={character}
+                                    onChange={handleLearnSpell}
+                                    spellTables={spellTables}
+                                />
+                                <SpellTable
+                                    spells={filterSpellObjectByCharacter(
+                                        character,
+                                        character.spellBook
                                     )}
                                     characterSpellbook
                                     personal
                                     character={character}
                                     onChange={handlePrepareSpell}
+                                    spellTables={spellTables}
                                 />
-                            )}
-                        </SpellbookTabsContainer>
-                    </Dialog>
-                </Grid>
-            )}
+                                {hasMartialClass(character) && (
+                                    <SpellTable
+                                        spells={filterSpellObjectByCharacter(
+                                            character,
+                                            character.martialQueue,
+                                            true
+                                        )}
+                                        characterSpellbook
+                                        personal
+                                        character={character}
+                                        onChange={handlePrepareSpell}
+                                        spellTables={spellTables}
+                                    />
+                                )}
+                            </SpellbookTabsContainer>
+                        </Dialog>
+                    </Grid>
+                )}
             {!!clericClass && (
                 <Grid item xs={4} sx={cellStylingObject}>
                     <Button

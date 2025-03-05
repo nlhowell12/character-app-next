@@ -27,6 +27,7 @@ import {
     Character,
     Magick,
     MartialQueue,
+    SpellTableObject,
 } from '@/_models';
 import { camelToTitle, linkToSpellCompendium } from '@/_utils/stringUtils';
 import * as R from 'ramda';
@@ -77,6 +78,7 @@ export interface SpellTableProps {
         martial?: boolean
     ) => void;
     personal?: boolean;
+    spellTables: SpellTableObject;
 }
 export const SpellTable = ({
     spells,
@@ -84,6 +86,7 @@ export const SpellTable = ({
     onChange,
     character,
     personal,
+    spellTables,
 }: SpellTableProps) => {
     const [selectedClass, setSelectedClass] = useState<keyof SpellObject>(
         !!spells
@@ -206,6 +209,20 @@ export const SpellTable = ({
     };
     const filterClass = selectedClass as keyof SpellObject;
 
+    const filterByCastable = (
+        spells: AnyMagickType[],
+        spellTables: SpellTableObject,
+        character: Character
+    ) => {
+        /* @ts-ignore */
+        const classTable = spellTables[filterClass];
+        const classLevelTable =
+            classTable[
+                /* @ts-ignore */
+                character.classes.find((x) => x.name === filterClass).level
+            ].perDay;
+        return spells.filter((x) => x.level <= classLevelTable.length);
+    };
     useEffect(() => {
         setSelectedSubtype(MagickCategory.Maneuver);
         if (!!spells) {
@@ -232,7 +249,8 @@ export const SpellTable = ({
                     (x) => x[columnFilter.column] === columnFilter.value
                 );
             }
-            setRows(filteredSpells);
+            /* @ts-ignore */
+            setRows(filterByCastable(filteredSpells, spellTables, character));
             setColumns(getColumns(filteredSpells));
         }
     }, [spells, selectedClass, onlyPrepared, columnFilter]);
@@ -448,16 +466,7 @@ export const SpellTable = ({
                                                 placement='right'
                                                 key={row.name}
                                             >
-                                                <TableRow
-                                                    hover
-                                                    key={row.name}
-                                                    onClick={() =>
-                                                        linkToSpellCompendium(
-                                                            row.name,
-                                                            row.category
-                                                        )
-                                                    }
-                                                >
+                                                <TableRow hover key={row.name}>
                                                     {!!characterSpellbook ? (
                                                         <>
                                                             {!personal ? (
@@ -540,6 +549,12 @@ export const SpellTable = ({
                                                                     row[
                                                                         val as keyof AnyMagickType
                                                                     ] + val
+                                                                }
+                                                                onClick={() =>
+                                                                    linkToSpellCompendium(
+                                                                        row.name,
+                                                                        row.category
+                                                                    )
                                                                 }
                                                             >
                                                                 <Typography>
