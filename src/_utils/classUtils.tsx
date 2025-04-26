@@ -707,3 +707,10 @@ export const removeSelectedStringChoices = (
             multiplesAllowed.includes(ability.name)
     );
 };
+
+export const getClassLevel = (
+    character: Character,
+    name: CharacterClassNames
+): number | undefined => {
+    return character.classes.find((x) => x.name === name)?.level;
+};

@@ -58,7 +58,6 @@ const AbilityRow = ({ ability }: AbilityRowProps) => {
                 return '';
         }
     };
-    console.log(ability);
     return (
         <Tooltip
             title={getAbilityDescription(ability, classAbilityResponse)}

@@ -45,12 +45,11 @@ use('character_sheet');
 //     { $set: { choices: { $split: ['$choices', ', '] } } },
 // ]);
 
-// db.getCollection('class_spell_tables').updateMany(
-//     { className: 'Shadowcaster' },
-//     [{ $set: { perDay: { $split: ['$perDay', ','] } } }]
-// );
+db.getCollection('class_spell_tables').updateMany({ className: 'Wizard' }, [
+    { $set: { perDay: { $split: ['$perDay', ','] } } },
+]);
 
-db.getCollection('spells').updateMany(
-    { class: 'Shadowcaster' },
-    { $rename: { 'level ': 'level' } }
-);
+// db.getCollection('spells').updateMany(
+//     { class: 'Shadowcaster' },
+//     { $rename: { 'level ': 'level' } }
+// );

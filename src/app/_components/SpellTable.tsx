@@ -30,6 +30,7 @@ import {
     SpellTableObject,
     SpellsPerDay,
     Mystery,
+    CharacterClass,
 } from '@/_models';
 import { camelToTitle, linkToSpellCompendium } from '@/_utils/stringUtils';
 import * as R from 'ramda';
@@ -37,6 +38,7 @@ import { NumberInput } from './NumberInput';
 import { iconHoverStyling } from '@/_utils/theme';
 import InfoIcon from '@mui/icons-material/Info';
 import { getSpellDc } from '@/_utils/spellUtils';
+import { getClassLevel } from '@/_utils/classUtils';
 
 interface SpellTableTooltipProps {
     character?: Character;
@@ -235,35 +237,56 @@ export const SpellTable = ({
         spellTables: SpellTableObject,
         character: Character
     ) => {
+        const castingClass = () => {
+            if (selectedClass === CharacterClassNames.SorcWiz) {
+                if (
+                    character.classes.find(
+                        (x) => x.name === CharacterClassNames.Sorcerer
+                    )
+                ) {
+                    return CharacterClassNames.Sorcerer;
+                }
+                if (
+                    character.classes.find(
+                        (x) => x.name === CharacterClassNames.Wizard
+                    )
+                ) {
+                    return CharacterClassNames.Wizard;
+                }
+                return selectedClass;
+            }
+        };
+        const className = castingClass();
         /* @ts-ignore */
-        const characterLevel = character.classes.find(
-            (x) => x.name === filterClass
-        ).level;
+        const characterLevel = getClassLevel(character, className);
         /* @ts-ignore */
-        const classTable = spellTables[filterClass];
+        const classTable = spellTables[className];
         const classLevelTable: SpellsPerDay = !!classTable
             ? classTable.find((x: SpellsPerDay) => x.level === characterLevel)
             : undefined;
-        return spells.filter((x) => {
-            if (
-                selectedSubtype === MagickCategory.Maneuver &&
-                x.category === MagickCategory.Maneuver
-            ) {
-                return x.level <= Math.ceil(characterLevel / 2);
-            }
-            if (x.class === CharacterClassNames.Shadowcaster) {
-                return (
+        return (
+            !!characterLevel &&
+            spells.filter((x) => {
+                if (
+                    selectedSubtype === MagickCategory.Maneuver &&
+                    x.category === MagickCategory.Maneuver
+                ) {
+                    return x.level <= Math.ceil(characterLevel / 2);
+                }
+                if (x.class === CharacterClassNames.Shadowcaster) {
+                    return (
+                        /* @ts-ignore */
+                        x.level <= classLevelTable.maxLevel &&
+                        shadowCasterFilter(x as Mystery, character)
+                    );
+                }
+                if (!!classTable && !!classLevelTable) {
                     /* @ts-ignore */
-                    x.level <= classLevelTable.maxLevel &&
-                    shadowCasterFilter(x as Mystery, character)
-                );
-            }
-            if (!!classTable && !!classLevelTable) {
-                /* @ts-ignore */
-                return x.level <= classLevelTable.maxLevel;
-            }
-            return true;
-        });
+                    return x.level <= classLevelTable.maxLevel;
+                }
+                return true;
+            })
+        );
     };
     useEffect(() => {
         setSelectedSubtype(MagickCategory.Maneuver);
@@ -291,7 +314,7 @@ export const SpellTable = ({
                     (x) => x[columnFilter.column] === columnFilter.value
                 );
             }
-            !!spellTables!! && !!characterSpellbook
+            !!spellTables && !!characterSpellbook
                 ? setRows(
                       /* @ts-ignore */
                       filterByCastable(filteredSpells, spellTables, character)
@@ -317,11 +340,13 @@ export const SpellTable = ({
     }, [selectedSubtype]);
 
     useEffect(() => {
-        const filteredRows = rows
-            .filter((x: AnyMagickType) =>
-                x.name.toLowerCase().includes(searchValue.toLowerCase())
-            )
-            .sort((a, b) => a.level - b.level);
+        const filteredRows =
+            !!rows &&
+            rows
+                .filter((x: AnyMagickType) =>
+                    x.name.toLowerCase().includes(searchValue.toLowerCase())
+                )
+                .sort((a, b) => a.level - b.level);
         if (!!filteredRows && !!filteredRows.length) {
             setFilteredRows(filteredRows);
         }
