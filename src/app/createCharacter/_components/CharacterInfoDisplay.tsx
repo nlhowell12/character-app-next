@@ -322,6 +322,7 @@ export const CharacterInfoDisplay = ({
                             updateAction(CharacterKeys.weight, e.target.value)
                         )
                     }
+                    isNumber
                 />
                 <DisplayCell
                     editable
