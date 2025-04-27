@@ -238,6 +238,7 @@ export const SpellTable = ({
         character: Character
     ) => {
         const castingClass = () => {
+            console.log(selectedClass);
             if (selectedClass === CharacterClassNames.SorcWiz) {
                 if (
                     character.classes.find(
@@ -253,8 +254,8 @@ export const SpellTable = ({
                 ) {
                     return CharacterClassNames.Wizard;
                 }
-                return selectedClass;
             }
+            return selectedClass;
         };
         const className = castingClass();
         /* @ts-ignore */
