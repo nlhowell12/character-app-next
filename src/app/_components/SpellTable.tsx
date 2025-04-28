@@ -289,7 +289,6 @@ export const SpellTable = ({
         );
     };
     useEffect(() => {
-        isHybridClass && setSelectedSubtype(MagickCategory.Maneuver);
         if (!!spells) {
             let filteredSpells: AnyMagickType[] = [];
             if (!!characterSpellbook) {
