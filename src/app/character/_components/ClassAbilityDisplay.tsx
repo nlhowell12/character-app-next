@@ -60,7 +60,11 @@ const AbilityRow = ({ ability }: AbilityRowProps) => {
     };
     return (
         <Tooltip
-            title={getAbilityDescription(ability, classAbilityResponse)}
+            title={
+                !!classAbilityResponse
+                    ? getAbilityDescription(ability, classAbilityResponse)
+                    : ''
+            }
             placement='right'
             key={ability.name + ability.level}
         >

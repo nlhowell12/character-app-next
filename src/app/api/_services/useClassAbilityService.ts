@@ -25,29 +25,29 @@ export interface ClassAbilityReturnObject {
     [CharacterClassNames.Wizard]: ClassAbility[];
 }
 
-const initialClassAbilityState: ClassAbilityReturnObject = {
-    [CharacterClassNames.Cleric]: {
-        domainAspects: [],
-        orisons: [],
-        abilities: [],
-    },
-    [CharacterClassNames.Fighter]: [],
-    [CharacterClassNames.Barbarian]: [],
-    [CharacterClassNames.Bard]: {
-        abilities: [],
-        music: [],
-        refrains: [],
-    },
-    [CharacterClassNames.Hexblade]: [],
-    [CharacterClassNames.Monk]: [],
-    [CharacterClassNames.Oathsworn]: [],
-    [CharacterClassNames.Psion]: [],
-    [CharacterClassNames.PsychicWarrior]: [],
-    [CharacterClassNames.Rogue]: [],
-    [CharacterClassNames.Shadowcaster]: [],
-    [CharacterClassNames.Sorcerer]: [],
-    [CharacterClassNames.Wizard]: [],
-};
+// const initialClassAbilityState: ClassAbilityReturnObject = {
+//     [CharacterClassNames.Cleric]: {
+//         domainAspects: [],
+//         orisons: [],
+//         abilities: [],
+//     },
+//     [CharacterClassNames.Fighter]: [],
+//     [CharacterClassNames.Barbarian]: [],
+//     [CharacterClassNames.Bard]: {
+//         abilities: [],
+//         music: [],
+//         refrains: [],
+//     },
+//     [CharacterClassNames.Hexblade]: [],
+//     [CharacterClassNames.Monk]: [],
+//     [CharacterClassNames.Oathsworn]: [],
+//     [CharacterClassNames.Psion]: [],
+//     [CharacterClassNames.PsychicWarrior]: [],
+//     [CharacterClassNames.Rogue]: [],
+//     [CharacterClassNames.Shadowcaster]: [],
+//     [CharacterClassNames.Sorcerer]: [],
+//     [CharacterClassNames.Wizard]: [],
+// };
 
 export default () => {
     const [classAbilityResponse, setClassAbilities] = useState<
