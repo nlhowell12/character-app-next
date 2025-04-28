@@ -279,7 +279,7 @@ export const getSpecialResources = (
                 });
                 return;
             case CharacterClassNames.Cleric:
-                const turn = SpecialResourceType.Turn;
+                const turn = SpecialResourceType.TurnCleric;
                 const rebuke = SpecialResourceType.Rebuke;
 
                 resources.push({
@@ -325,7 +325,7 @@ export const getSpecialResources = (
                         ),
                     });
                 resources.push({
-                    name: SpecialResourceType.Turn,
+                    name: SpecialResourceType.TurnOath,
                     value: oathTurnCount(x.level, feats),
                 });
                 return;
@@ -348,7 +348,9 @@ export const getSpecialResourceValue = (
             return getRageCount(level);
         case SpecialResourceType.BardMusic:
             return getBardicMusicCount(level, feats);
-        case SpecialResourceType.Turn:
+        case SpecialResourceType.TurnCleric:
+            return getTurnCount(feats, attributeMod);
+        case SpecialResourceType.TurnOath:
             return getTurnCount(feats, attributeMod);
         case SpecialResourceType.Rebuke:
             return getTurnCount(feats, attributeMod);

@@ -31,11 +31,12 @@ const ResourceWidget = ({
 }: WidgetProps) => {
     const { specialResources } = character;
     const currentValue = specialResources[name];
+    console.log(name, currentValue);
     const handleAdd = () => {
         dispatch(
             updateAction(CharacterKeys.specialResources, {
                 ...specialResources,
-                [name]: currentValue + 1,
+                [name]: !!currentValue ? currentValue + 1 : initialValue,
             })
         );
     };
@@ -43,7 +44,7 @@ const ResourceWidget = ({
         dispatch(
             updateAction(CharacterKeys.specialResources, {
                 ...specialResources,
-                [name]: currentValue - 1,
+                [name]: !!currentValue ? currentValue - 1 : initialValue,
             })
         );
     };
@@ -123,8 +124,8 @@ const SpecialResourceTracker = ({
     dispatch,
 }: SpecialResourceProps) => {
     const specialResources = getSpecialResources(character);
-
     return specialResources.map(({ name, value }) => {
+        console.log(name, value);
         return (
             <ResourceWidget
                 key={name}

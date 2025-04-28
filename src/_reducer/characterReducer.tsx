@@ -411,7 +411,8 @@ const initialSpecialResouces: SpecialResourceObject = {
     [SpecialResourceType.Rage]: 0,
     [SpecialResourceType.Rebuke]: 0,
     [SpecialResourceType.StunningFist]: 0,
-    [SpecialResourceType.Turn]: 0,
+    [SpecialResourceType.TurnCleric]: 0,
+    [SpecialResourceType.TurnOath]: 0,
 };
 export const initialCharacterState: Character = {
     name: '',
