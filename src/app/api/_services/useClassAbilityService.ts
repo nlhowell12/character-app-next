@@ -1,5 +1,5 @@
 import { CharacterClassNames, ClassAbility } from '@/_models';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface ClassAbilityReturnObject {
     [CharacterClassNames.Cleric]: {
@@ -50,104 +50,93 @@ const initialClassAbilityState: ClassAbilityReturnObject = {
 };
 
 export default () => {
-    const [classAbilityResponse, setClassAbilities] =
-        useState<ClassAbilityReturnObject>(initialClassAbilityState);
-    const classAbilityRef = useRef([]);
+    const [classAbilityResponse, setClassAbilities] = useState<
+        ClassAbilityReturnObject | undefined
+    >();
 
     useEffect(() => {
         getClassAbilties();
     }, []);
 
     const getClassAbilties = async () => {
-        if (!classAbilityRef.current.length) {
-            const res = await fetch('/api/classAbilities');
-            const allClassAbilities = await res.json();
-            classAbilityRef.current = allClassAbilities;
-        }
-        const cachedResponse = classAbilityRef.current;
-        const clericAbilities = cachedResponse.filter(
+        const res = await fetch('/api/classAbilities');
+        const allClassAbilities = await res.json();
+        const clericAbilities = allClassAbilities.filter(
             (x: ClassAbility) =>
                 x.className === CharacterClassNames.Cleric &&
                 !!x.level &&
                 !x.allegianceValue
         );
-        const clericDomainAspects: ClassAbility[] = cachedResponse.filter(
+        const clericDomainAspects: ClassAbility[] = allClassAbilities.filter(
             (x: ClassAbility) =>
                 x.className === CharacterClassNames.Cleric &&
                 !!x.domain &&
                 !!x.allegianceValue
         );
-        const clericOrisons: ClassAbility[] = cachedResponse.filter(
+        const clericOrisons: ClassAbility[] = allClassAbilities.filter(
             (x: ClassAbility) =>
                 x.className === CharacterClassNames.Cleric &&
                 !!x.domain &&
                 !x.level
         );
-        const bardAbilities = cachedResponse.filter(
+        const bardAbilities = allClassAbilities.filter(
             (x: ClassAbility) => x.className === CharacterClassNames.Bard
         );
-        if (!!cachedResponse) {
-            setClassAbilities({
-                [CharacterClassNames.Cleric]: {
-                    domainAspects: clericDomainAspects,
-                    orisons: clericOrisons,
-                    abilities: clericAbilities,
-                },
-                [CharacterClassNames.Fighter]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Fighter
+        setClassAbilities({
+            [CharacterClassNames.Cleric]: {
+                domainAspects: clericDomainAspects,
+                orisons: clericOrisons,
+                abilities: clericAbilities,
+            },
+            [CharacterClassNames.Fighter]: allClassAbilities.filter(
+                (x: ClassAbility) => x.className === CharacterClassNames.Fighter
+            ),
+            [CharacterClassNames.Barbarian]: allClassAbilities.filter(
+                (x: ClassAbility) =>
+                    x.className === CharacterClassNames.Barbarian
+            ),
+            [CharacterClassNames.Bard]: {
+                abilities: bardAbilities.filter(
+                    (x: ClassAbility) => !x.isMusic && !x.isRefrain
                 ),
-                [CharacterClassNames.Barbarian]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Barbarian
+                music: bardAbilities.filter((x: ClassAbility) => x.isMusic),
+                refrains: bardAbilities.filter(
+                    (x: ClassAbility) => x.isRefrain
                 ),
-                [CharacterClassNames.Bard]: {
-                    abilities: bardAbilities.filter(
-                        (x: ClassAbility) => !x.isMusic && !x.isRefrain
-                    ),
-                    music: bardAbilities.filter((x: ClassAbility) => x.isMusic),
-                    refrains: bardAbilities.filter(
-                        (x: ClassAbility) => x.isRefrain
-                    ),
-                },
-                [CharacterClassNames.Hexblade]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Hexblade
-                ),
-                [CharacterClassNames.Monk]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Monk
-                ),
-                [CharacterClassNames.Oathsworn]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Oathsworn
-                ),
-                [CharacterClassNames.Psion]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Psion
-                ),
-                [CharacterClassNames.PsychicWarrior]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.PsychicWarrior
-                ),
-                [CharacterClassNames.Rogue]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Rogue
-                ),
-                [CharacterClassNames.Shadowcaster]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Shadowcaster
-                ),
-                [CharacterClassNames.Sorcerer]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Sorcerer
-                ),
-                [CharacterClassNames.Wizard]: cachedResponse.filter(
-                    (x: ClassAbility) =>
-                        x.className === CharacterClassNames.Wizard
-                ),
-            });
-        }
+            },
+            [CharacterClassNames.Hexblade]: allClassAbilities.filter(
+                (x: ClassAbility) =>
+                    x.className === CharacterClassNames.Hexblade
+            ),
+            [CharacterClassNames.Monk]: allClassAbilities.filter(
+                (x: ClassAbility) => x.className === CharacterClassNames.Monk
+            ),
+            [CharacterClassNames.Oathsworn]: allClassAbilities.filter(
+                (x: ClassAbility) =>
+                    x.className === CharacterClassNames.Oathsworn
+            ),
+            [CharacterClassNames.Psion]: allClassAbilities.filter(
+                (x: ClassAbility) => x.className === CharacterClassNames.Psion
+            ),
+            [CharacterClassNames.PsychicWarrior]: allClassAbilities.filter(
+                (x: ClassAbility) =>
+                    x.className === CharacterClassNames.PsychicWarrior
+            ),
+            [CharacterClassNames.Rogue]: allClassAbilities.filter(
+                (x: ClassAbility) => x.className === CharacterClassNames.Rogue
+            ),
+            [CharacterClassNames.Shadowcaster]: allClassAbilities.filter(
+                (x: ClassAbility) =>
+                    x.className === CharacterClassNames.Shadowcaster
+            ),
+            [CharacterClassNames.Sorcerer]: allClassAbilities.filter(
+                (x: ClassAbility) =>
+                    x.className === CharacterClassNames.Sorcerer
+            ),
+            [CharacterClassNames.Wizard]: allClassAbilities.filter(
+                (x: ClassAbility) => x.className === CharacterClassNames.Wizard
+            ),
+        });
     };
     return { classAbilityResponse };
 };

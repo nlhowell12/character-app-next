@@ -340,6 +340,9 @@ export const AddClassCard = ({
         }
     }, [editClass]);
     const getAbilities = () => {
+        if (!classAbilityResponse) {
+            return [];
+        }
         switch (className) {
             case CharacterClassNames.Bard:
                 return classAbilityResponse[
@@ -477,6 +480,7 @@ export const AddClassCard = ({
 
     useEffect(() => {
         if (
+            !!classAbilityResponse &&
             className === CharacterClassNames.Barbarian &&
             !!classAbilityResponse.Barbarian.length &&
             level === 1
@@ -485,7 +489,7 @@ export const AddClassCard = ({
                 classAbilityResponse.Barbarian.filter((x) => x.level === level)
             );
         }
-    }, [classAbilityResponse.Barbarian.length]);
+    }, [classAbilityResponse]);
 
     useEffect(() => {
         /* @ts-ignore */
@@ -605,516 +609,658 @@ export const AddClassCard = ({
         className === CharacterClassNames.Oathsworn ||
         className === CharacterClassNames.Monk;
     return (
-        <Card variant='outlined' sx={{ overflow: 'scroll' }}>
-            <CardHeader
-                title={!!editClass ? 'Update Class' : 'Add New Class'}
-            />
-            <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-                <div
-                    style={{
-                        display: 'flex',
-                    }}
+        <>
+            {!!classAbilityResponse && (
+                <Card
+                    variant='outlined'
+                    sx={{ overflow: 'scroll' }}
+                    key={className}
                 >
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <FormControl fullWidth>
-                            <InputLabel id='class-label'>Class</InputLabel>
+                    <CardHeader
+                        title={!!editClass ? 'Update Class' : 'Add New Class'}
+                    />
+                    <CardContent
+                        sx={{ display: 'flex', flexDirection: 'column' }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                <FormControl fullWidth>
+                                    <InputLabel id='class-label'>
+                                        Class
+                                    </InputLabel>
+                                    <Select
+                                        labelId='class-label'
+                                        id='class-select'
+                                        label='Class'
+                                        value={className}
+                                        onChange={(e) =>
+                                            setClassName(
+                                                e.target
+                                                    .value as CharacterClassNames
+                                            )
+                                        }
+                                    >
+                                        {Object.values(CharacterClassNames)
+                                            .filter(
+                                                (x) =>
+                                                    /* @ts-ignore */
+                                                    x !==
+                                                    CharacterClassNames.SorcWiz
+                                            )
+                                            .map((cls) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={cls}
+                                                        value={cls}
+                                                    >
+                                                        {cls}
+                                                    </MenuItem>
+                                                );
+                                            })}
+                                    </Select>
+                                </FormControl>
+                                <NumberInput
+                                    value={level}
+                                    label='Level'
+                                    onChange={(e) =>
+                                        setLevel(Number(e.target.value))
+                                    }
+                                    minZero
+                                />
+                                <NumberInput
+                                    value={BAB}
+                                    label='Base Attack Bonus'
+                                    onChange={(e) =>
+                                        setBAB(Number(e.target.value))
+                                    }
+                                    minZero
+                                />
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                <FormControl fullWidth sx={formControlStyling}>
+                                    <InputLabel id='primary-save-label'>
+                                        Primary Save
+                                    </InputLabel>
+                                    <Select
+                                        labelId='primary-save-label'
+                                        id='primary-save-select'
+                                        value={primarySave}
+                                        label='Primary Save'
+                                        onChange={(e) =>
+                                            setPrimarySave(
+                                                e.target.value as AttributeNames
+                                            )
+                                        }
+                                    >
+                                        {Object.keys(AttributeNames).map(
+                                            (att) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={att}
+                                                        value={att}
+                                                    >
+                                                        {att}
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
+                                    </Select>
+                                </FormControl>
+                                <FormControl
+                                    fullWidth
+                                    sx={{
+                                        ...formControlStyling,
+                                        marginTop: '.5rem',
+                                    }}
+                                >
+                                    <InputLabel id='secondary-save-label'>
+                                        Secondary Save
+                                    </InputLabel>
+                                    <Select
+                                        labelId='secondary-save-label'
+                                        id='secondary-save'
+                                        value={secondarySave}
+                                        label='Secondary Save'
+                                        onChange={(e) =>
+                                            setSecondarySave(
+                                                e.target.value as AttributeNames
+                                            )
+                                        }
+                                    >
+                                        {Object.keys(AttributeNames).map(
+                                            (att) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={att}
+                                                        value={att}
+                                                    >
+                                                        {att}
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
+                                    </Select>
+                                </FormControl>
+                            </div>
+                        </div>
+                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                            <InputLabel id='class-skill-label'>
+                                Class Skills
+                            </InputLabel>
                             <Select
-                                labelId='class-label'
-                                id='class-select'
-                                label='Class'
-                                value={className}
-                                onChange={(e) =>
-                                    setClassName(
-                                        e.target.value as CharacterClassNames
-                                    )
+                                labelId='class-skill-label'
+                                id='class-skills'
+                                label='Class Skills'
+                                multiple
+                                value={classSkills}
+                                onChange={handleChangeClassSkill}
+                                renderValue={(selected) =>
+                                    selected
+                                        .map((skill) => {
+                                            /* @ts-ignore */
+                                            return SkillTypes[skill];
+                                        })
+                                        .join(', ')
                                 }
                             >
-                                {Object.values(CharacterClassNames)
-                                    .filter(
-                                        (x) =>
-                                            /* @ts-ignore */
-                                            x !== CharacterClassNames.SorcWiz
-                                    )
-                                    .map((cls) => {
+                                {Object.keys(SkillTypes).map((skill) => {
+                                    return (
+                                        <MenuItem key={skill} value={skill}>
+                                            <Checkbox
+                                                checked={
+                                                    classSkills.indexOf(skill) >
+                                                    -1
+                                                }
+                                            />
+                                            <ListItemText
+                                                /* @ts-ignore */
+                                                primary={SkillTypes[skill]}
+                                            />
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                        {className === CharacterClassNames.Cleric && (
+                            <>
+                                <FormControl
+                                    fullWidth
+                                    sx={{ marginTop: '.5rem' }}
+                                >
+                                    <InputLabel id='turn-label'>
+                                        Improved Counterchannel
+                                    </InputLabel>
+                                    <Select
+                                        labelId='imp-counter-label'
+                                        id='impCounter'
+                                        label='Improved Counterchannel'
+                                        value={impCounter}
+                                        onChange={(e) =>
+                                            setImpCounter(
+                                                e.target.value as DivineDomain
+                                            )
+                                        }
+                                    >
+                                        {Object.keys(DivineDomain).map(
+                                            (dom) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={dom}
+                                                        value={dom}
+                                                    >
+                                                        <ListItemText
+                                                            primary={
+                                                                DivineDomain[
+                                                                    dom as DivineDomain
+                                                                ]
+                                                            }
+                                                        />
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
+                                    </Select>
+                                </FormControl>
+                                <FormControl
+                                    fullWidth
+                                    sx={{ marginTop: '.5rem' }}
+                                >
+                                    <InputLabel id='turn-label'>
+                                        Turn Domain
+                                    </InputLabel>
+                                    <Select
+                                        labelId='turn-label'
+                                        id='turn'
+                                        label='Turn Domain'
+                                        value={turnDomain}
+                                        onChange={(e) =>
+                                            setTurnDomain(
+                                                e.target.value as DivineDomain
+                                            )
+                                        }
+                                    >
+                                        {Object.keys(DivineDomain).map(
+                                            (dom) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={dom}
+                                                        value={dom}
+                                                    >
+                                                        <ListItemText
+                                                            primary={
+                                                                DivineDomain[
+                                                                    dom as DivineDomain
+                                                                ]
+                                                            }
+                                                        />
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
+                                    </Select>
+                                </FormControl>
+                                <FormControl
+                                    fullWidth
+                                    sx={{ marginTop: '.5rem' }}
+                                >
+                                    <InputLabel id='rebuke-label'>
+                                        Rebuke Domain
+                                    </InputLabel>
+                                    <Select
+                                        labelId='rebuke-label'
+                                        id='rebuke'
+                                        label='Rebuke Domain'
+                                        value={rebukeDomain}
+                                        onChange={(e) =>
+                                            setRebukeDomain(
+                                                e.target.value as DivineDomain
+                                            )
+                                        }
+                                    >
+                                        {Object.keys(DivineDomain).map(
+                                            (dom) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={dom}
+                                                        value={dom}
+                                                    >
+                                                        <ListItemText
+                                                            primary={
+                                                                DivineDomain[
+                                                                    dom as DivineDomain
+                                                                ]
+                                                            }
+                                                        />
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
+                                    </Select>
+                                </FormControl>
+                                <FormControl
+                                    fullWidth
+                                    sx={{ marginTop: '.5rem' }}
+                                >
+                                    <InputLabel id='spon-label'>
+                                        Spontaneous Casting Domain
+                                    </InputLabel>
+                                    <Select
+                                        labelId='spon-label'
+                                        id='spontCast'
+                                        label='Spontaneous Casting Domain'
+                                        value={sponDomain}
+                                        onChange={(e) =>
+                                            setSponDomain(
+                                                e.target.value as DivineDomain
+                                            )
+                                        }
+                                    >
+                                        {Object.keys(DivineDomain).map(
+                                            (dom) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={dom}
+                                                        value={dom}
+                                                    >
+                                                        <ListItemText
+                                                            primary={
+                                                                DivineDomain[
+                                                                    dom as DivineDomain
+                                                                ]
+                                                            }
+                                                        />
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
+                                    </Select>
+                                </FormControl>
+                                <FormControl
+                                    fullWidth
+                                    sx={{ marginTop: '.5rem' }}
+                                >
+                                    <InputLabel id='spon-label'>
+                                        Select Domain Preference
+                                    </InputLabel>
+                                    <Select
+                                        labelId='spon-label'
+                                        id='preferredDomains'
+                                        label='Domain Preferences'
+                                        value={preferredDomains}
+                                        onChange={(e) =>
+                                            handleDomainPrefChange(e)
+                                        }
+                                        renderValue={(selected) => (
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    flexWrap: 'wrap',
+                                                    gap: 0.5,
+                                                }}
+                                            >
+                                                {selected.map((value) => (
+                                                    <Chip
+                                                        key={value}
+                                                        label={value}
+                                                    />
+                                                ))}
+                                            </Box>
+                                        )}
+                                        multiple
+                                    >
+                                        {Object.keys(DivineDomain).map(
+                                            (dom) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={dom}
+                                                        value={dom}
+                                                    >
+                                                        <ListItemText
+                                                            primary={
+                                                                DivineDomain[
+                                                                    dom as DivineDomain
+                                                                ]
+                                                            }
+                                                        />
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
+                                    </Select>
+                                </FormControl>
+                            </>
+                        )}
+                        {shouldShowPathSelection && (
+                            <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                                <InputLabel id='spon-label'>
+                                    Class Path Selection
+                                </InputLabel>
+                                <Select
+                                    labelId='spon-label'
+                                    id='classPathSelect'
+                                    label='Class Path Selection'
+                                    value={chosenPath}
+                                    onChange={(e) =>
+                                        setPath(e.target.value as PathOptions)
+                                    }
+                                >
+                                    {getPathOptions(className).map((path) => {
                                         return (
-                                            <MenuItem key={cls} value={cls}>
-                                                {cls}
+                                            <MenuItem key={path} value={path}>
+                                                <ListItemText primary={path} />
                                             </MenuItem>
                                         );
                                     })}
-                            </Select>
-                        </FormControl>
-                        <NumberInput
-                            value={level}
-                            label='Level'
-                            onChange={(e) => setLevel(Number(e.target.value))}
-                            minZero
-                        />
-                        <NumberInput
-                            value={BAB}
-                            label='Base Attack Bonus'
-                            onChange={(e) => setBAB(Number(e.target.value))}
-                            minZero
-                        />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <FormControl fullWidth sx={formControlStyling}>
-                            <InputLabel id='primary-save-label'>
-                                Primary Save
-                            </InputLabel>
-                            <Select
-                                labelId='primary-save-label'
-                                id='primary-save-select'
-                                value={primarySave}
-                                label='Primary Save'
-                                onChange={(e) =>
-                                    setPrimarySave(
-                                        e.target.value as AttributeNames
-                                    )
-                                }
-                            >
-                                {Object.keys(AttributeNames).map((att) => {
-                                    return (
-                                        <MenuItem key={att} value={att}>
-                                            {att}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                        <FormControl
-                            fullWidth
-                            sx={{ ...formControlStyling, marginTop: '.5rem' }}
-                        >
-                            <InputLabel id='secondary-save-label'>
-                                Secondary Save
-                            </InputLabel>
-                            <Select
-                                labelId='secondary-save-label'
-                                id='secondary-save'
-                                value={secondarySave}
-                                label='Secondary Save'
-                                onChange={(e) =>
-                                    setSecondarySave(
-                                        e.target.value as AttributeNames
-                                    )
-                                }
-                            >
-                                {Object.keys(AttributeNames).map((att) => {
-                                    return (
-                                        <MenuItem key={att} value={att}>
-                                            {att}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                    </div>
-                </div>
-                <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                    <InputLabel id='class-skill-label'>Class Skills</InputLabel>
-                    <Select
-                        labelId='class-skill-label'
-                        id='class-skills'
-                        label='Class Skills'
-                        multiple
-                        value={classSkills}
-                        onChange={handleChangeClassSkill}
-                        renderValue={(selected) =>
-                            selected
-                                .map((skill) => {
-                                    /* @ts-ignore */
-                                    return SkillTypes[skill];
-                                })
-                                .join(', ')
-                        }
-                    >
-                        {Object.keys(SkillTypes).map((skill) => {
-                            return (
-                                <MenuItem key={skill} value={skill}>
-                                    <Checkbox
-                                        checked={
-                                            classSkills.indexOf(skill) > -1
+                                </Select>
+                            </FormControl>
+                        )}
+                        {className === CharacterClassNames.Rogue &&
+                            level >= 10 && (
+                                <FormControl
+                                    fullWidth
+                                    sx={{ marginTop: '.5rem' }}
+                                >
+                                    <InputLabel id='spon-label'>
+                                        Second Guild Path Selection
+                                    </InputLabel>
+                                    <Select
+                                        labelId='spon-label'
+                                        id='secondPathSelect'
+                                        label='Second Guild Path Selection'
+                                        value={secondPath}
+                                        onChange={(e) =>
+                                            setSecondPath(
+                                                e.target.value as GuildPaths
+                                            )
                                         }
-                                    />
-                                    {/* @ts-ignore */}
-                                    <ListItemText primary={SkillTypes[skill]} />
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-                {className === CharacterClassNames.Cleric && (
-                    <>
-                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                            <InputLabel id='turn-label'>
-                                Improved Counterchannel
-                            </InputLabel>
-                            <Select
-                                labelId='imp-counter-label'
-                                id='impCounter'
-                                label='Improved Counterchannel'
-                                value={impCounter}
-                                onChange={(e) =>
-                                    setImpCounter(
-                                        e.target.value as DivineDomain
-                                    )
-                                }
-                            >
-                                {Object.keys(DivineDomain).map((dom) => {
-                                    return (
-                                        <MenuItem key={dom} value={dom}>
-                                            <ListItemText
-                                                primary={
-                                                    DivineDomain[
-                                                        dom as DivineDomain
-                                                    ]
-                                                }
-                                            />
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                            <InputLabel id='turn-label'>Turn Domain</InputLabel>
-                            <Select
-                                labelId='turn-label'
-                                id='turn'
-                                label='Turn Domain'
-                                value={turnDomain}
-                                onChange={(e) =>
-                                    setTurnDomain(
-                                        e.target.value as DivineDomain
-                                    )
-                                }
-                            >
-                                {Object.keys(DivineDomain).map((dom) => {
-                                    return (
-                                        <MenuItem key={dom} value={dom}>
-                                            <ListItemText
-                                                primary={
-                                                    DivineDomain[
-                                                        dom as DivineDomain
-                                                    ]
-                                                }
-                                            />
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                            <InputLabel id='rebuke-label'>
-                                Rebuke Domain
-                            </InputLabel>
-                            <Select
-                                labelId='rebuke-label'
-                                id='rebuke'
-                                label='Rebuke Domain'
-                                value={rebukeDomain}
-                                onChange={(e) =>
-                                    setRebukeDomain(
-                                        e.target.value as DivineDomain
-                                    )
-                                }
-                            >
-                                {Object.keys(DivineDomain).map((dom) => {
-                                    return (
-                                        <MenuItem key={dom} value={dom}>
-                                            <ListItemText
-                                                primary={
-                                                    DivineDomain[
-                                                        dom as DivineDomain
-                                                    ]
-                                                }
-                                            />
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                            <InputLabel id='spon-label'>
-                                Spontaneous Casting Domain
-                            </InputLabel>
-                            <Select
-                                labelId='spon-label'
-                                id='spontCast'
-                                label='Spontaneous Casting Domain'
-                                value={sponDomain}
-                                onChange={(e) =>
-                                    setSponDomain(
-                                        e.target.value as DivineDomain
-                                    )
-                                }
-                            >
-                                {Object.keys(DivineDomain).map((dom) => {
-                                    return (
-                                        <MenuItem key={dom} value={dom}>
-                                            <ListItemText
-                                                primary={
-                                                    DivineDomain[
-                                                        dom as DivineDomain
-                                                    ]
-                                                }
-                                            />
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                        <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                            <InputLabel id='spon-label'>
-                                Select Domain Preference
-                            </InputLabel>
-                            <Select
-                                labelId='spon-label'
-                                id='preferredDomains'
-                                label='Domain Preferences'
-                                value={preferredDomains}
-                                onChange={(e) => handleDomainPrefChange(e)}
-                                renderValue={(selected) => (
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            gap: 0.5,
-                                        }}
                                     >
-                                        {selected.map((value) => (
-                                            <Chip key={value} label={value} />
-                                        ))}
-                                    </Box>
-                                )}
-                                multiple
-                            >
-                                {Object.keys(DivineDomain).map((dom) => {
-                                    return (
-                                        <MenuItem key={dom} value={dom}>
-                                            <ListItemText
-                                                primary={
-                                                    DivineDomain[
-                                                        dom as DivineDomain
-                                                    ]
-                                                }
-                                            />
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                    </>
-                )}
-                {shouldShowPathSelection && (
-                    <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                        <InputLabel id='spon-label'>
-                            Class Path Selection
-                        </InputLabel>
-                        <Select
-                            labelId='spon-label'
-                            id='classPathSelect'
-                            label='Class Path Selection'
-                            value={chosenPath}
-                            onChange={(e) =>
-                                setPath(e.target.value as PathOptions)
-                            }
-                        >
-                            {getPathOptions(className).map((path) => {
-                                return (
-                                    <MenuItem key={path} value={path}>
-                                        <ListItemText primary={path} />
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                )}
-                {className === CharacterClassNames.Rogue && level >= 10 && (
-                    <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                        <InputLabel id='spon-label'>
-                            Second Guild Path Selection
-                        </InputLabel>
-                        <Select
-                            labelId='spon-label'
-                            id='secondPathSelect'
-                            label='Second Guild Path Selection'
-                            value={secondPath}
-                            onChange={(e) =>
-                                setSecondPath(e.target.value as GuildPaths)
-                            }
-                        >
-                            {Object.values(GuildPaths).map((path) => {
-                                return (
-                                    <MenuItem key={path} value={path}>
-                                        <ListItemText primary={path} />
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                )}
-                {className === CharacterClassNames.Wizard && (
-                    <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                        <InputLabel id='spon-label'>Specialization</InputLabel>
-                        <Select
-                            labelId='specialization-label'
-                            id='SpecializationSelect'
-                            label='Specialization'
-                            value={chosenSchool}
-                            onChange={(e) =>
-                                setChosenSchool(e.target.value as ArcaneSchool)
-                            }
-                        >
-                            <MenuItem value={'General'}>General</MenuItem>
-                            {Object.values(ArcaneSchool).map((school) => {
-                                return (
-                                    <MenuItem key={school} value={school}>
-                                        <ListItemText primary={school} />
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                )}
-                {(className === CharacterClassNames.Psion ||
-                    className === CharacterClassNames.PsychicWarrior) && (
-                    <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
-                        <InputLabel id='spon-label'>Discipline</InputLabel>
-                        <Select
-                            labelId='specialization-label'
-                            id='SpecializationSelect'
-                            label='Discipline'
-                            value={chosenDiscipline}
-                            onChange={(e) =>
-                                setChosenDiscipline(
-                                    e.target.value as PsionicDiscipline
-                                )
-                            }
-                        >
-                            {Object.values(PsionicDiscipline).map((disc) => {
-                                return (
-                                    <MenuItem key={disc} value={disc}>
-                                        <ListItemText primary={disc} />
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                )}
-                {classAbilities
-                    .sort((a, b) => a.level - b.level)
-                    .filter(
-                        (x) =>
-                            !x.path ||
-                            x.path === chosenPath ||
-                            x.path === secondPath
-                    )
-                    .map((abl: ClassAbility) => {
-                        const name = !!abl.allegianceValue
-                            ? `${abl.domain} Aspect`
-                            : abl.name;
-                        if (
-                            !!chosenPath &&
-                            abl.name === 'Avowal' &&
-                            !!classAbilityResponse.Oathsworn.length
-                        ) {
-                            abl.choices = classAbilityResponse.Oathsworn.filter(
-                                (x) =>
-                                    x.isAvowalChoices && x.path === chosenPath
-                            )[0].choices;
-                        }
-                        return (
-                            <>
-                                {
-                                    <Tooltip
-                                        title={getAbilityDescription(
-                                            abl,
-                                            classAbilityResponse
+                                        {Object.values(GuildPaths).map(
+                                            (path) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={path}
+                                                        value={path}
+                                                    >
+                                                        <ListItemText
+                                                            primary={path}
+                                                        />
+                                                    </MenuItem>
+                                                );
+                                            }
                                         )}
-                                        key={name + abl.level}
-                                        followCursor
-                                        placement='top'
-                                    >
-                                        <div key={name + abl.level + abl.level}>
-                                            <ClassAbilityCard
-                                                abl={abl}
-                                                value={
-                                                    !!abl.selectedChoice
-                                                        ? abl.selectedChoice
-                                                        : ''
-                                                }
-                                                handleSelection={
-                                                    handleChoiceSelection
-                                                }
-                                                choices={getClassAbilityChoices(
-                                                    className,
-                                                    classAbilityResponse,
-                                                    abl,
-                                                    !!chosenPath
-                                                        ? chosenPath
-                                                        : undefined
-                                                )}
-                                                classAbilities={classAbilities}
-                                            />
-                                        </div>
-                                    </Tooltip>
-                                }
-                                {abl.name === 'Favored Enemy' &&
-                                    abl.level > 1 && (
-                                        <Tooltip
-                                            title={getAbilityDescription(
-                                                abl,
-                                                classAbilityResponse
-                                            )}
-                                            key={name + abl.level + 2}
-                                            followCursor
-                                        >
-                                            <div
-                                                key={
-                                                    name +
-                                                    abl.level +
-                                                    abl.level +
-                                                    2
-                                                }
-                                            >
-                                                <ClassAbilityCard
-                                                    abl={abl}
-                                                    value={
-                                                        !!abl.secondSelectedChoice
-                                                            ? abl.secondSelectedChoice
-                                                            : ''
-                                                    }
-                                                    handleSelection={
-                                                        handleSecondChoiceSelection
-                                                    }
-                                                    choices={getClassAbilityChoices(
-                                                        className,
-                                                        classAbilityResponse,
-                                                        abl,
-                                                        !!chosenPath
-                                                            ? chosenPath
-                                                            : undefined
-                                                    )}
-                                                    classAbilities={
-                                                        classAbilities
-                                                    }
-                                                />
-                                            </div>
-                                        </Tooltip>
+                                    </Select>
+                                </FormControl>
+                            )}
+                        {className === CharacterClassNames.Wizard && (
+                            <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                                <InputLabel id='spon-label'>
+                                    Specialization
+                                </InputLabel>
+                                <Select
+                                    labelId='specialization-label'
+                                    id='SpecializationSelect'
+                                    label='Specialization'
+                                    value={chosenSchool}
+                                    onChange={(e) =>
+                                        setChosenSchool(
+                                            e.target.value as ArcaneSchool
+                                        )
+                                    }
+                                >
+                                    <MenuItem value={'General'}>
+                                        General
+                                    </MenuItem>
+                                    {Object.values(ArcaneSchool).map(
+                                        (school) => {
+                                            return (
+                                                <MenuItem
+                                                    key={school}
+                                                    value={school}
+                                                >
+                                                    <ListItemText
+                                                        primary={school}
+                                                    />
+                                                </MenuItem>
+                                            );
+                                        }
                                     )}
-                            </>
-                        );
-                    })}
-            </CardContent>
-            <CardActions sx={{ justifyContent: 'right' }}>
-                <Button onClick={(e) => onClose(e, 'buttonClose')}>
-                    <CancelRounded />
-                </Button>
-                <Button>
-                    <CheckCircle onClick={() => handleSubmitClick()} />
-                </Button>
-            </CardActions>
-        </Card>
+                                </Select>
+                            </FormControl>
+                        )}
+                        {(className === CharacterClassNames.Psion ||
+                            className ===
+                                CharacterClassNames.PsychicWarrior) && (
+                            <FormControl fullWidth sx={{ marginTop: '.5rem' }}>
+                                <InputLabel id='spon-label'>
+                                    Discipline
+                                </InputLabel>
+                                <Select
+                                    labelId='specialization-label'
+                                    id='SpecializationSelect'
+                                    label='Discipline'
+                                    value={chosenDiscipline}
+                                    onChange={(e) =>
+                                        setChosenDiscipline(
+                                            e.target.value as PsionicDiscipline
+                                        )
+                                    }
+                                >
+                                    {Object.values(PsionicDiscipline).map(
+                                        (disc) => {
+                                            return (
+                                                <MenuItem
+                                                    key={disc}
+                                                    value={disc}
+                                                >
+                                                    <ListItemText
+                                                        primary={disc}
+                                                    />
+                                                </MenuItem>
+                                            );
+                                        }
+                                    )}
+                                </Select>
+                            </FormControl>
+                        )}
+                        {classAbilities
+                            .sort((a, b) => a.level - b.level)
+                            .filter(
+                                (x) =>
+                                    !x.path ||
+                                    x.path === chosenPath ||
+                                    x.path === secondPath
+                            )
+                            .map((abl: ClassAbility) => {
+                                const name = !!abl.allegianceValue
+                                    ? `${abl.domain} Aspect`
+                                    : abl.name;
+                                if (
+                                    !!chosenPath &&
+                                    abl.name === 'Avowal' &&
+                                    !!classAbilityResponse.Oathsworn.length
+                                ) {
+                                    abl.choices =
+                                        classAbilityResponse.Oathsworn.filter(
+                                            (x) =>
+                                                x.isAvowalChoices &&
+                                                x.path === chosenPath
+                                        )[0].choices;
+                                }
+                                return (
+                                    <>
+                                        {
+                                            <Tooltip
+                                                title={getAbilityDescription(
+                                                    abl,
+                                                    classAbilityResponse
+                                                )}
+                                                key={name + abl.level}
+                                                followCursor
+                                                placement='top'
+                                            >
+                                                <div
+                                                    key={
+                                                        name +
+                                                        abl.level +
+                                                        abl.level
+                                                    }
+                                                >
+                                                    <ClassAbilityCard
+                                                        abl={abl}
+                                                        value={
+                                                            !!abl.selectedChoice
+                                                                ? abl.selectedChoice
+                                                                : ''
+                                                        }
+                                                        handleSelection={
+                                                            handleChoiceSelection
+                                                        }
+                                                        choices={getClassAbilityChoices(
+                                                            className,
+                                                            classAbilityResponse,
+                                                            abl,
+                                                            !!chosenPath
+                                                                ? chosenPath
+                                                                : undefined
+                                                        )}
+                                                        classAbilities={
+                                                            classAbilities
+                                                        }
+                                                    />
+                                                </div>
+                                            </Tooltip>
+                                        }
+                                        {abl.name === 'Favored Enemy' &&
+                                            abl.level > 1 && (
+                                                <Tooltip
+                                                    title={getAbilityDescription(
+                                                        abl,
+                                                        classAbilityResponse
+                                                    )}
+                                                    key={name + abl.level + 2}
+                                                    followCursor
+                                                >
+                                                    <div
+                                                        key={
+                                                            name +
+                                                            abl.level +
+                                                            abl.level +
+                                                            2
+                                                        }
+                                                    >
+                                                        <ClassAbilityCard
+                                                            abl={abl}
+                                                            value={
+                                                                !!abl.secondSelectedChoice
+                                                                    ? abl.secondSelectedChoice
+                                                                    : ''
+                                                            }
+                                                            handleSelection={
+                                                                handleSecondChoiceSelection
+                                                            }
+                                                            choices={getClassAbilityChoices(
+                                                                className,
+                                                                classAbilityResponse,
+                                                                abl,
+                                                                !!chosenPath
+                                                                    ? chosenPath
+                                                                    : undefined
+                                                            )}
+                                                            classAbilities={
+                                                                classAbilities
+                                                            }
+                                                        />
+                                                    </div>
+                                                </Tooltip>
+                                            )}
+                                    </>
+                                );
+                            })}
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: 'right' }}>
+                        <Button onClick={(e) => onClose(e, 'buttonClose')}>
+                            <CancelRounded />
+                        </Button>
+                        <Button>
+                            <CheckCircle onClick={() => handleSubmitClick()} />
+                        </Button>
+                    </CardActions>
+                </Card>
+            )}
+        </>
     );
 };

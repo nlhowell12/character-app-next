@@ -472,28 +472,32 @@ export const CombatInfoDisplay = ({
                                                 </TableCell>
                                             </TableRow>
                                         </TableHead>
-                                        <TableBody>
-                                            {getAlignedOrisons(
-                                                character,
-                                                classAbilityResponse.Cleric
-                                                    .orisons
-                                            ).map((ori) => {
-                                                return (
-                                                    <TableRow key={ori.domain}>
-                                                        <TableCell>
-                                                            {ori.domain}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Typography whiteSpace='pre-line'>
-                                                                {
-                                                                    ori.description
-                                                                }
-                                                            </Typography>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                );
-                                            })}
-                                        </TableBody>
+                                        {!!classAbilityResponse && (
+                                            <TableBody>
+                                                {getAlignedOrisons(
+                                                    character,
+                                                    classAbilityResponse.Cleric
+                                                        .orisons
+                                                ).map((ori) => {
+                                                    return (
+                                                        <TableRow
+                                                            key={ori.domain}
+                                                        >
+                                                            <TableCell>
+                                                                {ori.domain}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Typography whiteSpace='pre-line'>
+                                                                    {
+                                                                        ori.description
+                                                                    }
+                                                                </Typography>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    );
+                                                })}
+                                            </TableBody>
+                                        )}
                                     </Table>
                                 </Card>
                             </CustomTabPanel>

@@ -38,8 +38,9 @@ export const DomainAspectsTable = ({
 }: DomainAspectsTableProps) => {
     const { classAbilityResponse } = useClassAbilityService();
     const sortByDomain = useMemo(() => R.sortBy(R.prop('domain')), []);
-    const domainAspects =
-        classAbilityResponse[CharacterClassNames.Cleric].domainAspects;
+    const domainAspects = !!classAbilityResponse
+        ? classAbilityResponse[CharacterClassNames.Cleric].domainAspects
+        : [];
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
