@@ -107,6 +107,8 @@ export const ClassAbilityDisplay = ({
             sx={{
                 width: '100%',
                 height: 'fit-content',
+                maxHeight: '60vh',
+                overflow: 'scroll',
                 [theme.breakpoints.up('xl')]: {
                     marginTop: '1.5rem',
                     maxWidth: '30rem',
@@ -119,7 +121,7 @@ export const ClassAbilityDisplay = ({
                     border: '1px solid gray',
                 }}
             >
-                <TableBody>
+                <TableBody sx={{ overflow: 'scroll' }}>
                     {!!hexbladeDC && (
                         <TableRow>
                             <TableCell>
