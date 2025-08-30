@@ -109,9 +109,9 @@ export const InitiativeTracker = () => {
                             x.timestamp > lastMessage.timestamp
                     );
                 if (
-                    !!lastTrackerClearTimestamp &&
                     !!lastMessage &&
-                    lastMessage.timestamp > lastTrackerClearTimestamp &&
+                    (!lastTrackerClearTimestamp ||
+                        lastMessage.timestamp > lastTrackerClearTimestamp) &&
                     !isDeleted &&
                     !isStatusMessage(m)
                 ) {
