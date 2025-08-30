@@ -83,13 +83,15 @@ export const FeatTable = ({ feats, handleClick }: FeatTableProps) => {
                                         value={columnFilter}
                                     >
                                         <MenuItem value={''}>Reset</MenuItem>
-                                        {Object.keys(FeatCategory).map((x) => {
-                                            return (
-                                                <MenuItem key={x} value={x}>
-                                                    {x}
-                                                </MenuItem>
-                                            );
-                                        })}
+                                        {Object.values(FeatCategory).map(
+                                            (x) => {
+                                                return (
+                                                    <MenuItem key={x} value={x}>
+                                                        {x}
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
                                     </Select>
                                 </FormControl>
                             </TableCell>
