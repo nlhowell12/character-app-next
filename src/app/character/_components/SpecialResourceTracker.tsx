@@ -1,5 +1,5 @@
 import { Button, Card, Grid, IconButton, Typography } from '@mui/material';
-import React, { Dispatch, useState } from 'react';
+import React, { Dispatch } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { RestartAlt } from '@mui/icons-material';
@@ -35,7 +35,7 @@ const ResourceWidget = ({
         dispatch(
             updateAction(CharacterKeys.specialResources, {
                 ...specialResources,
-                [name]: !!currentValue ? currentValue + 1 : initialValue,
+                [name]: currentValue + 1,
             })
         );
     };
@@ -43,7 +43,7 @@ const ResourceWidget = ({
         dispatch(
             updateAction(CharacterKeys.specialResources, {
                 ...specialResources,
-                [name]: !!currentValue ? currentValue - 1 : initialValue,
+                [name]: currentValue - 1,
             })
         );
     };
