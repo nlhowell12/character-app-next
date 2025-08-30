@@ -13,7 +13,12 @@ import {
     stackableBonuses,
 } from '@/_models';
 import { getTotalAttributeModifier } from './attributeUtils';
-import { getEnergyDrainedModifiers, getFearModifiers, getSickenedModifiers, getSlowedModifiers } from './statusEffectUtils';
+import {
+    getEnergyDrainedModifiers,
+    getFearModifiers,
+    getSickenedModifiers,
+    getSlowedModifiers,
+} from './statusEffectUtils';
 import { getModifiersFromWornEquipment } from './equipmentUtils';
 
 export interface DefenseObject {
@@ -26,12 +31,12 @@ const adjustDexForStatusEffects = (character: Character, dexMod: number) => {
         StatusEffects.Blinded,
         StatusEffects.Cowering,
         StatusEffects.Frightened,
-		StatusEffects.Stunned
+        StatusEffects.Stunned,
     ];
     const additionalPenaltyMods = [
         StatusEffects.Blinded,
         StatusEffects.Cowering,
-		StatusEffects.Stunned
+        StatusEffects.Stunned,
     ];
     const additionalPenalty = character.statusEffects.some((x) =>
         additionalPenaltyMods.includes(x)
@@ -112,15 +117,17 @@ export const getMiscAcBonuses = (character: Character): Modifier[] => {
 };
 
 export const getEquipmentWithAcBonuses = (character: Character): Modifier[] => {
-    return getModifiersFromWornEquipment(character).filter((mod) => !!mod.defense)
+    return getModifiersFromWornEquipment(character).filter(
+        (mod) => !!mod.defense
+    );
 };
 
 export type BonusObject = {
     [key in BonusTypes]: number;
 };
- export type ModiferSourceBonusObject = {
-    [key in ModifierSource]: number
- }
+export type ModiferSourceBonusObject = {
+    [key in ModifierSource]: number;
+};
 export const getCombatSizeBonus = (character: Character) => {
     return SizeModifiers[character.size].combatModifier;
 };
@@ -128,11 +135,13 @@ export const getCombatSizeBonus = (character: Character) => {
 export const getDefenseBonuses = (character: Character): BonusObject => {
     const miscMods = getMiscAcBonuses(character);
     const equipmentMods = getEquipmentWithAcBonuses(character);
-	const statusEffectMods = [...getSlowedModifiers(character)].filter(x => !!x.defense);
+    const statusEffectMods = [...getSlowedModifiers(character)].filter(
+        (x) => !!x.defense
+    );
     const sizeBonus = getCombatSizeBonus(character);
     const mods = [...miscMods, ...equipmentMods, ...statusEffectMods];
     const defenseBonuses: BonusObject = {
-        Size: sizeBonus
+        Size: sizeBonus,
     } as BonusObject;
     mods.forEach((mod) => {
         if (!mod.value && !!mod.attribute) {
@@ -160,22 +169,28 @@ export const getResistances = (character: Character): ResistObject => {
     const miscMod = character.miscModifiers.filter(
         (mod) => !!mod.resistance || mod.immunity
     );
-    const equipmentMods = getModifiersFromWornEquipment(character).filter((mod) => !!mod.resistance || !!mod.immunity)
+    const equipmentMods = getModifiersFromWornEquipment(character).filter(
+        (mod) => !!mod.resistance || !!mod.immunity
+    );
     const resistances: ResistObject = {} as ResistObject;
 
     [...miscMod, ...equipmentMods].forEach((mod) => {
         if (!!mod.damageType) {
-            if(mod.immunity){
-                resistances[mod.damageType] = 'Immune'
+            if (mod.immunity) {
+                resistances[mod.damageType] = 'Immune';
             } else {
                 if (!resistances[mod.damageType]) {
                     resistances[mod.damageType] = 0;
                 }
-                if ((!!mod.value && typeof mod.value === 'number') && !mod.immunity && mod.value as Number > resistances[mod.damageType]) {
+                if (
+                    !!mod.value &&
+                    typeof mod.value === 'number' &&
+                    !mod.immunity &&
+                    (mod.value as Number) > resistances[mod.damageType]
+                ) {
                     resistances[mod.damageType] = mod.value;
                 }
             }
-           
         }
     });
     return resistances;
@@ -203,12 +218,14 @@ export const getSaveModifiers = (
     const miscMods = character.miscModifiers.filter(
         (x) => (x.save && x.attribute === saveName) || x.allSaves
     );
-    const equipmentMods = getModifiersFromWornEquipment(character).filter(x => (x.save && x.attribute === saveName) || x.allSaves);
+    const equipmentMods = getModifiersFromWornEquipment(character).filter(
+        (x) => (x.save && x.attribute === saveName) || x.allSaves
+    );
     const statusEffectMods = [
         ...getFearModifiers(character, undefined, saveName),
-		...getSickenedModifiers(character, undefined, saveName),
-        ...getEnergyDrainedModifiers(character, undefined, saveName)
-    ].filter(x => x.attribute === saveName);
+        ...getSickenedModifiers(character, undefined, saveName),
+        ...getEnergyDrainedModifiers(character, undefined, saveName),
+    ].filter((x) => x.attribute === saveName);
     return [...miscMods, ...statusEffectMods, ...equipmentMods];
 };
 
@@ -216,8 +233,21 @@ export const adjustSaveForModifiers = (
     character: Character,
     saveName: AttributeNames
 ) => {
-	const saveMods = getSaveModifiers(character, saveName);
-	return saveMods.reduce((x,y) => x + y.value, 0)
+    const highestSaveMods: BonusObject = {} as BonusObject;
+    const saveMods = getSaveModifiers(character, saveName);
+    saveMods.forEach((mod) => {
+        if (!highestSaveMods[mod.type]) {
+            highestSaveMods[mod.type] = 0;
+        }
+        if (!!mod.value) {
+            if (stackableBonuses.some((type) => type === mod.type)) {
+                highestSaveMods[mod.type] += Number(mod.value);
+            } else if (mod.value > highestSaveMods[mod.type]) {
+                highestSaveMods[mod.type] = mod.value;
+            }
+        }
+    });
+    return Object.values(highestSaveMods).reduce((x, y) => x + y, 0);
 };
 
 export const getTotalSaveBonus = (

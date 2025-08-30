@@ -19,10 +19,10 @@ export default function CharacterPage() {
 
     useEffect(() => {
         getOneCharacter(params.character);
-    },[])
+    }, []);
 
     useEffect(() => {
-        if(!!char && !!char.name){
+        if (!!char && !!char.name) {
             dispatch(setCharacterAction(char));
             document.title = char.name;
         }
@@ -32,16 +32,24 @@ export default function CharacterPage() {
         characterReducer,
         initialCharacterState
     );
-    
+
     const handleUpdate = () => {
         setEdit(false);
     };
 
     return !!character ? (
         edit ? (
-            <EditCharacter character={character} dispatch={dispatch} onUpdate={handleUpdate}/>
+            <EditCharacter
+                character={character}
+                dispatch={dispatch}
+                onUpdate={handleUpdate}
+            />
         ) : (
-            <CharacterDisplay character={character} dispatch={dispatch} onEdit={setEdit}/>
+            <CharacterDisplay
+                character={character}
+                dispatch={dispatch}
+                onEdit={setEdit}
+            />
         )
     ) : null;
 }
