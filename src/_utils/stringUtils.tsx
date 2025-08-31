@@ -27,7 +27,9 @@ export const linkToSpellCompendium = (
     spellType: MagickCategory
 ) => {
     let baseUrl;
-    let linkSpell = spell.replace('/', '').trim();
+    let linkSpell = spell.includes('/')
+        ? spell.replace('/', '').trim()
+        : toKebabCase(spell);
     switch (spellType) {
         case MagickCategory.Arcane:
             baseUrl = 'https://homebrewery.naturalcrit.com/share/6988bCG34MfY';
@@ -45,8 +47,8 @@ export const linkToSpellCompendium = (
             baseUrl = 'https://homebrewery.naturalcrit.com/share/xF-Hd6XImurd';
             break;
     }
-    if (spell.includes('Summon Monster')) linkSpell = 'Summon Monster';
-    if (spell.includes('Summon Undead')) linkSpell = 'Summon Undead';
+    if (spell.includes('Summon Monster')) linkSpell = 'summon-monster-i';
+    if (spell.includes('Summon Undead')) linkSpell = 'summon-undead';
     window.open(`${baseUrl}#${linkSpell.toLocaleLowerCase()}`);
 };
 
