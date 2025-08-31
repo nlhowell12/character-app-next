@@ -30,6 +30,9 @@ import {
     SpellTableObject,
     SpellsPerDay,
     Mystery,
+    Spell,
+    Prayer,
+    DivineDomain,
 } from '@/_models';
 import { camelToTitle, linkToSpellCompendium } from '@/_utils/stringUtils';
 import * as R from 'ramda';
@@ -37,7 +40,11 @@ import { NumberInput } from './NumberInput';
 import { iconHoverStyling } from '@/_utils/theme';
 import InfoIcon from '@mui/icons-material/Info';
 import { getSpellDc } from '@/_utils/spellUtils';
-import { getClassLevel } from '@/_utils/classUtils';
+import {
+    getAllegianceTotal,
+    getClassLevel,
+    sortDomainAspects,
+} from '@/_utils/classUtils';
 
 interface SpellTableTooltipProps {
     character?: Character;
@@ -263,9 +270,20 @@ export const SpellTable = ({
         const classLevelTable: SpellsPerDay = !!classTable
             ? classTable.find((x: SpellsPerDay) => x.level === characterLevel)
             : undefined;
+        const filterByClericDomain = (x: AnyMagickType) => {
+            if (selectedClass === CharacterClassNames.Cleric) {
+                const prayer = x as Prayer;
+                const allegience = sortDomainAspects(character);
+                return (
+                    allegience.slice(0, 5).includes(prayer.domain) ||
+                    prayer.domain === DivineDomain.Cosmic
+                );
+            }
+            return true;
+        };
         return (
             !!characterLevel &&
-            spells.filter((x) => {
+            spells.filter((x: AnyMagickType) => {
                 if (
                     selectedSubtype === MagickCategory.Maneuver &&
                     x.category === MagickCategory.Maneuver
@@ -279,9 +297,12 @@ export const SpellTable = ({
                         shadowCasterFilter(x as Mystery, character)
                     );
                 }
-                if (!!classTable && !!classLevelTable) {
+                if (!!classTable && !!classLevelTable.maxLevel) {
                     /* @ts-ignore */
-                    return x.level <= classLevelTable.maxLevel;
+                    return (
+                        x.level <= classLevelTable.maxLevel &&
+                        filterByClericDomain(x)
+                    );
                 }
                 return true;
             })
