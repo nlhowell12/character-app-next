@@ -66,6 +66,10 @@ export const DomainAspectsTable = ({
     const clericClassAbilities = getClassAbilities(character.classes)[
         CharacterClassNames.Cleric
     ];
+    const preferredDomains = character.classes.filter(
+        (x) => x.name === CharacterClassNames.Cleric
+    )[0].preferredDomains;
+
     return (
         !!clericClassAbilities && (
             <Grid container direction='row'>
@@ -147,24 +151,25 @@ export const DomainAspectsTable = ({
                         <Table size='small'>
                             <TableBody>
                                 {sortedDomains.map((dom) => {
-                                    const preferredDomain = character.classes
-                                        .filter(
-                                            (x) =>
-                                                x.name ===
-                                                CharacterClassNames.Cleric
-                                        )[0]
-                                        .preferredDomains?.includes(dom);
+                                    const preferredDomain =
+                                        preferredDomains?.includes(dom);
                                     return (
                                         dom !== DivineDomain.Cosmic && (
                                             <TableRow
                                                 key={dom}
                                                 hover
-                                                onClick={() =>
-                                                    dispatch(
-                                                        togglePreferredDomainAction(
-                                                            dom
-                                                        )
-                                                    )
+                                                onClick={
+                                                    !!preferredDomains &&
+                                                    (preferredDomains.length <
+                                                        5 ||
+                                                        preferredDomain)
+                                                        ? () =>
+                                                              dispatch(
+                                                                  togglePreferredDomainAction(
+                                                                      dom
+                                                                  )
+                                                              )
+                                                        : undefined
                                                 }
                                             >
                                                 <TableCell>

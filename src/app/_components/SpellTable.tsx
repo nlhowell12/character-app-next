@@ -30,7 +30,6 @@ import {
     SpellTableObject,
     SpellsPerDay,
     Mystery,
-    CharacterClass,
 } from '@/_models';
 import { camelToTitle, linkToSpellCompendium } from '@/_utils/stringUtils';
 import * as R from 'ramda';
